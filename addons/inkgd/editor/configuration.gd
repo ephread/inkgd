@@ -36,7 +36,7 @@ func _init():
 # ############################################################################ #
 
 func retrieve():
-    var config_path = _EDITOR_ROOT_DIR + "inklecate.cfg"
+    var config_path = _EDITOR_ROOT_DIR + "inkgd.cfg"
 
     var err = _config_file.load(config_path)
     if err != OK:
@@ -59,7 +59,7 @@ func persist():
     _config_file.set_value("ink", "source_file_path", source_file_path)
     _config_file.set_value("ink", "target_file_path", target_file_path)
 
-    var config_path = _EDITOR_ROOT_DIR + "inklecate.cfg"
+    var config_path = _EDITOR_ROOT_DIR + "inkgd.cfg"
     var err = _config_file.save(config_path)
     if err != OK:
         printerr("Could not save: " + config_path)
