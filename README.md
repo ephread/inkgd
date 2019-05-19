@@ -1,5 +1,10 @@
 # ![inkgd](https://i.imgur.com/QbLG9Xp.png)
 
+[![CircleCI](https://circleci.com/gh/ephread/inkgd/tree/master.svg?style=shield)](https://circleci.com/gh/ephread/inkgd/tree/master)
+![Version](https://img.shields.io/badge/version-0.1.0-orange.svg)
+![Godot Version](https://img.shields.io/badge/godot-3.1.1-blue.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+
 Implementation of [inkle's Ink] in pure GDScript, with editor support.
 
 ⚠️ **Note:** While the implementation of the runtime is feature-complete and passes the test suite, you may still encounter some weird behaviors and bugs that will need to be ironed out. The runtime is not yet considered production ready, but it's almost there.

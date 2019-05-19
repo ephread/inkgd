@@ -1,0 +1,10 @@
+{
+    "dirs":["res://test"],
+    "include_subdirs":true,
+    "log_level":3,
+    "opacity":100,
+    "prefix":"test_",
+    "should_exit":true,
+    "suffix":".gd",
+    "tests":[]
+}
