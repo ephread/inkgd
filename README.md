@@ -1,8 +1,8 @@
 # ![inkgd](https://i.imgur.com/QbLG9Xp.png)
 
 [![CircleCI](https://circleci.com/gh/ephread/inkgd/tree/master.svg?style=shield)](https://circleci.com/gh/ephread/inkgd/tree/master)
-![Version](https://img.shields.io/badge/version-0.1.0-orange.svg)
-![Godot Version](https://img.shields.io/badge/godot-3.1.1-blue.svg)
+![Version](https://img.shields.io/badge/version-0.1.1-orange.svg)
+![Godot Version](https://img.shields.io/badge/godot-3.1+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
 Implementation of [inkle's Ink] in pure GDScript, with editor support.
@@ -190,12 +190,19 @@ A new panel should pop up on the right side of your editor.
 
 Here, you need to provide four (or three on Windows) different paths:
 
-- *Mono*: path to mono. _(Note: doesn't appear on Windows)_.
+- *Mono*: path to mono _(note: doesn't appear on Windows)_.
 - *Executable*: path to inklecate.
 - *Source File*: path to the ink file you want to compile.
 - *Target File*: output path of the compiled story.
 
 By clicking on "Test", you can test that the plugin can sucessfully run inklecate. You can also compile the story manually by clicking on "Compile".
+
+The configuration is saved as two files inside the root directory of the project:
+
+- `.inkgd_ink.cfg` stores the paths to both the source file and the target file.
+- `.inkgd_compiler.cfg` stores the paths to inklecate and the mono runtime.
+
+If you're working in a team, you may want to commit `.inkgd_ink.cfg` and keep `.inkgd_compiler.cfg` out of version control.
 
 [inklecate]: https://github.com/inkle/ink/releases
 
@@ -203,7 +210,7 @@ By clicking on "Test", you can test that the plugin can sucessfully run inklecat
 
 | _inkgd_ version | inklecate version | Godot version |
 |:---------------:|:-----------------:|:-------------:|
-|      0.1.0      |   0.8.2 – 0.8.3   |     3.1.1     |
+|  0.1.0 – 0.1.1  |   0.8.2 – 0.8.3   |  3.1 – 3.1.1  |
 
 ## License
 
