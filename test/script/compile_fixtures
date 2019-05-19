@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+FIXTURE_DIR="$DIR/../fixture"
+COMPILED_INK_DIR="$FIXTURE_DIR/compiled"
+INK_DIR="$FIXTURE_DIR/original"
+
+for ink_file in $(ls "$INK_DIR"/*.ink)
+do
+    filename=$(basename "$ink_file")
+
+    extra_arguments=""
+    if [[ "$filename" == "turns_since_with_variable_target.ink" || "$filename" == "read_count_variable_target.ink" || "$filename" == "read_count_variable_target.ink" ]]; then
+        extra_arguments="-c"
+    fi
+
+    inklecate $extra_arguments -o "$COMPILED_INK_DIR/$filename.json" "$ink_file"
+
+done

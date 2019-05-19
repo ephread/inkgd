@@ -1,0 +1,1 @@
+﻿{"inkVersion":19,"root":[[{"->":"firstKnot"},["done",{"#n":"g-0"}],null],"done",{"firstKnot":["^Hello!","\n",{"->":"anotherKnot"},{"#f":3}],"anotherKnot":["^World.","\n","end",{"#f":3}],"#f":3}],"listDefs":{}}

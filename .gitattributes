@@ -1,0 +1,20 @@
+# Exclude all the following files from the downloaded
+# archive.
+
+/addons/gut                export-ignore
+
+/.github                   export-ignore
+/.gitattributes            export-ignore
+/.gitignore                export-ignore
+/CHANGELOG.md              export-ignore
+/CONTRIBUTING.md           export-ignore
+/default_env.tres          export-ignore
+/icon.png                  export-ignore
+/icon.png.import           export-ignore
+/LICENSE                   export-ignore
+/project.godot             export-ignore
+/PULL_REQUEST_TEMPLATE.md  export-ignore
+/README.md                 export-ignore
+
+/examples                  export-ignore
+/test                      export-ignore
