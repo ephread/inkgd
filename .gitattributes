@@ -9,6 +9,7 @@
 /.gitattributes            export-ignore
 /.gitignore                export-ignore
 /.gutconfig.json           export-ignore
+/.inkgd_compiler.gd        export-ignore
 /CHANGELOG.md              export-ignore
 /CONTRIBUTING.md           export-ignore
 /default_env.tres          export-ignore

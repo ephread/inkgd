@@ -3,5 +3,6 @@
 export.cfg
 export_presets.cfg
 
-# Mono-specific ignores
-.mono/
+# inkgd ignores
+
+.inkgd_compiler.cfg

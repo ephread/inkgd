@@ -134,20 +134,20 @@ func _file_dialog_hide():
         InkFileDialog.disconnect("file_selected", self, "_executable_selected")
 
 func _mono_selected(path: String):
-    configuration.mono_path = path
-    update_save_and_cleanup(path, MonoLineEdit, "_mono_selected")
+    configuration.mono_path = ProjectSettings.globalize_path(path)
+    update_save_and_cleanup(configuration.mono_path, MonoLineEdit, "_mono_selected")
 
 func _source_file_selected(path: String):
-    configuration.source_file_path = path
-    update_save_and_cleanup(path, SourceFileLineEdit, "_source_file_selected")
+    configuration.source_file_path = ProjectSettings.localize_path(path)
+    update_save_and_cleanup(configuration.source_file_path, SourceFileLineEdit, "_source_file_selected")
 
 func _target_file_selected(path: String):
-    configuration.target_file_path = path
-    update_save_and_cleanup(path, TargetFileLineEdit, "_target_file_selected")
+    configuration.target_file_path = ProjectSettings.localize_path(path)
+    update_save_and_cleanup(configuration.target_file_path, TargetFileLineEdit, "_target_file_selected")
 
 func _executable_selected(path: String):
-    configuration.inklecate_path = path
-    update_save_and_cleanup(path, ExecutableLineEdit, "_executable_selected")
+    configuration.inklecate_path = ProjectSettings.globalize_path(path)
+    update_save_and_cleanup(configuration.inklecate_path, ExecutableLineEdit, "_executable_selected")
 
 func _configuration_focus_exited():
     configuration.mono_path = MonoLineEdit.text
@@ -178,9 +178,11 @@ func _build_button_pressed():
     if is_windows:
         OS.execute(configuration.inklecate_path, [], true, output)
     else:
-        OS.execute(configuration.mono_path, [configuration.inklecate_path, '-o',
-                   configuration.target_file_path, configuration.source_file_path], true, output)
-
+        OS.execute(configuration.mono_path, [
+                       configuration.inklecate_path, '-o',
+                       ProjectSettings.globalize_path(configuration.target_file_path),
+                       ProjectSettings.globalize_path(configuration.source_file_path)
+                   ], true, output)
 
     # Outputing a BOM is inklecate's way of saying that everything went through.
     # This is fragile. There might be a better option to express the BOM.
