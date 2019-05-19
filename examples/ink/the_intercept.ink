@@ -43,7 +43,7 @@ VAR longgrasshooperframe = false
 
 
 // DEBUG mode adds a few shortcuts - remember to set to false in release!
-VAR DEBUG = true
+VAR DEBUG = false
 
 EXTERNAL should_show_debug_menu(debug)
 
