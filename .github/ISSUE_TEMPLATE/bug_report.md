@@ -19,7 +19,7 @@ about: Create a report to help us improve
 **Environment:**
  - OS: <!-- e.g. Windows / macOS / Linux Distribution -->
  - Inklecate version: <!-- e.g. 0.8.3 -->
- - _inkjs_ version: <!-- e.g. 0.1.0-->
+ - _inkgd_ version: <!-- e.g. 0.1.0-->
 
 **Additional context**
 <!-- Add any other context about the problem here. -->
