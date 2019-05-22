@@ -191,7 +191,7 @@ A new panel should pop up on the right side of your editor.
 Here, you need to provide four (or three on Windows) different paths:
 
 - *Mono*: path to mono _(note: doesn't appear on Windows)_.
-- *Executable*: path to inklecate.
+- *Executable*: path to inklecate _(note: an absolute path is expected here)_.
 - *Source File*: path to the ink file you want to compile.
 - *Target File*: output path of the compiled story.
 

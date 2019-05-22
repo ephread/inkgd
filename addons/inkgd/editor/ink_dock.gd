@@ -176,7 +176,11 @@ func _build_button_pressed():
     var output = []
 
     if is_windows:
-        OS.execute(configuration.inklecate_path, [], true, output)
+        OS.execute(configuration.inklecate_path, [
+                       '-o',
+                       ProjectSettings.globalize_path(configuration.target_file_path),
+                       ProjectSettings.globalize_path(configuration.source_file_path)
+                   ], true, output)
     else:
         OS.execute(configuration.mono_path, [
                        configuration.inklecate_path, '-o',
@@ -185,8 +189,12 @@ func _build_button_pressed():
                    ], true, output)
 
     # Outputing a BOM is inklecate's way of saying that everything went through.
-    # This is fragile. There might be a better option to express the BOM.
-    if output.size() == 1 && output[0].length() == 3:
+    # This is fragile. There might be a better option to express the BOM, or maybe
+    # check for inklecate's return code?
+    #
+    # On macOS the length of the BOM is 3, on Windows the length of the BOM is 0,
+    # that's fairly strange.
+    if output.size() == 1 && (output[0].length() == 3 || output[0].length() == 0):
         BuildOutputLabel.text = output[0] + "Compiled to: " + configuration.target_file_path
     else:
         BuildOutputLabel.text = PoolStringArray(output).join("\n")
