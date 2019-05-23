@@ -140,7 +140,7 @@ func test_trivial_condition():
 func test_conditional_choice_in_weave():
     var story = Story.new(load_file("conditional_choice_in_weave"))
 
-    assert_eq(story.continue_maximally(), "start\n")
+    assert_eq(story.continue_maximally(), "start\ngather should be seen\n")
     assert_eq(story.current_choices.size(), 1)
     assert_eq(story.current_choices[0].text, "go to a stitch")
 
@@ -156,9 +156,8 @@ func test_conditional_choice_in_weave_2():
 
     story.choose_choice_index(0)
 
-    assert_eq(story.continue_maximally(), "the main gather\n")
+    assert_eq(story.continue_maximally(), "the main gather\nbottom gather\n")
     assert_eq(story.current_choices.size(), 0)
-    assert_true(story.has_error)
 # #############
 
 func test_default_choice():
