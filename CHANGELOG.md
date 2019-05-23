@@ -1,6 +1,14 @@
 # Change Log
 Important changes to _inkgd_ will be documented in this file.
 
+## [0.1.2](https://github.com/ephread/inkgd/releases/tag/0.1.2)
+Released on 2019-05-23.
+
+### Fixed
+- Fixed [#2] – Missing code preventing ink compilation from working on Windows.
+
+[#2]: https://github.com/ephread/inkgd/issues/2
+
 ## [0.1.1](https://github.com/ephread/inkgd/releases/tag/0.1.1)
 Released on 2019-05-19.
 
