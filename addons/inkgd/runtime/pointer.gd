@@ -14,12 +14,6 @@
 extends "res://addons/inkgd/runtime/ink_base.gd"
 
 # ############################################################################ #
-# Self-reference
-# ############################################################################ #
-
-var Pointer = weakref(load("res://addons/inkgd/runtime/pointer.gd"))
-
-# ############################################################################ #
 # Imports
 # ############################################################################ #
 
@@ -94,7 +88,7 @@ func get_class():
 
 # () -> Pointer
 func duplicate():
-    return Pointer.get_ref().new(container, index)
+    return Pointer().new(container, index)
 
 static func Pointer():
     return load("res://addons/inkgd/runtime/pointer.gd")
