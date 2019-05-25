@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://examples/fonts/Vollkorn-Regular.tres" type="DynamicFont" id=1]
+
+[node name="Label" type="Label"]
+margin_top = 1.94104
+margin_right = 77.0
+margin_bottom = 47.941
+custom_fonts/font = ExtResource( 1 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Label"
+align = 1
+autowrap = true

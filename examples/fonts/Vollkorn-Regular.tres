@@ -1,0 +1,8 @@
+[gd_resource type="DynamicFont" load_steps=2 format=2]
+
+[sub_resource type="DynamicFontData" id=1]
+font_path = "res://examples/fonts/Vollkorn-Regular.ttf"
+
+[resource]
+size = 32
+font_data = SubResource( 1 )

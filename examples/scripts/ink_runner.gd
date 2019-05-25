@@ -6,6 +6,8 @@
 
 extends Node
 
+const SHOULD_LOAD_IN_BACKGROUND = true
+
 # ############################################################################ #
 # Imports
 # ############################################################################ #
@@ -13,13 +15,17 @@ extends Node
 var InkRuntime = load("res://addons/inkgd/runtime.gd");
 var Story = load("res://addons/inkgd/runtime/story.gd");
 
-var ChoiceContainer = load("res://examples/choice_container.tscn");
+var ChoiceContainer = load("res://examples/scenes/choice_container.tscn");
+var LineLabel = load("res://examples/scenes/label.tscn");
 
 # ############################################################################ #
 # Node
 # ############################################################################ #
 
-onready var StoryVBoxContainer = get_node("MarginContainer/StoryScrollContainer/StoryVBoxContainer")
+onready var StoryMarginContainer = get_node("StoryMarginContainer")
+onready var StoryScrollContainer = StoryMarginContainer.get_node("StoryScrollContainer")
+onready var StoryVBoxContainer = StoryScrollContainer.get_node("StoryVBoxContainer")
+onready var LoadingAnimationPlayer = get_node("LoadingAnimationPlayer")
 
 # ############################################################################ #
 # Public Properties
@@ -32,6 +38,7 @@ var story
 # ############################################################################ #
 
 var _current_choice_container
+var _loading_thread
 
 # ############################################################################ #
 # Lifecycle
@@ -49,20 +56,22 @@ func _exit_tree():
 
 func start_story():
     _add_runtime()
-    _load_story("res://examples/ink/the_intercept.ink.json")
 
-    story.observe_variables(["forceful", "evasive"], self, "_observe_variables")
-    story.bind_external_function("should_show_debug_menu", self, "_should_show_debug_menu")
-
-    self.continue_story()
+    if SHOULD_LOAD_IN_BACKGROUND:
+        _loading_thread = Thread.new()
+        _loading_thread.start(self, "_async_load_story", "res://examples/ink/the_intercept.ink.json")
+    else:
+        _load_story("res://examples/ink/the_intercept.ink.json")
+        _bind_externals()
+        continue_story()
+        _remove_loading_overlay()
 
 func continue_story():
     while story.can_continue:
         var text = story.continue()
 
-        var label = Label.new()
+        var label = LineLabel.instance()
         label.text = text
-        label.align = Label.ALIGN_CENTER
 
         StoryVBoxContainer.add_child(label)
 
@@ -94,8 +103,14 @@ func _observe_variables(variable_name, new_value):
 
 func _choice_selected(index):
     StoryVBoxContainer.remove_child(_current_choice_container)
+    _current_choice_container.queue_free()
+
     story.choose_choice_index(index)
     continue_story()
+
+func _async_load_story(ink_story_path):
+    _load_story(ink_story_path)
+    call_deferred("_async_load_completed")
 
 func _load_story(ink_story_path):
     var ink_story = File.new()
@@ -104,6 +119,24 @@ func _load_story(ink_story_path):
     ink_story.close()
 
     self.story = Story.new(content)
+
+func _bind_externals():
+    story.observe_variables(["forceful", "evasive"], self, "_observe_variables")
+    story.bind_external_function("should_show_debug_menu", self, "_should_show_debug_menu")
+
+func _async_load_completed():
+    _loading_thread.wait_to_finish()
+    _loading_thread = null
+
+    _bind_externals()
+    continue_story()
+    _remove_loading_overlay()
+
+func _remove_loading_overlay():
+    remove_child(LoadingAnimationPlayer)
+    StoryMarginContainer.show()
+    LoadingAnimationPlayer.queue_free()
+    LoadingAnimationPlayer = null
 
 func _add_runtime():
     InkRuntime.init(get_tree().root)

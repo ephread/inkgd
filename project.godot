@@ -17,11 +17,18 @@ _global_script_class_icons={
 
 config/name="inkgd"
 run/main_scene="res://test/tests.tscn"
+boot_splash/image="res://examples/images/transparent.png"
+boot_splash/fullsize=false
+boot_splash/bg_color=Color( 0.929412, 0.898039, 0.854902, 1 )
 config/icon="res://icon.png"
 
 [display]
 
+window/size/width=1920
+window/size/height=1080
 window/dpi/allow_hidpi=true
+window/stretch/mode="2d"
+window/stretch/aspect="expand"
 
 [editor_plugins]
 
@@ -29,7 +36,7 @@ enabled=PoolStringArray( "gut", "inkgd" )
 
 [network]
 
-limits/debugger_stdout/max_chars_per_second=16384
+limits/debugger_stdout/max_chars_per_second=600000
 
 [rendering]
 

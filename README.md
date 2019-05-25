@@ -116,8 +116,8 @@ story.variables_state.set("player_health", 10)
 
 # Original C# API
 #
-# story.VariablesState["player_health"]
-# story.VariablesState["player_health"] = 10
+# _inkStory.VariablesState["player_health"]
+# _inkStory.VariablesState["player_health"] = 10
 ```
 
 ##### 4. [Variable Observers](https://github.com/inkle/ink/blob/master/Documentation/RunningYourInk.md#variable-observers)
@@ -175,6 +175,12 @@ var result = story.evaluate_function("multiply", [5, 3], true)
 #     "output": "Hello World"
 # }
 ```
+
+#### Loading the story from a background thread
+
+For bigger stories, loading the compiled story into the runtime can take a long time (more than a second). To avoid blocking the main thread, you may want to load the story from a background thread and display a loading indicator.
+
+A possible thread-based approach is implemented in `example/ink_runner.gd`.
 
 ### Editor
 
