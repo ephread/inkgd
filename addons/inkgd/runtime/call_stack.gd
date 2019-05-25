@@ -14,21 +14,11 @@ extends "res://addons/inkgd/runtime/ink_base.gd"
 # ############################################################################ #
 
 var PushPopType = preload("res://addons/inkgd/runtime/push_pop.gd").PushPopType
-var Pointer = load("res://addons/inkgd/runtime/pointer.gd")
-var Ink = load("res://addons/inkgd/runtime/value.gd")
 
 # ############################################################################ #
 
 class Element extends "res://addons/inkgd/runtime/ink_base.gd":
-    # ######################################################################## #
-    # Imports
-    # ######################################################################## #
-
-    var Pointer = load("res://addons/inkgd/runtime/pointer.gd")
-
-    # ######################################################################## #
-
-    var current_pointer = Pointer.null() # Pointer
+    var current_pointer = Pointer().null() # Pointer
 
     var in_expression_evaluation = false # bool
     var temporary_variables = null # Dictionary<String, InkObject>
@@ -61,19 +51,13 @@ class Element extends "res://addons/inkgd/runtime/ink_base.gd":
     func get_class():
         return "CallStack.Element"
 
+    static func Pointer():
+        return load("res://addons/inkgd/runtime/pointer.gd")
+
 class InkThread extends "res://addons/inkgd/runtime/ink_base.gd":
-    # ######################################################################## #
-    # Imports
-    # ######################################################################## #
-
-    var Pointer = load("res://addons/inkgd/runtime/pointer.gd")
-    var InkPath = load("res://addons/inkgd/runtime/ink_path.gd")
-
-    # ######################################################################## #
-
     var callstack = null # Array<Element>
     var thread_index = 0 # int
-    var previous_pointer = Pointer.null() # Pointer
+    var previous_pointer = Pointer().null() # Pointer
 
     func _init():
         get_json()
@@ -88,7 +72,7 @@ class InkThread extends "res://addons/inkgd/runtime/ink_base.gd":
             var jelement_obj = jel_tok
             var push_pop_type = int(jelement_obj["type"])
 
-            var pointer = Pointer.null()
+            var pointer = Pointer().null()
             var current_container_path_str = null
             var current_container_path_str_token = null
 
@@ -96,7 +80,7 @@ class InkThread extends "res://addons/inkgd/runtime/ink_base.gd":
                 current_container_path_str_token = jelement_obj["cPath"]
                 current_container_path_str = str(current_container_path_str_token)
 
-                var thread_pointer_result = story_context.content_at_path(InkPath.new_with_components_string(current_container_path_str))
+                var thread_pointer_result = story_context.content_at_path(InkPath().new_with_components_string(current_container_path_str))
                 pointer.container = thread_pointer_result.container
                 pointer.index = int(jelement_obj["idx"])
 
@@ -125,7 +109,7 @@ class InkThread extends "res://addons/inkgd/runtime/ink_base.gd":
         var prev_content_obj_path
         if jthread_obj.has("previousContentObject"):
             prev_content_obj_path = str(jthread_obj["previousContentObject"])
-            var prev_path = InkPath.new_with_components_string(prev_content_obj_path)
+            var prev_path = InkPath().new_with_components_string(prev_content_obj_path)
             self.previous_pointer = story_context.pointer_at_path(prev_path)
 
     # () -> InkThread
@@ -171,6 +155,12 @@ class InkThread extends "res://addons/inkgd/runtime/ink_base.gd":
 
     func get_class():
         return "CallStack.InkThread"
+
+    static func Pointer():
+        return load("res://addons/inkgd/runtime/pointer.gd")
+
+    static func InkPath():
+        return load("res://addons/inkgd/runtime/ink_path.gd")
 
     # ######################################################################## #
 
@@ -236,7 +226,7 @@ func _init(story_context_or_to_copy):
 
     if story_context_or_to_copy.is_class("Story"):
         var story_context = story_context_or_to_copy
-        _start_of_root = Pointer.start_of(story_context.root_content_container)
+        _start_of_root = Pointer().start_of(story_context.root_content_container)
         reset()
     elif story_context_or_to_copy.is_class("CallStack"):
         var to_copy = story_context_or_to_copy
@@ -262,7 +252,7 @@ func set_json_token(jobject, story_context):
         self._threads.append(thread)
 
     self._thread_counter = int(jobject["threadCounter"])
-    self._start_of_root = Pointer.start_of(story_context.root_content_container)
+    self._start_of_root = Pointer().start_of(story_context.root_content_container)
 
 
 # () -> Dictionary<string, object>
@@ -364,7 +354,7 @@ func set_temporary_variable(name, value, declare_new, context_index = -1):
 
     if context_element.temporary_variables.has(name):
         var old_value = context_element.temporary_variables[name]
-        Ink.ListValue.retain_list_origins_for_assignment(old_value, value)
+        Ink().ListValue.retain_list_origins_for_assignment(old_value, value)
 
     context_element.temporary_variables[name] = value
 
@@ -418,7 +408,7 @@ func get_callstack_trace():
 
 var _threads = null # Array<InkThread>
 var _thread_counter = 0 # int
-var _start_of_root = Pointer.null() # Pointer
+var _start_of_root = Pointer().null() # Pointer
 
 # ############################################################################ #
 # GDScript extra methods
@@ -429,6 +419,13 @@ func is_class(type):
 
 func get_class():
     return "CallStack"
+
+static func Pointer():
+    return load("res://addons/inkgd/runtime/pointer.gd")
+
+static func Ink():
+    return load("res://addons/inkgd/runtime/value.gd")
+
 
 # ############################################################################ #
 

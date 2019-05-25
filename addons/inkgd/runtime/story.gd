@@ -145,7 +145,7 @@ func _init(json_string):
     self._main_content_container = Utils.as_or_null(Json.jtoken_to_runtime_object(root_token),
                                                     "InkContainer")
 
-    print(Json.gd_profiler.block_call_hierarchy_as_csv())
+    #print(Json.gd_profiler.block_call_hierarchy())
 
     self.reset_state()
 
@@ -188,7 +188,7 @@ func reset_globals():
     if (self._main_content_container.named_content.has("global decl")):
         var original_pointer = self.state.current_pointer.duplicate()
 
-        self.choose_path(InkPath.get_ref().new_with_components_string("global decl"), false)
+        self.choose_path(InkPath().new_with_components_string("global decl"), false)
 
         self.continue_internal()
 
@@ -1006,7 +1006,7 @@ func choose_path_string(path, reset_callstack = true, arguments = null):
             return
 
     self.state.pass_arguments_to_evaluation_stack(arguments)
-    self.choose_path(InkPath.get_ref().new_with_components_string(path))
+    self.choose_path(InkPath().new_with_components_string(path))
 
 func async_we_cant(activity_str):
     if self._async_continue_active:
@@ -1312,7 +1312,7 @@ func tags_for_content_at_path(path):
 
 # (String) -> Array<String>
 func tags_at_start_of_flow_container_with_path_string(path_string):
-    var path = InkPath.get_ref().new_with_components_string(path_string)
+    var path = InkPath().new_with_components_string(path_string)
 
     var flow_container = content_at_path(path).container
     while (true):

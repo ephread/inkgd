@@ -10,12 +10,6 @@
 extends "res://addons/inkgd/runtime/ink_object.gd"
 
 # ############################################################################ #
-# Imports
-# ############################################################################ #
-
-var InkSearchResult = load("res://addons/inkgd/runtime/search_result.gd")
-
-# ############################################################################ #
 
 var name = null # String
 
@@ -110,10 +104,10 @@ func get_internal_path_to_first_leaf_content():
     var container = self
     while container != null:
         if container.content.size() > 0:
-            components.append(InkPath.get_ref().Component.new(0))
+            components.append(InkPath().Component.new(0))
             container = Utils.as_or_null(container.content[0], "InkContainer")
 
-    return InkPath.get_ref().new_with_components(components)
+    return InkPath().new_with_components(components)
 
 func _init():
     self._content = [] # List<InkObject>
@@ -192,7 +186,7 @@ func content_at_path(path, partial_path_start = 0, partial_path_length = -1):
     if partial_path_length == -1:
         partial_path_length = path.length
 
-    var result = InkSearchResult.new()
+    var result = InkSearchResult().new()
     result.approximate = false
 
     var current_container = self # Container
@@ -309,3 +303,6 @@ func is_class(type):
 
 func get_class():
     return "InkContainer"
+
+func InkSearchResult():
+    return load("res://addons/inkgd/runtime/search_result.gd")

@@ -118,7 +118,11 @@ func _load_story(ink_story_path):
     var content = ink_story.get_as_text()
     ink_story.close()
 
+    var start_time = OS.get_ticks_usec()
     self.story = Story.new(content)
+    var end_time = OS.get_ticks_usec()
+
+    print(str(end_time - start_time))
 
 func _bind_externals():
     story.observe_variables(["forceful", "evasive"], self, "_observe_variables")

@@ -10,12 +10,6 @@
 extends "res://addons/inkgd/runtime/ink_base.gd"
 
 # ############################################################################ #
-# Imports
-# ############################################################################ #
-
-var InkPath = weakref(load("res://addons/inkgd/runtime/ink_path.gd"))
-
-# ############################################################################ #
 
 var parent = null # InkObject
 
@@ -63,7 +57,7 @@ var path setget , get_path
 func get_path():
     if _path == null:
         if parent == null:
-            _path = InkPath.get_ref().new()
+            _path = InkPath().new()
         else:
             var comps = [] # Stack<Path.Component>
 
@@ -73,14 +67,14 @@ func get_path():
             while container:
                 var named_child = Utils.as_INamedContent_or_null(child)
                 if (named_child != null && named_child.has_valid_name):
-                    comps.push_front(InkPath.get_ref().Component.new(named_child.name))
+                    comps.push_front(InkPath().Component.new(named_child.name))
                 else:
-                    comps.push_front(InkPath.get_ref().Component.new(container.content.find(child)))
+                    comps.push_front(InkPath().Component.new(container.content.find(child)))
 
                 child = container
                 container = Utils.as_or_null(container.parent, "InkContainer")
 
-            _path = InkPath.get_ref().new_with_components(comps)
+            _path = InkPath().new_with_components(comps)
 
     return _path
 
@@ -130,7 +124,7 @@ func convert_path_to_relative(global_path):
 
     var up = 0
     while up < num_upwards_moves:
-        new_path_comps.append(InkPath.get_ref().Component.to_parent())
+        new_path_comps.append(InkPath().Component.to_parent())
         up += 1
 
     var down = last_shared_path_comp_index + 1
@@ -138,7 +132,7 @@ func convert_path_to_relative(global_path):
         new_path_comps.append(global_path.get_component(down))
         down += 1
 
-    var relative_path = InkPath.get_ref().new_with_components(new_path_comps, true)
+    var relative_path = InkPath().new_with_components(new_path_comps, true)
     return relative_path
 
 # (Path) -> String
@@ -192,3 +186,6 @@ func is_class(type):
 
 func get_class():
     return "InkObject"
+
+static func InkPath():
+    return load("res://addons/inkgd/runtime/ink_path.gd")

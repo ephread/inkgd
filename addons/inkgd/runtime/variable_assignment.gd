@@ -10,12 +10,6 @@
 extends "res://addons/inkgd/runtime/ink_object.gd"
 
 # ############################################################################ #
-# Self-reference
-# ############################################################################ #
-
-var VariableAssignment = weakref(load("res://addons/inkgd/runtime/variable_assignment.gd"))
-
-# ############################################################################ #
 
 var variable_name = null # String
 var is_new_declaration = false # bool
@@ -42,8 +36,9 @@ func get_class():
     return "VariableAssignment"
 
 static func new_with(variable_name, is_new_declaration):
-    var VariableAssignment = load("res://addons/inkgd/runtime/variable_assignment.gd")
-
-    var variable_assignment = VariableAssignment.new()
+    var variable_assignment = VariableAssignment().new()
     variable_assignment._init_with(variable_name, is_new_declaration)
     return variable_assignment
+
+static func VariableAssignment():
+    return load("res://addons/inkgd/runtime/variable_assignment.gd")

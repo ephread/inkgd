@@ -25,13 +25,6 @@ enum ValueType {
 
 # This is a merge of the original Value class and its Value<T> subclass.
 class Value extends "res://addons/inkgd/runtime/ink_object.gd":
-    # ######################################################################## #
-    # IMPORTS
-    # ######################################################################## #
-
-    var InkList = load("res://addons/inkgd/runtime/ink_list.gd")
-
-    # ######################################################################## #
 
     var value # Variant
 
@@ -107,6 +100,10 @@ class Value extends "res://addons/inkgd/runtime/ink_object.gd":
 
     static func Utils():
         return load("res://addons/inkgd/runtime/extra/utils.gd")
+
+    static func InkList():
+        return load("res://addons/inkgd/runtime/ink_list.gd")
+
 
     static func new_with(val):
         var value = Value.new()
@@ -382,13 +379,13 @@ class ListValue extends Value:
         return null
 
     func _init():
-        value = InkList.new()
+        value = InkList().new()
 
     func _init_with_list(list):
-        value = InkList.new_with_ink_list(list)
+        value = InkList().new_with_ink_list(list)
 
     func _init_with_single_item(single_item, single_value):
-        value = InkList.new_with_single_item(single_item, single_value)
+        value = InkList().new_with_single_item(single_item, single_value)
 
     # (InkObject, InkObject) -> void
     static func retain_list_origins_for_assignment(old_value, new_value):

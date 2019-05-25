@@ -14,7 +14,6 @@ extends "res://addons/inkgd/runtime/ink_object.gd"
 # ############################################################################ #
 
 var PushPopType = preload("res://addons/inkgd/runtime/push_pop.gd").PushPopType
-var Pointer = load("res://addons/inkgd/runtime/pointer.gd")
 
 # ############################################################################ #
 
@@ -29,7 +28,7 @@ func get_target_path():
 
 func set_target_path(value):
     self._target_path = value
-    self._target_pointer = Pointer.null()
+    self._target_pointer = Pointer().null()
 
 var _target_path = null # InkPath
 
@@ -42,11 +41,11 @@ func get_target_pointer():
             self._target_pointer.container = Utils.as_or_null(target_obj.parent, "InkContainer")
             self._target_pointer.index = self._target_path.last_component.index
         else:
-            self._target_pointer = Pointer.start_of(Utils.as_or_null(target_obj, "InkContainer"))
+            self._target_pointer = Pointer().start_of(Utils.as_or_null(target_obj, "InkContainer"))
 
     return self._target_pointer.duplicate()
 
-var _target_pointer = Pointer.null() # InkPointer
+var _target_pointer = Pointer().null() # InkPointer
 
 var target_path_string setget set_target_path_string, get_target_path_string # String
 func get_target_path_string():
@@ -59,7 +58,7 @@ func set_target_path_string(value):
     if value == null:
         self.target_path = null
     else:
-        self.target_path = InkPath.get_ref().new_with_components_string(value)
+        self.target_path = InkPath().new_with_components_string(value)
 
 var variable_divert_name = null # String
 var has_variable_target setget , get_has_variable_target # bool
@@ -136,3 +135,6 @@ func is_class(type):
 
 func get_class():
     return "Divert"
+
+static func Pointer():
+    return load("res://addons/inkgd/runtime/pointer.gd")

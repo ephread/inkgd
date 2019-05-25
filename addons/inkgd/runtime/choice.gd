@@ -9,14 +9,6 @@
 
 extends "res://addons/inkgd/runtime/ink_object.gd"
 
-# ############################################################################ #
-# Imports
-# ############################################################################ #
-
-var CallStack = load("res://addons/inkgd/runtime/call_stack.gd")
-
-# ############################################################################ #
-
 var text # String
 
 # () -> String
@@ -26,7 +18,7 @@ func get_path_string_on_choice():
     return target_path.to_string()
 
 func set_path_string_on_choice(value):
-    target_path = InkPath.get_ref().new_with_components_string(value)
+    target_path = InkPath().new_with_components_string(value)
 
 var source_path = null # String
 var index = 0 # index

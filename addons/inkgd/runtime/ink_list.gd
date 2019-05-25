@@ -13,8 +13,7 @@ extends "res://addons/inkgd/runtime/ink_object.gd"
 # Imports
 # ############################################################################ #
 
-var InkListItem = load("res://addons/inkgd/runtime/ink_list_item.gd")
-var KeyValuePair = load("res://addons/inkgd/runtime/extra/key_value_pair.gd")
+var KeyValuePair = preload("res://addons/inkgd/runtime/extra/key_value_pair.gd")
 
 # ############################################################################ #
 
@@ -73,7 +72,7 @@ func add_item_by_string(item_name):
         Utils.throw_exception("Could not add the item " + item_name + " to this list because it isn't known to any list definitions previously associated with this list.")
         return
 
-    var item = InkListItem.new_with_origin_name(found_list_def.name, item_name)
+    var item = InkListItem().new_with_origin_name(found_list_def.name, item_name)
     var item_val = found_list_def.value_for_item(item)
     set(item, item_val)
 
@@ -125,7 +124,7 @@ func set_initial_origin_names(initial_origin_names):
 
 var max_item setget , get_max_item # KeyValuePair<InkListItem, int>
 func get_max_item():
-    var _max_item = KeyValuePair.new_with_key_value(InkListItem.null(), 0)
+    var _max_item = KeyValuePair.new_with_key_value(InkListItem().null(), 0)
     for k in keys():
         if (_max_item.key.is_null || get(k) > _max_item.value):
             _max_item = KeyValuePair.new_with_key_value(k, get(k))
@@ -134,7 +133,7 @@ func get_max_item():
 
 var min_item setget , get_min_item # KeyValuePair<InkListItem, int>
 func get_min_item():
-    var _min_item = KeyValuePair.new_with_key_value(InkListItem.null(), 0)
+    var _min_item = KeyValuePair.new_with_key_value(InkListItem().null(), 0)
     for k in keys():
         if (_min_item.key.is_null || get(k) < _min_item.value):
             _min_item = KeyValuePair.new_with_key_value(k, get(k))
@@ -363,7 +362,7 @@ func hash():
 func keys():
     var deserialized_keys = []
     for key in _dictionary.keys():
-        deserialized_keys.append(InkListItem.from_serialized_key(key))
+        deserialized_keys.append(InkListItem().from_serialized_key(key))
 
     return deserialized_keys
 
@@ -421,3 +420,6 @@ func get_class():
 
 static func InkList():
     return load("res://addons/inkgd/runtime/ink_list.gd")
+
+static func InkListItem():
+    return load("res://addons/inkgd/runtime/ink_list_item.gd")

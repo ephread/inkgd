@@ -14,12 +14,6 @@
 extends "res://addons/inkgd/runtime/ink_base.gd"
 
 # ############################################################################ #
-# Imports
-# ############################################################################ #
-
-var InkPath = load("res://addons/inkgd/runtime/ink_path.gd")
-
-# ############################################################################ #
 
 var container = null # InkContainer
 var index = 0 # int
@@ -53,7 +47,7 @@ func get_path():
     if self.is_null: return null
 
     if index >= 0:
-        return container.path.path_by_appending_component(InkPath.Component.new(index))
+        return container.path.path_by_appending_component(InkPath().Component.new(index))
     else:
         return container.path
 
@@ -92,3 +86,6 @@ func duplicate():
 
 static func Pointer():
     return load("res://addons/inkgd/runtime/pointer.gd")
+
+static func InkPath():
+    return load("res://addons/inkgd/runtime/ink_path.gd")

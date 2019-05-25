@@ -52,7 +52,7 @@ func list_to_jarray(serialisables):
 
 # (Array, bool) -> Array
 func jarray_to_runtime_obj_list(jarray, skip_last = false):
-    gd_profiler.enter("jarray_to_runtime_obj_list")
+    # gd_profiler.enter("jarray_to_runtime_obj_list")
     var count = jarray.size()
     if skip_last:
         count -= 1
@@ -66,7 +66,7 @@ func jarray_to_runtime_obj_list(jarray, skip_last = false):
 
         i += 1
 
-    gd_profiler.exit()
+    # gd_profiler.exit()
     return list
 
 # (Dictionary<String, InkObject>) -> Dictionary<String, Variant>
@@ -82,23 +82,23 @@ func dictionary_runtime_objs_to_jobject(dictionary):
 
 # (Dictionary<String, Variant>) -> Dictionary<String, InkObject>
 func jobject_to_dictionary_runtime_objs(jobject):
-    gd_profiler.enter("jobject_to_dictionary_runtime_objs")
+    # gd_profiler.enter("jobject_to_dictionary_runtime_objs")
     var dict = {}
 
     for key in jobject:
         dict[key] = jtoken_to_runtime_object(jobject[key])
 
-    gd_profiler.exit()
+    # gd_profiler.exit()
     return dict
 
 # (Dictionary<String, Variant>) -> Dictionary<String, int>
 func jobject_to_int_dictionary(jobject):
-    gd_profiler.enter("jobject_to_int_dictionary")
+    # gd_profiler.enter("jobject_to_int_dictionary")
     var dict = {}
     for key in jobject:
         dict[key] = int(jobject[key])
 
-    gd_profiler.exit()
+    # gd_profiler.exit()
     return dict
 
 # (Dictionary<String, int>) -> Dictionary<String, InkObject>
@@ -112,10 +112,10 @@ func int_dictionary_to_jobject(dict):
 
 # (Variant) -> InkObject
 func jtoken_to_runtime_object(token):
-    gd_profiler.enter("jtoken_to_runtime_object")
+    # gd_profiler.enter("jtoken_to_runtime_object")
 
     if token is int || token is float:
-        gd_profiler.exit("[Int/Float]")
+        # gd_profiler.exit("[Int/Float]")
         return Ink.Value.create(token)
 
     if token is String:
@@ -123,38 +123,38 @@ func jtoken_to_runtime_object(token):
 
         var first_char = _str[0]
         if first_char == "^":
-            gd_profiler.exit("[String: ^]")
+            # gd_profiler.exit("[String: ^]")
             return Ink.StringValue.new_with(_str.substr(1, _str.length() - 1))
         elif first_char == "\n" && _str.length() == 1:
-            gd_profiler.exit("[String: \\n]")
+            # gd_profiler.exit("[String: \\n]")
             return Ink.StringValue.new_with("\n")
 
         if _str == "<>":
-            gd_profiler.exit("[Glue]")
+            # gd_profiler.exit("[Glue]")
             return Glue.new()
 
         var i = 0
         while (i < _control_command_names.size()):
             var cmd_name = _control_command_names[i]
             if _str == cmd_name:
-                gd_profiler.exit(str("[Command(", cmd_name, ")]"))
+                # gd_profiler.exit(str("[Command(", cmd_name, ")]"))
                 return ControlCommand.new(i)
             i += 1
 
         if _str == "L^": _str = "^"
         if StaticNativeFunctionCall.call_exists_with_name(_str):
-            gd_profiler.exit("[NativeFunctionCall]")
+            # gd_profiler.exit("[NativeFunctionCall]")
             return NativeFunctionCall.call_with_name(_str)
 
         if _str == "->->":
-            gd_profiler.exit("[PopTunnel]")
+            # gd_profiler.exit("[PopTunnel]")
             return ControlCommand.pop_tunnel()
         elif _str == "~ret":
-            gd_profiler.exit("[PopFunction]")
+            # gd_profiler.exit("[PopFunction]")
             return ControlCommand.pop_function()
 
         if _str == "void":
-            gd_profiler.exit("[Void]")
+            # gd_profiler.exit("[Void]")
             return Void.new()
 
     if token is Dictionary:
@@ -163,7 +163,7 @@ func jtoken_to_runtime_object(token):
 
         if obj.has("^->"):
             prop_value = obj["^->"]
-            gd_profiler.exit("[DivertTargetValue]")
+            # gd_profiler.exit("[DivertTargetValue]")
             return Ink.DivertTargetValue.new_with(InkPath.new_with_components_string(str(prop_value)))
 
         if obj.has("^var"):
@@ -172,7 +172,7 @@ func jtoken_to_runtime_object(token):
             if (obj.has("ci")):
                 prop_value = obj["ci"]
                 var_ptr.context_index = int(prop_value)
-            gd_profiler.exit("[VariablePointerValue]")
+            # gd_profiler.exit("[VariablePointerValue]")
             return var_ptr
 
         var is_divert = false
@@ -222,7 +222,7 @@ func jtoken_to_runtime_object(token):
                     prop_value = obj["exArgs"]
                     divert.external_args = int(prop_value)
 
-            gd_profiler.exit("[Divert]")
+            # gd_profiler.exit("[Divert]")
             return divert
 
         if obj.has("*"):
@@ -234,18 +234,18 @@ func jtoken_to_runtime_object(token):
                 prop_value = obj["flg"]
                 choice.flags = int(prop_value)
 
-            gd_profiler.exit("[Choice]")
+            # gd_profiler.exit("[Choice]")
             return choice
 
         if obj.has("VAR?"):
             prop_value = obj["VAR?"]
-            gd_profiler.exit("[VariableReference]")
+            # gd_profiler.exit("[VariableReference]")
             return VariableReference.new(str(prop_value))
         elif obj.has("CNT?"):
             prop_value = obj["CNT?"]
             var read_count_var_ref = VariableReference.new()
             read_count_var_ref.path_string_for_count = str(prop_value)
-            gd_profiler.exit("[ReadCountVariableReference]")
+            # gd_profiler.exit("[ReadCountVariableReference]")
             return read_count_var_ref
 
         var is_var_ass = false
@@ -264,12 +264,12 @@ func jtoken_to_runtime_object(token):
             var is_new_decl = !obj.has("re")
             var var_ass = VariableAssignment.new_with(var_name, is_new_decl)
             var_ass.is_global = is_global_var
-            gd_profiler.exit("[VariableAssignment]")
+            # gd_profiler.exit("[VariableAssignment]")
             return var_ass
 
         if obj.has("#"):
             prop_value = obj["#"]
-            gd_profiler.exit("[Tag]")
+            # gd_profiler.exit("[Tag]")
             return Tag.new(str(prop_value))
 
         if obj.has("list"):
@@ -286,24 +286,24 @@ func jtoken_to_runtime_object(token):
                 var val = list_content[name_to_val_key]
                 raw_list.set(item, val)
 
-            gd_profiler.exit("[List]")
+            # gd_profiler.exit("[List]")
             return Ink.ListValue.new_with(raw_list)
 
         if obj["originalChoicePath"] != null:
-            gd_profiler.exit("[OriginalChoicePath]")
+            # gd_profiler.exit("[OriginalChoicePath]")
             return jobject_to_choice(obj)
 
     if token is Array:
         var container = jarray_to_container(token)
-        gd_profiler.exit("[Array]")
+        # gd_profiler.exit("[Array]")
         return container
 
     if token == null:
-        gd_profiler.exit("[Null]")
+        # gd_profiler.exit("[Null]")
         return null
 
     Utils.throw_exception("Failed to convert token to runtime object: " + token)
-    gd_profiler.exit("[Exception]")
+    # gd_profiler.exit("[Exception]")
     return null
 
 # (InkObject) -> Variant
@@ -473,7 +473,7 @@ func container_to_jarray(container):
 
 # (Array<Variant>) -> InkContainer
 func jarray_to_container(jarray):
-    gd_profiler.enter("jarray_to_container")
+    # gd_profiler.enter("jarray_to_container")
     var container = InkContainer.new()
     container.content = jarray_to_runtime_obj_list(jarray, true)
 
@@ -495,19 +495,19 @@ func jarray_to_container(jarray):
 
         container.named_only_content = named_only_content
 
-    gd_profiler.exit()
+    # gd_profiler.exit()
     return container
 
 # (Dictionary<String, Variant>) -> Choice
 func jobject_to_choice(jobj):
-    gd_profiler.enter("jobject_to_choice")
+    # gd_profiler.enter("jobject_to_choice")
     var choice = Choice.new()
     choice.text = str(jobj["text"])
     choice.index = int(jobj["index"])
     choice.source_path = str(jobj["originalChoicePath"])
     choice.original_thread_index = int(jobj["originalThreadIndex"])
     choice.path_string_on_choice = str(jobj["targetPath"])
-    gd_profiler.exit()
+    # gd_profiler.exit()
     return choice
 
 # (Choice) -> Dictionary<String, Variant>
@@ -556,7 +556,7 @@ func list_definitions_to_jtoken (origin):
 
 # (Variant) -> ListDefinitionsOrigin
 func jtoken_to_list_definitions(obj):
-    gd_profiler.enter("jtoken_to_list_definitions")
+    # gd_profiler.enter("jtoken_to_list_definitions")
     var defs_obj = obj
 
     var all_defs = [] # Array<ListDefinition>
@@ -574,7 +574,7 @@ func jtoken_to_list_definitions(obj):
         all_defs.append(def)
 
     var list_definitions_origin = ListDefinitionsOrigin.new(all_defs)
-    gd_profiler.exit()
+    # gd_profiler.exit()
     return list_definitions_origin
 
 func _init(native_function_call):
