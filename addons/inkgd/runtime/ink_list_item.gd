@@ -14,12 +14,6 @@
 extends "res://addons/inkgd/runtime/ink_object.gd"
 
 # ############################################################################ #
-# Self-reference
-# ############################################################################ #
-
-var InkListItem = weakref(load("res://addons/inkgd/runtime/ink_list_item.gd"))
-
-# ############################################################################ #
 
 var origin_name = null # String
 var item_name = null # String
@@ -103,7 +97,7 @@ static func InkListItem():
 #
 # () -> InkListItem
 func duplicate():
-    return InkListItem.get_ref().init_with_origin_name(origin_name, item_name)
+    return InkListItem().init_with_origin_name(origin_name, item_name)
 
 # Returns a `SerializedInkListItem` representing the current
 # instance. The result is intended to be used as a key inside a Map.

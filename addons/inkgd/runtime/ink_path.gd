@@ -10,12 +10,6 @@
 extends "res://addons/inkgd/runtime/ink_base.gd"
 
 # ############################################################################ #
-# Self-reference
-# ############################################################################ #
-
-var InkPath = weakref(load("res://addons/inkgd/runtime/ink_path.gd"))
-
-# ############################################################################ #
 
 const parent_id = "^"
 
@@ -101,9 +95,9 @@ func get_tail():
         var tail_comps = _components.duplicate()
         tail_comps.pop_front()
 
-        return InkPath.get_ref().new_with_components(tail_comps)
+        return InkPath().new_with_components(tail_comps)
     else:
-        return InkPath.get_ref().self()
+        return InkPath().self()
 
 var length setget , get_length # int
 func get_length():
@@ -149,7 +143,7 @@ static func self():
 
 # (InkPath) -> InkPath
 func path_by_appending_path(path_to_append):
-    var p = InkPath.get_ref().new()
+    var p = InkPath().new()
 
     var upward_moves = 0
 
@@ -175,7 +169,7 @@ func path_by_appending_path(path_to_append):
 
 # (Component) -> InkPath
 func path_by_appending_component(c):
-    var p = InkPath.get_ref().new()
+    var p = InkPath().new()
     p._components = p._components + self._components
     p._components.append(c)
     return p

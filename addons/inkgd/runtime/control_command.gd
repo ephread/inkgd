@@ -10,12 +10,6 @@
 extends "res://addons/inkgd/runtime/ink_object.gd"
 
 # ############################################################################ #
-# Self-reference
-# ############################################################################ #
-
-var ControlCommand = weakref(load("res://addons/inkgd/runtime/control_command.gd"))
-
-# ############################################################################ #
 
 enum CommandType {
     NOT_SET = -1,
@@ -61,7 +55,7 @@ func _init(command_type = CommandType.NOT_SET):
 
 # () -> ControlCommand
 func copy():
-    return ControlCommand.get_ref().new(self.command_type)
+    return ControlCommand().get_ref().new(self.command_type)
 
 # () -> ControlCommand
 static func eval_start():

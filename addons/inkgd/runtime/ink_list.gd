@@ -10,12 +10,6 @@
 extends "res://addons/inkgd/runtime/ink_object.gd"
 
 # ############################################################################ #
-# Self-reference
-# ############################################################################ #
-
-var InkList = weakref(load("res://addons/inkgd/runtime/ink_list.gd"))
-
-# ############################################################################ #
 # Imports
 # ############################################################################ #
 
@@ -149,7 +143,7 @@ func get_min_item():
 
 var inverse setget , get_inverse # InkList
 func get_inverse():
-    var list = InkList.get_ref().new()
+    var list = InkList().new()
     if origins != null:
         for origin in origins:
             for serialized_item_key in origin.items:
@@ -160,7 +154,7 @@ func get_inverse():
 
 var all setget , get_all # InkList
 func get_all():
-    var list = InkList.get_ref().new()
+    var list = InkList().new()
     if origins != null:
         for origin in origins:
             for serialized_item_key in origin.items:
@@ -170,14 +164,14 @@ func get_all():
 
 # (InkList) -> InkList
 func union(other_list):
-    var union = InkList.get_ref().new_with_ink_list(self)
+    var union = InkList().new_with_ink_list(self)
     for key in other_list._dictionary:
         union._dictionary[key] = other_list._dictionary[key]
     return union
 
 # (InkList) -> InkList
 func intersection(other_list):
-    var intersection = InkList.get_ref().new()
+    var intersection = InkList().new()
     for key in other_list._dictionary:
         if self._dictionary.has(key):
             intersection._dictionary[key] = other_list._dictionary[key]
@@ -185,7 +179,7 @@ func intersection(other_list):
 
 # (InkList) -> InkList
 func without(list_to_remove):
-    var result = InkList.get_ref().new_with_ink_list(self)
+    var result = InkList().new_with_ink_list(self)
     for key in list_to_remove._dictionary:
         result._dictionary.erase(key)
     return result
@@ -239,21 +233,21 @@ func less_than_or_equals(other_list):
 func max_as_list():
     if (size() > 0):
         var _max_item = self.max_item
-        return InkList.get_ref().new_with_single_item(_max_item.key, _max_item.value)
+        return InkList().new_with_single_item(_max_item.key, _max_item.value)
     else:
-        return InkList.get_ref().new()
+        return InkList().new()
 
 func min_as_list():
     if (size() > 0):
         var _min_item = self.min_item
-        return InkList.get_ref().new_with_single_item(_min_item.key, _min_item.value)
+        return InkList().new_with_single_item(_min_item.key, _min_item.value)
     else:
-        return InkList.get_ref().new()
+        return InkList().new()
 
 # (Variant, Variant) -> InkList
 func list_with_sub_range(min_bound, max_bound):
     if (size() == 0):
-        return InkList.get_ref().new()
+        return InkList().new()
 
     var ordered = self.ordered_items
 
@@ -272,7 +266,7 @@ func list_with_sub_range(min_bound, max_bound):
         if min_bound.is_class("InkList") && min_bound.size() > 0:
             max_value = max_bound.max_item.value
 
-    var sub_list = InkList.get_ref().new()
+    var sub_list = InkList().new()
     sub_list.set_initial_origin_names(self.origin_names)
     for item in ordered:
         if item.value >= min_value && item.value <= max_value:
