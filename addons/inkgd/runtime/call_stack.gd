@@ -15,7 +15,6 @@ extends "res://addons/inkgd/runtime/ink_base.gd"
 
 var PushPopType = preload("res://addons/inkgd/runtime/push_pop.gd").PushPopType
 var Pointer = load("res://addons/inkgd/runtime/pointer.gd")
-var InkPath = load("res://addons/inkgd/runtime/ink_path.gd")
 var Ink = load("res://addons/inkgd/runtime/value.gd")
 
 # ############################################################################ #

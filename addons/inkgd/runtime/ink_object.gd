@@ -13,8 +13,6 @@ extends "res://addons/inkgd/runtime/ink_base.gd"
 # Imports
 # ############################################################################ #
 
-var InkDebugMetadata = load("res://addons/inkgd/runtime/debug_metadata.gd")
-var InkSearchResult = load("res://addons/inkgd/runtime/search_result.gd")
 var InkPath = weakref(load("res://addons/inkgd/runtime/ink_path.gd"))
 
 # ############################################################################ #

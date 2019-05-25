@@ -28,8 +28,6 @@ var Ink = load("res://addons/inkgd/runtime/value.gd")
 var ControlCommand = load("res://addons/inkgd/runtime/control_command.gd")
 var SimpleJson = load("res://addons/inkgd/runtime/simple_json.gd")
 
-var Story = weakref(load("res://addons/inkgd/runtime/story.gd"))
-
 # ############################################################################ #
 
 const INK_SAVE_STATE_VERSION = 8
