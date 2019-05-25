@@ -145,6 +145,8 @@ func _init(json_string):
     self._main_content_container = Utils.as_or_null(Json.jtoken_to_runtime_object(root_token),
                                                     "InkContainer")
 
+    print(Json.gd_profiler.block_call_hierarchy_as_csv())
+
     self.reset_state()
 
 # () -> String
