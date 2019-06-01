@@ -1,1 +1,0 @@
-﻿{"inkVersion":19,"root":[["ev",{"f()":"isTrue"},"/ev",[{"->":".^.b","c":true},{"b":["\n","^x","\n",{"->":"0.4"},null]}],"nop","\n",["done",{"#n":"g-0"}],null],"done",{"isTrue":["^X","\n","ev",1,"/ev","~ret",{"#f":3}],"#f":3}],"listDefs":{}}
