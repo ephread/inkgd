@@ -1195,7 +1195,7 @@ func validate_external_bindings():
     else:
         var message = "ERROR: Missing function binding for external%s: '%s' %s" % [
             "s" if missing_externals.size() > 1 else "",
-            Utils.join("', '", missing_externals),
+            Utils.join("', '", missing_externals._dictionary.keys()),
             ", and no fallback ink function found." if allow_external_function_fallbacks else " (ink fallbacks disabled)"
         ]
 
