@@ -1182,7 +1182,7 @@ func unbind_external_function(func_name):
         return
 
     self.assert(_externals.has(func_name), str("Function '", func_name, "' has not been bound."))
-    _externals.remove(func_name)
+    _externals.erase(func_name)
 
 func validate_external_bindings():
     var missing_externals = StringSet.new()
