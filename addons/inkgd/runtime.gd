@@ -9,7 +9,7 @@
 extends Node
 
 static func init(root_node):
-    if root_node.get_node("__InkRuntime") != null:
+    if root_node.has_node("__InkRuntime"):
         return
 
     var InkRuntime = load("res://addons/inkgd/runtime/static/ink_runtime.gd")
