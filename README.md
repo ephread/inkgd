@@ -1,7 +1,7 @@
 # ![inkgd](https://i.imgur.com/QbLG9Xp.png)
 
 [![CircleCI](https://circleci.com/gh/ephread/inkgd/tree/master.svg?style=shield)](https://circleci.com/gh/ephread/inkgd/tree/master)
-![Version](https://img.shields.io/badge/version-0.1.2-orange.svg)
+![Version](https://img.shields.io/badge/version-0.1.3-orange.svg)
 ![Godot Version](https://img.shields.io/badge/godot-3.1+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
@@ -216,7 +216,7 @@ If you're working in a team, you may want to commit `.inkgd_ink.cfg` and keep `.
 
 | _inkgd_ version | inklecate version | Godot version |
 |:---------------:|:-----------------:|:-------------:|
-|  0.1.0 – 0.1.2  |   0.8.2 – 0.8.3   |  3.1 – 3.1.1  |
+|  0.1.0 – 0.1.3  |   0.8.2 – 0.8.3   |  3.1 – 3.1.1  |
 
 ## License
 

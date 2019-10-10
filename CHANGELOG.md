@@ -1,6 +1,14 @@
 # Change Log
 Important changes to _inkgd_ will be documented in this file.
 
+## [0.1.3](https://github.com/ephread/inkgd/releases/tag/0.1.3)
+Released on 2019-10-10.
+
+### Fixed
+- Fixed [#10] – Node not found error InkRuntime.init(), huge thanks to @MageJohn!
+
+[#10]: https://github.com/ephread/inkgd/issues/10
+
 ## [0.1.2](https://github.com/ephread/inkgd/releases/tag/0.1.2)
 Released on 2019-05-23.
 
