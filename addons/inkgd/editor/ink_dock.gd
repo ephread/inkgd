@@ -1,3 +1,5 @@
+# warning-ignore-all:return_value_discarded
+
 # ############################################################################ #
 # Copyright © 2019-present Frédéric Maquin <fred@ephread.com>
 # Licensed under the MIT License.
