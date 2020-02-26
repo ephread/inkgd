@@ -10,16 +10,10 @@ tool
 extends Control
 
 # ############################################################################ #
-# Objects
-# ############################################################################ #
-
-const Configuration = preload("res://addons/inkgd/editor/configuration.gd")
-
-# ############################################################################ #
 # Properties
 # ############################################################################ #
 
-var configuration
+var configuration = preload("res://addons/inkgd/editor/configuration.gd").new()
 
 # ############################################################################ #
 # Nodes
@@ -50,9 +44,11 @@ onready var BuildOutputLabel = find_node("BuildOutputLabel")
 # Overrides
 # ############################################################################ #
 
-func _ready():
-    configuration = Configuration.new()
+func _notification(what):
+	if what == NOTIFICATION_PREDELETE:
+		configuration.free()
 
+func _ready():
     MonoLineEdit.text = configuration.mono_path
     ExecutableLineEdit.text = configuration.inklecate_path
     SourceFileLineEdit.text = configuration.source_file_path
