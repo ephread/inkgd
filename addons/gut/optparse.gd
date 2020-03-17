@@ -37,7 +37,7 @@
 # See the readme for a list of options and examples.  You can also use the -gh
 # option to get more information about how to use the command line interface.
 #
-# Version 6.7.0
+# Version 6.8.1
 ################################################################################
 
 #-------------------------------------------------------------------------------
@@ -46,11 +46,16 @@
 #-------------------------------------------------------------------------------
 class CmdLineParser:
 	var _used_options = []
+	# an array of arrays.  Each element in this array will contain an option
+	# name and if that option contains a value then it will have a sedond
+	# element.  For example:
+	# 	[[-gselect, test.gd], [-gexit]]
 	var _opts = []
 
 	func _init():
 		for i in range(OS.get_cmdline_args().size()):
-			_opts.append(OS.get_cmdline_args()[i])
+			var opt_val = OS.get_cmdline_args()[i].split('=')
+			_opts.append(opt_val)
 
 	# Parse out multiple comma delimited values from a command line
 	# option.  Values are separated from option name with "=" and
@@ -63,10 +68,8 @@ class CmdLineParser:
 	# Parse out the value of an option.  Values are separated from
 	# the option name with "="
 	func _parse_option_value(full_option):
-		var split = full_option.split('=')
-
-		if(split.size() > 1):
-			return split[1]
+		if(full_option.size() > 1):
+			return full_option[1]
 		else:
 			return null
 
@@ -77,7 +80,7 @@ class CmdLineParser:
 		var idx = 0
 
 		while(idx < _opts.size() and !found):
-			if(_opts[idx].find(name) == 0):
+			if(_opts[idx][0] == name):
 				found = true
 			else:
 				idx += 1
@@ -97,7 +100,7 @@ class CmdLineParser:
 
 		return to_return
 
-	# returns the value of an option if it was specfied, null otherwise.  This
+	# returns the value of an option if it was specified, null otherwise.  This
 	# used to return the default but that became problemnatic when trying to
 	# punch through the different places where values could be specified.
 	func get_value(option):
@@ -123,11 +126,12 @@ class CmdLineParser:
 	func get_unused_options():
 		var to_return = []
 		for i in range(_opts.size()):
-			to_return.append(_opts[i].split('=')[0])
+			to_return.append(_opts[i][0])
 
 		var script_option = to_return.find('-s')
-		to_return.remove(script_option + 1)
-		to_return.remove(script_option)
+		if script_option != -1:
+			to_return.remove(script_option + 1)
+			to_return.remove(script_option)
 
 		while(_used_options.size() > 0):
 			var index = to_return.find(_used_options[0].split("=")[0])
@@ -236,7 +240,7 @@ func parse():
 			elif(t == TYPE_NIL):
 				print(options[i].option_name + ' cannot be processed, it has a nil datatype')
 			else:
-				print(options[i].option_name + ' cannot be processsed, it has unknown datatype:' + str(t))
+				print(options[i].option_name + ' cannot be processed, it has unknown datatype:' + str(t))
 
 	var unused = parser.get_unused_options()
 	if(unused.size() > 0):
