@@ -18,6 +18,7 @@ about: Create a report to help us improve
 
 **Environment:**
  - OS: <!-- e.g. Windows / macOS / Linux Distribution -->
+ - Godot version: <!-- e.g. 3.2.1-mono (Don't forget to specify wether it's vanilla or mono) -->
  - Inklecate version: <!-- e.g. 0.8.3 -->
  - _inkgd_ version: <!-- e.g. 0.1.0-->
 
