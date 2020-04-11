@@ -1,3 +1,5 @@
+# warning-ignore-all:shadowed_variable
+# warning-ignore-all:unused_class_variable
 # ############################################################################ #
 # Copyright © 2015-present inkle Ltd.
 # Copyright © 2019-present Frédéric Maquin <fred@ephread.com>
@@ -14,6 +16,8 @@ extends "res://addons/inkgd/runtime/ink_base.gd"
 # ############################################################################ #
 
 var PushPopType = preload("res://addons/inkgd/runtime/push_pop.gd").PushPopType
+var Pointer = load("res://addons/inkgd/runtime/pointer.gd")
+var Ink = load("res://addons/inkgd/runtime/value.gd")
 
 # ############################################################################ #
 

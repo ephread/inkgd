@@ -1,3 +1,4 @@
+# warning-ignore-all:unused_class_variable
 # ############################################################################ #
 # Copyright © 2015-present inkle Ltd.
 # Copyright © 2019-present Frédéric Maquin <fred@ephread.com>
@@ -8,6 +9,12 @@
 # ############################################################################ #
 
 extends "res://addons/inkgd/runtime/ink_object.gd"
+
+# ############################################################################ #
+# Imports
+# ############################################################################ #
+
+var InkSearchResult = load("res://addons/inkgd/runtime/search_result.gd")
 
 # ############################################################################ #
 

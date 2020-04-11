@@ -1,7 +1,7 @@
 # ![inkgd](https://i.imgur.com/QbLG9Xp.png)
 
 [![CircleCI](https://circleci.com/gh/ephread/inkgd/tree/master.svg?style=shield)](https://circleci.com/gh/ephread/inkgd/tree/master)
-![Version](https://img.shields.io/badge/version-0.1.2-orange.svg)
+![Version](https://img.shields.io/badge/version-0.1.4-orange.svg)
 ![Godot Version](https://img.shields.io/badge/godot-3.1+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
@@ -129,7 +129,7 @@ story.observe_variable("health", self, "_observe_health")
 
 func _observe_health(variable_name, new_value):
 	set_health_in_ui(int(new_value))
-	
+
 # Original C# API
 #
 # _inkStory.ObserveVariable("health", (string varName, object newValue) => {
@@ -146,12 +146,12 @@ story.bind_external_function("multiply", self, "_multiply")
 
 func _multiply(arg1, arg2):
 	return arg1 * arg2
-	
+
 # Original C# API
 #
 # _inkStory.BindExternalFunction ("multiply", (int arg1, float arg2) => {
 #     return arg1 * arg2;
-# });  
+# });
 ```
 
 ##### 6. Getting the ouput of `evaluate_function`
@@ -216,7 +216,7 @@ If you're working in a team, you may want to commit `.inkgd_ink.cfg` and keep `.
 
 | _inkgd_ version | inklecate version | Godot version |
 |:---------------:|:-----------------:|:-------------:|
-|  0.1.0 – 0.1.2  |   0.8.2 – 0.8.3   |  3.1 – 3.1.1  |
+|  0.1.0 – 0.1.4  |   0.8.2 – 0.8.3   |  3.1 – 3.2.1  |
 
 ## License
 

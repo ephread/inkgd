@@ -1,3 +1,5 @@
+# warning-ignore-all:shadowed_variable
+# warning-ignore-all:unused_class_variable
 # ############################################################################ #
 # Copyright © 2015-present inkle Ltd.
 # Copyright © 2019-present Frédéric Maquin <fred@ephread.com>
@@ -1184,7 +1186,7 @@ func unbind_external_function(func_name):
         return
 
     self.assert(_externals.has(func_name), str("Function '", func_name, "' has not been bound."))
-    _externals.remove(func_name)
+    _externals.erase(func_name)
 
 func validate_external_bindings():
     var missing_externals = StringSet.new()
@@ -1197,7 +1199,7 @@ func validate_external_bindings():
     else:
         var message = "ERROR: Missing function binding for external%s: '%s' %s" % [
             "s" if missing_externals.size() > 1 else "",
-            Utils.join("', '", missing_externals),
+            Utils.join("', '", missing_externals.to_array()),
             ", and no fallback ink function found." if allow_external_function_fallbacks else " (ink fallbacks disabled)"
         ]
 

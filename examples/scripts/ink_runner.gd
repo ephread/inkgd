@@ -6,7 +6,7 @@
 
 extends Node
 
-const SHOULD_LOAD_IN_BACKGROUND = true
+const SHOULD_LOAD_IN_BACKGROUND = false
 
 # ############################################################################ #
 # Imports
@@ -122,7 +122,7 @@ func _load_story(ink_story_path):
     self.story = Story.new(content)
     var end_time = OS.get_ticks_usec()
 
-    print(str(end_time - start_time))
+    print(str(float(end_time - start_time) / 1000.0, " ms"))
 
 func _bind_externals():
     story.observe_variables(["forceful", "evasive"], self, "_observe_variables")

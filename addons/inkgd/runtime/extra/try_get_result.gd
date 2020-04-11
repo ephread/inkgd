@@ -1,3 +1,4 @@
+# warning-ignore-all:shadowed_variable
 # ############################################################################ #
 # Copyright © 2015-present inkle Ltd.
 # Copyright © 2019-present Frédéric Maquin <fred@ephread.com>

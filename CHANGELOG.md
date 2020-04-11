@@ -1,6 +1,24 @@
 # Change Log
 Important changes to _inkgd_ will be documented in this file.
 
+## [0.1.4](https://github.com/ephread/inkgd/releases/tag/0.1.4)
+Released on 2020-04-11.
+
+### Fixed
+- Fixed [#12] – Combined lists and functions don't work as intended.
+- Fixed [#13] – Multiline functions are executed all at once.
+
+[#12]: https://github.com/ephread/inkgd/issues/12
+[#13]: https://github.com/ephread/inkgd/issues/13
+
+## [0.1.3](https://github.com/ephread/inkgd/releases/tag/0.1.3)
+Released on 2019-10-10.
+
+### Fixed
+- Fixed [#10] – Node not found error InkRuntime.init(), huge thanks to @MageJohn!
+
+[#10]: https://github.com/ephread/inkgd/issues/10
+
 ## [0.1.2](https://github.com/ephread/inkgd/releases/tag/0.1.2)
 Released on 2019-05-23.
 

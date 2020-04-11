@@ -1,3 +1,4 @@
+# warning-ignore-all:unused_class_variable
 # ############################################################################ #
 # Copyright © 2015-present inkle Ltd.
 # Copyright © 2019-present Frédéric Maquin <fred@ephread.com>
@@ -272,6 +273,19 @@ func list_with_sub_range(min_bound, max_bound):
             sub_list.set(item.key, item.value)
 
     return sub_list
+
+func equals(other):
+    var other_raw_list = other
+    # Simple test to make sure the object is of the right type.
+    if !(other_raw_list is Object): return false
+    if !(other_raw_list.is_class("InkList")): return false
+
+    if other_raw_list.size() != self.size(): return false
+    for key in keys():
+        if (!other_raw_list.has(key)):
+            return false
+
+    return true
 
 var ordered_items setget , get_ordered_items # Array<KeyValuePair<InkListItem, int>>
 func get_ordered_items():
