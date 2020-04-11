@@ -1,8 +1,8 @@
 # Change Log
 Important changes to _inkgd_ will be documented in this file.
 
-## 0.1.4
-Released on 2020-XX-XX.
+## [0.1.4](https://github.com/ephread/inkgd/releases/tag/0.1.4)
+Released on 2020-04-11.
 
 ### Fixed
 - Fixed [#12] – Combined lists and functions don't work as intended.
