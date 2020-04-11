@@ -41,11 +41,12 @@ static func null():
 
 var is_null setget , get_is_null # bool
 func get_is_null():
-    return origin_name == null && item_name == null
+    return self.origin_name == null && self.item_name == null
 
 var full_name setget , get_full_name # String
 func get_full_name():
-    return (origin_name if origin_name else "?") + "." + str(item_name)
+    # In C#, concatenating null produce nothing, in GDScript, it appends "Null".
+    return (self.origin_name if self.origin_name else "?") + "." + str(self.item_name if self.item_name else "")
 
 # ############################################################################ #
 
@@ -57,7 +58,7 @@ func to_string():
 func equals(obj):
     if obj.is_class("InkListItem"):
         var other_item = obj
-        return other_item.item_name == item_name && other_item.origin_name == origin_name
+        return other_item.item_name == self.item_name && self.other_item.origin_name == self.origin_name
 
     return false
 

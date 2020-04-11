@@ -6,3 +6,4 @@ export_presets.cfg
 # inkgd ignores
 
 .inkgd_compiler.cfg
+inkgd-issue-*

@@ -5,32 +5,31 @@
 [ext_resource path="res://examples/images/inkgd_the_intercept.png" type="Texture" id=3]
 [ext_resource path="res://examples/images/spinner.png" type="Texture" id=4]
 
-[sub_resource type="StyleBoxFlat" id=2]
+[sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 0, 0, 0, 1 )
 
-[sub_resource type="StyleBoxFlat" id=3]
+[sub_resource type="StyleBoxFlat" id=2]
 bg_color = Color( 0.145098, 0.145098, 0.145098, 1 )
 
-[sub_resource type="StyleBoxFlat" id=4]
+[sub_resource type="StyleBoxFlat" id=3]
 bg_color = Color( 0.270588, 0.270588, 0.270588, 1 )
+
+[sub_resource type="StyleBoxEmpty" id=4]
 
 [sub_resource type="StyleBoxEmpty" id=5]
 
-[sub_resource type="StyleBoxEmpty" id=6]
-
-[sub_resource type="Theme" id=7]
+[sub_resource type="Theme" id=6]
 VScrollBar/icons/decrement = ExtResource( 2 )
 VScrollBar/icons/decrement_highlight = ExtResource( 2 )
 VScrollBar/icons/increment = ExtResource( 2 )
 VScrollBar/icons/increment_highlight = ExtResource( 2 )
-VScrollBar/styles/grabber = SubResource( 2 )
-VScrollBar/styles/grabber_highlight = SubResource( 3 )
-VScrollBar/styles/grabber_pressed = SubResource( 4 )
-VScrollBar/styles/scroll = SubResource( 5 )
-VScrollBar/styles/scroll_focus = SubResource( 6 )
+VScrollBar/styles/grabber = SubResource( 1 )
+VScrollBar/styles/grabber_highlight = SubResource( 2 )
+VScrollBar/styles/grabber_pressed = SubResource( 3 )
+VScrollBar/styles/scroll = SubResource( 4 )
+VScrollBar/styles/scroll_focus = SubResource( 5 )
 
-[sub_resource type="Animation" id=1]
-resource_name = "LoadingAnimation"
+[sub_resource type="Animation" id=7]
 loop = true
 tracks/0/type = "value"
 tracks/0/path = NodePath("LoadingAnimationPlayer/CenterContainer/VBoxContainer/CenterContainer/SpinnerTextureRect:rect_rotation")
@@ -70,7 +69,7 @@ margin_top = 40.0
 margin_right = 1670.0
 margin_bottom = 1040.0
 grow_horizontal = 2
-theme = SubResource( 7 )
+theme = SubResource( 6 )
 scroll_horizontal_enabled = false
 
 [node name="StoryVBoxContainer" type="VBoxContainer" parent="StoryMarginContainer/StoryScrollContainer"]
@@ -81,7 +80,7 @@ custom_constants/separation = 20
 
 [node name="LoadingAnimationPlayer" type="AnimationPlayer" parent="."]
 autoplay = "LoadingAnimation"
-anims/LoadingAnimation = SubResource( 1 )
+anims/LoadingAnimation = SubResource( 7 )
 
 [node name="CenterContainer" type="CenterContainer" parent="LoadingAnimationPlayer"]
 anchor_right = 1.0
