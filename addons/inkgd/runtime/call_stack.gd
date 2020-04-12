@@ -119,8 +119,13 @@ class InkThread extends "res://addons/inkgd/runtime/ink_base.gd":
 
             var in_expression_evaluation = bool(jelement_obj["exp"])
             var el = Element.new(push_pop_type, pointer, in_expression_evaluation)
-            var jobj_temps = jelement_obj["temp"] # Dictionary<string, object>
-            el.temporary_variables = Json.jobject_to_dictionary_runtime_objs(jobj_temps)
+
+            var jobj_temps
+            if jelement_obj.has("temp"):
+                jobj_temps = jelement_obj["temp"] # Dictionary<string, object>
+                el.temporary_variables = Json.jobject_to_dictionary_runtime_objs(jobj_temps)
+            else:
+                el.temporary_variables.clear()
 
             callstack.append(el)
 
@@ -138,6 +143,8 @@ class InkThread extends "res://addons/inkgd/runtime/ink_base.gd":
             copy.callstack.append(e.copy())
         copy.previous_pointer = self.previous_pointer.duplicate()
         return copy
+
+
 
     # () -> # Dictionary<String, object>
     var json_token setget , get_json_token
