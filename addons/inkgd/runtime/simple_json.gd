@@ -286,7 +286,11 @@ class Writer:
     func _init():
         _writer = StringWriter.new()
 
-    # public void WriteObject(Action<Writer> inner)
+    # (FuncRef) -> void
+    func write_object(inner):
+        write_object_start()
+        inner.call(self)
+        write_object_end()
 
     func write_object_start():
         start_new_object(true)
@@ -298,6 +302,8 @@ class Writer:
         _writer.write("}")
         _state_stack.pop_front()
 
+    # These two methods don't need to be implemented in GDScript.
+    #
     # public void WriteProperty(string name, Action<Writer> inner)
     # public void WriteProperty(int id, Action<Writer> inner)
 
@@ -335,7 +341,6 @@ class Writer:
         _state_stack.push_front(StateElement.new(StateElement.State.PROPERTY))
         _state_stack.push_front(StateElement.new(StateElement.State.PROPERTY_NAME))
 
-
     # () -> void
     func write_property_name_end():
         assert_that(self.state == StateElement.State.PROPERTY_NAME)
@@ -343,7 +348,6 @@ class Writer:
         _writer.write("\":")
 
         _state_stack.pop_front()
-
 
     # (String) -> void
     func write_property_name_inner(string):
@@ -365,9 +369,14 @@ class Writer:
 
         _state_stack.push_front(StateElement.new(StateElement.State.PROPERTY))
 
-     # void WriteProperty<T>(T name, Action<Writer> inner)
+    # void WriteProperty<T>(T name, Action<Writer> inner)
+    # (FuncRef) -> void
+    func write_property_with_function_ref(name, inner):
+        write_property_start(name)
+        inner.call(self)
+        write_property_end()
 
-     # () -> void
+    # () -> void
     func write_array_start():
         start_new_object(true)
         _state_stack.push_front(StateElement.new(StateElement.State.ARRAY))

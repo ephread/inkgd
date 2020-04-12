@@ -144,32 +144,38 @@ class InkThread extends "res://addons/inkgd/runtime/ink_base.gd":
         copy.previous_pointer = self.previous_pointer.duplicate()
         return copy
 
+    # (SimpleJson.Writer) -> void
+    func write_json(writer):
+        writer.write_object_start()
 
+        writer.write_property_start("callstack")
+        writer.write_array_start()
 
-    # () -> # Dictionary<String, object>
-    var json_token setget , get_json_token
-    func get_json_token():
-        var thread_jobj = {} # Dictionary<string, object>
-        var jthread_callstack = [] # Array<Object>
-
-        for el in callstack:
-            var jobj = {} # Dictionary<string, object>
+        for el in self.callstack:
+            writer.write_object_start()
             if !el.current_pointer.is_null:
-                jobj["cPath"] = el.current_pointer.container.path.components_string
-                jobj["idx"] = el.current_pointer.index
+                writer.write_property("cPath", el.current_pointer.container.path.components_string)
+                writer.write_property("idx", el.current_pointer.index)
 
-            jobj["exp"] = el.in_expression_evaluation
-            jobj["type"] = int(el.type)
-            jobj["temp"] = Json.dictionary_runtime_objs_to_jobject(el.temporary_variables)
-            jthread_callstack.append(jobj)
+            writer.write_property("exp", el.in_expression_evaluation)
+            writer.write_property("type", int(el.type))
 
-        thread_jobj["callstack"] = jthread_callstack
-        thread_jobj["threadIndex"] = thread_index
+            if el.temporary_variables.size() > 0:
+                writer.write_property_start("temp")
+                Json.write_dictionary_runtime_objs(writer, el.temporary_variables)
+                writer.write_property_end()
 
-        if !self.previous_pointer.is_null:
-            thread_jobj["previousContentObject"] = self.previous_pointer.resolve().path.to_string()
+            writer.write_object_end()
 
-        return thread_jobj
+        writer.write_array_end()
+        writer.write_property_end()
+
+        writer.write_property("threadIndex", self.thread_index)
+
+        if !self.previous_pointer.isNull:
+            writer.write_property("previousContentObject", self.previous_pointer.resolve().path.to_string())
+
+        writer.write_object_end()
 
     # ######################################################################## #
     # GDScript extra methods
@@ -252,6 +258,7 @@ func _init(story_context_or_to_copy):
         self._threads = []
         for other_thread in to_copy._threads:
             self._threads.append(other_thread.copy())
+        self._thread_counter = to_copy._thread_counter
         self._start_of_root = to_copy._start_of_root
 
 # () -> void
@@ -274,18 +281,23 @@ func set_json_token(jobject, story_context):
     self._start_of_root = Pointer.start_of(story_context.root_content_container)
 
 
-# () -> Dictionary<string, object>
-func get_json_token():
-    var jobject = {} # Dictionary<string, object>
-    var jthreads = [] # Array<object>
+# (SimpleJson.Writer) -> void
+func write_json(writer):
+    writer.write_object(funcref(self, "_anonymous_write_json"))
 
+# This function is used to port the closure-based logic of write_json.
+#  (SimpleJson.Writer) -> void
+func _anonymous_write_json(writer):
+    writer.write_property_start("threads")
+    writer.write_array_start()
     for thread in self._threads:
-        jthreads.append(thread.json_token)
+        thread.write_json(writer)
+    writer.write_array_end()
+    writer.write_property_end()
 
-    jobject["threads"] = jthreads
-    jobject["threadCounter"] = self._thread_counter
-
-    return jobject
+    writer.write_property_start("threadCounter")
+    writer.write(self._thread_counter)
+    writer.write_property_end()
 
 # () -> void
 func push_thread():
