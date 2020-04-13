@@ -66,8 +66,11 @@ func _ready():
 
     MonoDialogButton.connect("pressed", self, "_mono_button_pressed")
     ExecutableDialogButton.connect("pressed", self, "_executable_button_pressed")
+    ExecutableDialogButton.icon = get_icon("Folder", "EditorIcons")
     SourceFileDialogButton.connect("pressed", self, "_source_file_button_pressed")
+    SourceFileDialogButton.icon = get_icon("Folder", "EditorIcons")
     TargetFileDialogButton.connect("pressed", self, "_target_file_button_pressed")
+    TargetFileDialogButton.icon = get_icon("Folder", "EditorIcons")
 
     TestButton.connect("pressed", self, "_test_button_pressed")
     BuildButton.connect("pressed", self, "_build_button_pressed")

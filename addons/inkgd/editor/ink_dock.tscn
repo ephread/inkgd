@@ -1,7 +1,6 @@
 [gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://addons/inkgd/editor/ink_dock.gd" type="Script" id=1]
-[ext_resource path="res://addons/inkgd/editor/icons/icon_folder.svg" type="Texture" id=2]
 
 [node name="Ink" type="Control"]
 anchor_right = 1.0
@@ -93,7 +92,6 @@ text = "/Library/Frameworks/Mono.framework/Versions/Current/Commands/mono"
 margin_left = 1885.0
 margin_right = 1913.0
 margin_bottom = 24.0
-icon = ExtResource( 2 )
 
 [node name="ExecutableLabel" type="Label" parent="VSplitContainer/MainVBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/GridContainer"]
 margin_top = 28.0
@@ -121,7 +119,6 @@ text = "/usr/local/Cellar/inklecate/0.8.2/libexec/inklecate.exe"
 margin_left = 1885.0
 margin_right = 1913.0
 margin_bottom = 24.0
-icon = ExtResource( 2 )
 
 [node name="SourceFileLabel" type="Label" parent="VSplitContainer/MainVBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/GridContainer"]
 margin_top = 56.0
@@ -149,7 +146,6 @@ text = "/Users/fred/Documents/Development/Godot/MollysFork/assets/stories/ink/ma
 margin_left = 1885.0
 margin_right = 1913.0
 margin_bottom = 24.0
-icon = ExtResource( 2 )
 
 [node name="TargetFileLabel" type="Label" parent="VSplitContainer/MainVBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/GridContainer"]
 margin_top = 84.0
@@ -177,7 +173,6 @@ text = "/Users/fred/Documents/Development/Godot/MollysFork/assets/stories/story.
 margin_left = 1885.0
 margin_right = 1913.0
 margin_bottom = 24.0
-icon = ExtResource( 2 )
 
 [node name="MainVBoxContainer2" type="VBoxContainer" parent="VSplitContainer"]
 margin_top = 436.0
