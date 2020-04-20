@@ -150,17 +150,42 @@ func _init(json_string):
     self.reset_state()
 
 # () -> String
-func to_json_string():
-    var root_container_json_list = Json.runtime_object_to_jtoken(self._main_content_container)
+func to_json():
+    var writer = SimpleJson.Writer.new()
+    to_json_with_writer(writer)
+    return writer.to_string()
 
-    var root_object = {} # Dictionary<String, Variant>
-    root_object["inkVersion"] = INK_VERSION_CURRENT
-    root_object["root"] = root_container_json_list
+func write_root_property(writer):
+    Json.write_runtime_container(writer, self._main_content_container)
+
+# (Json.Writer) -> String
+func to_json_with_writer(writer):
+    writer.write_object_start()
+
+    writer.write_property("inkVersion", INK_VERSION_CURRENT)
+
+    writer.write_property("root", funcref(self, "write_root_property"))
 
     if self._list_definitions != null:
-        root_object["listDefs"] = Json.list_definitions_to_jtoken(self._list_definitions)
+        writer.write_property_start("listDefs")
+        writer.write_object_start()
 
-    return JSON.print(root_object)
+        for def in self._list_definitions.lists:
+            writer.write_property_start(def.name)
+            writer.write_object_start()
+
+            for item_to_val_key in def.items:
+                var item = InkListItem.from_serialized_key(item_to_val_key)
+                var val = def.items[item_to_val_key]
+                writer.write_property(item.item_name, val)
+
+            writer.write_object_end()
+            writer.write_property_end()
+
+        writer.write_object_end()
+        writer.write_property_end()
+
+    writer.write_object_end()
 
 # () -> void
 func reset_state():
@@ -264,9 +289,8 @@ func continue_internal(millisecs_limit_async = 0):
 
     if output_stream_ends_in_newline || !self.can_continue:
 
-        if self._state_at_last_newline != null:
-            self.restore_state_snapshot(self._state_at_last_newline)
-            self._state_at_last_newline = null
+        if self._state_snapshot_at_last_newline != null:
+            self.restore_state_snapshot()
 
         if !self.can_continue:
             if self.state.callstack.can_pop_thread:
@@ -314,26 +338,26 @@ func continue_single_step():
         _profiler.pre_snapshot()
 
     if !self.state.in_string_evaluation:
-        if self._state_at_last_newline != null:
+        if self._state_snapshot_at_last_newline != null:
 
             var change = calculate_newline_output_state_change(
-                self._state_at_last_newline.current_text,        self.state.current_text,
-                self._state_at_last_newline.current_tags.size(), self.state.current_tags.size()
+                self._state_snapshot_at_last_newline.current_text,        self.state.current_text,
+                self._state_snapshot_at_last_newline.current_tags.size(), self.state.current_tags.size()
             )
 
             if change == OutputStateChange.EXTENDED_BEYOND_NEWLINE:
-                self.restore_state_snapshot(self._state_at_last_newline)
+                self.restore_state_snapshot()
 
                 return true
             elif change == OutputStateChange.NEWLINE_REMOVED:
-                self._state_at_last_newline = null
+                self.discard_snapshot()
 
         if self.state.output_stream_ends_in_newline:
             if self.can_continue:
-                if self._state_at_last_newline == null:
-                    self._state_at_last_newline = self.state_snapshot()
+                if self._state_snapshot_at_last_newline == null:
+                    self._state_snapshot_at_last_newline = self.state_snapshot()
             else:
-                _state_at_last_newline = null
+                self.discard_snapshot()
 
     if _profiler != null:
         _profiler.post_snapshot()
@@ -423,11 +447,47 @@ func pointer_at_path(path):
 
 # () -> StoryState
 func state_snapshot():
-    return self.state.copy()
+    self._state_snapshot_at_newline = self._state
+    self._state = self._state.copy_and_start_patching()
 
 # (StoryState) -> void
 func restore_state_snapshot(state):
-    self._state = state
+    self._state_snapshot_at_last_newline.restore_after_patch()
+
+    self._state = _state_snapshot_at_last_newline
+    self._state_snapshot_at_last_newline = null
+
+    if !self._async_saving:
+        self._state.apply_any_patch()
+
+# () -> void
+func discard_snapshot():
+    if !self._async_saving:
+        self._state.apply_any_patch()
+
+    self._state_snapshot_at_last_newline = null
+
+# () -> void
+func copy_state_for_background_thread_save():
+    if async_we_cant("start saving on a background thread"):
+        return
+
+    if self._async_saving:
+        Utils.throw_exception("Story is already in background saving mode, can't call CopyStateForBackgroundThreadSave again!")
+        return
+
+    var state_to_save = self._state
+    self._state = self._state.copy_and_start_patching()
+    self._async_saving = true
+
+    return state_to_save
+
+# () -> void
+func background_save_complete():
+    if self._state_snapshot_at_last_newline == null:
+        _state.apply_any_patch()
+
+    self._async_saving = false
 
 # () -> void
 func step():
@@ -499,10 +559,10 @@ func step():
 func visit_container(container, at_start):
     if !container.counting_at_start_only || at_start:
         if container.visits_should_be_counted:
-            self.increment_visit_count_for_container(container)
+            self.state.increment_visit_count_for_container(container)
 
         if container.turn_index_should_be_counted:
-            self.record_turn_index_visit_to_container(container)
+            self.state.record_turn_index_visit_to_container(container)
 
 var _prev_containers = [] # Array<Container>
 func visit_changed_containers_due_to_divert():
@@ -556,7 +616,7 @@ func process_choice(choice_point):
         start_text = start_str_val.value
 
     if choice_point.once_only:
-        var visit_count = visit_count_for_container(choice_point.choice_target)
+        var visit_count = self.state.visit_count_for_container(choice_point.choice_target)
         if visit_count > 0:
             show_choice = false
 
@@ -779,9 +839,9 @@ func perform_logic_and_flow_control(content_obj):
                 var either_count = 0
                 if container != null:
                     if eval_command.command_type == ControlCommand.CommandType.TURNS_SINCE:
-                        either_count = self.turns_since_for_container(container)
+                        either_count = self.state.turns_since_for_container(container)
                     else:
-                        either_count = self.visit_count_for_container(container)
+                        either_count = self.state.visit_count_for_container(container)
                 else:
                     if eval_command.command_type == ControlCommand.CommandType.TURNS_SINCE:
                         either_count = -1
@@ -834,7 +894,7 @@ func perform_logic_and_flow_control(content_obj):
                 self.state.push_evaluation_stack(Void.new())
 
             ControlCommand.CommandType.VISIT_INDEX:
-                var count = self.visit_count_for_container(self.state.current_pointer.container) - 1
+                var count = self.state.visit_count_for_container(self.state.current_pointer.container) - 1
                 self.state.push_evaluation_stack(Ink.IntValue.new_with(count))
 
             ControlCommand.CommandType.SEQUENCE_SHUFFLE_INDEX:
@@ -949,26 +1009,18 @@ func perform_logic_and_flow_control(content_obj):
 
         if var_ref.path_for_count != null:
             var container = var_ref.container_for_count
-            var count = self.visit_count_for_container(container)
+            var count = self.state.visit_count_for_container(container)
             found_value = Ink.IntValue.new_with(count)
         else:
             found_value = self.state.variables_state.get_variable_with_name(var_ref.name)
 
             if found_value == null:
-                var default_val = self.state.variables_state.try_get_default_variable_value(var_ref.name)
-                if default_val.result:
-                    warning(str("Variable not found in save state: '", var_ref.name,
-                                "', but seems to have been newly created. ",
-                                "Assigning value from latest ink's declaration: ",
-                                default_val.result.to_string()))
-                    found_value = default_val.result
-
-                    self.state.variables_state.set_global(var_ref.name, found_value)
-                else:
-                    warning(str("Variable not found: '", var_ref.name,
-                                "'. Using default value of 0 (false). ",
-                                "This can happen with temporary variables if the declaration hasn't yet been hit."))
-                    found_value = Ink.IntValue.new_with(0)
+                warning(str("Variable not found: '", var_ref.name,
+                            "', using default value of 0 (false). this can ",
+                            "happen with temporary variables if the declaration",
+                            "hasn't yet been hit. Globals are always given a default",
+                            "value on load if a value doesn't exist in the save state."))
+                found_value = Ink.IntValue.new_with(0)
 
         self.state.push_evaluation_stack(found_value)
         return true
@@ -1294,7 +1346,7 @@ func variable_state_did_change_event(variable_name, new_value_obj):
         var observer = _variable_observers[variable_name]
 
         if !Utils.is_ink_class(new_value_obj, "Value"):
-            Utils.throw_execption("Tried to get the value of a variable that isn't a standard type")
+            Utils.throw_exception("Tried to get the value of a variable that isn't a standard type")
             return
 
         var val = new_value_obj
@@ -1432,50 +1484,6 @@ func try_follow_default_invisible_choice():
     choose_path(choice.target_path, false)
 
     return true
-
-# (InkContainer) -> int
-func visit_count_for_container(container):
-    if !container.visits_should_be_counted:
-        error(str("Read count for target (", container.name,
-                  " - on ", container.debugMetadata,
-                  ") unknown. The story may need to be compiled with countAllVisits flag (-c)."))
-        return 0
-
-    var count = 0
-    var container_path_str = container.path.to_string()
-    count = self.state.visit_counts.get(container_path_str, 0)
-    return count
-
-# (InkContainer) -> void
-func increment_visit_count_for_container(container):
-    var count = 0
-    var container_path_str = container.path.to_string()
-    count = self.state.visit_counts.get(container_path_str, 0)
-    count += 1
-
-    var state = self.state
-    state.visit_counts[container_path_str] = count
-
-# (InkContainer) -> void
-func record_turn_index_visit_to_container(container):
-    var container_path_str = container.path.to_string()
-
-    var state = self.state
-    state.turn_indices[container_path_str] = self.state.current_turn_index
-
-# (InkContainer) -> ink
-func turns_since_for_container(container):
-    if !container.turn_index_should_be_counted:
-        error(str("TURNS_SINCE() for target (", container.name,
-                  " - on ", container.debugMetadata,
-                  ") unknown. The story may need to be compiled with countAllVisits flag (-c)."))
-        return false
-
-    var container_path_str = container.path.to_string()
-    if self.state.turn_indices.has(container_path_str):
-        return self.state.current_turn_index - self.state.turn_indices[container_path_str]
-    else:
-        return -1
 
 # () -> int
 func next_sequence_shuffle_index():
@@ -1623,9 +1631,11 @@ var _temporary_evaluation_container = null # InkContainer
 var _state = null # StoryState
 
 var _async_continue_active = false # bool
-var _state_at_last_newline = null # StoryState
+var _state_snapshot_at_last_newline = null # StoryState
 
 var _recursive_continue_count = 0 # int
+
+var _async_saving = false # bool
 
 var _profiler = null # Profiler
 
