@@ -38,14 +38,6 @@ var Utils = load("res://addons/inkgd/runtime/extra/utils.gd")
 
 # ############################################################################ #
 
-# (Array) -> Array
-func list_to_jarray(serialisables):
-    var jarray = []
-    for s in serialisables:
-        jarray.append(runtime_object_to_jtoken(s))
-
-    return jarray
-
 # (Array, bool) -> Array
 func jarray_to_runtime_obj_list(jarray, skip_last = false):
     var count = jarray.size()
@@ -63,16 +55,28 @@ func jarray_to_runtime_obj_list(jarray, skip_last = false):
 
     return list
 
-# (Dictionary<String, InkObject>) -> Dictionary<String, Variant>
-func dictionary_runtime_objs_to_jobject(dictionary):
-    var json_obj = {}
-
+# (Json.Writer, Dictionary<String, InkObject>) -> void
+func write_dictionary_runtime_objs(writer, dictionary):
+    writer.write_object_start()
     for key in dictionary:
-        var runtime_obj = Utils.as_or_null(dictionary[key], "InkObject")
-        if runtime_obj != null:
-            json_obj[key] = runtime_object_to_jtoken(runtime_obj)
+        writer.write_property_start(key)
+        write_runtime_object(writer, dictionary[key])
+        writer.write_property_end()
+    writer.write_object_end()
 
-    return json_obj
+# (Json.Writer, Array<InkObject>) -> void
+func write_list_runtime_objs(writer, list):
+    writer.write_array_start()
+    for val in dictionary:
+        write_runtime_object(writer, val)
+    writer.write_array_end()
+
+# (Json.Writer, Array<Int>) -> void
+func write_int_dictionary(writer, dict):
+    writer.write_object_start()
+    for key in dict:
+        writer.write_property(key, dict[key])
+    writer.write_object_end()
 
 # (Dictionary<String, Variant>) -> Dictionary<String, InkObject>
 func jobject_to_dictionary_runtime_objs(jobject):
