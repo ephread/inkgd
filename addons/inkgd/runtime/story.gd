@@ -451,7 +451,7 @@ func state_snapshot():
     self._state = self._state.copy_and_start_patching()
 
 # (StoryState) -> void
-func restore_state_snapshot(state):
+func restore_state_snapshot():
     self._state_snapshot_at_last_newline.restore_after_patch()
 
     self._state = _state_snapshot_at_last_newline

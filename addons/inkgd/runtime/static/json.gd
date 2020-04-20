@@ -67,7 +67,7 @@ func write_dictionary_runtime_objs(writer, dictionary):
 # (Json.Writer, Array<InkObject>) -> void
 func write_list_runtime_objs(writer, list):
     writer.write_array_start()
-    for val in dictionary:
+    for val in list:
         write_runtime_object(writer, val)
     writer.write_array_end()
 
@@ -423,7 +423,7 @@ func jtoken_to_runtime_object(token):
     return null
 
 # (Json.Writer, InkContainer, Bool) -> void
-func write_runtime_container(writer, container, without_name):
+func write_runtime_container(writer, container, without_name = false):
     writer.write_array_start()
 
     for c in container.content:
