@@ -29,6 +29,7 @@ var InkPath = load("res://addons/inkgd/runtime/ink_path.gd")
 var Ink = load("res://addons/inkgd/runtime/value.gd")
 var ControlCommand = load("res://addons/inkgd/runtime/control_command.gd")
 var SimpleJson = load("res://addons/inkgd/runtime/simple_json.gd")
+var StatePatch = load("res://addons/inkgd/runtime/state_patch.gd")
 
 # ############################################################################ #
 
@@ -37,18 +38,104 @@ const MIN_COMPATIBLE_LOAD_VERSION = 8
 
 # () -> String
 func to_json():
-    return JSON.print(self.json_token)
+    var writer = SimpleJson.Writer.new()
+    write_json(writer)
+    return writer.to_string()
 
 # (String) -> void
 func load_json(json):
-    self.json_token = SimpleJson.text_to_dictionary(json)
+    var jobject = SimpleJson.text_to_dictionary(json)
+    load_json_obj(jobject)
 
 # (String) -> int
 func visit_count_at_path_string(path_string):
-    if visit_counts.has(path_string):
-        return visit_counts[path_string]
+    if self._patch != null:
+        var container = story.content_at_path(Path.new_with_components_string(path_string))
+        if container == null:
+            Utils.throw_exception(str("Content at path not found: ", path_string))
+            return 0
+
+        var visit_count = self._patch.try_get_visit_count(container)
+        if visit_count.exists:
+            return visit_count.result
+
+    if self._visit_counts.has(path_string):
+        return self._visit_counts[path_string]
 
     return 0
+
+# (InkContainer) -> int
+func visit_count_for_container(container):
+    if !container.visits_should_be_counted:
+        self.story.get_ref().error(
+            str("Read count for target (", container.name, " - on ",
+                container.debugMetadata, ") unknown. The story may need to",
+                "be compiled with countAllVisits flag (-c).")
+        )
+        return 0
+
+    var count = 0
+
+    if self._patch != null:
+        var visit_count = self._patch.try_get_visit_count(container)
+        if visit_count.exists:
+            return visit_count.result
+
+    var container_path_str = container.path.to_string()
+
+    if self._visit_counts.has(container_path_str):
+        count = self._visit_counts[container_path_str]
+
+    return count
+
+
+# (InkContainer) -> void
+func increment_visit_count_for_container(container):
+    if self._patch != null:
+        var curr_count = visit_count_for_container(container)
+        curr_count += 1
+        self._patch.set_visit_count(container, curr_count)
+        return
+
+    var count = 0
+    var container_path_str = container.path.to_string()
+    if self._visit_count.has(container_path_str):
+        count = self._visit_count[container_path_str]
+    count += 1
+
+    self._visit_counts[container_path_str] = count
+
+# (InkContainer) -> void
+func record_turn_index_visit_to_container(container):
+    if self._patch != null:
+        self._patch.set_turn_index(container, self.current_turn_index)
+        return
+
+    var container_path_str = container.path.to_string()
+
+    self._turn_indices[container_path_str] = self.current_turn_index
+
+# (InkContainer) -> ink
+func turns_since_for_container(container):
+    if !container.turn_index_should_be_counted:
+        self.story.get_ref().error(
+            str("TURNS_SINCE() for target (", container.name, " - on ",
+                container.debugMetadata, ") unknown. The story may need",
+                "to be compiled with countAllVisits flag (-c).")
+                )
+        return false
+
+
+    if self._patch != null:
+        var turn_index = self._patch.try_get_turn_index(container)
+        if turn_index.exists:
+            return self.current_turn_index - turn_index.result
+
+    var container_path_str = container.path.to_string()
+    if self.turn_indices.has(container_path_str):
+        return self.current_turn_index - self.turn_indices[container_path_str]
+    else:
+        return -1
 
 var callstack_depth setget , get_callstack_depth # int
 func get_callstack_depth():
@@ -73,8 +160,6 @@ var variables_state = null # VariableState
 var callstack = null # CallStack
 var evaluation_stack = null # Array<InkObject>
 var diverted_pointer = Pointer.null() # Pointer
-var visit_counts = null # Dictionary<String, int>
-var turn_indices = null # Dictionary<String, int>
 var current_turn_index = 0 # int
 var story_seed = 0 # int
 var previous_random = 0 # int
@@ -207,8 +292,8 @@ func _init(story):
     self.callstack = CallStack.new(self.story.get_ref())
     self.variables_state = VariablesState.new(callstack, self.story.get_ref().list_definitions)
 
-    self.visit_counts = {} # Dictionary<String, int>
-    self.turn_indices = {} # Dictionary<String, int>
+    self._visit_counts = {} # Dictionary<String, int>
+    self._turn_indices = {} # Dictionary<String, int>
     self.current_turn_index = -1
 
     randomize()
@@ -225,11 +310,13 @@ func go_to_start():
     current_element.current_pointer = Pointer.start_of(story.get_ref().main_content_container)
 
 # () -> StoryState
-func copy():
+func copy_and_start_patching():
     var copy = StoryState.get_ref().new(self.story.get_ref())
 
+    copy._patch = StatePatch.new(self._patch)
+
     copy._output_stream += self._output_stream
-    self.output_stream_dirty()
+    copy.output_stream_dirty()
 
     copy._current_choices += self._current_choices
 
@@ -243,8 +330,9 @@ func copy():
 
     copy.callstack = CallStack.new(self.callstack)
 
-    copy.variables_state = VariablesState.new(copy.callstack, self.story.get_ref().list_definitions)
-    copy.variables_state.copy_from(self.variables_state)
+    copy.variables_state = variables_state
+    copy.variables_state.callstack = copy.callstack
+    copy.variables_state.patch = copy._patch
 
     copy.evaluation_stack += self.evaluation_stack
 
@@ -253,8 +341,8 @@ func copy():
 
     copy.previous_pointer = self.previous_pointer.duplicate()
 
-    copy.visit_counts = self.visit_counts.duplicate() # Dictionary<String, int>
-    copy.turn_indices = self.turn_indices.duplicate() # Dictionary<String, int>
+    copy._visit_counts = self._visit_counts
+    copy._turn_indices = self._turn_indices
     copy.current_turn_index = self.current_turn_index
     copy.story_seed = self.story_seed
     copy.previous_random = self.previous_random
@@ -263,51 +351,74 @@ func copy():
 
     return copy
 
-var json_token setget set_json_token, get_json_token # Dictionary<String, Variant>
-func get_json_token():
-    var obj = {} # Dictionary<String, Variant>
+# () -> void
+func restore_after_patch():
+    self.variables_state.call_stack = self.call_stack
+    self.variables_state.patch = self._patch
 
-    var choice_threads = null # Dictionary<String, Variant>
+# () -> void
+func apply_any_patch():
+    if self._patch == null:
+        return
+
+    self.variable_state.apply_patch()
+
+    for path_to_count_key in self._patch.visit_counts:
+        apply_count_changes(path_to_count_key, self._patch.visit_counts[path_to_count_key], true)
+
+    for path_to_index_key in self._patch.turn_indices:
+        apply_count_changes(path_to_index_key, self._patch.turn_indices[path_to_index_key], false)
+
+    self._patch = null
+
+# (InkContainer, Int, Bool) -> void
+func apply_count_changes(container, new_count, is_visit):
+    var counts = self._visit_counts if is_visit else  self._turn_indices
+    counts[container.path.to_string()] = new_count
+
+# (Json.Writer) -> void
+func write_json(writer):
+    writer.write_object_start()
+
+    var has_choice_threads # Bool
     for c in self._current_choices:
         c.original_thread_index = c.thread_at_generation.thread_index
 
         if self.callstack.thread_with_index(c.original_thread_index) == null:
-            if choice_threads == null:
-                choice_threads = {} # Dictionary<String, Variant>
+            if !has_choice_threads:
+                has_choice_threads = true
+                writer.write_property_start("choiceThreads")
+                writer.write_object_start()
 
-            choice_threads[str(c.original_thread_index)] = c.thread_at_generation.json_token
+            writer.write_property_start(c.original_thread_index)
+            c.thread_at_generation.write_json(writer)
+            writer.write_property_end()
 
-    if choice_threads != null:
-        obj["choiceThreads"] = choice_threads
+    if has_choice_threads:
+        writer.write_object_end()
+        writer.write_property_end()
 
-
-    obj["callstackThreads"] = self.callstack.get_json_token()
-    obj["variablesState"] = self.variables_state.json_token
-
-    obj["evalStack"] = Json.list_to_jarray(self.evaluation_stack)
-
-    obj["outputStream"] = Json.list_to_jarray(self._output_stream)
-
-    obj["currentChoices"] = Json.list_to_jarray(self._current_choices)
+    writer.write_property("callstackThreads", funcref(self.call_stack, "write_json"))
+    writer.write_property("variablesState", funcref(self.variables_state, "write_json"))
+    writer.write_property("evalStack", funcref(self, "_anonymous_write_property_eval_stack"))
+    writer.write_property("outputStream", funcref(self, "_anonymous_write_property_output_stream"))
+    writer.write_property("currentChoices", funcref(self, "_anonymous_write_property_current_choices"))
 
     if !self.diverted_pointer.is_null:
-        obj ["currentDivertTarget"] = self.diverted_pointer.path.components_string
+        writer.write_property("currentDivertTarget", self.diverted_pointer.path.components_string)
 
-    obj["visitCounts"] = Json.int_dictionary_to_jobject(self.visit_counts)
-    obj["turnIndices"] = Json.int_dictionary_to_jobject(self.turn_indices)
-    obj["turnIdx"] = self.current_turn_index
-    obj["storySeed"] = self.story_seed
-    obj["previousRandom"] = self.previous_random
+    writer.write_property("visitCounts", funcref(self, "_anonymous_write_property_visit_counts"))
+    writer.write_property("turnIndices", funcref(self, "_anonymous_write_property_turn_indices"))
 
-    obj["inkSaveVersion"] = INK_SAVE_STATE_VERSION
+    writer.write_property("turnIdx", self.current_turn_index)
+    writer.write_property("storySeed", self.story_seed)
+    writer.write_property("previousRandom", self.previous_random)
 
-    obj["inkFormatVersion"] = self.story.get_ref().INK_VERSION_CURRENT
+    writer.write_property("inkSaveVersion", INK_SAVE_STATE_VERSION)
+    writer.write_property("inkFormatVersion", self.story.get_ref().INK_VERSION_CURRENT)
+    writer.write_object_end()
 
-    return obj
-
-func set_json_token(value):
-    var jobject = value
-
+func load_json_obj(jobject):
     var jsave_version = null # Variant
     if !jobject.has("inkSaveVersion"):
         Utils.throw_story_exception("ink save format incorrect, can't load.")
@@ -325,7 +436,7 @@ func set_json_token(value):
     self.callstack.set_json_token(jobject["callstackThreads"], self.story.get_ref())
 
     var variable_state = self.variables_state
-    variable_state.json_token = jobject["variablesState"]
+    variable_state.set_json_token(jobject["variablesState"])
 
     self.evaluation_stack = Json.jarray_to_runtime_obj_list(jobject["evalStack"])
 
@@ -339,11 +450,16 @@ func set_json_token(value):
         var divert_path = InkPath.new_with_components_string(current_divert_target_path.to_string())
         self.diverted_pointer = story.pointer_at_path(divert_path)
 
-    self.visit_counts = Json.jobject_to_int_dictionary(jobject["visitCounts"])
-    self.turn_indices = Json.jobject_to_int_dictionary(jobject["turnIndices"])
+    self._visit_counts = Json.jobject_to_int_dictionary(jobject["visitCounts"])
+    self._turn_indices = Json.jobject_to_int_dictionary(jobject["turnIndices"])
     self.current_turn_index = int(jobject["turnIdx"])
     self.story_seed = int(jobject["storySeed"])
-    self.previous_random = int(jobject["previousRandom"])
+
+    # inkjs bug
+    if jobject.has("previousRandom"):
+        self.previous_random = int(jobject["previousRandom"])
+    else:
+        self.previous_random = 0
 
     var jchoice_threads = null
 
@@ -785,11 +901,16 @@ func output_stream_dirty():
     self._output_stream_text_dirty = true
     self._output_stream_tags_dirty = true
 
+var _visit_counts = null # Dictionary<string, Int>
+var _turn_indices = null # Dictionary<string, Int>
+
 var _output_stream = null # Array<InkObject>
 var _output_stream_text_dirty = true # bool
 var _output_stream_tags_dirty = true # bool
 
 var _current_choices # Array<Choice>
+
+var _patch # StatePatch
 
 # ############################################################################ #
 # GDScript extra methods
@@ -800,6 +921,26 @@ func is_class(type):
 
 func get_class():
     return "StoryState"
+
+# C# Actions & Delegates ##################################################### #
+
+func _anonymous_write_property_eval_stack(writer):
+    Json.write_list_runtime_objs(writer, self.evaluation_stack)
+
+func _anonymous_write_property_output_stream(writer):
+    Json.write_list_runtime_objs(writer, self._output_stream)
+
+func _anonymous_write_property_current_choices(writer):
+    writer.write_array_start()
+    for c in self._current_choices:
+        Json.write_choice(writer, c)
+    writer.write_array_end()
+
+func _anonymous_write_property_visit_counts(writer):
+    Json.write_int_dictionary(writer, self._visit_counts)
+
+func _anonymous_write_property_turn_indices(writer):
+    Json.write_int_dictionary(writer, self._turn_indices)
 
 # ############################################################################ #
 

@@ -285,20 +285,6 @@ func set_json_token(jobject, story_context):
 func write_json(writer):
     writer.write_object(funcref(self, "_anonymous_write_json"))
 
-# This function is used to port the closure-based logic of write_json.
-#  (SimpleJson.Writer) -> void
-func _anonymous_write_json(writer):
-    writer.write_property_start("threads")
-    writer.write_array_start()
-    for thread in self._threads:
-        thread.write_json(writer)
-    writer.write_array_end()
-    writer.write_property_end()
-
-    writer.write_property_start("threadCounter")
-    writer.write(self._thread_counter)
-    writer.write_property_end()
-
 # () -> void
 func push_thread():
     var new_thread = self.current_thread.copy()
@@ -450,6 +436,21 @@ func is_class(type):
 
 func get_class():
     return "CallStack"
+
+# C# Actions & Delegates ##################################################### #
+
+#  (SimpleJson.Writer) -> void
+func _anonymous_write_json(writer):
+    writer.write_property_start("threads")
+    writer.write_array_start()
+    for thread in self._threads:
+        thread.write_json(writer)
+    writer.write_array_end()
+    writer.write_property_end()
+
+    writer.write_property_start("threadCounter")
+    writer.write(self._thread_counter)
+    writer.write_property_end()
 
 # ############################################################################ #
 
