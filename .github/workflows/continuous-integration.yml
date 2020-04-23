@@ -25,8 +25,8 @@ jobs:
 
       - name: Install test dependencies
         run: |
-          apt-get update
-          apt-get -y install wget zip unzip
+          sudo apt-get update
+          sudo apt-get -y install wget zip unzip
 
       - name: Install Godot
         env:
