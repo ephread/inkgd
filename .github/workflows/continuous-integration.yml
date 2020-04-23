@@ -1,0 +1,41 @@
+name: build
+
+on:
+  push:
+    branches:
+    - master
+    - github-actions
+
+jobs:
+  test:
+    name: Build & test
+    runs-on: ubuntu-18.04
+
+    strategy:
+      matrix:
+        destination:
+          - "3.1.1"
+          - "3.2.1"
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
+
+      - name: Install test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install wget zip unzip
+
+      - name: Install Godot
+        env:
+          VERSION: ${{ matrix.destination }}
+        run: |
+          wget -q https://downloads.tuxfamily.org/godotengine/${VERSION}/Godot_v${VERSION}-stable_linux_headless.64.zip
+          unzip Godot_v${VERSION}-stable_linux_headless.64.zip
+          mv Godot_v${VERSION}-stable_linux_headless.64 godot
+          chmod +x godot
+
+      - name: Run tests
+        run: ./godot -d -s --path $PWD addons/gut/gut_cmdln.gd
