@@ -26,5 +26,7 @@ var json = StaticJson.new(native_function_call)
 
 var should_interrupt = false
 
+var dont_save_default_values = true
+
 func _init():
     name = "__InkRuntime"
