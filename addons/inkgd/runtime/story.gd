@@ -447,7 +447,7 @@ func pointer_at_path(path):
 
 # () -> StoryState
 func state_snapshot():
-    self._state_snapshot_at_newline = self._state
+    self._state_snapshot_at_last_newline = self._state
     self._state = self._state.copy_and_start_patching()
 
 # (StoryState) -> void

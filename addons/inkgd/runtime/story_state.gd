@@ -99,8 +99,8 @@ func increment_visit_count_for_container(container):
 
     var count = 0
     var container_path_str = container.path.to_string()
-    if self._visit_count.has(container_path_str):
-        count = self._visit_count[container_path_str]
+    if self._visit_counts.has(container_path_str):
+        count = self._visit_counts[container_path_str]
     count += 1
 
     self._visit_counts[container_path_str] = count
@@ -132,8 +132,8 @@ func turns_since_for_container(container):
             return self.current_turn_index - turn_index.result
 
     var container_path_str = container.path.to_string()
-    if self.turn_indices.has(container_path_str):
-        return self.current_turn_index - self.turn_indices[container_path_str]
+    if self._turn_indices.has(container_path_str):
+        return self.current_turn_index - self._turn_indices[container_path_str]
     else:
         return -1
 
@@ -331,7 +331,7 @@ func copy_and_start_patching():
     copy.callstack = CallStack.new(self.callstack)
 
     copy.variables_state = variables_state
-    copy.variables_state.callstack = copy.callstack
+    copy.variables_state.call_stack = copy.callstack
     copy.variables_state.patch = copy._patch
 
     copy.evaluation_stack += self.evaluation_stack
@@ -361,7 +361,7 @@ func apply_any_patch():
     if self._patch == null:
         return
 
-    self.variable_state.apply_patch()
+    self.variables_state.apply_patch()
 
     for path_to_count_key in self._patch.visit_counts:
         apply_count_changes(path_to_count_key, self._patch.visit_counts[path_to_count_key], true)
@@ -398,7 +398,7 @@ func write_json(writer):
         writer.write_object_end()
         writer.write_property_end()
 
-    writer.write_property("callstackThreads", funcref(self.call_stack, "write_json"))
+    writer.write_property("callstackThreads", funcref(self.callstack, "write_json"))
     writer.write_property("variablesState", funcref(self.variables_state, "write_json"))
     writer.write_property("evalStack", funcref(self, "_anonymous_write_property_eval_stack"))
     writer.write_property("outputStream", funcref(self, "_anonymous_write_property_output_stream"))
@@ -858,7 +858,7 @@ func try_exit_function_evaluation_from_game():
 # () -> Variant
 func complete_function_evaluation_from_game():
     if self.callstack.current_element.type != PushPopType.FUNCTION_EVALUATION_FROM_GAME:
-        Utils.throws_story_exception(str(
+        Utils.throw_story_exception(str(
             "Expected external function evaluation to be complete. Stack trace: ",
             callstack.callstack_trace
         ))

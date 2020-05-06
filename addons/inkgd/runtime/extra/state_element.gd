@@ -25,7 +25,7 @@ enum State {
 var type = State.NONE # State
 var child_count = 0 # int
 
-func init(type):
+func _init(type):
     self.type = type
 
 # ############################################################################ #

@@ -34,7 +34,7 @@ var turn_indices setget , get_turn_indices # Dictionary<InkContainer, int>
 func get_turn_indices():
     return _turn_indices
 
-func init(to_copy):
+func _init(to_copy):
     if to_copy != null:
         _globals = to_copy._globals.duplicate()
         _changed_variables = to_copy._changed_variables.duplicate()
@@ -47,7 +47,7 @@ func init(to_copy):
         _turn_indices = {}
 
 # (String) -> { exists: bool, result: InkObject }
-func try_get_global(name, value):
+func try_get_global(name):
     if _globals.has(name):
         return TryGetResult.new(true, _globals[name])
 
@@ -87,3 +87,13 @@ var _globals = null
 var _changed_variables = StringSet.new()
 var _visit_counts = {}
 var _turn_indices = {}
+
+# ############################################################################ #
+# GDScript extra methods
+# ############################################################################ #
+
+func is_class(type):
+    return type == "StatePatch" || .is_class(type)
+
+func get_class():
+    return "StatePatch"

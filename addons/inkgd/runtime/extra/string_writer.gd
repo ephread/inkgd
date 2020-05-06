@@ -12,14 +12,14 @@
 # It has none of the optimisations of original class and merely wraps
 # a plain old string.
 
-class StringWriter:
-    var internal_string
+var internal_string
 
-    func init():
-        internal_string = ""
+func _init():
+    internal_string = ""
 
-    func write(s):
-        internal_string += s
+func write(s):
 
-    func to_string():
-        return internal_string
+    internal_string += str(s)
+
+func to_string():
+    return internal_string

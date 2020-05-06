@@ -122,6 +122,8 @@ func test_warn_variable_not_found():
 
     assert_true(story2.has_warning)
 
+    if story2.current_warnings == null: return
+
     for warning in story2.current_warnings:
         if warning.find("not found") != -1:
             return

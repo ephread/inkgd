@@ -172,7 +172,7 @@ class InkThread extends "res://addons/inkgd/runtime/ink_base.gd":
 
         writer.write_property("threadIndex", self.thread_index)
 
-        if !self.previous_pointer.isNull:
+        if !self.previous_pointer.is_null:
             writer.write_property("previousContentObject", self.previous_pointer.resolve().path.to_string())
 
         writer.write_object_end()
@@ -406,7 +406,7 @@ func get_callstack_trace():
                  ("(current) " if is_current else "" ), "===\n")
 
         var i = 0
-        while i < _threads.callstack.size():
+        while i < thread.callstack.size():
             if thread.callstack[i].type == PushPopType.FUNCTION:
                 sb += "  [FUNCTION] "
             else:

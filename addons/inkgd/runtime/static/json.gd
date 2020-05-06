@@ -139,12 +139,12 @@ func write_runtime_object(writer, obj):
     var str_val = Utils.as_or_null(obj, "StringValue")
     if str_val:
         if str_val.is_newline:
-            writer.write("\\n", false)
+            writer.write_string("\\n", false)
         else:
-            writer.writeStringStart()
-            writer.writeStringInner("^")
-            writer.writeStringInner(str_val.value)
-            writer.writeStringEnd()
+            writer.write_string_start()
+            writer.write_string_inner("^")
+            writer.write_string_inner(str_val.value)
+            writer.write_string_end()
         return
 
     var list_val = Utils.as_or_null(obj, "ListValue")
@@ -409,7 +409,7 @@ func jtoken_to_runtime_object(token):
 
             return Ink.ListValue.new_with(raw_list)
 
-        if obj["originalChoicePath"] != null:
+        if obj.has("originalChoicePath"):
             return jobject_to_choice(obj)
 
     if token is Array:
@@ -419,7 +419,7 @@ func jtoken_to_runtime_object(token):
     if token == null:
         return null
 
-    Utils.throw_exception("Failed to convert token to runtime object: " + token)
+    Utils.throw_exception("Failed to convert token to runtime object: " + str(token))
     return null
 
 # (Json.Writer, InkContainer, Bool) -> void
@@ -497,11 +497,11 @@ func jobject_to_choice(jobj):
 # (Json.Writer, Choice) -> Void
 func write_choice(writer, choice):
     writer.write_object_start()
-    writer.writeProperty("text", choice.text)
-    writer.writeProperty("index", choice.index)
-    writer.writeProperty("originalChoicePath", choice.source_path)
-    writer.writeProperty("originalThreadIndex", choice.original_thread_index)
-    writer.writeProperty("targetPath", choice.path_string_on_choice)
+    writer.write_property("text", choice.text)
+    writer.write_property("index", choice.index)
+    writer.write_property("originalChoicePath", choice.source_path)
+    writer.write_property("originalThreadIndex", choice.original_thread_index)
+    writer.write_property("targetPath", choice.path_string_on_choice)
     writer.write_object_end()
 
 # (Json.Writer, ListValue) -> Void

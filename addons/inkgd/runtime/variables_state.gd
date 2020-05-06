@@ -102,8 +102,8 @@ func apply_patch():
         _global_variables[named_var_key] = self.patch.globals[named_var_key]
 
     if _changed_variables_for_batch_obs != null:
-        for name in self.patch.changed_variables:
-            _changed_variables_for_batch_obs.push(name)
+        for name in self.patch.changed_variables.enumerate():
+            _changed_variables_for_batch_obs.append(name)
 
     patch = null
 
@@ -141,7 +141,7 @@ func runtime_objects_equal(obj1, obj2):
 
     var int_val = Utils.as_or_null(obj1, "IntValue")
     if int_val != null:
-        return int_val.value == Utils.cast(obj2, "IntValue")
+        return int_val.value == Utils.cast(obj2, "IntValue").value
 
     var float_val = Utils.as_or_null(obj1, "FloatValue")
     if float_val != null:
@@ -260,13 +260,17 @@ func retain_list_origins_for_assignment(old_value, new_value):
 # (String, InkObject)
 func set_global(variable_name, value):
     var old_value = null # InkObject
-    if patch == null:
+
+    # Slithgly different structure from upstream, since we can't use
+    # try_get_global in the conditional.
+    if patch != null:
         var patch_value = patch.try_get_global(variable_name)
-        if !patch_value.exists:
-            if self._global_variables.has(variable_name):
-                old_value = self._global_variables[variable_name]
-        else:
+        if patch_value.exists:
             old_value = patch_value.result
+
+    if old_value == null:
+        if self._global_variables.has(variable_name):
+            old_value = self._global_variables[variable_name]
 
     Ink.ListValue.retain_list_origins_for_assignment(old_value, value)
 

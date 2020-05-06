@@ -80,7 +80,8 @@ class Reader:
     func read_dictionary():
         var dict = {} # Dictionary<String, Variant>
 
-        if !expect("{"): return null
+        if !expect("{"):
+            return null
 
         skip_whitespace()
 
@@ -94,22 +95,26 @@ class Reader:
             skip_whitespace()
 
             var key = read_string()
-            if !expect(key != null, "dictionary key"): return null
+            if !expect(key != null, "dictionary key"):
+                return null
 
             skip_whitespace()
 
-            if !expect(":"): return null
+            if !expect(":"):
+                return null
 
             skip_whitespace()
 
             var val = read_object()
-            if !expect(val != null, "dictionary value"): return null
+            if !expect(val != null, "dictionary value"):
+                return null
 
             dict[key] = val
 
             skip_whitespace()
 
-        if !expect("}"): return null
+        if !expect("}"):
+            return null
 
         return dict
 
@@ -117,7 +122,8 @@ class Reader:
     func read_array():
         var list = []
 
-        if !expect("["): return null
+        if !expect("["):
+            return null
 
         skip_whitespace()
 
@@ -136,13 +142,15 @@ class Reader:
 
             skip_whitespace()
 
-        if !expect("]"): return null
+        if !expect("]"):
+            return null
 
         return list
 
     # () -> String
     func read_string():
-        if !expect("\""): return null
+        if !expect("\""):
+            return null
 
         var sb = ""
 
@@ -189,7 +197,8 @@ class Reader:
 
             _offset += 1
 
-        if !expect("\""): return null
+        if !expect("\""):
+            return null
         return sb
 
     # () -> Variant
@@ -289,7 +298,7 @@ class Writer:
     # (FuncRef) -> void
     func write_object(inner):
         write_object_start()
-        inner.call(self)
+        inner.call_func(self)
         write_object_end()
 
     func write_object_start():
@@ -313,6 +322,10 @@ class Writer:
             write_property_start(name)
             write(content)
             write_property_end()
+        elif content is FuncRef:
+            write_property_start(name)
+            content.call_func(self)
+            write_property_end()
         else:
             push_error("Wrong type for 'content': " + str(content))
 
@@ -325,10 +338,10 @@ class Writer:
     func write_property_end():
         assert_that(self.state == StateElement.State.PROPERTY)
         assert_that(self.child_count == 1)
-        _state_stack.pop()
+        _state_stack.pop_front()
 
     # (String) -> void
-    func write_property_name_start(name):
+    func write_property_name_start():
         assert_that(self.state == StateElement.State.OBJECT)
 
         if self.child_count > 0:
@@ -373,7 +386,7 @@ class Writer:
     # (FuncRef) -> void
     func write_property_with_function_ref(name, inner):
         write_property_start(name)
-        inner.call(self)
+        inner.call_func(self)
         write_property_end()
 
     # () -> void
@@ -385,20 +398,20 @@ class Writer:
     # () -> void
     func write_array_end():
         assert_that(self.state == StateElement.State.ARRAY)
-        _writer.Write("]")
+        _writer.write("]")
         _state_stack.pop_front()
 
     # This method didn't exist as-is in the original implementation.
     # (Variant) -> void
     func write(content):
         if content is int:
-            _writer.write_int(content)
+            write_int(content)
         elif content is float:
-            _writer.write_float(content)
+            write_float(content)
         elif content is String:
-            _writer.write_string(content)
+            write_string(content)
         elif content is bool:
-            _writer.write_bool(content)
+            write_bool(content)
         else:
             push_error("Wrong type for 'content': " + str(content))
 
@@ -470,7 +483,7 @@ class Writer:
 
     # (String) -> void
     func write_escaped_string(string):
-        for c in self.string:
+        for c in string:
             if c < ' ':
                 match c:
                     "\n":
@@ -536,7 +549,7 @@ class Writer:
     func to_string():
         return _writer.to_string()
 
-    var _state_stack # Array<StateElement>
+    var _state_stack = [] # Array<StateElement>
     var _writer # StringWriter
 
 
