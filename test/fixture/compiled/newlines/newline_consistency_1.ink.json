@@ -1,1 +1,1 @@
-﻿{"inkVersion":19,"root":[["^hello ",{"->":"world"},"\n",["done",{"#n":"g-0"}],null],"done",{"world":["^world","\n","end",{"#f":3}],"#f":3}],"listDefs":{}}
+﻿{"inkVersion":19,"root":[["^hello ",{"->":"world"},"\n",["done",{"#n":"g-0"}],null],"done",{"world":["^world","\n","end",null]}],"listDefs":{}}

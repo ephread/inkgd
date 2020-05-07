@@ -25,6 +25,8 @@ var Ink = load("res://addons/inkgd/runtime/value.gd")
 # (String, InkObject)
 signal variable_changed(variable_name, new_value)
 
+var patch # StatePatch
+
 var batch_observing_variable_changes setget set_batch_observing_variable_changes, \
                                            get_batch_observing_variable_changes
 func get_batch_observing_variable_changes():
@@ -33,14 +35,14 @@ func get_batch_observing_variable_changes():
 func set_batch_observing_variable_changes(value):
     _batch_observing_variable_changes = value
     if value:
-        _changed_variables = StringSet.new()
+        _changed_variables_for_batch_obs = StringSet.new()
     else:
-        if _changed_variables != null:
-            for variable_name in _changed_variables.enumerate():
+        if _changed_variables_for_batch_obs != null:
+            for variable_name in _changed_variables_for_batch_obs.enumerate():
                 var current_value = _global_variables[variable_name]
                 emit_signal("variable_changed", variable_name, current_value)
 
-        _changed_variables = null
+        _changed_variables_for_batch_obs = null
 
 var _batch_observing_variable_changes # bool
 
@@ -52,6 +54,11 @@ func set_call_stack(value):
         _call_stack = value
 
 func get(variable_name):
+    if self.patch != null:
+        var global = patch.try_get_global(variable_name)
+        if global.exists:
+            return global.result.value_object
+
     if _global_variables.has(variable_name):
         return _global_variables[variable_name].value_object
     elif _default_global_variables.has(variable_name):
@@ -84,33 +91,83 @@ func enumerate():
     return _global_variables.keys()
 
 func _init(call_stack, list_defs_origin):
-    get_json()
+    get_static_objects()
     _global_variables = {}
     _call_stack = call_stack
     _list_defs_origin = list_defs_origin
 
-func copy_from(to_copy):
-    _global_variables = to_copy._global_variables.duplicate()
+# () -> void
+func apply_patch():
+    for named_var_key in self.patch.globals:
+        _global_variables[named_var_key] = self.patch.globals[named_var_key]
 
-    _default_global_variables = to_copy._default_global_variables
+    if _changed_variables_for_batch_obs != null:
+        for name in self.patch.changed_variables.enumerate():
+            _changed_variables_for_batch_obs.append(name)
 
-    for connected_signal in to_copy.get_signal_connection_list("variable_changed"):
-        self.connect("variable_changed", connected_signal["target"], connected_signal["method"])
+    patch = null
 
-    if to_copy.batch_observing_variable_changes != self.batch_observing_variable_changes:
-        if to_copy.batch_observing_variable_changes:
-            _batch_observing_variable_changes = true
-            _changed_variables = to_copy._changed_variables.duplicate()
+# (Dictionary<string, Variant>) -> void
+func set_json_token(jtoken):
+    _global_variables.clear()
+
+    for var_val_key in _default_global_variables:
+        if jtoken.has(var_val_key):
+            var loaded_token = jtoken[var_val_key]
+            _global_variables[var_val_key] = Json.jtoken_to_runtime_object(loaded_token)
         else:
-            _batch_observing_variable_changes = false
-            _changed_variables = null
+            _global_variables[var_val_key] = _default_global_variables[var_val_key]
 
-var json_token setget set_json_token, get_json_token # Dictionary<String, Variant>
-func get_json_token():
-    return Json.dictionary_runtime_objs_to_jobject(_global_variables)
+# (Json.Writer) -> void
+func write_json(writer):
+    writer.write_object_start()
+    for key in _global_variables:
+        var name = key
+        var val = _global_variables[key]
 
-func set_json_token(value):
-    _global_variables = Json.jobject_to_dictionary_runtime_objs(value)
+        if InkRuntime.dont_save_default_values:
+            if self._default_global_variables.has(name):
+                if runtime_objects_equal(val, self._default_global_variables[name]):
+                    continue
+
+        writer.write_property_start(name)
+        Json.write_runtime_object(writer, val)
+        writer.write_property_end()
+    writer.write_object_end()
+
+# (InkObject, InkObject) -> bool
+func runtime_objects_equal(obj1, obj2):
+    if !Utils.are_of_same_type(obj1, obj2): return false
+
+    var int_val = Utils.as_or_null(obj1, "IntValue")
+    if int_val != null:
+        return int_val.value == Utils.cast(obj2, "IntValue").value
+
+    var float_val = Utils.as_or_null(obj1, "FloatValue")
+    if float_val != null:
+        return float_val.value == Utils.cast(obj2, "FloatValue")
+
+    var val1 = Utils.as_or_null(obj1, "Value")
+    var val2 = Utils.as_or_null(obj2, "Value")
+
+    if val1 != null:
+        if val1.value_object is Object && val2.value_object is Object:
+            return val1.value_object.equals(val2.value_object)
+        else:
+            return val1.value_object == val2.value_object
+
+    Utils.throw_exception(str("FastRoughDefinitelyEquals: Unsupported runtime ",
+                              "object type: ", obj1.get_class()))
+
+# (String, int) -> InkObject
+func get_variable_with_name(name, context_index = -1):
+    var var_value = get_raw_variable_with_name(name, context_index)
+
+    var var_pointer = Utils.as_or_null(var_value, "VariablePointerValue")
+    if var_pointer:
+        var_value = value_at_variable_pointer(var_pointer)
+
+    return var_value
 
 # (String) -> { exists: bool, result: InkObject }
 func try_get_default_variable_value(name):
@@ -125,23 +182,20 @@ func global_variable_exists_with_name(name):
             _default_global_variables != null && _default_global_variables.has(name))
 
 # (String, int) -> InkObject
-func get_variable_with_name(name, context_index = -1):
-    var var_value = get_raw_variable_with_name(name, context_index)
-
-    var var_pointer = Utils.as_or_null(var_value, "VariablePointerValue")
-    if var_pointer:
-        var_value = value_at_variable_pointer(var_pointer)
-
-    return var_value
-
-# (String, int) -> InkObject
 func get_raw_variable_with_name(name, context_index):
     var var_value = null
 
     if context_index == 0 || context_index == -1:
+        if self.patch != null:
+            var_value = self.patch.try_get_global(name)
+            if var_value.exists: return var_value.result
 
         if _global_variables.has(name):
             return _global_variables[name]
+
+        if self._default_global_variables != null:
+            if self._default_global_variables.has(name):
+                return self._default_global_variables[name]
 
         var list_item_value = _list_defs_origin.find_single_item_list_with_name(name)
 
@@ -206,16 +260,31 @@ func retain_list_origins_for_assignment(old_value, new_value):
 # (String, InkObject)
 func set_global(variable_name, value):
     var old_value = null # InkObject
-    if _global_variables.has(variable_name):
-        old_value = _global_variables[variable_name]
+
+    # Slithgly different structure from upstream, since we can't use
+    # try_get_global in the conditional.
+    if patch != null:
+        var patch_value = patch.try_get_global(variable_name)
+        if patch_value.exists:
+            old_value = patch_value.result
+
+    if old_value == null:
+        if self._global_variables.has(variable_name):
+            old_value = self._global_variables[variable_name]
 
     Ink.ListValue.retain_list_origins_for_assignment(old_value, value)
 
-    _global_variables[variable_name] = value
+    if patch != null:
+        self.patch.set_global(variable_name, value)
+    else:
+        self._global_variables[variable_name] = value
 
     if !value.equals(old_value):
         if _batch_observing_variable_changes:
-            _changed_variables.append(variable_name)
+            if patch != null:
+                patch.add_changed_variable(variable_name)
+            elif self._changed_variables_for_batch_obs != null:
+                _changed_variables_for_batch_obs.append(variable_name)
         else:
             emit_signal("variable_changed", variable_name, value)
 
@@ -252,7 +321,7 @@ var _global_variables = null # Dictionary<String, InkObject>
 var _default_global_variables = null # Dictionary<String, InkObject>
 
 var _call_stack = null # CallStack
-var _changed_variables = null # StringSet
+var _changed_variables_for_batch_obs = null # StringSet
 var _list_defs_origin = null # ListDefinitionsOrigin
 
 # ############################################################################ #
@@ -268,11 +337,13 @@ func get_class():
 # ############################################################################ #
 
 var Json = null # Eventually a pointer to InkRuntime.StaticJson
+var InkRuntime = null # Eventually a pointer to InkRuntime
 
-func get_json():
+func get_static_objects():
     var InkRuntime = Engine.get_main_loop().root.get_node("__InkRuntime")
 
     Utils.assert(InkRuntime != null,
                  str("Could not retrieve 'InkRuntime' singleton from the scene tree."))
 
+    self.InkRuntime = InkRuntime
     Json = InkRuntime.json

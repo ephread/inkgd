@@ -1,3 +1,4 @@
+# warning-ignore-all:shadowed_variable
 # warning-ignore-all:unused_class_variable
 # ############################################################################ #
 # Copyright © 2015-present inkle Ltd.
@@ -8,25 +9,31 @@
 # inkgd is licensed under the terms of the MIT license.
 # ############################################################################ #
 
-extends Node
-
-# Expected to be added to the SceneTree as a singleton object.
-
 # ############################################################################ #
-# Imports
+# !! VALUE TYPE
 # ############################################################################ #
 
-var StaticJson = load("res://addons/inkgd/runtime/static/json.gd")
-var StaticNativeFunctionCall = load("res://addons/inkgd/runtime/static/native_function_call.gd")
+enum State {
+    NONE,
+    OBJECT,
+    ARRAY,
+    PROPERTY,
+    PROPERTY_NAME,
+    STRING,
+}
+
+var type = State.NONE # State
+var child_count = 0 # int
+
+func _init(type):
+    self.type = type
 
 # ############################################################################ #
+# GDScript extra methods
+# ############################################################################ #
 
-var native_function_call = StaticNativeFunctionCall.new()
-var json = StaticJson.new(native_function_call)
+func is_class(type):
+    return type == "StateElement" || .is_class(type)
 
-var should_interrupt = false
-
-var dont_save_default_values = true
-
-func _init():
-    name = "__InkRuntime"
+func get_class():
+    return "StateElement"

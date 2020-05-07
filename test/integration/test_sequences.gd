@@ -36,7 +36,25 @@ func test_shuffle_stack_muddying():
 
     assert_eq(story.current_choices.size(), 2)
 
+func test_all_sequence_types():
+
+    var story = Story.new(load_file("all_sequence_types"))
+
+    var expected_story
+
+    # The random number generator seems to behave differently between 3.1 and 3.2.
+    if is_godot_3_1():
+        expected_story = "Once: one two\nStopping: one two two two\nDefault: one two two two\nCycle: one two one two\nShuffle: one two two one\nShuffle stopping: one two final final\nShuffle once: one two\n"
+    else:
+        expected_story = "Once: one two\nStopping: one two two two\nDefault: one two two two\nCycle: one two one two\nShuffle: two one one two\nShuffle stopping: two one final final\nShuffle once: two one\n"
+
+    assert_eq(story.continue_maximally(), expected_story)
+
 # ############################################################################ #
+
+func is_godot_3_1():
+    var engine_version = Engine.get_version_info()
+    return engine_version["major"] == 3 && engine_version["minor"] == 1
 
 func _prefix():
     return "sequences/"

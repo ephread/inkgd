@@ -38,14 +38,6 @@ var Utils = load("res://addons/inkgd/runtime/extra/utils.gd")
 
 # ############################################################################ #
 
-# (Array) -> Array
-func list_to_jarray(serialisables):
-    var jarray = []
-    for s in serialisables:
-        jarray.append(runtime_object_to_jtoken(s))
-
-    return jarray
-
 # (Array, bool) -> Array
 func jarray_to_runtime_obj_list(jarray, skip_last = false):
     var count = jarray.size()
@@ -63,16 +55,183 @@ func jarray_to_runtime_obj_list(jarray, skip_last = false):
 
     return list
 
-# (Dictionary<String, InkObject>) -> Dictionary<String, Variant>
-func dictionary_runtime_objs_to_jobject(dictionary):
-    var json_obj = {}
-
+# (Json.Writer, Dictionary<String, InkObject>) -> void
+func write_dictionary_runtime_objs(writer, dictionary):
+    writer.write_object_start()
     for key in dictionary:
-        var runtime_obj = Utils.as_or_null(dictionary[key], "InkObject")
-        if runtime_obj != null:
-            json_obj[key] = runtime_object_to_jtoken(runtime_obj)
+        writer.write_property_start(key)
+        write_runtime_object(writer, dictionary[key])
+        writer.write_property_end()
+    writer.write_object_end()
 
-    return json_obj
+# (Json.Writer, Array<InkObject>) -> void
+func write_list_runtime_objs(writer, list):
+    writer.write_array_start()
+    for val in list:
+        write_runtime_object(writer, val)
+    writer.write_array_end()
+
+# (Json.Writer, Array<Int>) -> void
+func write_int_dictionary(writer, dict):
+    writer.write_object_start()
+    for key in dict:
+        writer.write_property(key, dict[key])
+    writer.write_object_end()
+
+# (Json.Writer, InkObject) -> void
+func write_runtime_object(writer, obj):
+    var container = Utils.as_or_null(obj, "InkContainer")
+    if container:
+        write_runtime_container(writer, container)
+        return
+
+    var divert = Utils.as_or_null(obj, "Divert")
+    if divert:
+        var div_type_key = "->" # String
+        if divert.is_external:
+            div_type_key = "x()"
+        elif divert.pushes_to_stack:
+            if divert.stack_push_type == PushPopType.FUNCTION:
+                div_type_key = "f()"
+            elif divert.stackPushType == PushPopType.TUNNEL:
+                div_type_key = "->t->"
+
+        var target_str = null # String
+        if divert.has_variable_target:
+            target_str = divert.variable_divert_name
+        else:
+            target_str = divert.target_path_string
+
+        writer.write_object_start()
+
+        writer.write_property(div_type_key, target_str)
+
+        if divert.has_variable_target:
+            writer.write_property("var", true)
+
+        if divert.is_conditional:
+            writer.write_property("c", true)
+
+        if divert.external_args > 0:
+            writer.write_property("exArgs", divert.external_args)
+
+        writer.write_object_end()
+        return
+
+    var choice_point = Utils.as_or_null(obj, "ChoicePoint")
+    if choice_point:
+        writer.write_object_start()
+        writer.write_property("*", choice_point.path_string_on_choice)
+        writer.write_property("flg", choice_point.flags)
+        writer.write_object_end()
+        return
+
+    var int_val = Utils.as_or_null(obj, "IntValue")
+    if int_val:
+        writer.write(int_val.value)
+        return
+
+    var float_val = Utils.as_or_null(obj, "FloatValue")
+    if float_val:
+        writer.write(float_val.value)
+        return
+
+    var str_val = Utils.as_or_null(obj, "StringValue")
+    if str_val:
+        if str_val.is_newline:
+            writer.write_string("\\n", false)
+        else:
+            writer.write_string_start()
+            writer.write_string_inner("^")
+            writer.write_string_inner(str_val.value)
+            writer.write_string_end()
+        return
+
+    var list_val = Utils.as_or_null(obj, "ListValue")
+    if list_val:
+        write_ink_list(writer, list_val)
+        return
+
+    var div_target_val = Utils.as_or_null(obj, "DivertTargetValue")
+    if div_target_val:
+        writer.write_object_start()
+        writer.write_property("^->", div_target_val.value.components_string)
+        writer.write_object_end()
+        return
+
+    var var_ptr_val = Utils.as_or_null(obj, "VariablePointerValue")
+    if var_ptr_val:
+        writer.write_object_start()
+        writer.write_property("^var", var_ptr_val.value)
+        writer.write_property("ci", var_ptr_val.context_index)
+        writer.write_object_end()
+        return
+
+    var glue = Utils.as_or_null(obj, "Glue")
+    if glue:
+        writer.write("<>")
+        return
+
+    var control_cmd = Utils.as_or_null(obj, "ControlCommand")
+    if control_cmd:
+        writer.write(self._control_command_names[control_cmd.command_type])
+        return
+
+    var native_func = Utils.as_or_null(obj, "NativeFunctionCall")
+    if native_func:
+        var name = native_func.name
+
+        if name == "^": name = "L^"
+
+        writer.write(name)
+        return
+
+    var var_ref = Utils.as_or_null(obj, "VariableReference")
+    if var_ref:
+        writer.write_object_start()
+
+        var read_count_path = var_ref.path_string_for_count
+        if read_count_path != null:
+            writer.write_property(["CNT?"], read_count_path)
+        else:
+            writer.write_property(["VAR?"], var_ref.name)
+
+        writer.write_object_end()
+        return
+
+    var var_ass = Utils.as_or_null(obj, "VariableAssignment")
+    if var_ass:
+        writer.write_object_start()
+
+        var key = "VAR=" if var_ass.is_global else "temp="
+        writer.write_property(key, var_ass.variable_name)
+
+        if !var_ass.is_new_declaration:
+            writer.write_property("re", true)
+
+        writer.write_object_end()
+
+        return
+
+    var void_obj = Utils.as_or_null(obj, "Void")
+    if void_obj:
+        writer.write("void")
+        return
+
+    var tag = Utils.as_or_null(obj, "Tag")
+    if tag:
+        writer.write_object_start()
+        writer.write_property("#", tag.text)
+        writer.write_object_end()
+        return
+
+    var choice = Utils.as_or_null(obj, "Choice")
+    if choice:
+        write_choice(writer, choice)
+        return
+
+    Utils.throw_exception(str("Failed to convert runtime object to Json token: ", obj))
+    return null
 
 # (Dictionary<String, Variant>) -> Dictionary<String, InkObject>
 func jobject_to_dictionary_runtime_objs(jobject):
@@ -90,15 +249,6 @@ func jobject_to_int_dictionary(jobject):
         dict[key] = int(jobject[key])
 
     return dict
-
-# (Dictionary<String, int>) -> Dictionary<String, InkObject>
-func int_dictionary_to_jobject(dict):
-    var jobj = {}
-
-    for key in dict:
-        jobj[key] = dict[key]
-
-    return jobj
 
 # (Variant) -> InkObject
 func jtoken_to_runtime_object(token):
@@ -259,7 +409,7 @@ func jtoken_to_runtime_object(token):
 
             return Ink.ListValue.new_with(raw_list)
 
-        if obj["originalChoicePath"] != null:
+        if obj.has("originalChoicePath"):
             return jobject_to_choice(obj)
 
     if token is Array:
@@ -269,173 +419,45 @@ func jtoken_to_runtime_object(token):
     if token == null:
         return null
 
-    Utils.throw_exception("Failed to convert token to runtime object: " + token)
+    Utils.throw_exception("Failed to convert token to runtime object: " + str(token))
     return null
 
-# (InkObject) -> Variant
-func runtime_object_to_jtoken(obj):
-    var container = Utils.as_or_null(obj, "InkContainer")
-    if container:
-        return container_to_jarray(container)
+# (Json.Writer, InkContainer, Bool) -> void
+func write_runtime_container(writer, container, without_name = false):
+    writer.write_array_start()
 
-    var divert = Utils.as_or_null(obj, "Divert")
-    if divert:
-        var div_type_key = "->" # String
-        if divert.is_external:
-            div_type_key = "x()"
-        elif divert.pushes_to_stack:
-            if divert.stack_push_type == PushPopType.FUNCTION:
-                div_type_key = "f()"
-            elif divert.stackPushType == PushPopType.TUNNEL:
-                div_type_key = "->t->"
-
-        var target_str = null # String
-        if divert.has_variable_target:
-            target_str = divert.variable_divert_name
-        else:
-            target_str = divert.target_path_string
-
-        var jobj = {} # Dictionary<String, Variant>
-        jobj[div_type_key] = target_str
-
-        if divert.has_variable_target:
-            jobj["var"] = true
-
-        if divert.is_conditional:
-            jobj["c"] = true
-
-        if divert.external_args > 0:
-            jobj["exArgs"] = divert.external_args
-
-        return jobj
-
-    var choice_point = Utils.as_or_null(obj, "ChoicePoint")
-    if choice_point:
-        var jobj = {} # Dictionary<String, Variant>
-        jobj["*"] = choice_point.path_string_on_choice
-        jobj["flg"] = choice_point.flags
-        return jobj
-
-    var int_val = Utils.as_or_null(obj, "IntValue")
-    if int_val:
-        return int_val.value
-
-    var float_val = Utils.as_or_null(obj, "FloatValue")
-    if float_val:
-        return float_val.value
-
-    var str_val = Utils.as_or_null(obj, "StringValue")
-    if str_val:
-        if str_val.is_newline:
-            return "\n"
-        else:
-            return "^" + str_val.value
-
-    var list_val = Utils.as_or_null(obj, "ListValue")
-    if list_val:
-        return ink_list_to_jobject(list_val)
-
-    var div_target_val = Utils.as_or_null(obj, "DivertTargetValue")
-    if div_target_val:
-        var div_target_json_obj = {} # Dictionary<String, Variant>
-        div_target_json_obj["^->"] = div_target_val.value.components_string
-        return div_target_json_obj
-
-    var var_ptr_val = Utils.as_or_null(obj, "VariablePointerValue")
-    if var_ptr_val:
-        var var_ptr_json_obj = {} # Dictionary<String, Variant>
-        var_ptr_json_obj["^var"] = var_ptr_val.value
-        var_ptr_json_obj["ci"] = var_ptr_val.context_index
-        return var_ptr_json_obj
-
-    var glue = Utils.as_or_null(obj, "Glue")
-    if glue: return "<>"
-
-    var control_cmd = Utils.as_or_null(obj, "ControlCommand")
-    if control_cmd:
-        return _control_command_names[control_cmd.command_type]
-
-    var native_func = Utils.as_or_null(obj, "NativeFunctionCall")
-    if native_func:
-        var name = native_func.name
-
-        if name == "^": name = "L^"
-        return name
-
-    var var_ref = Utils.as_or_null(obj, "VariableReference")
-    if var_ref:
-        var jobj = {} # Dictionary<String, Variant>
-        var read_count_path = var_ref.path_string_for_count
-        if read_count_path != null:
-            jobj ["CNT?"] = read_count_path
-        else:
-            jobj ["VAR?"] = var_ref.name
-
-        return jobj
-
-    var var_ass = Utils.as_or_null(obj, "VariableAssignment")
-    if var_ass:
-        var key = "VAR=" if var_ass.is_global else "temp="
-        var jobj = {} # Dictionary<String, Variant>
-        jobj[key] = var_ass.variable_name
-
-        if !var_ass.is_new_declaration:
-            jobj["re"] = true
-
-        return jobj
-
-    var void_obj = Utils.as_or_null(obj, "Void")
-    if void_obj:
-        return "void"
-
-    var tag = Utils.as_or_null(obj, "Tag")
-    if tag:
-        var jobj = {} # Dictionary<String, Variant>
-        jobj["#"] = tag.text
-        return jobj
-
-    var choice = Utils.as_or_null(obj, "Choice")
-    if choice:
-        return choice_to_jobject(choice)
-
-    Utils.throw_exception(str("Failed to convert runtime object to Json token: ", obj))
-    return null
-
-# (InkContainer) -> Array<Variant>
-func container_to_jarray(container):
-    var jarray = list_to_jarray(container.content)
+    for c in container.content:
+        write_runtime_object(writer, c)
 
     var named_only_content = container.named_only_content
     var count_flags = container.count_flags
-    if (named_only_content != null && named_only_content.size() > 0 ||
-        count_flags > 0 || container.name != null):
+    var has_name_property = (container.name != null) && !without_name
 
-        var terminating_obj = null # Dictionary<String, Variant>
-        if named_only_content != null:
-            terminating_obj = dictionary_runtime_objs_to_jobject(named_only_content)
+    var has_terminator = named_only_content != null || count_flags > 0 || has_name_property
 
-            for named_content_obj_key in terminating_obj:
-                var sub_container_jarray = Utils.as_or_null(terminating_obj[named_content_obj_key], "Array")
-                if sub_container_jarray != null:
-                    var attr_jobj = Utils.as_or_null(sub_container_jarray.back(), "Dictionary")
-                    if attr_jobj != null:
-                        attr_jobj.erase("#n")
-                        if attr_jobj.size() == 0:
-                            sub_container_jarray[sub_container_jarray.size() - 1] = null
-        else:
-            terminating_obj = {}
+    if has_terminator:
+        writer.write_object_start()
 
-        if count_flags > 0:
-            terminating_obj["#f"] = count_flags
+    if named_only_content != null:
+        for named_content_key in named_only_content:
+            var name = named_content_key
+            var named_container = Utils.as_or_null(named_only_content[named_content_key], "InkContainer")
+            writer.write_property_start(name)
+            write_runtime_container(writer, named_container, true)
+            writer.write_property_end()
 
-        if container.name != null:
-            terminating_obj["#n"] = container.name
+    if count_flags > 0:
+        writer.write_property("#f", count_flags)
 
-        jarray.append(terminating_obj)
+    if has_name_property:
+        writer.write_property("#n", container.name)
+
+    if has_terminator:
+        writer.write_object_end()
     else:
-        jarray.append(null)
+        writer.write_null()
 
-    return jarray
+    writer.write_array_end()
 
 # (Array<Variant>) -> InkContainer
 func jarray_to_container(jarray):
@@ -472,35 +494,53 @@ func jobject_to_choice(jobj):
     choice.path_string_on_choice = str(jobj["targetPath"])
     return choice
 
-# (Choice) -> Dictionary<String, Variant>
-func choice_to_jobject(choice):
-    var jobj = {} # Dictionary<String, Variant>
-    jobj["text"] = choice.text
-    jobj["index"] = choice.index
-    jobj["originalChoicePath"] = choice.source_path
-    jobj["originalThreadIndex"] = choice.original_thread_index
-    jobj["targetPath"] = choice.path_string_on_choice
-    return jobj
+# (Json.Writer, Choice) -> Void
+func write_choice(writer, choice):
+    writer.write_object_start()
+    writer.write_property("text", choice.text)
+    writer.write_property("index", choice.index)
+    writer.write_property("originalChoicePath", choice.source_path)
+    writer.write_property("originalThreadIndex", choice.original_thread_index)
+    writer.write_property("targetPath", choice.path_string_on_choice)
+    writer.write_object_end()
 
-# (ListValue) -> Dictionary<String, Variant>
-func ink_list_to_jobject(list_val):
+# (Json.Writer, ListValue) -> Void
+func write_ink_list(writer, list_val):
     var raw_list = list_val.value
 
-    var dict = {} # Dictionary<String, Variant>
+    writer.write_object_start()
 
-    var content = {} # Dictionary<String, Variant>
+    writer.write_property_start("list")
+
+    writer.write_object_start()
 
     for item_key in raw_list.raw_keys():
-        var item = item_key
-        var val = raw_list.get_raw(item_key)
-        content[InkListItem.from_serialized_key(item).to_string()] = val
+        var item = InkListItem.from_serialized_key(item_key)
+        var item_val = raw_list.get_raw(item_key)
 
-    dict["list"] = content
+        writer.write_property_name_start()
+        writer.write_property_name_inner(item.origin_name if item.origin_name else "?")
+        writer.write_property_name_inner(".")
+        writer.write_property_name_inner(item.item_name)
+        writer.write_property_name_end()
+
+        writer.write(item_val)
+
+        writer.write_property_end()
+
+    writer.write_object_end()
+
+    writer.write_property_end()
 
     if raw_list.size() == 0 && raw_list.origin_names != null && raw_list.origin_names.size() > 0:
-        dict["origins"] = raw_list.origin_names
+        writer.write_property_start("origins")
+        writer.write_array_start()
+        for name in raw_list.origin_names:
+            writer.write(name)
+        writer.write_array_end()
+        writer.write_property_end()
 
-    return dict
+    writer.write_object_end()
 
 # (ListDefinitionsOrigin) -> Dictionary<String, Variant>
 func list_definitions_to_jtoken (origin):
