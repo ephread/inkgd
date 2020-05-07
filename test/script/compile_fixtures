@@ -13,7 +13,7 @@ do
     filename=$(basename "$truncated_ink_file")
 
     extra_arguments=""
-    if [[ "$filename" == "turns_since_with_variable_target.ink" || "$filename" == "read_count_variable_target.ink" || "$filename" == "read_count_variable_target.ink" ]]; then
+    if [[ "$filename" == "visit_counts_when_choosing.ink" || "$filename" == "turns_since_with_variable_target.ink" || "$filename" == "read_count_variable_target.ink" || "$filename" == "read_count_variable_target.ink" ]]; then
         extra_arguments="-c"
     fi
 

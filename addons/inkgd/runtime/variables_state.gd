@@ -113,7 +113,7 @@ func set_json_token(jtoken):
 
     for var_val_key in _default_global_variables:
         if jtoken.has(var_val_key):
-            var loaded_token = jtoken
+            var loaded_token = jtoken[var_val_key]
             _global_variables[var_val_key] = Json.jtoken_to_runtime_object(loaded_token)
         else:
             _global_variables[var_val_key] = _default_global_variables[var_val_key]

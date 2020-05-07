@@ -36,6 +36,11 @@ func test_shuffle_stack_muddying():
 
     assert_eq(story.current_choices.size(), 2)
 
+func test_all_sequence_types():
+    var story = Story.new(load_file("all_sequence_types"))
+
+    assert_eq(story.continue_maximally(), "Once: one two\nStopping: one two two two\nDefault: one two two two\nCycle: one two one two\nShuffle: two one one two\nShuffle stopping: two one final final\nShuffle once: two one\n")
+
 # ############################################################################ #
 
 func _prefix():

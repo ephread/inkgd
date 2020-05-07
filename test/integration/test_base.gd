@@ -17,16 +17,18 @@ var Story = load("res://addons/inkgd/runtime/story.gd")
 
 # ############################################################################ #
 
+var ink_runtime
+
 func before_all():
     InkRuntime.init(get_tree().root)
+    ink_runtime = get_tree().root.get_node("__InkRuntime")
 
 func after_all():
     InkRuntime.deinit(get_tree().root)
+    ink_runtime = null
 
 func after_each():
-    var InkRuntime = get_tree().root.get_node("__InkRuntime")
-
-    InkRuntime.should_interrupt = false
+    ink_runtime.should_interrupt = false
 
 # ############################################################################ #
 

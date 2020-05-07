@@ -355,7 +355,7 @@ func continue_single_step():
         if self.state.output_stream_ends_in_newline:
             if self.can_continue:
                 if self._state_snapshot_at_last_newline == null:
-                    self._state_snapshot_at_last_newline = self.state_snapshot()
+                    self.state_snapshot()
             else:
                 self.discard_snapshot()
 
@@ -454,7 +454,7 @@ func state_snapshot():
 func restore_state_snapshot():
     self._state_snapshot_at_last_newline.restore_after_patch()
 
-    self._state = _state_snapshot_at_last_newline
+    self._state = self._state_snapshot_at_last_newline
     self._state_snapshot_at_last_newline = null
 
     if !self._async_saving:

@@ -174,7 +174,7 @@ func write_runtime_object(writer, obj):
 
     var control_cmd = Utils.as_or_null(obj, "ControlCommand")
     if control_cmd:
-        writer.write(_control_command_names[control_cmd.command_type])
+        writer.write(self._control_command_names[control_cmd.command_type])
         return
 
     var native_func = Utils.as_or_null(obj, "NativeFunctionCall")
@@ -435,7 +435,7 @@ func write_runtime_container(writer, container, without_name = false):
 
     var has_terminator = named_only_content != null || count_flags > 0 || has_name_property
 
-    if (has_terminator):
+    if has_terminator:
         writer.write_object_start()
 
     if named_only_content != null:

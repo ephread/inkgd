@@ -120,10 +120,10 @@ class InkThread extends "res://addons/inkgd/runtime/ink_base.gd":
             var in_expression_evaluation = bool(jelement_obj["exp"])
             var el = Element.new(push_pop_type, pointer, in_expression_evaluation)
 
-            var jobj_temps
+            var temps
             if jelement_obj.has("temp"):
-                jobj_temps = jelement_obj["temp"] # Dictionary<string, object>
-                el.temporary_variables = Json.jobject_to_dictionary_runtime_objs(jobj_temps)
+                temps = jelement_obj["temp"] # Dictionary<string, object>
+                el.temporary_variables = Json.jobject_to_dictionary_runtime_objs(temps)
             else:
                 el.temporary_variables.clear()
 

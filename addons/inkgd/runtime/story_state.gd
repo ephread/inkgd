@@ -50,7 +50,7 @@ func load_json(json):
 # (String) -> int
 func visit_count_at_path_string(path_string):
     if self._patch != null:
-        var container = story.content_at_path(Path.new_with_components_string(path_string))
+        var container = story.content_at_path(Path.new_with_components_string(path_string)).container
         if container == null:
             Utils.throw_exception(str("Content at path not found: ", path_string))
             return 0
@@ -123,8 +123,7 @@ func turns_since_for_container(container):
                 container.debugMetadata, ") unknown. The story may need",
                 "to be compiled with countAllVisits flag (-c).")
                 )
-        return false
-
+        return null
 
     if self._patch != null:
         var turn_index = self._patch.try_get_turn_index(container)
@@ -353,7 +352,7 @@ func copy_and_start_patching():
 
 # () -> void
 func restore_after_patch():
-    self.variables_state.call_stack = self.call_stack
+    self.variables_state.call_stack = self.callstack
     self.variables_state.patch = self._patch
 
 # () -> void
@@ -435,8 +434,7 @@ func load_json_obj(jobject):
 
     self.callstack.set_json_token(jobject["callstackThreads"], self.story.get_ref())
 
-    var variable_state = self.variables_state
-    variable_state.set_json_token(jobject["variablesState"])
+    self.variables_state.set_json_token(jobject["variablesState"])
 
     self.evaluation_stack = Json.jarray_to_runtime_obj_list(jobject["evalStack"])
 
@@ -890,10 +888,12 @@ func complete_function_evaluation_from_game():
 # (string, bool) -> void
 func add_error(message, is_warning):
     if !is_warning:
-        if self.current_errors == null: self.current_errors = [] # Array<string>
+        if self.current_errors == null:
+            self.current_errors = [] # Array<string>
         self.current_errors.append(message)
     else:
-        if self.current_warnings == null: self.current_warnings = [] # Array<string>
+        if self.current_warnings == null:
+            self.current_warnings = [] # Array<string>
         self.current_warnings.append(message)
 
 # () -> void

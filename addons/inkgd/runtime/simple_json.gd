@@ -293,7 +293,7 @@ class Writer:
 
     # (String) -> Writer
     func _init():
-        _writer = StringWriter.new()
+        self._writer = StringWriter.new()
 
     # (FuncRef) -> void
     func write_object(inner):
@@ -303,19 +303,21 @@ class Writer:
 
     func write_object_start():
         start_new_object(true)
-        _state_stack.push_front(StateElement.new(StateElement.State.OBJECT))
-        _writer.write("{")
+        self._state_stack.push_front(StateElement.new(StateElement.State.OBJECT))
+        self._writer.write("{")
 
     func write_object_end():
         assert_that(self.state == StateElement.State.OBJECT)
-        _writer.write("}")
-        _state_stack.pop_front()
+        self._writer.write("}")
+        self._state_stack.pop_front()
 
     # These two methods don't need to be implemented in GDScript.
     #
     # public void WriteProperty(string name, Action<Writer> inner)
     # public void WriteProperty(int id, Action<Writer> inner)
 
+    # Also include:
+    # void WriteProperty<T>(T name, Action<Writer> inner)
     # (String, Variant) -> void
     func write_property(name, content):
         if (content is String || content is int || content is bool):
@@ -338,56 +340,49 @@ class Writer:
     func write_property_end():
         assert_that(self.state == StateElement.State.PROPERTY)
         assert_that(self.child_count == 1)
-        _state_stack.pop_front()
+        self._state_stack.pop_front()
 
     # (String) -> void
     func write_property_name_start():
         assert_that(self.state == StateElement.State.OBJECT)
 
         if self.child_count > 0:
-            _writer.write(",")
+            self._writer.write(',')
 
-        _writer.write("\"")
+        self._writer.write('"')
 
         increment_child_count()
 
-        _state_stack.push_front(StateElement.new(StateElement.State.PROPERTY))
-        _state_stack.push_front(StateElement.new(StateElement.State.PROPERTY_NAME))
+        self._state_stack.push_front(StateElement.new(StateElement.State.PROPERTY))
+        self._state_stack.push_front(StateElement.new(StateElement.State.PROPERTY_NAME))
 
     # () -> void
     func write_property_name_end():
         assert_that(self.state == StateElement.State.PROPERTY_NAME)
 
-        _writer.write("\":")
+        self._writer.write('":')
 
-        _state_stack.pop_front()
+        self._state_stack.pop_front()
 
     # (String) -> void
     func write_property_name_inner(string):
         assert_that(self.state == StateElement.State.PROPERTY_NAME)
-        _writer.write(string)
+        self._writer.write(string)
 
     # (Variant) -> void
     func write_property_start(name):
         assert_that(self.state == StateElement.State.OBJECT)
 
         if self.child_count > 0:
-            _writer.write(",")
+            self._writer.write(',')
 
-        _writer.write("\"")
-        _writer.write(str(name))
-        _writer.write("\":")
+        self._writer.write('"')
+        self._writer.write(str(name))
+        self._writer.write('":')
 
         increment_child_count()
 
         _state_stack.push_front(StateElement.new(StateElement.State.PROPERTY))
-
-    # void WriteProperty<T>(T name, Action<Writer> inner)
-    # (FuncRef) -> void
-    func write_property_with_function_ref(name, inner):
-        write_property_start(name)
-        inner.call_func(self)
-        write_property_end()
 
     # () -> void
     func write_array_start():
@@ -444,12 +439,12 @@ class Writer:
     # (String, bool) -> void
     func write_string(string, escape = true):
         start_new_object(false)
-        _writer.write("\"")
+        _writer.write('"')
         if escape:
             write_escaped_string(string)
         else:
             _writer.write(string)
-        _writer.write("\"")
+        _writer.write('"')
 
     # (bool) -> void
     func write_bool(b):
@@ -465,12 +460,12 @@ class Writer:
     func write_string_start():
         start_new_object(true)
         _state_stack.push_front(StateElement.new(StateElement.State.STRING))
-        _writer.write("\"")
+        _writer.write('"')
 
     # () -> void
     func write_string_end():
         assert_that(state == StateElement.State.STRING)
-        _writer.write("\"")
+        _writer.write('"')
         _state_stack.pop_front()
 
     # (string, bool) -> void
@@ -492,9 +487,7 @@ class Writer:
                         _writer.write("\\t")
             else:
                 match c:
-                    "\\":
-                        _writer.write("\\")
-                    "\"":
+                    '\\', '"':
                         _writer.write("\\")
                         _writer.write(c)
                     _:

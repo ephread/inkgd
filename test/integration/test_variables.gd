@@ -109,27 +109,6 @@ func test_variable_tunnel():
 
     assert_eq(story.continue_maximally(), "STUFF\n")
 
-func test_warn_variable_not_found():
-    var story1 = Story.new(load_file("warn_variable_not_found_1"))
-
-    story1.continue()
-
-    var save_state = story1.state.to_json()
-
-    var story2 = Story.new(load_file("warn_variable_not_found_2"))
-    story2.state.load_json(save_state)
-    story2.continue()
-
-    assert_true(story2.has_warning)
-
-    if story2.current_warnings == null: return
-
-    for warning in story2.current_warnings:
-        if warning.find("not found") != -1:
-            return
-
-    assert_true(false, "Ink did not warn about missing variables.")
-
 # ############################################################################ #
 
 func _prefix():
