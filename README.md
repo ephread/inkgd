@@ -1,6 +1,6 @@
 # ![inkgd](https://i.imgur.com/QbLG9Xp.png)
 
-[![CircleCI](https://circleci.com/gh/ephread/inkgd/tree/master.svg?style=shield)](https://circleci.com/gh/ephread/inkgd/tree/master)
+[![build](https://github.com/ephread/inkgd/workflows/build/badge.svg)](https://github.com/ephread/inkgd/actions)
 ![Version](https://img.shields.io/badge/version-0.1.4-orange.svg)
 ![Godot Version](https://img.shields.io/badge/godot-3.1+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
