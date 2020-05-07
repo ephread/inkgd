@@ -1,6 +1,12 @@
 # Change Log
 Important changes to _inkgd_ will be documented in this file.
 
+## [0.2.0](https://github.com/ephread/inkgd/releases/tag/0.2.0)
+Released on 2020-05-07.
+
+### Changed
+- Added support for inklecate 0.9.0
+
 ## [0.1.4](https://github.com/ephread/inkgd/releases/tag/0.1.4)
 Released on 2020-04-11.
 
