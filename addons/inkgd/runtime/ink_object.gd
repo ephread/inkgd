@@ -19,7 +19,7 @@ var InkPath = weakref(load("res://addons/inkgd/runtime/ink_path.gd"))
 
 # ############################################################################ #
 
-var parent = weakref(null) # InkObject
+var parent = WeakRef.new() # InkObject
 
 # ############################################################################ #
 
@@ -178,7 +178,7 @@ func copy():
 # (InkObject, InkObject) -> void
 func set_child(obj, value):
     if obj:
-        obj.parent = weakref(null)
+        obj.parent = WeakRef.new()
 
     obj = value
 
