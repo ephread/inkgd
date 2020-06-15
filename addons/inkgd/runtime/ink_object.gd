@@ -19,7 +19,7 @@ var InkPath = weakref(load("res://addons/inkgd/runtime/ink_path.gd"))
 
 # ############################################################################ #
 
-var parent = null # InkObject
+var parent = weakref(null) # InkObject
 
 # ############################################################################ #
 
@@ -27,8 +27,8 @@ var parent = null # InkObject
 var debug_metadata setget set_debug_metadata, get_debug_metadata
 func get_debug_metadata():
     if _debug_metadata == null:
-        if parent:
-            return parent.debug_metadata
+        if parent.get_ref():
+            return parent.get_ref().debug_metadata
 
     return _debug_metadata
 
@@ -64,13 +64,13 @@ func debug_line_number_of_path(path):
 var path setget , get_path
 func get_path():
     if _path == null:
-        if parent == null:
+        if parent.get_ref() == null:
             _path = InkPath.get_ref().new()
         else:
             var comps = [] # Stack<Path.Component>
 
             var child = self
-            var container = Utils.as_or_null(child.parent, "InkContainer")
+            var container = Utils.as_or_null(child.parent.get_ref(), "InkContainer")
 
             while container:
                 var named_child = Utils.as_INamedContent_or_null(child)
@@ -80,7 +80,7 @@ func get_path():
                     comps.push_front(InkPath.get_ref().Component.new(container.content.find(child)))
 
                 child = container
-                container = Utils.as_or_null(container.parent, "InkContainer")
+                container = Utils.as_or_null(container.parent.get_ref(), "InkContainer")
 
             _path = InkPath.get_ref().new_with_components(comps)
 
@@ -93,8 +93,8 @@ func resolve_path(path):
     if path.is_relative:
         var nearest_container = Utils.as_or_null(self, "InkContainer")
         if !nearest_container:
-            Utils.assert(self.parent != null, "Can't resolve relative path because we don't have a parent")
-            nearest_container = Utils.as_or_null(self.parent, "InkContainer")
+            Utils.assert(self.parent.get_ref() != null, "Can't resolve relative path because we don't have a parent")
+            nearest_container = Utils.as_or_null(self.parent.get_ref(), "InkContainer")
             Utils.assert(nearest_container != null, "Expected parent to be a container")
             Utils.assert(path.get_component(0).is_parent)
 
@@ -165,8 +165,8 @@ func compact_path_string(other_path):
 var root_content_container setget , get_root_content_container
 func get_root_content_container():
     var ancestor = self
-    while (ancestor.parent):
-        ancestor = ancestor.parent
+    while (ancestor.parent.get_ref()):
+        ancestor = ancestor.parent.get_ref()
 
     return Utils.as_or_null(ancestor, "InkContainer")
 
@@ -178,12 +178,12 @@ func copy():
 # (InkObject, InkObject) -> void
 func set_child(obj, value):
     if obj:
-        obj.parent = null
+        obj.parent = weakref(null)
 
     obj = value
 
     if obj:
-        obj.parent = self
+        obj.parent = weakref(self)
 
 # ############################################################################ #
 # GDScript extra methods
