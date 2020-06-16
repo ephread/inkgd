@@ -27,11 +27,14 @@ var InkPath = load("res://addons/inkgd/runtime/ink_path.gd")
 # Encapsulating container into a wek ref.
 var container setget set_container, get_container
 func set_container(value):
-    self._container = weakref(value)
+    if value == null:
+        self._container = WeakRef.new()
+    else:
+        self._container = weakref(value)
 func get_container():
     return self._container.get_ref()
 
-var _container = null # InkContainer
+var _container = WeakRef.new() # InkContainer
 
 var index = 0 # int
 

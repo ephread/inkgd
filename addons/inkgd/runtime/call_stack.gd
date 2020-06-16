@@ -123,7 +123,7 @@ class InkThread extends "res://addons/inkgd/runtime/ink_base.gd":
             var temps
             if jelement_obj.has("temp"):
                 temps = jelement_obj["temp"] # Dictionary<string, object>
-                el.temporary_variables = Json.jobject_to_dictionary_runtime_objs(temps)
+                el.temporary_variables = Json.get_ref().jobject_to_dictionary_runtime_objs(temps)
             else:
                 el.temporary_variables.clear()
 
@@ -162,7 +162,7 @@ class InkThread extends "res://addons/inkgd/runtime/ink_base.gd":
 
             if el.temporary_variables.size() > 0:
                 writer.write_property_start("temp")
-                Json.write_dictionary_runtime_objs(writer, el.temporary_variables)
+                Json.get_ref().write_dictionary_runtime_objs(writer, el.temporary_variables)
                 writer.write_property_end()
 
             writer.write_object_end()
@@ -196,7 +196,7 @@ class InkThread extends "res://addons/inkgd/runtime/ink_base.gd":
 
     # ######################################################################## #
 
-    var Json = null # Eventually a pointer to InkRuntime.StaticJson
+    var Json = WeakRef.new() # Eventually a pointer to InkRuntime.StaticJson
 
     func get_json():
         var InkRuntime = Engine.get_main_loop().root.get_node("__InkRuntime")
@@ -204,7 +204,7 @@ class InkThread extends "res://addons/inkgd/runtime/ink_base.gd":
         Utils.assert(InkRuntime != null,
                      str("Could not retrieve 'InkRuntime' singleton from the scene tree."))
 
-        Json = InkRuntime.json
+        Json = weakref(InkRuntime.json)
 
 # () -> Array<InkElement>
 var elements setget , get_elements
