@@ -114,7 +114,7 @@ func set_json_token(jtoken):
     for var_val_key in _default_global_variables:
         if jtoken.has(var_val_key):
             var loaded_token = jtoken[var_val_key]
-            _global_variables[var_val_key] = Json.jtoken_to_runtime_object(loaded_token)
+            _global_variables[var_val_key] = Json.get_ref().jtoken_to_runtime_object(loaded_token)
         else:
             _global_variables[var_val_key] = _default_global_variables[var_val_key]
 
@@ -125,13 +125,13 @@ func write_json(writer):
         var name = key
         var val = _global_variables[key]
 
-        if InkRuntime.dont_save_default_values:
+        if InkRuntime.get_ref().dont_save_default_values:
             if self._default_global_variables.has(name):
                 if runtime_objects_equal(val, self._default_global_variables[name]):
                     continue
 
         writer.write_property_start(name)
-        Json.write_runtime_object(writer, val)
+        Json.get_ref().write_runtime_object(writer, val)
         writer.write_property_end()
     writer.write_object_end()
 
@@ -336,8 +336,8 @@ func get_class():
 
 # ############################################################################ #
 
-var Json = null # Eventually a pointer to InkRuntime.StaticJson
-var InkRuntime = null # Eventually a pointer to InkRuntime
+var Json = WeakRef.new() # Eventually a pointer to InkRuntime.StaticJson
+var InkRuntime = WeakRef.new() # Eventually a pointer to InkRuntime
 
 func get_static_objects():
     var InkRuntime = Engine.get_main_loop().root.get_node("__InkRuntime")
@@ -345,5 +345,5 @@ func get_static_objects():
     Utils.assert(InkRuntime != null,
                  str("Could not retrieve 'InkRuntime' singleton from the scene tree."))
 
-    self.InkRuntime = InkRuntime
-    Json = InkRuntime.json
+    self.InkRuntime = weakref(InkRuntime)
+    Json = weakref(InkRuntime.json)
