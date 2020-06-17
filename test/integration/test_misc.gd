@@ -53,7 +53,7 @@ func test_include():
 func test_nested_include():
     var story = Story.new(load_file("nested_include"))
 
-    assert_eq(story.continue_maximally(), "The value of a variable in test file 2 is 5.\nThis is the main file\nThe value when accessed from knot_in_2 is 5.\n");
+    assert_eq(story.continue_maximally(), "The value of a variable in test file 2 is 5.\nThis is the main file\nThe value when accessed from knot_in_2 is 5.\n")
 
 func test_quote_character_significance():
     var story = Story.new(load_file("quote_character_significance"))

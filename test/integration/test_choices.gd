@@ -94,7 +94,7 @@ func test_gather_choice_same_line():
 
 func test_has_read_on_choice():
     var story = Story.new(load_file("has_read_on_choice"))
-    story.continue_maximally();
+    story.continue_maximally()
 
     assert_eq(story.current_choices.size(), 1)
     assert_eq(story.current_choices[0].text, "visible choice")
@@ -114,7 +114,7 @@ func test_non_text_in_choice_inner_content():
     story.continue()
     story.choose_choice_index(0)
 
-    assert_eq(story.continue(), "option text. Conditional bit. Next.\n");
+    assert_eq(story.continue(), "option text. Conditional bit. Next.\n")
 
 func test_once_only_choices_can_link_back_to_self():
     var story = Story.new(load_file("once_only_choices_can_link_back_to_self"))
@@ -155,7 +155,7 @@ func test_once_only_choices_with_own_content():
     story.choose_choice_index(0)
     story.continue_maximally()
 
-    assert_eq(story.current_choices.size(), 0);
+    assert_eq(story.current_choices.size(), 0)
 
 func test_should_not_gather_due_to_choice():
     var story = Story.new(load_file("should_not_gather_due_to_choice"))

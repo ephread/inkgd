@@ -48,9 +48,9 @@ func test_temp_usage_in_options():
     assert_eq(story.current_choices[0].text, "1")
     story.choose_choice_index(0)
 
-    assert_eq(story.continue_maximally(), "1\nEnd of choice\nthis another\n");
+    assert_eq(story.continue_maximally(), "1\nEnd of choice\nthis another\n")
 
-    assert_eq(story.current_choices.size(), 0);
+    assert_eq(story.current_choices.size(), 0)
 
 func test_temporaries_at_global_scope():
     var story = Story.new(load_file("temporaries_at_global_scope"))
@@ -78,8 +78,8 @@ func test_variable_get_set_api():
     assert_eq(story.continue_maximally(), "10\n")
     assert_eq(story.variables_state.get("x"), 10)
 
-    story.variables_state.set("x", 8.5);
-    story.choose_choice_index(0);
+    story.variables_state.set("x", 8.5)
+    story.choose_choice_index(0)
     assert_eq(story.continue_maximally(), "8.5\n")
     assert_eq(story.variables_state.get("x"), 8.5)
 

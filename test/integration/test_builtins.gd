@@ -40,15 +40,15 @@ func test_turns_since_nested():
 
     assert_eq(story.continue_maximally(), "-1 = -1\n")
 
-    assert_eq(story.current_choices.size(), 1);
-    story.choose_choice_index(0);
+    assert_eq(story.current_choices.size(), 1)
+    story.choose_choice_index(0)
 
-    assert_eq(story.continue_maximally(), "stuff\n0 = 0\n");
+    assert_eq(story.continue_maximally(), "stuff\n0 = 0\n")
 
-    assert_eq(story.current_choices.size(), 1);
-    story.choose_choice_index(0);
+    assert_eq(story.current_choices.size(), 1)
+    story.choose_choice_index(0)
 
-    assert_eq(story.continue_maximally(), "more stuff\n1 = 1\n");
+    assert_eq(story.continue_maximally(), "more stuff\n1 = 1\n")
 
 func test_turns_since_with_variable_target():
     var story = Story.new(load_file("turns_since_with_variable_target"))
@@ -61,13 +61,13 @@ func test_turns_since_with_variable_target():
 func test_turns_since():
     var story = Story.new(load_file("turns_since"))
 
-    assert_eq(story.continue_maximally(), "-1\n0\n");
+    assert_eq(story.continue_maximally(), "-1\n0\n")
 
     story.choose_choice_index(0)
-    assert_eq(story.continue_maximally(), "1\n");
+    assert_eq(story.continue_maximally(), "1\n")
 
     story.choose_choice_index(0)
-    assert_eq(story.continue_maximally(), "2\n");
+    assert_eq(story.continue_maximally(), "2\n")
 
 func test_turns():
     var story = Story.new(load_file("turns"))

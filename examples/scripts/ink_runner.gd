@@ -12,11 +12,11 @@ const SHOULD_LOAD_IN_BACKGROUND = true
 # Imports
 # ############################################################################ #
 
-var InkRuntime = load("res://addons/inkgd/runtime.gd");
-var Story = load("res://addons/inkgd/runtime/story.gd");
+var InkRuntime = load("res://addons/inkgd/runtime.gd")
+var Story = load("res://addons/inkgd/runtime/story.gd")
 
-var ChoiceContainer = load("res://examples/scenes/choice_container.tscn");
-var LineLabel = load("res://examples/scenes/label.tscn");
+var ChoiceContainer = load("res://examples/scenes/choice_container.tscn")
+var LineLabel = load("res://examples/scenes/label.tscn")
 
 # ############################################################################ #
 # Node

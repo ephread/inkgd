@@ -23,7 +23,7 @@ func test_multiline_logic_with_glue():
 func test_nested_pass_by_reference():
     var story = Story.new(load_file("nested_pass_by_reference"))
 
-    assert_eq(story.continue_maximally(), "5\n625\n");
+    assert_eq(story.continue_maximally(), "5\n625\n")
 
 func test_print_num():
     var story = Story.new(load_file("print_num"))

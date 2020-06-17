@@ -77,7 +77,7 @@ func _external_binding_message(arg):
     _test_external_binding_message = "MESSAGE: " + arg
 
 func _external_binding_multiply(arg1, arg2):
-    return arg1 * arg2;
+    return arg1 * arg2
 
 func _external_binding_times(number_of_times, string_value):
     var result = ""
@@ -87,7 +87,7 @@ func _external_binding_times(number_of_times, string_value):
         result += string_value
         i += 1
 
-    return result;
+    return result
 
 # ############################################################################ #
 
