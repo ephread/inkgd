@@ -142,9 +142,9 @@ func _init(json_string):
         return
 
     if root_object.has("listDefs"):
-        self._list_definitions = Json.jtoken_to_list_definitions(root_object["listDefs"])
+        self._list_definitions = Json.get_ref().jtoken_to_list_definitions(root_object["listDefs"])
 
-    self._main_content_container = Utils.as_or_null(Json.jtoken_to_runtime_object(root_token),
+    self._main_content_container = Utils.as_or_null(Json.get_ref().jtoken_to_runtime_object(root_token),
                                                     "InkContainer")
 
     self.reset_state()
@@ -156,7 +156,7 @@ func to_json():
     return writer.to_string()
 
 func write_root_property(writer):
-    Json.write_runtime_container(writer, self._main_content_container)
+    Json.get_ref().write_runtime_container(writer, self._main_content_container)
 
 # (Json.Writer) -> String
 func to_json_with_writer(writer):
@@ -1651,7 +1651,7 @@ func get_class():
 
 # ############################################################################ #
 
-var Json = null # Eventually a pointer to InkRuntime.Json
+var Json = WeakRef.new() # Eventually a pointer to InkRuntime.Json
 var _error_raised_during_step = []
 
 func _initialize_runtime():
@@ -1660,7 +1660,7 @@ func _initialize_runtime():
     Utils.assert(InkRuntime != null,
                  str("Could not retrieve 'InkRuntime' singleton from the scene tree."))
 
-    Json = InkRuntime.json
+    Json = weakref(InkRuntime.json)
 
 func _get_runtime():
     return Engine.get_main_loop().root.get_node("__InkRuntime")

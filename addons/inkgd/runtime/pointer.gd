@@ -23,7 +23,19 @@ var InkPath = load("res://addons/inkgd/runtime/ink_path.gd")
 
 # ############################################################################ #
 
-var container = null # InkContainer
+# () -> InkContainer
+# Encapsulating container into a weak ref.
+var container setget set_container, get_container
+func set_container(value):
+    if value == null:
+        self._container = WeakRef.new()
+    else:
+        self._container = weakref(value)
+func get_container():
+    return self._container.get_ref()
+
+var _container = WeakRef.new() # InkContainer
+
 var index = 0 # int
 
 # (InkContainer, int) -> InkPointer
@@ -33,19 +45,19 @@ func _init(container = null, index = 0):
 
 # () -> InkContainer
 func resolve():
-    if index < 0: return container
-    if container == null: return null
-    if container.content.size() == 0: return container
-    if index >= container.content.size(): return null
+    if index < 0: return self.container
+    if self.container == null: return null
+    if self.container.content.size() == 0: return self.container
+    if index >= self.container.content.size(): return null
 
-    return container.content[index]
+    return self.container.content[index]
 
 # ############################################################################ #
 
 # () -> bool
 var is_null setget , get_is_null
 func get_is_null():
-    return container == null
+    return self.container == null
 
 # ############################################################################ #
 
@@ -55,18 +67,18 @@ func get_path():
     if self.is_null: return null
 
     if index >= 0:
-        return container.path.path_by_appending_component(InkPath.Component.new(index))
+        return self.container.path.path_by_appending_component(InkPath.Component.new(index))
     else:
-        return container.path
+        return self.container.path
 
  ############################################################################ #
 
 # () -> String
 func to_string():
-    if container == null:
+    if self.container == null:
         return "Ink Pointer (null)"
 
-    return "Ink Pointer -> " + container.path.to_string() + " -- index " + index
+    return "Ink Pointer -> " + self.container.path.to_string() + " -- index " + index
 
 # (InkContainer) -> InkPointer
 static func start_of(container):
@@ -90,7 +102,7 @@ func get_class():
 
 # () -> Pointer
 func duplicate():
-    return Pointer().new(container, index)
+    return Pointer().new(self.container, index)
 
 static func Pointer():
     return load("res://addons/inkgd/runtime/pointer.gd")

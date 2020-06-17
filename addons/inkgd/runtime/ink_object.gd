@@ -19,7 +19,15 @@ var InkPath = weakref(load("res://addons/inkgd/runtime/ink_path.gd"))
 
 # ############################################################################ #
 
-var parent = null # InkObject
+# () -> InkObject
+# Encapsulating parent into a weak ref.
+var parent setget set_parent, get_parent
+func set_parent(value):
+    self._parent = weakref(value)
+func get_parent():
+    return self._parent.get_ref()
+
+var _parent = WeakRef.new() # InkObject
 
 # ############################################################################ #
 
@@ -27,8 +35,8 @@ var parent = null # InkObject
 var debug_metadata setget set_debug_metadata, get_debug_metadata
 func get_debug_metadata():
     if _debug_metadata == null:
-        if parent:
-            return parent.debug_metadata
+        if self.parent:
+            return self.parent.debug_metadata
 
     return _debug_metadata
 
@@ -64,7 +72,7 @@ func debug_line_number_of_path(path):
 var path setget , get_path
 func get_path():
     if _path == null:
-        if parent == null:
+        if self.parent == null:
             _path = InkPath.get_ref().new()
         else:
             var comps = [] # Stack<Path.Component>
