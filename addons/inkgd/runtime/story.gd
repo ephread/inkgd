@@ -578,13 +578,13 @@ func visit_changed_containers_due_to_divert():
         prev_ancestor = prev_ancestor if prev_ancestor else Utils.as_or_null(previous_pointer.container, "InkContainer")
         while prev_ancestor:
             self._prev_containers.append(prev_ancestor)
-            prev_ancestor = Utils.as_or_null(prev_ancestor.parent.get_ref(), "InkContainer")
+            prev_ancestor = Utils.as_or_null(prev_ancestor.parent, "InkContainer")
 
     var current_child_of_container = pointer.resolve()
 
     if current_child_of_container == null: return
 
-    var current_container_ancestor = Utils.as_or_null(current_child_of_container.parent.get_ref(), "InkContainer")
+    var current_container_ancestor = Utils.as_or_null(current_child_of_container.parent, "InkContainer")
 
     while current_container_ancestor && (self._prev_containers.find(current_container_ancestor) < 0 || current_container_ancestor.counting_at_start_only):
 
@@ -593,7 +593,7 @@ func visit_changed_containers_due_to_divert():
         self.visit_container(current_container_ancestor, entering_at_start)
 
         current_child_of_container = current_container_ancestor
-        current_container_ancestor = Utils.as_or_null(current_container_ancestor.parent.get_ref(), "InkContainer")
+        current_container_ancestor = Utils.as_or_null(current_container_ancestor.parent, "InkContainer")
 
 # (ChoicePoint) -> Choice
 func process_choice(choice_point):
@@ -1443,7 +1443,7 @@ func increment_content_pointer():
 
         successful_increment = false
 
-        var next_ancestor = Utils.as_or_null(pointer.container.parent.get_ref(), "InkContainer")
+        var next_ancestor = Utils.as_or_null(pointer.container.parent, "InkContainer")
         if !next_ancestor:
             break
 

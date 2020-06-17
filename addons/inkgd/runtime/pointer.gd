@@ -24,7 +24,7 @@ var InkPath = load("res://addons/inkgd/runtime/ink_path.gd")
 # ############################################################################ #
 
 # () -> InkContainer
-# Encapsulating container into a wek ref.
+# Encapsulating container into a weak ref.
 var container setget set_container, get_container
 func set_container(value):
     if value == null:

@@ -41,7 +41,7 @@ func get_target_pointer():
         var target_obj = resolve_path(self._target_path).obj
 
         if self._target_path.last_component.is_index:
-            self._target_pointer.container = Utils.as_or_null(target_obj.parent.get_ref(), "InkContainer")
+            self._target_pointer.container = Utils.as_or_null(target_obj.parent, "InkContainer")
             self._target_pointer.index = self._target_path.last_component.index
         else:
             self._target_pointer = Pointer.start_of(Utils.as_or_null(target_obj, "InkContainer"))

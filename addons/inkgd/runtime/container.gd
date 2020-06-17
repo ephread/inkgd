@@ -126,11 +126,11 @@ func add_content(content_obj_or_content_list):
         var content_obj = content_obj_or_content_list
         self.content.append(content_obj)
 
-        if content_obj.parent.get_ref():
-            Utils.throw_exception("content is already in " + content_obj.parent.get_ref())
+        if content_obj.parent:
+            Utils.throw_exception("content is already in " + content_obj.parent)
             return
 
-        content_obj.parent = weakref(self)
+        content_obj.parent = self
 
         try_add_named_content(content_obj)
     elif content_obj_or_content_list is Array:
@@ -142,11 +142,11 @@ func add_content(content_obj_or_content_list):
 func insert_content(content_obj, index):
     self.content.insert(index, content_obj)
 
-    if content_obj.parent.get_ref():
-        Utils.throw_exception("content is already in " + content_obj.parent.get_ref())
+    if content_obj.parent:
+        Utils.throw_exception("content is already in " + content_obj.parent)
         return
 
-    content_obj.parent = weakref(self)
+    content_obj.parent = self
 
     try_add_named_content(content_obj)
 
@@ -161,7 +161,7 @@ func try_add_named_content(content_obj):
 func add_to_named_content_only(named_content_obj):
     Utils.assert(named_content_obj.is_class("InkObject"), "Can only add Runtime.Objects to a Runtime.Container")
     var runtime_obj = named_content_obj
-    runtime_obj.parent = weakref(self)
+    runtime_obj.parent = self
 
     named_content[named_content_obj.name] = named_content_obj
 
@@ -169,7 +169,7 @@ func add_to_named_content_only(named_content_obj):
 func add_contents_of_container(other_container):
     self.content = self.content + other_container.content
     for obj in other_container.content:
-        obj.parent = weakref(self)
+        obj.parent = self
         try_add_named_content(obj)
 
 # (InkPath.Component) -> InkObject
@@ -180,7 +180,7 @@ func content_with_path_component(component):
         else:
             return null
     elif component.is_parent:
-        return self.parent.get_ref()
+        return self.parent
     else:
         if named_content.has(component.name):
             var found_content = named_content[component.name]
