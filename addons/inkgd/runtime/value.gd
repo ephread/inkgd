@@ -33,6 +33,9 @@ class Value extends "res://addons/inkgd/runtime/ink_object.gd":
 
     var InkList = load("res://addons/inkgd/runtime/ink_list.gd")
 
+    static func Utils():
+        return load("res://addons/inkgd/runtime/extra/utils.gd")
+
     # ######################################################################## #
 
     var value # Variant
@@ -106,9 +109,6 @@ class Value extends "res://addons/inkgd/runtime/ink_object.gd":
 
     func get_class():
         return "Value"
-
-    static func Utils():
-        return load("res://addons/inkgd/runtime/extra/utils.gd")
 
     static func new_with(val):
         var value = Value.new()

@@ -111,10 +111,10 @@ func get_internal_path_to_first_leaf_content():
     var container = self
     while container != null:
         if container.content.size() > 0:
-            components.append(InkPath.get_ref().Component.new(0))
+            components.append(InkPath().Component.new(0))
             container = Utils.as_or_null(container.content[0], "InkContainer")
 
-    return InkPath.get_ref().new_with_components(components)
+    return InkPath().new_with_components(components)
 
 func _init():
     self._content = [] # List<InkObject>
@@ -172,7 +172,7 @@ func add_contents_of_container(other_container):
         obj.parent = self
         try_add_named_content(obj)
 
-# (InkPath.Component) -> InkObject
+# (InkPath().Component) -> InkObject
 func content_with_path_component(component):
     if component.is_index:
         if component.index >= 0 && component.index < self.content.size():

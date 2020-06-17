@@ -18,6 +18,9 @@ extends "res://addons/inkgd/runtime/ink_object.gd"
 var Ink = load("res://addons/inkgd/runtime/value.gd")
 var InkList = load("res://addons/inkgd/runtime/ink_list.gd")
 
+static func NativeFunctionCall():
+    return load("res://addons/inkgd/runtime/native_function_call.gd")
+
 # ############################################################################ #
 
 # (String) -> NativeFunctionCall
@@ -31,7 +34,7 @@ func get_name():
 func set_name(value):
     _name = value
     if !_is_prototype:
-        _prototype = InkRuntimeNativeFunctions.get_ref().native_functions[_name]
+        _prototype = self.StaticNativeFunctionCall.native_functions[_name]
 var _name
 
 var number_of_parameters setget set_number_of_parameters, get_number_of_parameters # int
@@ -99,11 +102,11 @@ func call_coerced(parameters_of_single_type):
         if param_count == 2:
             var param2 = parameters_of_single_type[1]
 
-            var result_val = InkRuntimeNativeFunctions.get_ref().call(op_for_type, param1.value, param2.value)
+            var result_val = self.StaticNativeFunctionCall.call(op_for_type, param1.value, param2.value)
 
             return Ink.Value.create(result_val)
         else:
-            var result_val = InkRuntimeNativeFunctions.get_ref().call(op_for_type, param1.value)
+            var result_val = self.StaticNativeFunctionCall.call(op_for_type, param1.value)
 
             return Ink.Value.create(result_val)
     else:
@@ -128,7 +131,7 @@ func call_binary_list_operation(parameters):
         (v1.value_type != Ink.ValueType.LIST || v2.value_type != Ink.ValueType.LIST)
     ):
         var op = _operation_funcs[Ink.ValueType.INT]
-        var result = int(InkRuntimeNativeFunctions.get_ref().call(
+        var result = int(self.StaticNativeFunctionCall.call(
             "op_for_type",
             1 if v1.is_truthy else 0,
             1 if v2.is_truthy else 0
@@ -158,7 +161,7 @@ func call_list_increment_operation(list_int_params):
 
         var int_op = _operation_funcs[Ink.ValueType.INT]
 
-        var target_int = int(InkRuntimeNativeFunctions.get_ref().call(int_op, list_item_value, int_val.value))
+        var target_int = int(self.StaticNativeFunctionCall.call(int_op, list_item_value, int_val.value))
 
         var item_origin = null # ListDefinition
         for origin in list_val.value.origins:
@@ -235,7 +238,7 @@ func _init_with_name_and_number_of_parameters(name, number_of_parameters):
 
 func generate_native_functions_if_necessary():
     get_reference_to_functions_singleton_if_necessary()
-    InkRuntimeNativeFunctions.get_ref().generate_native_functions_if_necessary()
+    self.StaticNativeFunctionCall.generate_native_functions_if_necessary()
 
 # (ValueType, String) -> void
 func add_op_func_for_type(val_type, op):
@@ -262,16 +265,16 @@ func is_class(type):
 func get_class():
     return "NativeFunctionCall"
 
-static func NativeFunctionCall():
-    return load("res://addons/inkgd/runtime/native_function_call.gd")
-
-var InkRuntimeNativeFunctions = WeakRef.new()
+var StaticNativeFunctionCall setget, get_StaticNativeFunctionCall
+func get_StaticNativeFunctionCall():
+    return _StaticNativeFunctionCall.get_ref()
+var _StaticNativeFunctionCall = WeakRef.new()
 
 func get_reference_to_functions_singleton_if_necessary():
     # TODO: refactor
-    if InkRuntimeNativeFunctions.get_ref() == null:
+    if _StaticNativeFunctionCall.get_ref() == null:
         var scene_tree = Engine.get_main_loop()
-        InkRuntimeNativeFunctions = weakref(scene_tree.root.get_node("__InkRuntime").native_function_call)
+        _StaticNativeFunctionCall = weakref(scene_tree.root.get_node("__InkRuntime").native_function_call)
 
 static func new_with_name(name):
     var native_function_call = NativeFunctionCall().new()

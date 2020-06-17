@@ -14,6 +14,12 @@ extends Reference
 # Imports
 # ############################################################################ #
 
+static func NativeFunctionCall():
+    return load("res://addons/inkgd/runtime/native_function_call.gd")
+
+static func Ink():
+    return load("res://addons/inkgd/runtime/value.gd")
+
 # ############################################################################ #
 
 const ADD                    = "+"
@@ -278,13 +284,3 @@ func list_unary_op_value_of_list(x):               return x.max_item.value
 
 func native_func_divert_targets_equal(d1, d2):     return 1 if d1.equals(d2) else 0
 func native_func_divert_targets_not_equal(d1, d2): return 1 if !d1.equals(d2) else 0
-
-# ############################################################################ #
-# GDScript extra methods
-# ############################################################################ #
-
-static func NativeFunctionCall():
-    return load("res://addons/inkgd/runtime/native_function_call.gd")
-
-static func Ink():
-    return load("res://addons/inkgd/runtime/value.gd")

@@ -19,7 +19,9 @@ extends Reference
 # Self-reference
 # ############################################################################ #
 
-var StringSet = weakref(load("res://addons/inkgd/runtime/extra/string_set.gd"))
+var StringSet setget , get_StringSet
+func get_StringSet():
+    return load("res://addons/inkgd/runtime/extra/string_set.gd")
 
 # ############################################################################ #
 
@@ -31,7 +33,7 @@ func clear():
     _dictionary.clear()
 
 func duplicate():
-    var set = StringSet.get_ref().new()
+    var set = StringSet.new()
     set._dictionary = self._dictionary.duplicate()
     return set
 
