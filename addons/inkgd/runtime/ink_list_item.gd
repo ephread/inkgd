@@ -16,6 +16,13 @@
 extends "res://addons/inkgd/runtime/ink_object.gd"
 
 # ############################################################################ #
+# Self-reference
+# ############################################################################ #
+
+static func InkListItem():
+    return load("res://addons/inkgd/runtime/ink_list_item.gd")
+
+# ############################################################################ #
 
 var origin_name = null # String
 var item_name = null # String
@@ -85,9 +92,6 @@ func is_class(type):
 
 func get_class():
     return "InkListItem"
-
-static func InkListItem():
-    return load("res://addons/inkgd/runtime/ink_list_item.gd")
 
 # ############################################################################ #
 # These methods did not exist in the original C# code. Their purpose is to

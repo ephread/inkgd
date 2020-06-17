@@ -18,7 +18,9 @@ extends "res://addons/inkgd/runtime/ink_base.gd"
 # Self-reference
 # ############################################################################ #
 
-var SearchResult = weakref(load("res://addons/inkgd/runtime/search_result.gd"))
+var SearchResult setget , get_SearchResult
+func get_SearchResult():
+    return load("res://addons/inkgd/runtime/search_result.gd")
 
 # ############################################################################ #
 
@@ -45,7 +47,7 @@ func get_class():
 
 # () -> InkSearchResult
 func duplicate():
-    var search_result = SearchResult.get_ref().new()
+    var search_result = self.SearchResult.new()
     search_result.obj = obj
     search_result.approximate = approximate
 

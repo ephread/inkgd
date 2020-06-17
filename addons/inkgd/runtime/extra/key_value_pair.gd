@@ -11,6 +11,13 @@
 extends Reference
 
 # ############################################################################ #
+# Self-reference
+# ############################################################################ #
+
+static func KeyValuePair():
+    return load("res://addons/inkgd/runtime/extra/key_value_pair.gd")
+
+# ############################################################################ #
 
 var key = null
 var value = null
@@ -31,10 +38,3 @@ static func new_with_key_value(key, value):
     key_value_pair._init_with_key_value(key, value)
 
     return key_value_pair
-
-# ############################################################################ #
-# GDScript extra methods
-# ############################################################################ #
-
-static func KeyValuePair():
-    return load("res://addons/inkgd/runtime/extra/key_value_pair.gd")

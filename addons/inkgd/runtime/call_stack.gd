@@ -78,7 +78,7 @@ class InkThread extends "res://addons/inkgd/runtime/ink_base.gd":
     var previous_pointer = Pointer.null() # Pointer
 
     func _init():
-        get_json()
+        get_static_json()
         callstack = []
 
     # Dictionary<string, object>, Story
@@ -123,7 +123,7 @@ class InkThread extends "res://addons/inkgd/runtime/ink_base.gd":
             var temps
             if jelement_obj.has("temp"):
                 temps = jelement_obj["temp"] # Dictionary<string, object>
-                el.temporary_variables = Json.jobject_to_dictionary_runtime_objs(temps)
+                el.temporary_variables = self.Json.jobject_to_dictionary_runtime_objs(temps)
             else:
                 el.temporary_variables.clear()
 
@@ -162,7 +162,7 @@ class InkThread extends "res://addons/inkgd/runtime/ink_base.gd":
 
             if el.temporary_variables.size() > 0:
                 writer.write_property_start("temp")
-                Json.write_dictionary_runtime_objs(writer, el.temporary_variables)
+                self.Json.write_dictionary_runtime_objs(writer, el.temporary_variables)
                 writer.write_property_end()
 
             writer.write_object_end()
@@ -195,16 +195,19 @@ class InkThread extends "res://addons/inkgd/runtime/ink_base.gd":
         return thread
 
     # ######################################################################## #
+    var Json setget , get_Json
+    func get_Json():
+        return _Json.get_ref()
 
-    var Json = null # Eventually a pointer to InkRuntime.StaticJson
+    var _Json = WeakRef.new()
 
-    func get_json():
+    func get_static_json():
         var InkRuntime = Engine.get_main_loop().root.get_node("__InkRuntime")
 
         Utils.assert(InkRuntime != null,
                      str("Could not retrieve 'InkRuntime' singleton from the scene tree."))
 
-        Json = InkRuntime.json
+        _Json = weakref(InkRuntime.json)
 
 # () -> Array<InkElement>
 var elements setget , get_elements
@@ -247,8 +250,6 @@ func get_can_pop():
 
 # (InkStory | CallStack) -> CallStack
 func _init(story_context_or_to_copy):
-    get_json() # Retrieve pointer to global Json Object
-
     if story_context_or_to_copy.is_class("Story"):
         var story_context = story_context_or_to_copy
         _start_of_root = Pointer.start_of(story_context.root_content_container)
@@ -452,14 +453,3 @@ func _anonymous_write_json(writer):
     writer.write(self._thread_counter)
     writer.write_property_end()
 
-# ############################################################################ #
-
-var Json = null # Eventually a pointer to InkRuntime.StaticJson
-
-func get_json():
-    var InkRuntime = Engine.get_main_loop().root.get_node("__InkRuntime")
-
-    Utils.assert(InkRuntime != null,
-                 str("Could not retrieve 'InkRuntime' singleton from the scene tree."))
-
-    Json = InkRuntime.json

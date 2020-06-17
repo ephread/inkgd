@@ -30,7 +30,7 @@ func set_path_string_for_count(value):
     if value == null:
         path_for_count = null
     else:
-        path_for_count = InkPath.get_ref().new_with_components_string(value)
+        path_for_count = InkPath().new_with_components_string(value)
 
 func _init(name = null):
     if name:

@@ -142,9 +142,9 @@ func _init(json_string):
         return
 
     if root_object.has("listDefs"):
-        self._list_definitions = Json.jtoken_to_list_definitions(root_object["listDefs"])
+        self._list_definitions = self.Json.jtoken_to_list_definitions(root_object["listDefs"])
 
-    self._main_content_container = Utils.as_or_null(Json.jtoken_to_runtime_object(root_token),
+    self._main_content_container = Utils.as_or_null(self.Json.jtoken_to_runtime_object(root_token),
                                                     "InkContainer")
 
     self.reset_state()
@@ -156,9 +156,9 @@ func to_json():
     return writer.to_string()
 
 func write_root_property(writer):
-    Json.write_runtime_container(writer, self._main_content_container)
+    self.Json.write_runtime_container(writer, self._main_content_container)
 
-# (Json.Writer) -> String
+# (self.Json.Writer) -> String
 func to_json_with_writer(writer):
     writer.write_object_start()
 
@@ -213,7 +213,7 @@ func reset_globals():
     if (self._main_content_container.named_content.has("global decl")):
         var original_pointer = self.state.current_pointer.duplicate()
 
-        self.choose_path(InkPath.get_ref().new_with_components_string("global decl"), false)
+        self.choose_path(InkPath().new_with_components_string("global decl"), false)
 
         self.continue_internal()
 
@@ -1058,7 +1058,7 @@ func choose_path_string(path, reset_callstack = true, arguments = null):
             return
 
     self.state.pass_arguments_to_evaluation_stack(arguments)
-    self.choose_path(InkPath.get_ref().new_with_components_string(path))
+    self.choose_path(InkPath().new_with_components_string(path))
 
 func async_we_cant(activity_str):
     if self._async_continue_active:
@@ -1364,7 +1364,7 @@ func tags_for_content_at_path(path):
 
 # (String) -> Array<String>
 func tags_at_start_of_flow_container_with_path_string(path_string):
-    var path = InkPath.get_ref().new_with_components_string(path_string)
+    var path = InkPath().new_with_components_string(path_string)
 
     var flow_container = content_at_path(path).container
     while (true):
@@ -1651,7 +1651,11 @@ func get_class():
 
 # ############################################################################ #
 
-var Json = null # Eventually a pointer to InkRuntime.Json
+var Json setget , get_Json
+func get_Json():
+    return _Json.get_ref()
+var _Json = WeakRef.new()
+
 var _error_raised_during_step = []
 
 func _initialize_runtime():
@@ -1660,7 +1664,7 @@ func _initialize_runtime():
     Utils.assert(InkRuntime != null,
                  str("Could not retrieve 'InkRuntime' singleton from the scene tree."))
 
-    Json = InkRuntime.json
+    _Json = weakref(InkRuntime.json)
 
 func _get_runtime():
     return Engine.get_main_loop().root.get_node("__InkRuntime")

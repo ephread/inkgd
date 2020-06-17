@@ -15,7 +15,8 @@ extends "res://addons/inkgd/runtime/ink_base.gd"
 # Self-reference
 # ############################################################################ #
 
-var StoryState = weakref(load("res://addons/inkgd/runtime/story_state.gd"))
+static func StoryState():
+    return load("res://addons/inkgd/runtime/story_state.gd")
 
 # ############################################################################ #
 # Imports
@@ -50,7 +51,7 @@ func load_json(json):
 # (String) -> int
 func visit_count_at_path_string(path_string):
     if self._patch != null:
-        var container = story.content_at_path(Path.new_with_components_string(path_string)).container
+        var container = self.story.content_at_path(Path.new_with_components_string(path_string)).container
         if container == null:
             Utils.throw_exception(str("Content at path not found: ", path_string))
             return 0
@@ -67,7 +68,7 @@ func visit_count_at_path_string(path_string):
 # (InkContainer) -> int
 func visit_count_for_container(container):
     if !container.visits_should_be_counted:
-        self.story.get_ref().error(
+        self.story.error(
             str("Read count for target (", container.name, " - on ",
                 container.debugMetadata, ") unknown. The story may need to",
                 "be compiled with countAllVisits flag (-c).")
@@ -118,7 +119,7 @@ func record_turn_index_visit_to_container(container):
 # (InkContainer) -> ink
 func turns_since_for_container(container):
     if !container.turn_index_should_be_counted:
-        self.story.get_ref().error(
+        self.story.error(
             str("TURNS_SINCE() for target (", container.name, " - on ",
                 container.debugMetadata, ") unknown. The story may need",
                 "to be compiled with countAllVisits flag (-c).")
@@ -164,7 +165,10 @@ var story_seed = 0 # int
 var previous_random = 0 # int
 var did_safe_exit = false # bool
 
-var story = null # WeakRef<Story>
+var story setget , get_story
+func get_story():
+    return _story.get_ref()
+var _story = WeakRef.new()
 
 var current_path_string setget , get_current_path_string # String
 func get_current_path_string():
@@ -281,15 +285,15 @@ func set_in_expression_evaluation(value):
 func _init(story):
     get_json()
 
-    self.story = weakref(story)
+    self._story = weakref(story)
 
     self._output_stream = [] # Array<InkObject>
     self.output_stream_dirty()
 
     self.evaluation_stack = [] # Array<InkObject>
 
-    self.callstack = CallStack.new(self.story.get_ref())
-    self.variables_state = VariablesState.new(callstack, self.story.get_ref().list_definitions)
+    self.callstack = CallStack.new(self.story)
+    self.variables_state = VariablesState.new(callstack, self.story.list_definitions)
 
     self._visit_counts = {} # Dictionary<String, int>
     self._turn_indices = {} # Dictionary<String, int>
@@ -306,11 +310,11 @@ func _init(story):
 # () -> void
 func go_to_start():
     var current_element = self.callstack.current_element
-    current_element.current_pointer = Pointer.start_of(story.get_ref().main_content_container)
+    current_element.current_pointer = Pointer.start_of(self.story.main_content_container)
 
 # () -> StoryState
 func copy_and_start_patching():
-    var copy = StoryState.get_ref().new(self.story.get_ref())
+    var copy = StoryState().new(self.story)
 
     copy._patch = StatePatch.new(self._patch)
 
@@ -375,7 +379,7 @@ func apply_count_changes(container, new_count, is_visit):
     var counts = self._visit_counts if is_visit else  self._turn_indices
     counts[container.path.to_string()] = new_count
 
-# (Json.Writer) -> void
+# (SimpleJson.Writer) -> void
 func write_json(writer):
     writer.write_object_start()
 
@@ -414,7 +418,7 @@ func write_json(writer):
     writer.write_property("previousRandom", self.previous_random)
 
     writer.write_property("inkSaveVersion", INK_SAVE_STATE_VERSION)
-    writer.write_property("inkFormatVersion", self.story.get_ref().INK_VERSION_CURRENT)
+    writer.write_property("inkFormatVersion", self.story.INK_VERSION_CURRENT)
     writer.write_object_end()
 
 func load_json_obj(jobject):
@@ -432,24 +436,24 @@ func load_json_obj(jobject):
             ))
             return
 
-    self.callstack.set_json_token(jobject["callstackThreads"], self.story.get_ref())
+    self.callstack.set_json_token(jobject["callstackThreads"], self.story)
 
     self.variables_state.set_json_token(jobject["variablesState"])
 
-    self.evaluation_stack = Json.jarray_to_runtime_obj_list(jobject["evalStack"])
+    self.evaluation_stack = self.Json.jarray_to_runtime_obj_list(jobject["evalStack"])
 
-    self._output_stream = Json.jarray_to_runtime_obj_list(jobject["outputStream"])
+    self._output_stream = self.Json.jarray_to_runtime_obj_list(jobject["outputStream"])
     self.output_stream_dirty()
 
-    self._current_choices = Json.jarray_to_runtime_obj_list(jobject["currentChoices"])
+    self._current_choices = self.Json.jarray_to_runtime_obj_list(jobject["currentChoices"])
 
     if jobject.has("currentDivertTarget"):
         var current_divert_target_path = jobject["currentDivertTarget"]
         var divert_path = InkPath.new_with_components_string(current_divert_target_path.to_string())
-        self.diverted_pointer = story.pointer_at_path(divert_path)
+        self.diverted_pointer = self.story.pointer_at_path(divert_path)
 
-    self._visit_counts = Json.jobject_to_int_dictionary(jobject["visitCounts"])
-    self._turn_indices = Json.jobject_to_int_dictionary(jobject["turnIndices"])
+    self._visit_counts = self.Json.jobject_to_int_dictionary(jobject["visitCounts"])
+    self._turn_indices = self.Json.jobject_to_int_dictionary(jobject["turnIndices"])
     self.current_turn_index = int(jobject["turnIdx"])
     self.story_seed = int(jobject["storySeed"])
 
@@ -470,7 +474,7 @@ func load_json_obj(jobject):
             c.thread_at_generation = found_active_thread.copy()
         else:
             var jsaved_choice_thread = jchoice_threads[str(c.original_thread_index)]
-            c.thread_at_generation = CallStack.InkThread.new_with(jsaved_choice_thread, self.story.get_ref())
+            c.thread_at_generation = CallStack.InkThread.new_with(jsaved_choice_thread, self.story)
 
 # () -> void
 func reset_errors():
@@ -734,7 +738,7 @@ func push_evaluation_stack(obj):
             raw_list.origins.clear()
 
             for n in raw_list.origin_names:
-                var def = story.get_ref().list_definitions.try_list_get_definition(n)
+                var def = self.story.list_definitions.try_list_get_definition(n)
 
                 if raw_list.origins.find(def.result) < 0:
                     raw_list.origins.append(def.result)
@@ -811,7 +815,7 @@ func pop_callstack(pop_type = null):
 func set_chosen_path(path, incrementing_turn_index):
     self._current_choices.clear()
 
-    var new_pointer = self.story.get_ref().pointer_at_path(path)
+    var new_pointer = self.story.pointer_at_path(path)
 
     if !new_pointer.is_null && new_pointer.index == -1:
         new_pointer.index = 0
@@ -925,26 +929,29 @@ func get_class():
 # C# Actions & Delegates ##################################################### #
 
 func _anonymous_write_property_eval_stack(writer):
-    Json.write_list_runtime_objs(writer, self.evaluation_stack)
+    self.Json.write_list_runtime_objs(writer, self.evaluation_stack)
 
 func _anonymous_write_property_output_stream(writer):
-    Json.write_list_runtime_objs(writer, self._output_stream)
+    self.Json.write_list_runtime_objs(writer, self._output_stream)
 
 func _anonymous_write_property_current_choices(writer):
     writer.write_array_start()
     for c in self._current_choices:
-        Json.write_choice(writer, c)
+        self.Json.write_choice(writer, c)
     writer.write_array_end()
 
 func _anonymous_write_property_visit_counts(writer):
-    Json.write_int_dictionary(writer, self._visit_counts)
+    self.Json.write_int_dictionary(writer, self._visit_counts)
 
 func _anonymous_write_property_turn_indices(writer):
-    Json.write_int_dictionary(writer, self._turn_indices)
+    self.Json.write_int_dictionary(writer, self._turn_indices)
 
 # ############################################################################ #
 
-var Json = null # Eventually a pointer to InkRuntime.StaticJson
+var Json setget , get_Json
+func get_Json():
+    return _Json.get_ref()
+var _Json = WeakRef.new()
 
 func get_json():
     var InkRuntime = Engine.get_main_loop().root.get_node("__InkRuntime")
@@ -952,4 +959,4 @@ func get_json():
     Utils.assert(InkRuntime != null,
                  str("Could not retrieve 'InkRuntime' singleton from the scene tree."))
 
-    Json = InkRuntime.json
+    _Json = weakref(InkRuntime.json)
