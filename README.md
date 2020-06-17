@@ -1,7 +1,7 @@
 # ![inkgd](https://i.imgur.com/QbLG9Xp.png)
 
 [![build](https://github.com/ephread/inkgd/workflows/build/badge.svg)](https://github.com/ephread/inkgd/actions)
-![Version](https://img.shields.io/badge/version-0.2.0-orange.svg)
+![Version](https://img.shields.io/badge/version-0.2.1-orange.svg)
 ![Godot Version](https://img.shields.io/badge/godot-3.1+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
@@ -105,6 +105,10 @@ func _add_runtime():
 func _remove_runtime():
     InkRuntime.deinit(get_tree().root)
 ```
+
+Alternatively, `__InkRuntime` can also be added as a singleton with [AutoLoad].
+
+[AutoLoad]: https://docs.godotengine.org/en/stable/getting_started/step_by_step/singletons_autoload.html#autoload
 
 ##### 3. [Getting and setting variables](https://github.com/inkle/ink/blob/master/Documentation/RunningYourInk.md#settinggetting-ink-variables)
 
@@ -217,7 +221,7 @@ If you're working in a team, you may want to commit `.inkgd_ink.cfg` and keep `.
 | _inkgd_ version | inklecate version | Godot version |
 |:---------------:|:-----------------:|:-------------:|
 |  0.1.0 – 0.1.4  |   0.8.2 – 0.8.3   |  3.1 – 3.2.1  |
-|      0.2.0      |       0.9.0       |  3.1 – 3.2.1  |
+|  0.2.0 – 0.2.1  |       0.9.0       |  3.1 – 3.2.1  |
 
 ## License
 
