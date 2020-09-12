@@ -895,10 +895,12 @@ func add_error(message, is_warning):
         if self.current_errors == null:
             self.current_errors = [] # Array<string>
         self.current_errors.append(message)
+        if OS.is_debug_build(): push_error(message)
     else:
         if self.current_warnings == null:
             self.current_warnings = [] # Array<string>
         self.current_warnings.append(message)
+        if OS.is_debug_build(): push_warning(message)
 
 # () -> void
 func output_stream_dirty():
