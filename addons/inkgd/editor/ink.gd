@@ -10,15 +10,44 @@ extends EditorPlugin
 var dock = null
 
 func _enter_tree():
-    dock = preload("res://addons/inkgd/editor/ink_dock.tscn").instance()
-    add_control_to_dock(DOCK_SLOT_RIGHT_UL, dock)
+	dock = preload("res://addons/inkgd/editor/ink_dock.tscn").instance()
+	add_control_to_dock(DOCK_SLOT_RIGHT_UL, dock)
+	add_autoloads()
+	add_templates()
+	get_editor_interface().get_resource_filesystem().scan()
 
 func _exit_tree():
-    # Remove from docks (must be called so layout is updated and saved)
-    remove_control_from_docks(dock)
-    # Remove the node
-    dock.free()
+	# Remove from docks (must be called so layout is updated and saved)
+	remove_control_from_docks(dock)
+	# Remove the node
+	dock.queue_free()
+	remove_autoloads()
+	remove_templates()
+	get_editor_interface().get_resource_filesystem().scan()
 
 func build():
-    dock._build_button_pressed()
-    return true
+	dock._build_button_pressed()
+	return true
+
+func add_autoloads():
+	#Find the Ink runtime code and add it as a singleton.
+	add_autoload_singleton("__InkRuntime", "res://addons/inkgd/runtime/static/ink_runtime.gd")
+
+func remove_autoloads():
+	#Remove the Ink runtime code. 
+	remove_autoload_singleton("__InkRuntime")
+
+func add_templates():
+	var dir = Directory.new()
+	var template_dir_path = ProjectSettings.get_setting("editor/script_templates_search_path")
+	var template_file_path = template_dir_path + "/ink_template.gd"
+	if not dir.dir_exists(template_dir_path):
+		dir.make_dir(template_dir_path) 
+	dir.copy("res://addons/inkgd/editor/ink_template.gd", template_file_path)
+
+func remove_templates():
+	var dir = Directory.new()
+	var template_dir_path = ProjectSettings.get_setting("editor/script_templates_search_path")
+	var template_file_path = template_dir_path + "/ink_template.gd"
+	if dir.file_exists(template_file_path):
+		dir.remove(template_file_path)

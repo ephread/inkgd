@@ -12,32 +12,19 @@ const SHOULD_LOAD_IN_BACKGROUND = true
 # Imports
 # ############################################################################ #
 
-var InkRuntime = load("res://addons/inkgd/runtime.gd")
 var Story = load("res://addons/inkgd/runtime/story.gd")
-
-var ChoiceContainer = load("res://examples/scenes/choice_container.tscn")
-var LineLabel = load("res://examples/scenes/label.tscn")
-
-# ############################################################################ #
-# Node
-# ############################################################################ #
-
-onready var StoryMarginContainer = get_node("StoryMarginContainer")
-onready var StoryScrollContainer = StoryMarginContainer.get_node("StoryScrollContainer")
-onready var StoryVBoxContainer = StoryScrollContainer.get_node("StoryVBoxContainer")
-onready var LoadingAnimationPlayer = get_node("LoadingAnimationPlayer")
 
 # ############################################################################ #
 # Public Properties
 # ############################################################################ #
 
 var story
+export(String, FILE, "*.json") var exported_story_location
 
 # ############################################################################ #
 # Private Properties
 # ############################################################################ #
 
-var _current_choice_container
 var _loading_thread
 
 # ############################################################################ #
@@ -47,48 +34,37 @@ var _loading_thread
 func _ready():
 	call_deferred("start_story")
 
-func _exit_tree():
-	call_deferred("_remove_runtime")
-
 # ############################################################################ #
 # Public Methods
 # ############################################################################ #
 
 func start_story():
-	_add_runtime()
-
 	if SHOULD_LOAD_IN_BACKGROUND:
 		_loading_thread = Thread.new()
-		_loading_thread.start(self, "_async_load_story", "res://examples/ink/the_intercept.ink.json")
+		_loading_thread.start(self, "_async_load_story", exported_story_location)
 	else:
-		_load_story("res://examples/ink/the_intercept.ink.json")
+		_load_story(exported_story_location)
 		_bind_externals()
 		continue_story()
-		_remove_loading_overlay()
+
 
 func continue_story():
 	while story.can_continue:
 		var text = story.continue()
-
-		var label = LineLabel.instance()
-		label.text = text
-
-		StoryVBoxContainer.add_child(label)
-
+		#This text is a line of text. Set the text of a Label to this value to display it in your game. 
+		print(text)
 	if story.current_choices.size() > 0:
-		_current_choice_container = ChoiceContainer.instance()
-		StoryVBoxContainer.add_child(_current_choice_container)
-
-		_current_choice_container.create_choices(story.current_choices)
-		_current_choice_container.connect("choice_selected", self, "_choice_selected")
+		#current_choices contains a list of the choices.
+		#Each choice has a text property that contains the text of the choice.
+		for choice in story.current_choices:
+			print(choice.text)
+			
+		#_choice_selected is a function that will take the index of your selection
+		#and continue the story. 
+		_choice_selected(0)
 	else:
-		# End of story: let's check whether you took the cup of tea.
-		var teacup = story.variables_state.get("teacup")
-
-		if teacup:
-			print("Took the tea.")
-		else:
-			print("Didn't take the tea.")
+		#This code runs when the story reaches it's end. 
+		print("The End")
 
 # ############################################################################ #
 # Private Methods
@@ -102,9 +78,6 @@ func _observe_variables(variable_name, new_value):
 	print(str("Variable '", variable_name, "' changed to: ", new_value))
 
 func _choice_selected(index):
-	StoryVBoxContainer.remove_child(_current_choice_container)
-	_current_choice_container.queue_free()
-
 	story.choose_choice_index(index)
 	continue_story()
 
@@ -130,16 +103,4 @@ func _async_load_completed():
 
 	_bind_externals()
 	continue_story()
-	_remove_loading_overlay()
 
-func _remove_loading_overlay():
-	remove_child(LoadingAnimationPlayer)
-	StoryMarginContainer.show()
-	LoadingAnimationPlayer.queue_free()
-	LoadingAnimationPlayer = null
-
-func _add_runtime():
-	InkRuntime.init(get_tree().root)
-
-func _remove_runtime():
-	InkRuntime.deinit(get_tree().root)

@@ -35,20 +35,20 @@ var _buttons = []
 # ############################################################################ #
 
 func create_choices(choices):
-    for choice in choices:
-        var button = ChoiceButton.instance()
-        button.text = choice.text
-        button.connect("pressed", self, "_button_pressed", [button])
+	for choice in choices:
+		var button = ChoiceButton.instance()
+		button.text = choice.text
+		button.connect("pressed", self, "_button_pressed", [button])
 
-        _buttons.append(button)
-        ChoiceVBoxContainer.add_child(button)
+		_buttons.append(button)
+		ChoiceVBoxContainer.add_child(button)
 
 # ############################################################################ #
 # Private Methods
 # ############################################################################ #
 
 func _button_pressed(button):
-    var index = _buttons.find(button)
+	var index = _buttons.find(button)
 
-    if index != -1:
-        emit_signal("choice_selected", index)
+	if index != -1:
+		emit_signal("choice_selected", index)
