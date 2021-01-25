@@ -4,9 +4,16 @@
 # See LICENSE in the project root for license information.
 # ############################################################################ #
 
-extends Node
+# This version of the template uses yield and signals, so the story is always
+# running, and after a line of text or when it reaches a choice, it waits for
+# a signal. You may prefer this as a more modular version of the ink template. 
+
+extends %BASE%
 
 const SHOULD_LOAD_IN_BACKGROUND = true
+
+signal prompt_continue
+signal prompt_choice_made(choice_index)
 
 # ############################################################################ #
 # Imports
@@ -45,26 +52,26 @@ func start_story():
 	else:
 		_load_story(exported_story_location)
 		_bind_externals()
-		continue_story()
+		run_story()
 
-
-func continue_story():
+func run_story():
+	
 	while story.can_continue:
 		var text = story.continue()
-		#This text is a line of text. Set the text of a Label to this value to display it in your game. 
-		print(text)
-	if story.current_choices.size() > 0:
-		#current_choices contains a list of the choices.
-		#Each choice has a text property that contains the text of the choice.
-		for choice in story.current_choices:
-			print(choice.text)
-			
-		#_choice_selected is a function that will take the index of your selection
-		#and continue the story. 
-		_choice_selected(0)
-	else:
-		#This code runs when the story reaches it's end. 
-		print("The End")
+		# The story will pause until the prompt signal is emmited.  
+		yield(self, "prompt_continue")
+		if story.current_choices.size() > 0:
+			# current_choices contains a list of the choices.
+			# Each choice has a text property that contains the text of the choice.
+			for choice in story.current_choices:
+				print(choice.text)
+			# However you make the choice, either through a button or another method, you 
+			# can have this node emit the "prompt_choice_made" signal, with the index
+			# of the choice as the argument. 
+			story.choose_choice_index(yield(self, "prompt_choice_made"))
+	
+	#This code runs when the story reaches it's end. 
+	print("The End")
 
 # ############################################################################ #
 # Private Methods
@@ -76,10 +83,6 @@ func _should_show_debug_menu(debug):
 
 func _observe_variables(variable_name, new_value):
 	print(str("Variable '", variable_name, "' changed to: ", new_value))
-
-func _choice_selected(index):
-	story.choose_choice_index(index)
-	continue_story()
 
 func _async_load_story(ink_story_path):
 	_load_story(ink_story_path)
@@ -94,7 +97,9 @@ func _load_story(ink_story_path):
 	self.story = Story.new(content)
 
 func _bind_externals():
-	story.observe_variables(["forceful", "evasive"], self, "_observe_variables")
+	# Uncomment the below line to observe the variables from your ink story.
+	# You can observe multiple variables by putting them into the list as the first argument.
+	# story.observe_variables(["variable1", "variable2"], self, "_observe_variables")
 	story.bind_external_function("should_show_debug_menu", self, "_should_show_debug_menu")
 
 func _async_load_completed():
@@ -102,5 +107,5 @@ func _async_load_completed():
 	_loading_thread = null
 
 	_bind_externals()
-	continue_story()
+	run_story()
 

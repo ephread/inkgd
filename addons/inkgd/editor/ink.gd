@@ -14,7 +14,6 @@ func _enter_tree():
 	add_control_to_dock(DOCK_SLOT_RIGHT_UL, dock)
 	add_autoloads()
 	add_templates()
-	get_editor_interface().get_resource_filesystem().scan()
 
 func _exit_tree():
 	# Remove from docks (must be called so layout is updated and saved)
@@ -23,7 +22,6 @@ func _exit_tree():
 	dock.queue_free()
 	remove_autoloads()
 	remove_templates()
-	get_editor_interface().get_resource_filesystem().scan()
 
 func build():
 	dock._build_button_pressed()
@@ -39,15 +37,32 @@ func remove_autoloads():
 
 func add_templates():
 	var dir = Directory.new()
+	var names = get_plugin_templates_names()
+	#Setup the templates folder for the project
 	var template_dir_path = ProjectSettings.get_setting("editor/script_templates_search_path")
-	var template_file_path = template_dir_path + "/ink_template.gd"
 	if not dir.dir_exists(template_dir_path):
-		dir.make_dir(template_dir_path) 
-	dir.copy("res://addons/inkgd/editor/ink_template.gd", template_file_path)
+		dir.make_dir(template_dir_path)
+	for name in names:
+		var template_file_path = template_dir_path + "/" + name
+		dir.copy("res://addons/inkgd/editor/templates/"+name, template_file_path)
 
 func remove_templates():
 	var dir = Directory.new()
+	var names = get_plugin_templates_names()
 	var template_dir_path = ProjectSettings.get_setting("editor/script_templates_search_path")
-	var template_file_path = template_dir_path + "/ink_template.gd"
-	if dir.file_exists(template_file_path):
-		dir.remove(template_file_path)
+	for name in names:
+		var template_file_path = template_dir_path + "/" + name
+		if dir.file_exists(template_file_path):
+			dir.remove(template_file_path)
+
+func get_plugin_templates_names():
+	#Get all the templates from the plugin
+	var dir = Directory.new()
+	dir.change_dir("res://addons/inkgd/editor/templates/")
+	var plugin_template_names = []
+	dir.list_dir_begin(true)
+	var temp = dir.get_next()
+	while temp != "":
+		plugin_template_names.append(temp)
+		temp = dir.get_next()
+	return plugin_template_names

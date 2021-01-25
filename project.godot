@@ -42,7 +42,7 @@ window/stretch/aspect="expand"
 
 [editor_plugins]
 
-enabled=PoolStringArray( "inkgd" )
+enabled=PoolStringArray( "gut", "inkgd" )
 
 [network]
 
