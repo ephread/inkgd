@@ -10,15 +10,15 @@ extends EditorPlugin
 var dock = null
 
 func _enter_tree():
-    dock = preload("res://addons/inkgd/editor/ink_dock.tscn").instance()
-    add_control_to_dock(DOCK_SLOT_RIGHT_UL, dock)
+	dock = preload("res://addons/inkgd/editor/ink_dock.tscn").instance()
+	add_control_to_dock(DOCK_SLOT_RIGHT_UL, dock)
 
 func _exit_tree():
-    # Remove from docks (must be called so layout is updated and saved)
-    remove_control_from_docks(dock)
-    # Remove the node
-    dock.free()
+	# Remove from docks (must be called so layout is updated and saved)
+	remove_control_from_docks(dock)
+	# Remove the node
+	dock.free()
 
 func build():
-    dock._build_button_pressed()
-    return true
+	dock._build_button_pressed()
+	return true

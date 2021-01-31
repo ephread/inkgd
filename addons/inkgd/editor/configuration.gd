@@ -32,56 +32,56 @@ var _ink_config_file = ConfigFile.new()
 # ############################################################################ #
 
 func _init():
-    retrieve()
+	retrieve()
 
 # ############################################################################ #
 # Public Methods
 # ############################################################################ #
 
 func retrieve():
-    retrieve_inklecate()
-    retrieve_ink()
+	retrieve_inklecate()
+	retrieve_ink()
 
 func persist():
-    persist_inklecate()
-    persist_ink()
+	persist_inklecate()
+	persist_ink()
 
 func retrieve_inklecate():
-    var err = _compiler_config_file.load(_COMPILER_CONFIG)
-    if err != OK:
-        # Assuming it doesn't exist.
-        mono_path = ""
-        inklecate_path = ""
-        return
+	var err = _compiler_config_file.load(_COMPILER_CONFIG)
+	if err != OK:
+		# Assuming it doesn't exist.
+		mono_path = ""
+		inklecate_path = ""
+		return
 
 
-    mono_path = _compiler_config_file.get_value("inkgd", "mono_path", "")
-    inklecate_path = _compiler_config_file.get_value("inkgd", "inklecate_path", "")
+	mono_path = _compiler_config_file.get_value("inkgd", "mono_path", "")
+	inklecate_path = _compiler_config_file.get_value("inkgd", "inklecate_path", "")
 
 func retrieve_ink():
-    var err = _ink_config_file.load(_INK_CONFIG)
-    if err != OK:
-        # Assuming it doesn't exist.
-        source_file_path = ""
-        target_file_path = ""
-        return
+	var err = _ink_config_file.load(_INK_CONFIG)
+	if err != OK:
+		# Assuming it doesn't exist.
+		source_file_path = ""
+		target_file_path = ""
+		return
 
-    source_file_path = _ink_config_file.get_value("inkgd", "source_file_path", "")
-    target_file_path = _ink_config_file.get_value("inkgd", "target_file_path", "")
+	source_file_path = _ink_config_file.get_value("inkgd", "source_file_path", "")
+	target_file_path = _ink_config_file.get_value("inkgd", "target_file_path", "")
 
 
 func persist_inklecate():
-    _compiler_config_file.set_value("inkgd", "mono_path", mono_path)
-    _compiler_config_file.set_value("inkgd", "inklecate_path", inklecate_path)
+	_compiler_config_file.set_value("inkgd", "mono_path", mono_path)
+	_compiler_config_file.set_value("inkgd", "inklecate_path", inklecate_path)
 
-    var err = _compiler_config_file.save(_COMPILER_CONFIG)
-    if err != OK:
-        printerr("Could not save: " + _COMPILER_CONFIG)
+	var err = _compiler_config_file.save(_COMPILER_CONFIG)
+	if err != OK:
+		printerr("Could not save: " + _COMPILER_CONFIG)
 
 func persist_ink():
-    _ink_config_file.set_value("inkgd", "source_file_path", source_file_path)
-    _ink_config_file.set_value("inkgd", "target_file_path", target_file_path)
+	_ink_config_file.set_value("inkgd", "source_file_path", source_file_path)
+	_ink_config_file.set_value("inkgd", "target_file_path", target_file_path)
 
-    var err = _ink_config_file.save(_INK_CONFIG)
-    if err != OK:
-        printerr("Could not save: " + _INK_CONFIG)
+	var err = _ink_config_file.save(_INK_CONFIG)
+	if err != OK:
+		printerr("Could not save: " + _INK_CONFIG)

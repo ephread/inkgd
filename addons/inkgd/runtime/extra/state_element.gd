@@ -14,26 +14,26 @@
 # ############################################################################ #
 
 enum State {
-    NONE,
-    OBJECT,
-    ARRAY,
-    PROPERTY,
-    PROPERTY_NAME,
-    STRING,
+	NONE,
+	OBJECT,
+	ARRAY,
+	PROPERTY,
+	PROPERTY_NAME,
+	STRING,
 }
 
 var type = State.NONE # State
 var child_count = 0 # int
 
 func _init(type):
-    self.type = type
+	self.type = type
 
 # ############################################################################ #
 # GDScript extra methods
 # ############################################################################ #
 
 func is_class(type):
-    return type == "StateElement" || .is_class(type)
+	return type == "StateElement" || .is_class(type)
 
 func get_class():
-    return "StateElement"
+	return "StateElement"

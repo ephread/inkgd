@@ -14,5 +14,5 @@ var exists = false # Bool
 var result = null # Variant
 
 func _init(exists, result):
-    self.exists = exists
-    self.result = result
+	self.exists = exists
+	self.result = result

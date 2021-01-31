@@ -45,101 +45,101 @@ var _loading_thread
 # ############################################################################ #
 
 func _ready():
-    call_deferred("start_story")
+	call_deferred("start_story")
 
 func _exit_tree():
-    call_deferred("_remove_runtime")
+	call_deferred("_remove_runtime")
 
 # ############################################################################ #
 # Public Methods
 # ############################################################################ #
 
 func start_story():
-    _add_runtime()
+	_add_runtime()
 
-    if SHOULD_LOAD_IN_BACKGROUND:
-        _loading_thread = Thread.new()
-        _loading_thread.start(self, "_async_load_story", "res://examples/ink/the_intercept.ink.json")
-    else:
-        _load_story("res://examples/ink/the_intercept.ink.json")
-        _bind_externals()
-        continue_story()
-        _remove_loading_overlay()
+	if SHOULD_LOAD_IN_BACKGROUND:
+		_loading_thread = Thread.new()
+		_loading_thread.start(self, "_async_load_story", "res://examples/ink/the_intercept.ink.json")
+	else:
+		_load_story("res://examples/ink/the_intercept.ink.json")
+		_bind_externals()
+		continue_story()
+		_remove_loading_overlay()
 
 func continue_story():
-    while story.can_continue:
-        var text = story.continue()
+	while story.can_continue:
+		var text = story.continue()
 
-        var label = LineLabel.instance()
-        label.text = text
+		var label = LineLabel.instance()
+		label.text = text
 
-        StoryVBoxContainer.add_child(label)
+		StoryVBoxContainer.add_child(label)
 
-    if story.current_choices.size() > 0:
-        _current_choice_container = ChoiceContainer.instance()
-        StoryVBoxContainer.add_child(_current_choice_container)
+	if story.current_choices.size() > 0:
+		_current_choice_container = ChoiceContainer.instance()
+		StoryVBoxContainer.add_child(_current_choice_container)
 
-        _current_choice_container.create_choices(story.current_choices)
-        _current_choice_container.connect("choice_selected", self, "_choice_selected")
-    else:
-        # End of story: let's check whether you took the cup of tea.
-        var teacup = story.variables_state.get("teacup")
+		_current_choice_container.create_choices(story.current_choices)
+		_current_choice_container.connect("choice_selected", self, "_choice_selected")
+	else:
+		# End of story: let's check whether you took the cup of tea.
+		var teacup = story.variables_state.get("teacup")
 
-        if teacup:
-            print("Took the tea.")
-        else:
-            print("Didn't take the tea.")
+		if teacup:
+			print("Took the tea.")
+		else:
+			print("Didn't take the tea.")
 
 # ############################################################################ #
 # Private Methods
 # ############################################################################ #
 
 func _should_show_debug_menu(debug):
-    # Contrived external function example, where we just return the pre-existing value.
-    return debug
+	# Contrived external function example, where we just return the pre-existing value.
+	return debug
 
 func _observe_variables(variable_name, new_value):
-    print(str("Variable '", variable_name, "' changed to: ", new_value))
+	print(str("Variable '", variable_name, "' changed to: ", new_value))
 
 func _choice_selected(index):
-    StoryVBoxContainer.remove_child(_current_choice_container)
-    _current_choice_container.queue_free()
+	StoryVBoxContainer.remove_child(_current_choice_container)
+	_current_choice_container.queue_free()
 
-    story.choose_choice_index(index)
-    continue_story()
+	story.choose_choice_index(index)
+	continue_story()
 
 func _async_load_story(ink_story_path):
-    _load_story(ink_story_path)
-    call_deferred("_async_load_completed")
+	_load_story(ink_story_path)
+	call_deferred("_async_load_completed")
 
 func _load_story(ink_story_path):
-    var ink_story = File.new()
-    ink_story.open(ink_story_path, File.READ)
-    var content = ink_story.get_as_text()
-    ink_story.close()
+	var ink_story = File.new()
+	ink_story.open(ink_story_path, File.READ)
+	var content = ink_story.get_as_text()
+	ink_story.close()
 
-    self.story = Story.new(content)
+	self.story = Story.new(content)
 
 func _bind_externals():
-    story.observe_variables(["forceful", "evasive"], self, "_observe_variables")
-    story.bind_external_function("should_show_debug_menu", self, "_should_show_debug_menu")
+	story.observe_variables(["forceful", "evasive"], self, "_observe_variables")
+	story.bind_external_function("should_show_debug_menu", self, "_should_show_debug_menu")
 
 func _async_load_completed():
-    _loading_thread.wait_to_finish()
-    _loading_thread = null
+	_loading_thread.wait_to_finish()
+	_loading_thread = null
 
-    _bind_externals()
-    continue_story()
-    _remove_loading_overlay()
+	_bind_externals()
+	continue_story()
+	_remove_loading_overlay()
 
 func _remove_loading_overlay():
-    remove_child(LoadingAnimationPlayer)
-    StoryMarginContainer.show()
-    LoadingAnimationPlayer.queue_free()
-    LoadingAnimationPlayer = null
+	remove_child(LoadingAnimationPlayer)
+	StoryMarginContainer.show()
+	LoadingAnimationPlayer.queue_free()
+	LoadingAnimationPlayer = null
 
 func _add_runtime():
-    InkRuntime.init(get_tree().root)
+	InkRuntime.init(get_tree().root)
 
 func _remove_runtime():
-    InkRuntime.deinit(get_tree().root)
+	InkRuntime.deinit(get_tree().root)

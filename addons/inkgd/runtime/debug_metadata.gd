@@ -21,17 +21,17 @@ var source_name = null # String
 
 # () -> String
 func to_string():
-    if file_name != null:
-        return str("line ", start_line_number, " of ", file_name)
-    else:
-        return str("line ", start_line_number)
+	if file_name != null:
+		return str("line ", start_line_number, " of ", file_name)
+	else:
+		return str("line ", start_line_number)
 
 # ############################################################################ #
 # GDScript extra methods
 # ############################################################################ #
 
 func is_class(type):
-    return type == "DebugMetadata" || .is_class(type)
+	return type == "DebugMetadata" || .is_class(type)
 
 func get_class():
-    return "DebugMetadata"
+	return "DebugMetadata"

@@ -8,7 +8,7 @@
 # ############################################################################ #
 
 enum PushPopType {
-    TUNNEL,
-    FUNCTION,
-    FUNCTION_EVALUATION_FROM_GAME
+	TUNNEL,
+	FUNCTION,
+	FUNCTION_EVALUATION_FROM_GAME
 }

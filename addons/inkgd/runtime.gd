@@ -9,12 +9,12 @@
 extends Node
 
 static func init(root_node):
-    if root_node.has_node("__InkRuntime"):
-        return
+	if root_node.has_node("__InkRuntime"):
+		return
 
-    var InkRuntime = load("res://addons/inkgd/runtime/static/ink_runtime.gd")
-    root_node.add_child(InkRuntime.new())
+	var InkRuntime = load("res://addons/inkgd/runtime/static/ink_runtime.gd")
+	root_node.add_child(InkRuntime.new())
 
 static func deinit(root_node):
-    var _ink_runtime = root_node.get_node("__InkRuntime")
-    root_node.remove_child(_ink_runtime)
+	var _ink_runtime = root_node.get_node("__InkRuntime")
+	root_node.remove_child(_ink_runtime)
