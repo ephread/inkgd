@@ -1,6 +1,12 @@
 # Change Log
 Important changes to _inkgd_ will be documented in this file.
 
+## [0.2.2](https://github.com/ephread/inkgd/releases/tag/0.2.2)
+Released on 2020-06-17.
+
+### Changed
+- Made runtime & story error more explicit.
+
 ## [0.2.1](https://github.com/ephread/inkgd/releases/tag/0.2.1)
 Released on 2020-06-17.
 
