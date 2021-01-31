@@ -108,6 +108,13 @@ func _remove_runtime():
 
 Alternatively, `__InkRuntime` can also be added as a singleton with [AutoLoad].
 
+`__InkRuntime` contains a few configuration settings you may want to tweak. To that end,
+`InkRuntime.init()` returns the `__InkRuntime` added to the tree. The two following settings
+are enabled by default, but you can disable them if they interfere with your environment.
+
+- `should_pause_execution_on_runtime_error`: pause the execution in debug when a runtime error is raised.
+- `should_pause_execution_on_story_error`: pause the execution in debug when a story error is raised.
+
 [AutoLoad]: https://docs.godotengine.org/en/stable/getting_started/step_by_step/singletons_autoload.html#autoload
 
 ##### 3. [Getting and setting variables](https://github.com/inkle/ink/blob/master/Documentation/RunningYourInk.md#settinggetting-ink-variables)

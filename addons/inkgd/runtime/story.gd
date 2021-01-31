@@ -255,7 +255,7 @@ func continue_internal(millisecs_limit_async = 0):
 		self._async_continue_active = is_async_time_limited
 
 		if !self.can_continue:
-			Utils.throw_story_exception("Can't continue - should check canContinue before calling Continue")
+			Utils.throw_exception("Can't continue - should check canContinue before calling Continue")
 			return
 
 		self._state.did_safe_exit = false
@@ -437,11 +437,11 @@ func pointer_at_path(path):
 		p.index = -1
 
 	if result.obj == null || result.obj == self.main_content_container && path_length_to_use > 0:
-		error(str("Failed to find content at path '", path,
+		error(str("Failed to find content at path '", path.to_string(),
 				  "', and no approximation of it was possible."))
 	elif result.approximate:
 		warning(str("Failed to find content at path '", path,
-					"', so it was approximated to: '", result.obj.path, "'."))
+					"', so it was approximated to: '", result.obj.path.to_string(), "'."))
 
 	return p
 
@@ -641,7 +641,7 @@ func is_truthy(obj):
 
 		if Utils.is_ink_class(obj, "DivertTargetValue"):
 			var div_target = val
-			error(str("Shouldn't use a divert target (to ", div_target.target_path,
+			error(str("Shouldn't use a divert target (to ", div_target.target_path.to_string(),
 					  ") as a conditional value. Did you intend a function call 'likeThis()'",
 					  " or a read count check 'likeThis'? (no arrows)"))
 			return false
@@ -709,7 +709,7 @@ func perform_logic_and_flow_control(content_obj):
 				error("Divert target doesn't exist: " + current_divert.debug_metadata.source_name)
 				return false
 			else:
-				error("Divert resolution failed: " + current_divert)
+				error("Divert resolution failed: " + current_divert.to_string())
 				return false
 
 		return true
@@ -1536,7 +1536,10 @@ func error(message, use_end_line_number = false):
 	if InkRuntime != null:
 		InkRuntime.should_interrupt = true
 
-	_error_raised_during_step.append(Error.new(message, use_end_line_number))
+	if InkRuntime.should_pause_execution_on_runtime_error:
+		Utils.throw_story_exception(message)
+	else:
+		_error_raised_during_step.append(Error.new(message, use_end_line_number))
 
 # (String) -> void
 func warning(message):

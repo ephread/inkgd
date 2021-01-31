@@ -20,7 +20,7 @@ var Story = load("res://addons/inkgd/runtime/story.gd")
 var ink_runtime
 
 func before_all():
-	InkRuntime.init(get_tree().root)
+	InkRuntime.init(get_tree().root, false)
 	ink_runtime = get_tree().root.get_node("__InkRuntime")
 
 func after_all():

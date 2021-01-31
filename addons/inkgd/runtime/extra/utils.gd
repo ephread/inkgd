@@ -30,8 +30,12 @@ static func _schedule_story_for_interruption_with_error(message):
 
 	InkRuntime.should_interrupt = true
 
-	push_error(message)
-	printerr(message)
+	if InkRuntime.should_pause_execution_on_runtime_error && OS.is_debug_build():
+		assert(false, message)
+	else:
+		push_error(message)
+		printerr(message)
+
 	print_stack_trace()
 
 static func print_stack_trace():

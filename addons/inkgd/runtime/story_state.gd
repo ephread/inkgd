@@ -897,7 +897,12 @@ func add_error(message, is_warning):
 		if self.current_errors == null:
 			self.current_errors = [] # Array<string>
 		self.current_errors.append(message)
-		if OS.is_debug_build(): push_error(message)
+		if OS.is_debug_build():
+			var InkRuntime = _get_runtime()
+			if InkRuntime != null && InkRuntime.should_pause_execution_on_story_error:
+				assert(false, message)
+			else:
+				push_error(message)
 	else:
 		if self.current_warnings == null:
 			self.current_warnings = [] # Array<string>
@@ -964,3 +969,8 @@ func get_json():
 				 str("Could not retrieve 'InkRuntime' singleton from the scene tree."))
 
 	_Json = weakref(InkRuntime.json)
+
+# ############################################################################ #
+
+func _get_runtime():
+	return Engine.get_main_loop().root.get_node("__InkRuntime")
