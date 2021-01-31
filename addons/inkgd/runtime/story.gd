@@ -277,6 +277,12 @@ func continue_internal(millisecs_limit_async = 0):
 			for error in _error_raised_during_step:
 				add_error(error.message, false, error.use_end_line_number)
 			_error_raised_during_step.clear()
+
+			# Restore ability to continue.
+			push_warning("The story has recovered from an exception and may be in an inconsistent state. Proceed with care.")
+			var InkRuntime = _get_runtime()
+			if InkRuntime != null:
+				InkRuntime.should_interrupt = false
 			break
 
 		if output_stream_ends_in_newline:

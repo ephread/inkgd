@@ -187,6 +187,13 @@ var result = story.evaluate_function("multiply", [5, 3], true)
 # }
 ```
 
+##### 7. Error Handling
+
+The original implementation relies on C#'s exceptions to report and recover from inconsistent states.
+Exceptions are not available in GDScript, so the runtime may behave slightly differently. In particular,
+if an error is encountered during `story.continue()`, the story may be inconsistent state even though
+it can still more forward after calling `story.reset_errors()`.
+
 #### Loading the story from a background thread
 
 For bigger stories, loading the compiled story into the runtime can take a long time (more than a second). To avoid blocking the main thread, you may want to load the story from a background thread and display a loading indicator.

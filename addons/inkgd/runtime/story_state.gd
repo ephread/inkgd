@@ -476,10 +476,15 @@ func load_json_obj(jobject):
 			var jsaved_choice_thread = jchoice_threads[str(c.original_thread_index)]
 			c.thread_at_generation = CallStack.InkThread.new_with(jsaved_choice_thread, self.story)
 
+	# Restore ability to continue.
+	var InkRuntime = _get_runtime()
+	if InkRuntime != null:
+		InkRuntime.should_interrupt = false
+
 # () -> void
 func reset_errors():
-	self._current_errors = null
-	self._current_warnings = null
+	self.current_errors = null
+	self.current_warnings = null
 
 # (Array<InkObject>) -> void
 func reset_output(objs = null):
