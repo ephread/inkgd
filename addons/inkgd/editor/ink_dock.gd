@@ -65,6 +65,7 @@ func _ready():
 	TargetFileLineEdit.connect("focus_exited", self, "_configuration_focus_exited")
 
 	MonoDialogButton.connect("pressed", self, "_mono_button_pressed")
+	MonoDialogButton.icon = get_icon("Folder", "EditorIcons")
 	ExecutableDialogButton.connect("pressed", self, "_executable_button_pressed")
 	ExecutableDialogButton.icon = get_icon("Folder", "EditorIcons")
 	SourceFileDialogButton.connect("pressed", self, "_source_file_button_pressed")
