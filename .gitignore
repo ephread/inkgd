@@ -7,3 +7,6 @@ export_presets.cfg
 
 .inkgd_compiler.cfg
 inkgd-issue-*
+
+# sphinx build folder
+docs/build
