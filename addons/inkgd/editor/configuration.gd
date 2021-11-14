@@ -15,6 +15,7 @@ const _INK_CONFIG = _ROOT_DIR + ".inkgd_ink.cfg"
 # Properties
 # ############################################################################ #
 
+var use_mono: bool = false
 var mono_path: String = ""
 var inklecate_path: String = ""
 var source_file_path: String = ""
@@ -54,7 +55,7 @@ func retrieve_inklecate():
 		inklecate_path = ""
 		return
 
-
+	use_mono = _compiler_config_file.get_value("inkgd", "use_mono", false)
 	mono_path = _compiler_config_file.get_value("inkgd", "mono_path", "")
 	inklecate_path = _compiler_config_file.get_value("inkgd", "inklecate_path", "")
 
@@ -71,6 +72,7 @@ func retrieve_ink():
 
 
 func persist_inklecate():
+	_compiler_config_file.set_value("inkgd", "use_mono", use_mono)
 	_compiler_config_file.set_value("inkgd", "mono_path", mono_path)
 	_compiler_config_file.set_value("inkgd", "inklecate_path", inklecate_path)
 
