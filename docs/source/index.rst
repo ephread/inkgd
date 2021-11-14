@@ -1,4 +1,4 @@
-Inkgd: Ink for Godot – *master* branch
+Inkgd: Ink for Godot – *main* branch
 ======================================
 
 .. toctree::
