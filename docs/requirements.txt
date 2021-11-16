@@ -1,3 +1,7 @@
 Sphinx==4.3.0
+<<<<<<< HEAD
 sphinx-rtd-theme==1.0.0
 myst-parser==0.15.2
+=======
+sphinx-rtd-theme==1.0.0
+>>>>>>> 4f482c270d64bdc59e1bbee0719f7c38578aa246
