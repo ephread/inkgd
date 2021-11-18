@@ -30,36 +30,43 @@ The easy way
 Open a new Godot project, then navigate to "AssetLib" on the top of the screen, search for "inkgd".
 
 .. image:: img/image-1.png
+    :align: center
     :alt: Godot AssetLib 
 
 Select "inkgd" from author "ephread".
 
 .. image:: img/image-2.png
+    :align: center
     :alt: Search for inkgd
 
 In the popup screen click "Download".
 
 .. image:: img/image-3.png
+    :align: center
     :alt: Click download
 
 Once the addon is downloaded to your computer a popup screen will show up, this describes the new files it'll add to your project. By default it should select everything, if this is not the case then select all files, click "Install".
 
 .. image:: img/image-4.png
+    :align: center
     :alt: Click install
 
 After the installation is done a popup message will show saying the addon was added to your project, click "Ok" to close it.
 
 .. image:: img/image-5.png
+    :align: center
     :alt: Click ok
 
 You can see the added files in your file explorer, *inkgd* will be under the *addon* folder.
 
 .. image:: img/image-6.png
+    :align: center
     :alt: Addon location
 
 *inkgd* also comes with a convenient Ink editor which you can use within Godot, you can enable this plugin in Project > Project Settings > Plugins. This is not required to use *inkgd* API though, you can still compile your Ink stories with other Ink editors (such as `Inky <https://github.com/inkle/inky/releases/tag/0.12.0>`__) and use the compiled version with *inkgd* (``.ink.json`` files).
 
 .. image:: img/image-7.png
+    :align: center
     :alt: Plugin location
 
 The slightly difficult way
@@ -83,12 +90,15 @@ In order to always have the API running in the background, *inkgd* runs as a sin
 Add "addons/inkgd/runtime.gd" as a singleton in your project, this will take care of all the initialization of *inkgd* for us.
 
 .. image:: img/image-8.png
+    :align: center
     :alt: Autoload page
 
 .. image:: img/image-9.png
+    :align: center
     :alt: Add runtime.gd
 
 .. image:: img/image-10.png
+    :align: center
     :alt: Singleton created
 
 That's it! You can now start using *inkgd* on your Godot scripts. Jump over to the next section to create your first game with *inkgd*.
