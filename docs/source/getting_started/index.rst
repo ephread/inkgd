@@ -14,6 +14,7 @@ What is *inkgd*?
 A normal use of *inkgd* would be to load a compiled story in ``.ink.json`` and call ``continue_story`` until a branch is found. Here the choices are read as an array of strings and the story waits for you to input a choice. Once you submit the selected choice (represented by the index of the choices array) to the story, you repeat the process (i.e. keep calling ``continue_story`` until a branch is found).
 
 .. image:: img/flowchart.png
+    :align: center
     :alt: Normal flowchart 
 
 Remember that this API only provides the text, it does not provide a graphical representation of the Ink story. That's up to you.
