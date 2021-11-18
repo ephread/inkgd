@@ -10,3 +10,6 @@ inkgd-issue-*
 
 # sphinx build folder
 docs/build
+
+# Visual Studio code
+.vscode
