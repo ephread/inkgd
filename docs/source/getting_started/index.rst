@@ -93,12 +93,18 @@ Add "addons/inkgd/runtime.gd" as a singleton in your project, this will take car
     :align: center
     :alt: Autoload page
 
+|
+
 .. image:: img/image-9.png
     :align: center
     :alt: Add runtime.gd
 
+|
+
 .. image:: img/image-10.png
     :align: center
     :alt: Singleton created
+
+|
 
 That's it! You can now start using *inkgd* on your Godot scripts. Jump over to the next section to create your first game with *inkgd*.
