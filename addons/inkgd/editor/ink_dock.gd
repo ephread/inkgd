@@ -65,7 +65,7 @@ func _ready():
 	ExecutableLineEdit.text = configuration.inklecate_path
 	SourceFileLineEdit.text = configuration.source_file_path
 	TargetFileLineEdit.text = configuration.target_file_path
-	
+
 	AdvancedPopupMenu.connect("id_pressed", self, "_use_mono_id_pressed")
 
 	MonoLineEdit.connect("text_entered", self, "_mono_selected")
