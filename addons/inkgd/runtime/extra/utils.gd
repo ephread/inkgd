@@ -30,8 +30,12 @@ static func _schedule_story_for_interruption_with_error(message):
 
 	InkRuntime.should_interrupt = true
 
-	push_error(message)
-	printerr(message)
+	if InkRuntime.should_pause_execution_on_runtime_error && OS.is_debug_build():
+		assert(false, message)
+	else:
+		push_error(message)
+		printerr(message)
+
 	print_stack_trace()
 
 static func print_stack_trace():
@@ -67,7 +71,7 @@ static func as_or_null(variant, name_of_class):
 	if (is_ink_class(variant, name_of_class) ||
 		name_of_class == "Dictionary" && variant is Dictionary ||
 		name_of_class == "Array" && variant is Array
-	   ):
+	):
 		return variant
 	else:
 		return null
@@ -76,8 +80,10 @@ static func cast(variant, name_of_class):
 	if is_ink_class(variant, name_of_class):
 		return variant
 	else:
-		push_error(str("Original implementation threw a RuntimeException here, because of a ",
-					   "cast issue. Undefined behaviors should be expected."))
+		push_error(str(
+			"Original implementation threw a RuntimeException here, because of a ",
+			"cast issue. Undefined behaviors should be expected."
+		))
 
 		assert(false)
 		return null

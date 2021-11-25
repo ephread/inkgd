@@ -20,13 +20,13 @@ var Utils = preload("res://addons/inkgd/runtime/extra/utils.gd")
 # ############################################################################ #
 
 func equals(ink_base) -> bool:
-    return false
+	return false
 
 func to_string() -> String:
-    return str(self)
+	return str(self)
 
 func is_class(type):
-    return type == "InkBase" || .is_class(type)
+	return type == "InkBase" || .is_class(type)
 
 func get_class():
-    return "InkBase"
+	return "InkBase"

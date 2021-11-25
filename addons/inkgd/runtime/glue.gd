@@ -11,14 +11,14 @@ extends "res://addons/inkgd/runtime/ink_object.gd"
 
 # () -> String
 func to_string():
-    return "Glue"
+	return "Glue"
 
 # ############################################################################ #
 # GDScript extra methods
 # ############################################################################ #
 
 func is_class(type):
-    return type == "Glue" || .is_class(type)
+	return type == "Glue" || .is_class(type)
 
 func get_class():
-    return "Glue"
+	return "Glue"

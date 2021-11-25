@@ -17,12 +17,12 @@ var InkPath = preload("res://addons/inkgd/runtime/ink_path.gd")
 # ############################################################################ #
 
 func test_paths():
-    var path1 = InkPath.new_with_components_string("hello.1.world")
-    var path2 = InkPath.new_with_components_string("hello.1.world")
+	var path1 = InkPath.new_with_components_string("hello.1.world")
+	var path2 = InkPath.new_with_components_string("hello.1.world")
 
-    var path3 = InkPath.new_with_components_string(".hello.1.world")
-    var path4 = InkPath.new_with_components_string(".hello.1.world")
+	var path3 = InkPath.new_with_components_string(".hello.1.world")
+	var path4 = InkPath.new_with_components_string(".hello.1.world")
 
-    assert_true(path1.equals(path2))
-    assert_true(path3.equals(path4))
-    assert_false(path1.equals(path3))
+	assert_true(path1.equals(path2))
+	assert_true(path3.equals(path4))
+	assert_false(path1.equals(path3))

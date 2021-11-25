@@ -13,18 +13,18 @@ var text # String
 
 # (String) -> Tag
 func _init(tag_text):
-    text = tag_text
+	text = tag_text
 
 # () -> String
 func to_string():
-    return '# ' + text
+	return '# ' + text
 
 # ############################################################################ #
 # GDScript extra methods
 # ############################################################################ #
 
 func is_class(type):
-    return type == "Tag" || .is_class(type)
+	return type == "Tag" || .is_class(type)
 
 func get_class():
-    return "Tag"
+	return "Tag"

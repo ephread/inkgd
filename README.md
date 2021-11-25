@@ -1,7 +1,8 @@
 # ![inkgd](https://i.imgur.com/QbLG9Xp.png)
 
 [![build](https://github.com/ephread/inkgd/workflows/build/badge.svg)](https://github.com/ephread/inkgd/actions)
-![Version](https://img.shields.io/badge/version-0.2.1-orange.svg)
+[![Documentation Status](https://readthedocs.org/projects/inkgd/badge/?version=latest)](https://inkgd.readthedocs.io/en/latest/?badge=latest)
+![Version](https://img.shields.io/badge/version-0.2.3-orange.svg)
 ![Godot Version](https://img.shields.io/badge/godot-3.1+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
@@ -112,6 +113,13 @@ func _remove_runtime():
 
 Alternatively, `__InkRuntime` can also be added as a singleton with [AutoLoad].
 
+`__InkRuntime` contains a few configuration settings you may want to tweak. To that end,
+`InkRuntime.init()` returns the `__InkRuntime` added to the tree. The two following settings
+are enabled by default, but you can disable them if they interfere with your environment.
+
+- `should_pause_execution_on_runtime_error`: pause the execution in debug when a runtime error is raised.
+- `should_pause_execution_on_story_error`: pause the execution in debug when a story error is raised.
+
 [AutoLoad]: https://docs.godotengine.org/en/stable/getting_started/step_by_step/singletons_autoload.html#autoload
 
 ##### 3. [Getting and setting variables](https://github.com/inkle/ink/blob/master/Documentation/RunningYourInk.md#settinggetting-ink-variables)
@@ -184,6 +192,13 @@ var result = story.evaluate_function("multiply", [5, 3], true)
 # }
 ```
 
+##### 7. Error Handling
+
+The original implementation relies on C#'s exceptions to report and recover from inconsistent states.
+Exceptions are not available in GDScript, so the runtime may behave slightly differently. In particular,
+if an error is encountered during `story.continue()`, the story may be inconsistent state even though
+it can still more forward after calling `story.reset_errors()`.
+
 #### Loading the story from a background thread
 
 For bigger stories, loading the compiled story into the runtime can take a long time (more than a second). To avoid blocking the main thread, you may want to load the story from a background thread and display a loading indicator.
@@ -222,10 +237,12 @@ If you're working in a team, you may want to commit `.inkgd_ink.cfg` and keep `.
 
 ## Compatibility Table
 
-| _inkgd_ version | inklecate version | Godot version |
-|:---------------:|:-----------------:|:-------------:|
-|  0.1.0 – 0.1.4  |   0.8.2 – 0.8.3   |  3.1 – 3.2.1  |
-|  0.2.0 – 0.2.1  |       0.9.0       |  3.1 – 3.2.1  |
+| _inkgd_ version | inklecate version |  Godot version  |
+|:---------------:|:-----------------:|:---------------:|
+|  0.1.0 – 0.1.4  |   0.8.2 – 0.8.3   |   3.1 – 3.2.1   |
+|  0.2.0 – 0.2.1  |       0.9.0       |   3.1 – 3.2.1   |
+|      0.2.2      |       0.9.0       |  3.2.1 – 3.2.3  |
+|      0.2.3      |       0.9.0       |   3.2.1 – 3.4   |
 
 ## License
 

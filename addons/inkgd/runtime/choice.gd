@@ -24,10 +24,10 @@ var text # String
 # (String) -> void
 var path_string_on_choice setget set_path_string_on_choice, get_path_string_on_choice
 func get_path_string_on_choice():
-    return target_path.to_string()
+	return target_path.to_string()
 
 func set_path_string_on_choice(value):
-    target_path = InkPath().new_with_components_string(value)
+	target_path = InkPath().new_with_components_string(value)
 
 var source_path = null # String
 var index = 0 # index
@@ -41,7 +41,7 @@ var is_invisible_default = false # bool
 # ############################################################################ #
 
 func is_class(type):
-    return type == "Choice" || .is_class(type)
+	return type == "Choice" || .is_class(type)
 
 func get_class():
-    return "Choice"
+	return "Choice"

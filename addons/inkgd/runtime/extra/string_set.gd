@@ -21,7 +21,7 @@ extends Reference
 
 var StringSet setget , get_StringSet
 func get_StringSet():
-    return load("res://addons/inkgd/runtime/extra/string_set.gd")
+	return load("res://addons/inkgd/runtime/extra/string_set.gd")
 
 # ############################################################################ #
 
@@ -30,33 +30,33 @@ var _dictionary = {}
 # ############################################################################ #
 
 func clear():
-    _dictionary.clear()
+	_dictionary.clear()
 
 func duplicate():
-    var set = StringSet.new()
-    set._dictionary = self._dictionary.duplicate()
-    return set
+	var set = StringSet.new()
+	set._dictionary = self._dictionary.duplicate()
+	return set
 
 func enumerate():
-    return _dictionary.keys()
+	return _dictionary.keys()
 
 func empty():
-    _dictionary.empty()
+	_dictionary.empty()
 
 func contains(element: String):
-    return _dictionary.has(element)
+	return _dictionary.has(element)
 
 func contains_all(elements: Array):
-    return _dictionary.has_all(elements)
+	return _dictionary.has_all(elements)
 
 func size():
-    return _dictionary.size()
+	return _dictionary.size()
 
 func to_array():
-    return _dictionary.keys()
+	return _dictionary.keys()
 
 func append(value: String):
-    _dictionary[value] = null
+	_dictionary[value] = null
 
 func erase(value: String):
-    _dictionary.erase(value)
+	_dictionary.erase(value)

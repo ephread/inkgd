@@ -16,13 +16,13 @@ var _start_time = null
 
 var elapsed_milliseconds setget , get_elapsed_milliseconds
 func get_elapsed_milliseconds():
-    if _start_time == null:
-        return 0
+	if _start_time == null:
+		return 0
 
-    return OS.get_ticks_msec() - _start_time
+	return OS.get_ticks_msec() - _start_time
 
 func start():
-    _start_time = OS.get_ticks_msec()
+	_start_time = OS.get_ticks_msec()
 
 func stop():
-    _start_time = null
+	_start_time = null

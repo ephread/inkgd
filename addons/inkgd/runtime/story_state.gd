@@ -476,10 +476,15 @@ func load_json_obj(jobject):
 			var jsaved_choice_thread = jchoice_threads[str(c.original_thread_index)]
 			c.thread_at_generation = CallStack.InkThread.new_with(jsaved_choice_thread, self.story)
 
+	# Restore ability to continue.
+	var InkRuntime = _get_runtime()
+	if InkRuntime != null:
+		InkRuntime.should_interrupt = false
+
 # () -> void
 func reset_errors():
-	self._current_errors = null
-	self._current_warnings = null
+	self.current_errors = null
+	self.current_warnings = null
 
 # (Array<InkObject>) -> void
 func reset_output(objs = null):
@@ -762,8 +767,10 @@ func pop_evaluation_stack(number_of_objects = -1):
 								 self.evaluation_stack.size() - number_of_objects,
 								 number_of_objects)
 
-	Utils.remove_range(self.evaluation_stack,
-					   self.evaluation_stack.size() - number_of_objects, number_of_objects)
+	Utils.remove_range(
+		self.evaluation_stack,
+		self.evaluation_stack.size() - number_of_objects, number_of_objects
+	)
 	return popped
 
 # () -> void
@@ -895,7 +902,12 @@ func add_error(message, is_warning):
 		if self.current_errors == null:
 			self.current_errors = [] # Array<string>
 		self.current_errors.append(message)
-		if OS.is_debug_build(): push_error(message)
+		if OS.is_debug_build():
+			var InkRuntime = _get_runtime()
+			if InkRuntime != null && InkRuntime.should_pause_execution_on_story_error:
+				assert(false, message)
+			else:
+				push_error(message)
 	else:
 		if self.current_warnings == null:
 			self.current_warnings = [] # Array<string>
@@ -962,3 +974,8 @@ func get_json():
 				 str("Could not retrieve 'InkRuntime' singleton from the scene tree."))
 
 	_Json = weakref(InkRuntime.json)
+
+# ############################################################################ #
+
+func _get_runtime():
+	return Engine.get_main_loop().root.get_node("__InkRuntime")

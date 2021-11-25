@@ -15,7 +15,7 @@ extends "res://addons/inkgd/runtime/ink_object.gd"
 # ############################################################################ #
 
 static func VariableAssignment():
-    return load("res://addons/inkgd/runtime/variable_assignment.gd")
+	return load("res://addons/inkgd/runtime/variable_assignment.gd")
 
 # ############################################################################ #
 
@@ -24,26 +24,26 @@ var is_new_declaration = false # bool
 var is_global = false # bool
 
 func _init():
-    _init_with(null, false)
+	_init_with(null, false)
 
 func _init_with(variable_name, is_new_declaration):
-    self.variable_name = variable_name
-    self.is_new_declaration = is_new_declaration
+	self.variable_name = variable_name
+	self.is_new_declaration = is_new_declaration
 
 func to_string():
-    return "VarAssign to " + variable_name
+	return "VarAssign to " + variable_name
 
 # ############################################################################ #
 # GDScript extra methods
 # ############################################################################ #
 
 func is_class(type):
-    return type == "VariableAssignment" || .is_class(type)
+	return type == "VariableAssignment" || .is_class(type)
 
 func get_class():
-    return "VariableAssignment"
+	return "VariableAssignment"
 
 static func new_with(variable_name, is_new_declaration):
-    var variable_assignment = VariableAssignment().new()
-    variable_assignment._init_with(variable_name, is_new_declaration)
-    return variable_assignment
+	var variable_assignment = VariableAssignment().new()
+	variable_assignment._init_with(variable_name, is_new_declaration)
+	return variable_assignment

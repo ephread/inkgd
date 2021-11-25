@@ -15,11 +15,11 @@
 var internal_string
 
 func _init():
-    internal_string = ""
+	internal_string = ""
 
 func write(s):
 
-    internal_string += str(s)
+	internal_string += str(s)
 
 func to_string():
-    return internal_string
+	return internal_string

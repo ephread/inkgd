@@ -11,3 +11,7 @@ inkgd-issue-*
 # template ignores
 
 script_templates
+
+# sphinx build folder
+
+docs/build

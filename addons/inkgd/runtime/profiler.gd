@@ -10,52 +10,52 @@
 extends "res://addons/inkgd/runtime/ink_base.gd"
 
 func _init():
-    pass
+	pass
 
 # () -> String
 func report():
-    return ""
+	return ""
 
 # () -> void
 func pre_continue():
-    pass
+	pass
 
 # () -> void
 func post_continue():
-    pass
+	pass
 
 # () -> void
 func pre_step():
-    pass
+	pass
 
 # (CallStack) -> void
 func step(callstack):
-    pass
+	pass
 
 # () -> void
 func post_step():
-    pass
+	pass
 
 # () -> String
 func step_length_record():
-    return ""
+	return ""
 
 # () -> String
 func mega_log():
-    return ""
+	return ""
 
 # () -> void
 func pre_snapshot():
-    pass
+	pass
 
 # () -> void
 func post_snapshot():
-    pass
+	pass
 
 # (Stopwatch) -> float
 func millisecs(watch):
-    pass
+	pass
 
 # (float) -> String
 static func format_millisecs(num):
-    return ""
+	return ""

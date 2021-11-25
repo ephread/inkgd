@@ -1,6 +1,24 @@
 # Change Log
 Important changes to _inkgd_ will be documented in this file.
 
+## [0.2.3](https://github.com/ephread/inkgd/releases/tag/0.2.3)
+Released on 2021-11-14.
+
+### Fixed
+- Partially fixed [#29] – Loading a story state doesn't rollback the error stack.
+- Fixed [#36] – Mutiple problems in setting panel. (Huge thanks @videlanicolas!)
+- Fixed [#38] – Crash in example project. (Huge thanks @videlanicolas!)
+
+[#29]: https://github.com/ephread/inkgd/issues/29
+[#36]: https://github.com/ephread/inkgd/issues/36
+[#38]: https://github.com/ephread/inkgd/issues/28
+
+## [0.2.2](https://github.com/ephread/inkgd/releases/tag/0.2.2)
+Released on 2021-01-31.
+
+### Changed
+- Made runtime & story error more explicit.
+
 ## [0.2.1](https://github.com/ephread/inkgd/releases/tag/0.2.1)
 Released on 2020-06-17.
 
@@ -27,7 +45,7 @@ Released on 2020-04-11.
 Released on 2019-10-10.
 
 ### Fixed
-- Fixed [#10] – Node not found error InkRuntime.init(), huge thanks to @MageJohn!
+- Fixed [#10] – Node not found error InkRuntime.init(). (Huge thanks @MageJohn!)
 
 [#10]: https://github.com/ephread/inkgd/issues/10
 

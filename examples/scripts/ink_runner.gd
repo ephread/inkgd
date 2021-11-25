@@ -129,6 +129,8 @@ func _async_load_completed():
 	_loading_thread = null
 
 	_bind_externals()
+	story.choose_path_string("start")
+	story.reset_errors()
 	continue_story()
 	_remove_loading_overlay()
 

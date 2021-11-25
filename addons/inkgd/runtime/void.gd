@@ -14,10 +14,10 @@ extends "res://addons/inkgd/runtime/ink_object.gd"
 # ############################################################################ #
 
 func is_class(type):
-    return type == "Void" || .is_class(type)
+	return type == "Void" || .is_class(type)
 
 func get_class():
-    return "Void"
+	return "Void"
 
 func to_string() -> String:
-    return "Void"
+	return "Void"

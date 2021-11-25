@@ -29,6 +29,14 @@ class ScriptMethods:
 		'_get_minimum_size', # Nonexistent function _get_minimum_size
 	]
 
+	# These methods should not be included in the double.
+	var _skip = [
+		# There is an init in the template.  There is also no real reason
+		# to include this method since it will always be called, it has no
+		# return value, and you cannot prevent super from being called.
+		'_init'
+	]
+
 	var built_ins = []
 	var local_methods = []
 	var _method_names = []
@@ -37,6 +45,8 @@ class ScriptMethods:
 		return _blacklist.find(method_meta.name) != -1
 
 	func _add_name_if_does_not_have(method_name):
+		if(_skip.has(method_name)):
+			return false
 		var should_add = _method_names.find(method_name) == -1
 		if(should_add):
 			_method_names.append(method_name)
@@ -61,23 +71,25 @@ class ScriptMethods:
 			text += str("  ", built_ins[i].name, "\n")
 		return text
 
+
 # ------------------------------------------------------------------------------
 # Helper class to deal with objects and inner classes.
 # ------------------------------------------------------------------------------
 class ObjectInfo:
 	var _path = null
 	var _subpaths = []
-	var _utils = load('res://addons/gut/utils.gd').new()
+	var _utils = load('res://addons/gut/utils.gd').get_instance()
 	var _method_strategy = null
 	var make_partial_double = false
 	var scene_path = null
 	var _native_class = null
-	var _native_class_instance = null
+	var _native_class_name = null
 
 	func _init(path, subpath=null):
 		_path = path
 		if(subpath != null):
-			_subpaths = _utils.split_string(subpath, '/')
+			_subpaths = Array(subpath.split('/'))
+
 
 	# Returns an instance of the class/inner class
 	func instantiate():
@@ -104,7 +116,7 @@ class ObjectInfo:
 		return _path
 
 	func get_subpath():
-		return _utils.join_array(_subpaths, '/')
+		return PoolStringArray(_subpaths).join('/')
 
 	func has_subpath():
 		return _subpaths.size() != 0
@@ -135,11 +147,14 @@ class ObjectInfo:
 
 	func set_native_class(native_class):
 		_native_class = native_class
-		_native_class_instance = native_class.new()
-		_path = _native_class_instance.get_class()
+		var inst = native_class.new()
+		_native_class_name = inst.get_class()
+		_path = _native_class_name
+		if(!inst is Reference):
+			inst.free()
 
 	func get_native_class_name():
-		return _native_class_instance.get_class()
+		return _native_class_name
 
 # ------------------------------------------------------------------------------
 # Allows for interacting with a file but only creating a string.  This was done
@@ -185,10 +200,11 @@ class FileOrString:
 		else:
 			return load(_path)
 
+
 # ------------------------------------------------------------------------------
 # A stroke of genius if I do say so.  This allows for doubling a scene without
-# having  to write any files.  By overloading instance we can make whatever
-# we want.
+# having  to write any files.  By overloading the "instance" method  we can
+# make whatever we want.
 # ------------------------------------------------------------------------------
 class PackedSceneDouble:
 	extends PackedScene
@@ -209,13 +225,12 @@ class PackedSceneDouble:
 
 
 
-
 # ------------------------------------------------------------------------------
 # START Doubler
 # ------------------------------------------------------------------------------
-var _utils = load('res://addons/gut/utils.gd').new()
+var _utils = load('res://addons/gut/utils.gd').get_instance()
 
-var  _ignored_methods = _utils.OneToMany.new()
+var _ignored_methods = _utils.OneToMany.new()
 var _stubber = _utils.Stubber.new()
 var _lgr = _utils.get_logger()
 var _method_maker = _utils.MethodMaker.new()
@@ -223,6 +238,7 @@ var _method_maker = _utils.MethodMaker.new()
 var _output_dir = 'user://gut_temp_directory'
 var _double_count = 0 # used in making files names unique
 var _spy = null
+var _gut = null
 var _strategy = null
 var _base_script_text = _utils.get_file_as_text('res://addons/gut/double_templates/script_template.txt')
 var _make_files = false
@@ -278,13 +294,19 @@ func _get_base_script_text(obj_info, override_path):
 	if(_spy != null):
 		spy_id = _spy.get_instance_id()
 
+	var gut_id = -1
+	if(_gut != null):
+		gut_id = _gut.get_instance_id()
+
 	var values = {
 		"path":path,
 		"subpath":obj_info.get_subpath(),
 		"stubber_id":stubber_id,
 		"spy_id":spy_id,
-		"extends":obj_info.get_extends_text()
+		"extends":obj_info.get_extends_text(),
+		"gut_id":gut_id
 	}
+
 	return _base_script_text.format(values)
 
 func _write_file(obj_info, dest_path, override_path=null):
@@ -305,11 +327,11 @@ func _write_file(obj_info, dest_path, override_path=null):
 	for i in range(script_methods.local_methods.size()):
 		if(obj_info.make_partial_double):
 			_stub_to_call_super(obj_info, script_methods.local_methods[i].name)
-		f.store_string(_get_func_text(script_methods.local_methods[i]))
+		f.store_string(_get_func_text(script_methods.local_methods[i], obj_info.get_path()))
 
 	for i in range(script_methods.built_ins.size()):
 		_stub_to_call_super(obj_info, script_methods.built_ins[i].name)
-		f.store_string(_get_func_text(script_methods.built_ins[i]))
+		f.store_string(_get_func_text(script_methods.built_ins[i], obj_info.get_path()))
 
 	f.close()
 	return f
@@ -338,6 +360,8 @@ func _get_methods(object_info):
 	# any method in the script or super script
 	var script_methods = ScriptMethods.new()
 	var methods = obj.get_method_list()
+	if(!(obj is Reference)):
+		obj.free()
 
 	# first pass is for local methods only
 	for i in range(methods.size()):
@@ -363,8 +387,14 @@ func _get_inst_id_ref_str(inst):
 		ref_str = str('instance_from_id(', inst.get_instance_id(),')')
 	return ref_str
 
-func _get_func_text(method_hash):
-	return _method_maker.get_function_text(method_hash) + "\n"
+func _get_func_text(method_hash, path):
+	var override_count = null;
+	if(_stubber != null):
+		override_count = _stubber.get_parameter_count(path, method_hash.name)
+
+	var text = _method_maker.get_function_text(method_hash, path, override_count) + "\n"
+
+	return text
 
 # returns the path to write the double file to
 func _get_temp_path(object_info):
@@ -457,6 +487,12 @@ func get_strategy():
 func set_strategy(strategy):
 	_strategy = strategy
 
+func get_gut():
+	return _gut
+
+func set_gut(gut):
+	_gut = gut
+
 func partial_double_scene(path, strategy=_strategy):
 	return _double_scene(path, true, strategy)
 
@@ -526,3 +562,6 @@ func get_make_files():
 func set_make_files(make_files):
 	_make_files = make_files
 	set_output_dir(_output_dir)
+
+func get_method_maker():
+	return _method_maker
