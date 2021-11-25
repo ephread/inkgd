@@ -10,7 +10,6 @@ config_version=4
 
 _global_script_classes=[  ]
 _global_script_class_icons={
-
 }
 
 [application]
@@ -21,6 +20,10 @@ boot_splash/image="res://examples/images/transparent.png"
 boot_splash/fullsize=false
 boot_splash/bg_color=Color( 0.929412, 0.898039, 0.854902, 1 )
 config/icon="res://icon.png"
+
+[autoload]
+
+__InkRuntime="*res://addons/inkgd/runtime/static/ink_runtime.gd"
 
 [debug]
 
@@ -38,7 +41,7 @@ window/stretch/aspect="expand"
 
 [editor_plugins]
 
-enabled=PoolStringArray( "gut", "inkgd" )
+enabled=PoolStringArray( "res://addons/gut/plugin.cfg", "res://addons/inkgd/plugin.cfg" )
 
 [network]
 

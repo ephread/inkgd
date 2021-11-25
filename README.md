@@ -73,7 +73,11 @@ You can also download an archive and install _inkgd_ manually. Head over to the 
 
 The GDScript API is mostly compatible with the original C# one. It's a good idea to take a look at the [original documentation].
 
+If you want to start from a template, the plugin adds templates that will show up when creating a new script. Add this script to a node that you want to use to control the story. These templates should disappear if you deactivate the plugin.
+
 Additionally, feel free to take a look in the `example/` directory and run `ink_runner.tscn`, which will play The Intercept.
+
+Note: _inkgd_ has a .gitattributes file which makes sure that only `addons/inkgd` is added to the Github archive. The only way to get the example folder (and a bunch of other important files) is to clone the project.
 
 [original documentation]: https://github.com/inkle/ink/blob/master/Documentation/RunningYourInk.md
 
@@ -89,7 +93,9 @@ Functions are all snake_cased rather than CamelCased. For instance `ContinueMaxi
 
 Since GDScript doesn't support static properties, any static property was moved into a singleton node called `__InkRuntime` which needs to be added to the root object current tree before starting the story.
 
-Note that the tree is locked during notification calls (`_ready`, `_enter_tree`, `_exit_tree`), so you will need to defer the calls adding/removing the runtime node.
+This singleton node is added to the AutoLoad list of your project automatically when the plugin is activated (bear in mind that deactivating the plugin will also remove the node from the list).
+
+However, you may want to manage the singleton yourself in the code for efficiency. Since the tree is locked during notification calls (`_ready`, `_enter_tree`, `_exit_tree`), you will need to defer the calls adding/removing the runtime node.
 
 ```gdscript
 var InkRuntime = load("res://addons/inkgd/runtime.gd")
@@ -140,7 +146,7 @@ The event / delegate mechanism found in C# is translated into a signal-based log
 story.observe_variable("health", self, "_observe_health")
 
 func _observe_health(variable_name, new_value):
-	set_health_in_ui(int(new_value))
+    set_health_in_ui(int(new_value))
 
 # Original C# API
 #
@@ -157,7 +163,7 @@ The event / delegate mechanism found in C# is again translated into a signal-bas
 story.bind_external_function("multiply", self, "_multiply")
 
 func _multiply(arg1, arg2):
-	return arg1 * arg2
+    return arg1 * arg2
 
 # Original C# API
 #
@@ -199,7 +205,7 @@ it can still more forward after calling `story.reset_errors()`.
 
 For bigger stories, loading the compiled story into the runtime can take a long time (more than a second). To avoid blocking the main thread, you may want to load the story from a background thread and display a loading indicator.
 
-A possible thread-based approach is implemented in `example/ink_runner.gd`.
+A possible thread-based approach is implemented in `example/ink_runner.gd`. You can also find it by selecting Ink Template when creating your code.
 
 ### Editor
 
