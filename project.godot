@@ -10,7 +10,6 @@ config_version=4
 
 _global_script_classes=[  ]
 _global_script_class_icons={
-
 }
 
 [application]
@@ -42,7 +41,7 @@ window/stretch/aspect="expand"
 
 [editor_plugins]
 
-enabled=PoolStringArray( "gut", "inkgd" )
+enabled=PoolStringArray( "res://addons/gut/plugin.cfg", "res://addons/inkgd/plugin.cfg" )
 
 [network]
 

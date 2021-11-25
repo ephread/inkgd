@@ -17,12 +17,12 @@ Implementation of [inkle's Ink] in pure GDScript, with editor support.
   * [Features](#features)
   * [Requirements](#requirements)
   * [Contributing](#asking-questions--contributing)
-	  * [Asking Questions](#asking-questions)
-	  * [Contributing](#contributing)
+      * [Asking Questions](#asking-questions)
+      * [Contributing](#contributing)
   * [Installation](#installation)
   * [Usage](#usage)
-	  * [Runtime](#runtime)
-	  * [Editor](#editor)
+      * [Runtime](#runtime)
+      * [Editor](#editor)
   * [Compatibility Table](#compatibility-table)
   * [License](#license)
 
@@ -91,24 +91,24 @@ Functions are all snake_cased rather than CamelCased. For instance `ContinueMaxi
 
 Since GDScript doesn't support static properties, any static property was moved into a singleton node called `__InkRuntime` which needs to be added to the root object current tree before starting the story.
 
-This singleton node is added automatically with autoload automatically when the plugin is activated, however you may want to add or remove the singleton yourself in the code for efficiency. 
+This singleton node is added to the AutoLoad list of your project automatically when the plugin is activated (bear in mind that deactivating the plugin will also remove the node from the list).
 
-Note that the tree is locked during notification calls (`_ready`, `_enter_tree`, `_exit_tree`), so you will need to defer the calls adding/removing the runtime node.
+However, you may want to manage the singleton yourself in the code for efficiency. Since the tree is locked during notification calls (`_ready`, `_enter_tree`, `_exit_tree`), you will need to defer the calls adding/removing the runtime node.
 
 ```gdscript
 var InkRuntime = load("res://addons/inkgd/runtime.gd")
 
 func _ready():
-	call_deferred("_add_runtime")
+    call_deferred("_add_runtime")
 
 func _exit_tree():
-	call_deferred("_remove_runtime")
+    call_deferred("_remove_runtime")
 
 func _add_runtime():
-	InkRuntime.init(get_tree().root)
+    InkRuntime.init(get_tree().root)
 
 func _remove_runtime():
-	InkRuntime.deinit(get_tree().root)
+    InkRuntime.deinit(get_tree().root)
 ```
 
 Alternatively, `__InkRuntime` can also be added as a singleton with [AutoLoad].
@@ -144,7 +144,7 @@ The event / delegate mechanism found in C# is translated into a signal-based log
 story.observe_variable("health", self, "_observe_health")
 
 func _observe_health(variable_name, new_value):
-	set_health_in_ui(int(new_value))
+    set_health_in_ui(int(new_value))
 
 # Original C# API
 #
@@ -161,7 +161,7 @@ The event / delegate mechanism found in C# is again translated into a signal-bas
 story.bind_external_function("multiply", self, "_multiply")
 
 func _multiply(arg1, arg2):
-	return arg1 * arg2
+    return arg1 * arg2
 
 # Original C# API
 #
@@ -203,7 +203,7 @@ it can still more forward after calling `story.reset_errors()`.
 
 For bigger stories, loading the compiled story into the runtime can take a long time (more than a second). To avoid blocking the main thread, you may want to load the story from a background thread and display a loading indicator.
 
-A possible thread-based approach is implemented in `example/ink_runner.gd`. You can also find it by selecting Ink Template when creating your code. 
+A possible thread-based approach is implemented in `example/ink_runner.gd`. You can also find it by selecting Ink Template when creating your code.
 
 ### Editor
 

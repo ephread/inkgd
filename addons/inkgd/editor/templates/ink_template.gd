@@ -7,7 +7,7 @@
 # This version of the template uses a while loop to have the code continue
 # the story until it reaches the choice point. It then checks for choices and,
 # on getting a choice, recursively calls the continue_story function to continue
-# the story. 
+# the story.
 
 extends %BASE%
 
@@ -56,23 +56,23 @@ func start_story():
 func continue_story():
 	while story.can_continue:
 		var text = story.continue()
-		# This text is a line of text from the ink story. 
-		# Set the text of a Label to this value to display it in your game. 
+		# This text is a line of text from the ink story.
+		# Set the text of a Label to this value to display it in your game.
 		print(text)
 	if story.current_choices.size() > 0:
 		# current_choices contains a list of the choices.
 		# Each choice has a text property that contains the text of the choice.
-		
+
 		for choice in story.current_choices:
 			print(choice.text)
 
 		# _choice_selected is a function that will take the index of your selection
-		#and continue the story.
-		 
+		# and continue the story.
+
 		_choice_selected(0)
 	else:
-		# This code runs when the story reaches it's end. 
-		
+		# This code runs when the story reaches it's end.
+
 		print("The End")
 
 # ############################################################################ #
@@ -103,8 +103,8 @@ func _load_story(ink_story_path):
 	self.story = Story.new(content)
 
 func _bind_externals():
-	# Uncomment the below line to observe the variables from your ink story.
-	# You can observe multiple variables by putting them into the list as the first argument. 
+	# Uncomment the line below to observe the variables from your ink story.
+	# You can observe multiple variables by putting them into the list as the first argument.
 	# story.observe_variables(["variable1", "variable2"], self, "_observe_variables")
 	story.bind_external_function("should_show_debug_menu", self, "_should_show_debug_menu")
 
