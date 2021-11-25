@@ -13,5 +13,7 @@ inkgd-issue-*
 script_templates
 
 # sphinx build folder
-
 docs/build
+
+# Visual Studio code
+.vscode
