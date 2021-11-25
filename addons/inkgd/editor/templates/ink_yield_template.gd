@@ -4,40 +4,34 @@
 # See LICENSE in the project root for license information.
 # ############################################################################ #
 
-extends Node
+# This version of the template uses yield and signals, so the story is always
+# running, and after a line of text or when it reaches a choice, it waits for
+# a signal. You may prefer this as a more modular version of the ink template. 
+
+extends %BASE%
 
 const SHOULD_LOAD_IN_BACKGROUND = true
+
+signal prompt_continue
+signal prompt_choice_made(choice_index)
 
 # ############################################################################ #
 # Imports
 # ############################################################################ #
 
-var InkRuntime = load("res://addons/inkgd/runtime.gd")
 var Story = load("res://addons/inkgd/runtime/story.gd")
-
-var ChoiceContainer = load("res://examples/scenes/choice_container.tscn")
-var LineLabel = load("res://examples/scenes/label.tscn")
-
-# ############################################################################ #
-# Node
-# ############################################################################ #
-
-onready var StoryMarginContainer = get_node("StoryMarginContainer")
-onready var StoryScrollContainer = StoryMarginContainer.get_node("StoryScrollContainer")
-onready var StoryVBoxContainer = StoryScrollContainer.get_node("StoryVBoxContainer")
-onready var LoadingAnimationPlayer = get_node("LoadingAnimationPlayer")
 
 # ############################################################################ #
 # Public Properties
 # ############################################################################ #
 
 var story
+export(String, FILE, "*.json") var exported_story_location
 
 # ############################################################################ #
 # Private Properties
 # ############################################################################ #
 
-var _current_choice_container
 var _loading_thread
 
 # ############################################################################ #
@@ -47,48 +41,37 @@ var _loading_thread
 func _ready():
 	call_deferred("start_story")
 
-func _exit_tree():
-	call_deferred("_remove_runtime")
-
 # ############################################################################ #
 # Public Methods
 # ############################################################################ #
 
 func start_story():
-	_add_runtime()
-
 	if SHOULD_LOAD_IN_BACKGROUND:
 		_loading_thread = Thread.new()
-		_loading_thread.start(self, "_async_load_story", "res://examples/ink/the_intercept.ink.json")
+		_loading_thread.start(self, "_async_load_story", exported_story_location)
 	else:
-		_load_story("res://examples/ink/the_intercept.ink.json")
+		_load_story(exported_story_location)
 		_bind_externals()
-		continue_story()
-		_remove_loading_overlay()
+		run_story()
 
-func continue_story():
+func run_story():
+	
 	while story.can_continue:
 		var text = story.continue()
-
-		var label = LineLabel.instance()
-		label.text = text
-
-		StoryVBoxContainer.add_child(label)
-
-	if story.current_choices.size() > 0:
-		_current_choice_container = ChoiceContainer.instance()
-		StoryVBoxContainer.add_child(_current_choice_container)
-
-		_current_choice_container.create_choices(story.current_choices)
-		_current_choice_container.connect("choice_selected", self, "_choice_selected")
-	else:
-		# End of story: let's check whether you took the cup of tea.
-		var teacup = story.variables_state.get("teacup")
-
-		if teacup:
-			print("Took the tea.")
-		else:
-			print("Didn't take the tea.")
+		# The story will pause until the prompt signal is emmited.  
+		yield(self, "prompt_continue")
+		if story.current_choices.size() > 0:
+			# current_choices contains a list of the choices.
+			# Each choice has a text property that contains the text of the choice.
+			for choice in story.current_choices:
+				print(choice.text)
+			# However you make the choice, either through a button or another method, you 
+			# can have this node emit the "prompt_choice_made" signal, with the index
+			# of the choice as the argument. 
+			story.choose_choice_index(yield(self, "prompt_choice_made"))
+	
+	#This code runs when the story reaches it's end. 
+	print("The End")
 
 # ############################################################################ #
 # Private Methods
@@ -100,13 +83,6 @@ func _should_show_debug_menu(debug):
 
 func _observe_variables(variable_name, new_value):
 	print(str("Variable '", variable_name, "' changed to: ", new_value))
-
-func _choice_selected(index):
-	StoryVBoxContainer.remove_child(_current_choice_container)
-	_current_choice_container.queue_free()
-
-	story.choose_choice_index(index)
-	continue_story()
 
 func _async_load_story(ink_story_path):
 	_load_story(ink_story_path)
@@ -121,7 +97,9 @@ func _load_story(ink_story_path):
 	self.story = Story.new(content)
 
 func _bind_externals():
-	story.observe_variables(["forceful", "evasive"], self, "_observe_variables")
+	# Uncomment the below line to observe the variables from your ink story.
+	# You can observe multiple variables by putting them into the list as the first argument.
+	# story.observe_variables(["variable1", "variable2"], self, "_observe_variables")
 	story.bind_external_function("should_show_debug_menu", self, "_should_show_debug_menu")
 
 func _async_load_completed():
@@ -129,17 +107,5 @@ func _async_load_completed():
 	_loading_thread = null
 
 	_bind_externals()
-	continue_story()
-	_remove_loading_overlay()
+	run_story()
 
-func _remove_loading_overlay():
-	remove_child(LoadingAnimationPlayer)
-	StoryMarginContainer.show()
-	LoadingAnimationPlayer.queue_free()
-	LoadingAnimationPlayer = null
-
-func _add_runtime():
-	InkRuntime.init(get_tree().root)
-
-func _remove_runtime():
-	InkRuntime.deinit(get_tree().root)

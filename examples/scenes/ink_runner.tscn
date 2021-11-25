@@ -56,6 +56,9 @@ __meta__ = {
 anchor_right = 1.0
 anchor_bottom = 1.0
 color = Color( 0.929412, 0.898039, 0.854902, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="StoryMarginContainer" type="MarginContainer" parent="."]
 visible = false

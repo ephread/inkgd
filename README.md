@@ -16,12 +16,12 @@ Implementation of [inkle's Ink] in pure GDScript, with editor support.
   * [Features](#features)
   * [Requirements](#requirements)
   * [Contributing](#asking-questions--contributing)
-      * [Asking Questions](#asking-questions)
-      * [Contributing](#contributing)
+	  * [Asking Questions](#asking-questions)
+	  * [Contributing](#contributing)
   * [Installation](#installation)
   * [Usage](#usage)
-      * [Runtime](#runtime)
-      * [Editor](#editor)
+	  * [Runtime](#runtime)
+	  * [Editor](#editor)
   * [Compatibility Table](#compatibility-table)
   * [License](#license)
 
@@ -72,6 +72,8 @@ You can also download an archive and install _inkgd_ manually. Head over to the 
 
 The GDScript API is mostly compatible with the original C# one. It's a good idea to take a look at the [original documentation].
 
+If you want to start from a template, the plugin adds templates that will show up when creating a new script. Add this script to a node that you want to use to control the story. These templates should disappear if you deactivate the plugin.
+
 Additionally, feel free to take a look in the `example/` directory and run `ink_runner.tscn`, which will play The Intercept.
 
 [original documentation]: https://github.com/inkle/ink/blob/master/Documentation/RunningYourInk.md
@@ -88,22 +90,24 @@ Functions are all snake_cased rather than CamelCased. For instance `ContinueMaxi
 
 Since GDScript doesn't support static properties, any static property was moved into a singleton node called `__InkRuntime` which needs to be added to the root object current tree before starting the story.
 
+This singleton node is added automatically with autoload automatically when the plugin is activated, however you may want to add or remove the singleton yourself in the code for efficiency. 
+
 Note that the tree is locked during notification calls (`_ready`, `_enter_tree`, `_exit_tree`), so you will need to defer the calls adding/removing the runtime node.
 
 ```gdscript
 var InkRuntime = load("res://addons/inkgd/runtime.gd")
 
 func _ready():
-    call_deferred("_add_runtime")
+	call_deferred("_add_runtime")
 
 func _exit_tree():
-    call_deferred("_remove_runtime")
+	call_deferred("_remove_runtime")
 
 func _add_runtime():
-    InkRuntime.init(get_tree().root)
+	InkRuntime.init(get_tree().root)
 
 func _remove_runtime():
-    InkRuntime.deinit(get_tree().root)
+	InkRuntime.deinit(get_tree().root)
 ```
 
 Alternatively, `__InkRuntime` can also be added as a singleton with [AutoLoad].
@@ -184,7 +188,7 @@ var result = story.evaluate_function("multiply", [5, 3], true)
 
 For bigger stories, loading the compiled story into the runtime can take a long time (more than a second). To avoid blocking the main thread, you may want to load the story from a background thread and display a loading indicator.
 
-A possible thread-based approach is implemented in `example/ink_runner.gd`.
+A possible thread-based approach is implemented in `example/ink_runner.gd`. You can also find it by selecting Ink Template when creating your code. 
 
 ### Editor
 
