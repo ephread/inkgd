@@ -77,6 +77,8 @@ If you want to start from a template, the plugin adds templates that will show u
 
 Additionally, feel free to take a look in the `example/` directory and run `ink_runner.tscn`, which will play The Intercept.
 
+Note: _inkgd_ has a .gitattributes file which makes sure that only `addons/inkgd` is added to the Github archive. The only way to get the example folder (and a bunch of other important files) is to clone the project.
+
 [original documentation]: https://github.com/inkle/ink/blob/master/Documentation/RunningYourInk.md
 
 #### Differences with the C# API
