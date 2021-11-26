@@ -11,14 +11,15 @@ var dock = null
 
 func _enter_tree():
 	dock = preload("res://addons/inkgd/editor/ink_dock.tscn").instance()
-	add_control_to_dock(DOCK_SLOT_RIGHT_UL, dock)
+	add_control_to_bottom_panel(dock, "Ink")
 
 func _exit_tree():
 	# Remove from docks (must be called so layout is updated and saved)
 	remove_control_from_docks(dock)
+	remove_control_from_bottom_panel(dock)
 	# Remove the node
 	dock.free()
 
 func build():
-	dock._build_button_pressed()
+	dock._compile_story(false)
 	return true

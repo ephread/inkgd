@@ -20,49 +20,82 @@ size = Vector2( 16, 16 )
 [node name="Ink" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+rect_min_size = Vector2( 0, 400 )
 script = ExtResource( 1 )
-
-[node name="VSplitContainer" type="VSplitContainer" parent="."]
-anchor_right = 1.0
-anchor_bottom = 1.0
-split_offset = 400
-
-[node name="MainVBoxContainer" type="VBoxContainer" parent="VSplitContainer"]
-margin_right = 1920.0
-margin_bottom = 448.0
-alignment = 1
 __meta__ = {
-"__editor_plugin_screen__": "2D"
+"_edit_use_anchors_": false
 }
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VSplitContainer/MainVBoxContainer"]
-margin_right = 1920.0
-margin_bottom = 20.0
-
-[node name="Label" type="Label" parent="VSplitContainer/MainVBoxContainer/HBoxContainer"]
-margin_top = 3.0
-margin_right = 1842.0
-margin_bottom = 17.0
-size_flags_horizontal = 3
-text = "Configuration"
-
-[node name="AdvancedMenuButton" type="MenuButton" parent="VSplitContainer/MainVBoxContainer/HBoxContainer"]
-margin_left = 1846.0
-margin_right = 1920.0
-margin_bottom = 20.0
-text = "Advanced"
-flat = false
-items = [ "Use Mono", null, 1, false, false, 0, 0, null, "", false ]
-
-[node name="Panel" type="Panel" parent="VSplitContainer/MainVBoxContainer"]
-margin_top = 24.0
-margin_right = 1920.0
-margin_bottom = 424.0
-size_flags_vertical = 3
-
-[node name="MarginContainer" type="MarginContainer" parent="VSplitContainer/MainVBoxContainer/Panel"]
+[node name="TabContainer" type="TabContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
+size_flags_vertical = 3
+tab_align = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Configuration" type="ScrollContainer" parent="TabContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = -4.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Configuration"]
+margin_right = 1912.0
+margin_bottom = 192.0
+size_flags_horizontal = 3
+custom_constants/separation = 20
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="InklecateVBoxContainer" type="VBoxContainer" parent="TabContainer/Configuration/VBoxContainer"]
+margin_right = 1912.0
+margin_bottom = 86.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Configuration/VBoxContainer/InklecateVBoxContainer"]
+margin_right = 1912.0
+margin_bottom = 20.0
+
+[node name="Label" type="Label" parent="TabContainer/Configuration/VBoxContainer/InklecateVBoxContainer/HBoxContainer"]
+margin_top = 3.0
+margin_right = 1782.0
+margin_bottom = 17.0
+size_flags_horizontal = 3
+text = "Inklecate"
+
+[node name="TestButton" type="Button" parent="TabContainer/Configuration/VBoxContainer/InklecateVBoxContainer/HBoxContainer"]
+margin_left = 1786.0
+margin_right = 1912.0
+margin_bottom = 20.0
+mouse_filter = 1
+text = "Test configuration"
+__meta__ = {
+"_editor_description_": "Attempt to execute inklecate using the configuration below."
+}
+
+[node name="InklecateMarginContainer" type="MarginContainer" parent="TabContainer/Configuration/VBoxContainer/InklecateVBoxContainer"]
+margin_top = 24.0
+margin_right = 1912.0
+margin_bottom = 86.0
+
+[node name="Panel" type="Panel" parent="TabContainer/Configuration/VBoxContainer/InklecateVBoxContainer/InklecateMarginContainer"]
+margin_right = 1912.0
+margin_bottom = 62.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="TabContainer/Configuration/VBoxContainer/InklecateVBoxContainer/InklecateMarginContainer"]
+margin_right = 1912.0
+margin_bottom = 62.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 custom_constants/margin_right = 5
 custom_constants/margin_top = 5
 custom_constants/margin_left = 5
@@ -71,186 +104,227 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ScrollContainer" type="ScrollContainer" parent="VSplitContainer/MainVBoxContainer/Panel/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Configuration/VBoxContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer"]
 margin_left = 5.0
 margin_top = 5.0
-margin_right = 1915.0
-margin_bottom = 395.0
-scroll_horizontal_enabled = false
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VSplitContainer/MainVBoxContainer/Panel/MarginContainer/ScrollContainer"]
-margin_right = 1910.0
-margin_bottom = 80.0
+margin_right = 1907.0
+margin_bottom = 57.0
 size_flags_horizontal = 3
 
-[node name="GridContainer" type="GridContainer" parent="VSplitContainer/MainVBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer"]
-margin_right = 1910.0
-margin_bottom = 80.0
+[node name="GridContainer" type="GridContainer" parent="TabContainer/Configuration/VBoxContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer"]
+margin_right = 1902.0
+margin_bottom = 52.0
 size_flags_horizontal = 3
 columns = 2
 
-[node name="MonoLabel" type="Label" parent="VSplitContainer/MainVBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/GridContainer"]
-visible = false
-margin_right = 953.0
+[node name="UseMonoLabel" type="Label" parent="TabContainer/Configuration/VBoxContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer"]
+margin_right = 949.0
 margin_bottom = 24.0
+hint_tooltip = "When toggled, run inklecate through Mono.
+
+Only enable this setting is you want to use an older version of inklecate or you have a custom setup.
+Modern versions of inklecate come bundled with a mono runtime on all platforms."
+mouse_filter = 1
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "Use Mono"
+
+[node name="UseMonoCheckBox" type="CheckBox" parent="TabContainer/Configuration/VBoxContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer"]
+margin_left = 953.0
+margin_right = 1902.0
+margin_bottom = 24.0
+text = "Yes"
+
+[node name="MonoLabel" type="Label" parent="TabContainer/Configuration/VBoxContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer"]
+visible = false
+margin_top = 28.0
+margin_right = 953.0
+margin_bottom = 52.0
+hint_tooltip = "The path to Mono."
+mouse_filter = 1
 size_flags_horizontal = 3
 size_flags_vertical = 1
 text = "Mono"
 
-[node name="MonoHBoxContainer" type="HBoxContainer" parent="VSplitContainer/MainVBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/GridContainer"]
+[node name="MonoHBoxContainer" type="HBoxContainer" parent="TabContainer/Configuration/VBoxContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer"]
 visible = false
 margin_left = 957.0
+margin_top = 28.0
 margin_right = 1910.0
-margin_bottom = 24.0
+margin_bottom = 52.0
 size_flags_horizontal = 3
 
-[node name="MonoLineEdit" type="LineEdit" parent="VSplitContainer/MainVBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/GridContainer/MonoHBoxContainer"]
+[node name="MonoLineEdit" type="LineEdit" parent="TabContainer/Configuration/VBoxContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer/MonoHBoxContainer"]
 margin_right = 921.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
+text = "/Library/Frameworks/Mono.framework/Versions/Current/Commands/mono"
 
-[node name="MonoDialogButton" type="Button" parent="VSplitContainer/MainVBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/GridContainer/MonoHBoxContainer"]
+[node name="MonoDialogButton" type="Button" parent="TabContainer/Configuration/VBoxContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer/MonoHBoxContainer"]
 margin_left = 925.0
 margin_right = 953.0
 margin_bottom = 24.0
 icon = SubResource( 2 )
 
-[node name="ExecutableLabel" type="Label" parent="VSplitContainer/MainVBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/GridContainer"]
-margin_right = 953.0
-margin_bottom = 24.0
+[node name="ExecutableLabel" type="Label" parent="TabContainer/Configuration/VBoxContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer"]
+margin_top = 28.0
+margin_right = 949.0
+margin_bottom = 52.0
+hint_tooltip = "The path to inklecate."
+mouse_filter = 1
 size_flags_horizontal = 3
 size_flags_vertical = 1
 text = "Executable"
 
-[node name="ExecutableHBoxContainer" type="HBoxContainer" parent="VSplitContainer/MainVBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/GridContainer"]
-margin_left = 957.0
-margin_right = 1910.0
-margin_bottom = 24.0
+[node name="ExecutableHBoxContainer" type="HBoxContainer" parent="TabContainer/Configuration/VBoxContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer"]
+margin_left = 953.0
+margin_top = 28.0
+margin_right = 1902.0
+margin_bottom = 52.0
 size_flags_horizontal = 3
 
-[node name="ExecutableLineEdit" type="LineEdit" parent="VSplitContainer/MainVBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/GridContainer/ExecutableHBoxContainer"]
-margin_right = 921.0
+[node name="ExecutableLineEdit" type="LineEdit" parent="TabContainer/Configuration/VBoxContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer/ExecutableHBoxContainer"]
+margin_right = 917.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "/opt/homebrew/bin/inklecate"
 
-[node name="ExecutableDialogButton" type="Button" parent="VSplitContainer/MainVBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/GridContainer/ExecutableHBoxContainer"]
-margin_left = 925.0
-margin_right = 953.0
+[node name="ExecutableDialogButton" type="Button" parent="TabContainer/Configuration/VBoxContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer/ExecutableHBoxContainer"]
+margin_left = 921.0
+margin_right = 949.0
 margin_bottom = 24.0
 icon = SubResource( 2 )
 
-[node name="SourceFileLabel" type="Label" parent="VSplitContainer/MainVBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/GridContainer"]
-margin_top = 28.0
-margin_right = 953.0
-margin_bottom = 52.0
-size_flags_horizontal = 3
-size_flags_vertical = 1
-text = "Source File"
-
-[node name="SourceFileHBoxContainer" type="HBoxContainer" parent="VSplitContainer/MainVBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/GridContainer"]
-margin_left = 957.0
-margin_top = 28.0
-margin_right = 1910.0
-margin_bottom = 52.0
-size_flags_horizontal = 3
-
-[node name="SourceFileLineEdit" type="LineEdit" parent="VSplitContainer/MainVBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/GridContainer/SourceFileHBoxContainer"]
-margin_right = 921.0
-margin_bottom = 24.0
-size_flags_horizontal = 3
-text = "res://examples/ink/the_intercept.ink"
-
-[node name="SourceFileDialogButton" type="Button" parent="VSplitContainer/MainVBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/GridContainer/SourceFileHBoxContainer"]
-margin_left = 925.0
-margin_right = 953.0
-margin_bottom = 24.0
-icon = SubResource( 2 )
-
-[node name="TargetFileLabel" type="Label" parent="VSplitContainer/MainVBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/GridContainer"]
-margin_top = 56.0
-margin_right = 953.0
-margin_bottom = 80.0
-size_flags_horizontal = 3
-size_flags_vertical = 1
-text = "Target File"
-
-[node name="TargetFileHBoxContainer3" type="HBoxContainer" parent="VSplitContainer/MainVBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/GridContainer"]
-margin_left = 957.0
-margin_top = 56.0
-margin_right = 1910.0
-margin_bottom = 80.0
-size_flags_horizontal = 3
-
-[node name="TargetFileLineEdit" type="LineEdit" parent="VSplitContainer/MainVBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/GridContainer/TargetFileHBoxContainer3"]
-margin_right = 921.0
-margin_bottom = 24.0
-size_flags_horizontal = 3
-text = "res://examples/ink/the_intercept.ink.json"
-
-[node name="TargetFileDialogButton" type="Button" parent="VSplitContainer/MainVBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/GridContainer/TargetFileHBoxContainer3"]
-margin_left = 925.0
-margin_right = 953.0
-margin_bottom = 24.0
-icon = SubResource( 2 )
-
-[node name="TestButton" type="Button" parent="VSplitContainer/MainVBoxContainer"]
-margin_left = 896.0
-margin_top = 428.0
-margin_right = 1023.0
-margin_bottom = 448.0
-size_flags_horizontal = 4
-text = "Test Configuration"
-
-[node name="MainVBoxContainer2" type="VBoxContainer" parent="VSplitContainer"]
-margin_top = 460.0
-margin_right = 1920.0
-margin_bottom = 1080.0
+[node name="StoryVBoxContainer" type="VBoxContainer" parent="TabContainer/Configuration/VBoxContainer"]
+margin_top = 106.0
+margin_right = 1912.0
+margin_bottom = 192.0
 __meta__ = {
-"__editor_plugin_screen__": "2D"
+"_edit_use_anchors_": false
 }
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VSplitContainer/MainVBoxContainer2"]
-margin_right = 1920.0
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Configuration/VBoxContainer/StoryVBoxContainer"]
+margin_right = 1912.0
 margin_bottom = 20.0
 
-[node name="Label" type="Label" parent="VSplitContainer/MainVBoxContainer2/HBoxContainer"]
+[node name="Label" type="Label" parent="TabContainer/Configuration/VBoxContainer/StoryVBoxContainer/HBoxContainer"]
 margin_top = 3.0
-margin_right = 1851.0
+margin_right = 1807.0
 margin_bottom = 17.0
 size_flags_horizontal = 3
-text = "Inklecate"
+text = "Story"
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="BuildButton" type="Button" parent="VSplitContainer/MainVBoxContainer2/HBoxContainer"]
-margin_left = 1855.0
-margin_right = 1920.0
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Configuration/VBoxContainer/StoryVBoxContainer/HBoxContainer"]
+margin_left = 1811.0
+margin_right = 1912.0
 margin_bottom = 20.0
-text = "Compile"
+alignment = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="Panel2" type="Panel" parent="VSplitContainer/MainVBoxContainer2"]
+[node name="BuildButton" type="Button" parent="TabContainer/Configuration/VBoxContainer/StoryVBoxContainer/HBoxContainer/HBoxContainer"]
+margin_right = 101.0
+margin_bottom = 20.0
+mouse_filter = 1
+custom_constants/hseparation = 10
+text = "Compile story"
+__meta__ = {
+"_editor_description_": "Compile the story manually, based on the configuration below."
+}
+
+[node name="StoryMarginContainer" type="MarginContainer" parent="TabContainer/Configuration/VBoxContainer/StoryVBoxContainer"]
 margin_top = 24.0
-margin_right = 1920.0
-margin_bottom = 620.0
+margin_right = 1912.0
+margin_bottom = 86.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Panel" type="Panel" parent="TabContainer/Configuration/VBoxContainer/StoryVBoxContainer/StoryMarginContainer"]
+margin_right = 1912.0
+margin_bottom = 62.0
 size_flags_vertical = 3
 
-[node name="MarginContainer2" type="MarginContainer" parent="VSplitContainer/MainVBoxContainer2/Panel2"]
-anchor_right = 1.0
-anchor_bottom = 1.0
+[node name="MarginContainer" type="MarginContainer" parent="TabContainer/Configuration/VBoxContainer/StoryVBoxContainer/StoryMarginContainer"]
+margin_right = 1912.0
+margin_bottom = 62.0
 custom_constants/margin_right = 5
 custom_constants/margin_top = 5
 custom_constants/margin_left = 5
 custom_constants/margin_bottom = 5
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="ScrollContainer" type="ScrollContainer" parent="VSplitContainer/MainVBoxContainer2/Panel2/MarginContainer2"]
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Configuration/VBoxContainer/StoryVBoxContainer/StoryMarginContainer/MarginContainer"]
 margin_left = 5.0
 margin_top = 5.0
-margin_right = 1915.0
-margin_bottom = 591.0
-size_flags_vertical = 3
-scroll_horizontal_enabled = false
-
-[node name="BuildOutputLabel" type="Label" parent="VSplitContainer/MainVBoxContainer2/Panel2/MarginContainer2/ScrollContainer"]
-margin_right = 1910.0
-margin_bottom = 14.0
+margin_right = 1907.0
+margin_bottom = 57.0
 size_flags_horizontal = 3
-autowrap = true
+
+[node name="GridContainer" type="GridContainer" parent="TabContainer/Configuration/VBoxContainer/StoryVBoxContainer/StoryMarginContainer/MarginContainer/VBoxContainer"]
+margin_right = 1902.0
+margin_bottom = 52.0
+size_flags_horizontal = 3
+columns = 2
+
+[node name="SourceFileLabel" type="Label" parent="TabContainer/Configuration/VBoxContainer/StoryVBoxContainer/StoryMarginContainer/MarginContainer/VBoxContainer/GridContainer"]
+margin_right = 949.0
+margin_bottom = 24.0
+hint_tooltip = "The input path, a.k.a the original ink story."
+mouse_filter = 1
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "Source File"
+
+[node name="SourceFileHBoxContainer" type="HBoxContainer" parent="TabContainer/Configuration/VBoxContainer/StoryVBoxContainer/StoryMarginContainer/MarginContainer/VBoxContainer/GridContainer"]
+margin_left = 953.0
+margin_right = 1902.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+
+[node name="SourceFileLineEdit" type="LineEdit" parent="TabContainer/Configuration/VBoxContainer/StoryVBoxContainer/StoryMarginContainer/MarginContainer/VBoxContainer/GridContainer/SourceFileHBoxContainer"]
+margin_right = 917.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+text = "res://examples/ink/the_intercept.ink"
+
+[node name="SourceFileDialogButton" type="Button" parent="TabContainer/Configuration/VBoxContainer/StoryVBoxContainer/StoryMarginContainer/MarginContainer/VBoxContainer/GridContainer/SourceFileHBoxContainer"]
+margin_left = 921.0
+margin_right = 949.0
+margin_bottom = 24.0
+icon = SubResource( 2 )
+
+[node name="TargetFileLabel" type="Label" parent="TabContainer/Configuration/VBoxContainer/StoryVBoxContainer/StoryMarginContainer/MarginContainer/VBoxContainer/GridContainer"]
+margin_top = 28.0
+margin_right = 949.0
+margin_bottom = 52.0
+hint_tooltip = "The output path, a.k.a the JSON file compiled from the original ink story."
+mouse_filter = 1
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "Target File"
+
+[node name="TargetFileHBoxContainer3" type="HBoxContainer" parent="TabContainer/Configuration/VBoxContainer/StoryVBoxContainer/StoryMarginContainer/MarginContainer/VBoxContainer/GridContainer"]
+margin_left = 953.0
+margin_top = 28.0
+margin_right = 1902.0
+margin_bottom = 52.0
+size_flags_horizontal = 3
+
+[node name="TargetFileLineEdit" type="LineEdit" parent="TabContainer/Configuration/VBoxContainer/StoryVBoxContainer/StoryMarginContainer/MarginContainer/VBoxContainer/GridContainer/TargetFileHBoxContainer3"]
+margin_right = 917.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+text = "res://examples/ink/the_intercept.ink.json"
+
+[node name="TargetFileDialogButton" type="Button" parent="TabContainer/Configuration/VBoxContainer/StoryVBoxContainer/StoryMarginContainer/MarginContainer/VBoxContainer/GridContainer/TargetFileHBoxContainer3"]
+margin_left = 921.0
+margin_right = 949.0
+margin_bottom = 24.0
+icon = SubResource( 2 )
