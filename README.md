@@ -8,9 +8,10 @@
 
 Implementation of [inkle's Ink] in pure GDScript, with editor support.
 
-⚠️ **Note:** While the implementation of the runtime is feature-complete and passes the test suite, you may still encounter some weird behaviors and bugs that will need to be ironed out. The runtime is not yet considered production ready, but it's almost there.
+⚠️ **Note:** While the implementation of the runtime is feature-complete and passes the test suite, it's unlikely to ever be considered _production-ready_. _inkgd_ shines for rapid-prototyping in GDScript and small games, but for bigger projects it's likely to be way too slow. If you need a more bulletproof solution and don't mind Mono, you should consider using [godot-ink].
 
 [inkle's Ink]: https://github.com/inkle/ink
+[godot-ink]: https://github.com/paulloz/godot-ink
 
 ## Table of contents
 
