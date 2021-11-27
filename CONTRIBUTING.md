@@ -35,7 +35,7 @@ If you're working on a pull request, here are a few things to remember.
 
 **Don't be afraid to ask questions!** If anything seems unclear, ask away! We need to make sure that everyone is on the same page.
 
-### Style guide and testing
+### Style guide, testing & debugging
 
 #### Style guide
 
@@ -53,6 +53,10 @@ There are two important rules to follow:
 Make sure all the tests are all green! _inkgd_ uses [Gut] to run tests. Adding tests to your PR is not expected, but feel free to do so 😉.
 
 [Gut]: https://github.com/bitwes/Gut
+
+#### Debugging
+
+When debugging through the example project, don't forget to set `SHOULD_LOAD_IN_BACKGROUND = false` in `ink_runner.gd` since Godot's debugger doesn't work when threads are involved.
 
 ### Git branching model & pull requests
 

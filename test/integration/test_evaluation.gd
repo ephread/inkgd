@@ -85,7 +85,7 @@ func test_increment():
 func test_literal_unary():
 	var story = Story.new(load_file("literal_unary"))
 
-	assert_eq(story.continue_maximally(), "-1\n0\n1\n")
+	assert_eq(story.continue_maximally(), "-1\nfalse\ntrue\n")
 
 # ############################################################################ #
 

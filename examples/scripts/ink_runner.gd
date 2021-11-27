@@ -6,7 +6,7 @@
 
 extends Node
 
-const SHOULD_LOAD_IN_BACKGROUND = true
+const SHOULD_LOAD_IN_BACKGROUND = false
 
 # ############################################################################ #
 # Imports
@@ -128,7 +128,7 @@ func _async_load_completed():
 	_loading_thread.wait_to_finish()
 	_loading_thread = null
 
-	_bind_externals()
+	#_bind_externals()
 	story.choose_path_string("start")
 	story.reset_errors()
 	continue_story()

@@ -160,7 +160,7 @@ func _observe_health(variable_name, new_value):
 The event / delegate mechanism found in C# is again translated into a signal-based logic.
 
 ```gdscript
-story.bind_external_function("multiply", self, "_multiply")
+story.bind_external_function("multiply", self, "_multiply", true)
 
 func _multiply(arg1, arg2):
     return arg1 * arg2
@@ -169,7 +169,7 @@ func _multiply(arg1, arg2):
 #
 # _inkStory.BindExternalFunction ("multiply", (int arg1, float arg2) => {
 #     return arg1 * arg2;
-# });
+# }, true);
 ```
 
 ##### 6. Getting the ouput of `evaluate_function`

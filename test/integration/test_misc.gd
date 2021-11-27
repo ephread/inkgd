@@ -18,7 +18,7 @@ func test_end_of_content():
 	var story = Story.new(load_file("end_of_content"))
 
 	story.continue_maximally()
-	assert_false(story.has_error)
+	assert_false(story.has_error)  # Removed in ink 1.0.0 but kept here for now.
 
 func test_end():
 	var story = Story.new(load_file("end"))

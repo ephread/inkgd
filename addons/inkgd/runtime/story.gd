@@ -11,7 +11,7 @@
 
 extends "res://addons/inkgd/runtime/ink_object.gd"
 
-const INK_VERSION_CURRENT = 19
+const INK_VERSION_CURRENT = 20
 const INK_VERSION_MINIMUM_COMPATIBLE = 18
 
 # ############################################################################ #
@@ -19,6 +19,7 @@ const INK_VERSION_MINIMUM_COMPATIBLE = 18
 # ############################################################################ #
 
 var PushPopType = preload("res://addons/inkgd/runtime/push_pop.gd").PushPopType
+var ErrorType = preload("res://addons/inkgd/runtime/error.gd").ErrorType
 
 var ListDefinitionsOrigin = load("res://addons/inkgd/runtime/list_definitions_origin.gd")
 var StoryState = load("res://addons/inkgd/runtime/story_state.gd")
@@ -44,7 +45,7 @@ var current_choices setget , get_current_choices # Array<Choice>
 func get_current_choices():
 	var choices = [] # Array<Choice>
 
-	for c in _state.current_choices:
+	for c in self._state.current_choices:
 		if !c.is_invisible_default:
 			c.index = choices.size()
 			choices.append(c)
@@ -71,6 +72,9 @@ func get_current_errors(): return self.state.current_errors
 var current_warnings setget , get_current_warnings # Array<String>
 func get_current_warnings(): return self.state.current_warnings
 
+var current_flow_name setget , get_current_flow_name # String
+func get_current_flow_name(): return self.state.current_flow_name
+
 var has_error setget , get_has_error # bool
 func get_has_error(): return self.state.has_error
 
@@ -87,6 +91,18 @@ func get_list_definitions():
 var state setget , get_state # StoryState
 func get_state():
 	return self._state
+
+signal on_error(message, type)
+
+signal on_did_continue()
+
+signal on_make_choice(choice)
+
+signal on_evaluate_function(function_name, arguments)
+
+signal on_complete_evaluate_function(function_name, arguments, text_output, result)
+
+signal on_choose_path_string(path, arguments)
 
 # () -> Profiler
 func start_profiling():
@@ -108,7 +124,7 @@ func _init_with(content_container, lists = null):
 	if lists != null:
 		self._list_definitions = ListDefinitionsOrigin.new(lists)
 
-	_externals = {} # Dictionary<String, ExternalFunction>
+	self._externals = {} # Dictionary<String, ExternalFunctionDef>
 
 # (String) -> Story
 func _init(json_string):
@@ -222,6 +238,21 @@ func reset_globals():
 
 	self.state.variables_state.snapshot_default_globals()
 
+func switch_flow(flow_name):
+	if async_we_cant("SwitchFlow"):
+		return
+
+	if self._async_saving:
+		Utils.throw_exception("Story is already in background saving mode, can't switch flow to " + flow_name)
+
+	self.state.switch_flow_internal(flow_name)
+
+func remove_flow(flow_name):
+	self.state.remove_flow_internal(flow_name)
+
+func switch_to_default_flow():
+	self.state.switch_to_default_flow_internal()
+
 # () -> String
 func continue():
 	self.continue_async(0)
@@ -268,6 +299,7 @@ func continue_internal(millisecs_limit_async = 0):
 	duration_stopwatch.start()
 
 	var output_stream_ends_in_newline = false
+	self._saw_lookahead_unsafe_function_after_newline = false
 	var first_time = true
 	while (first_time || self.can_continue):
 		first_time = false
@@ -314,16 +346,48 @@ func continue_internal(millisecs_limit_async = 0):
 
 		var state = self.state
 		state.did_safe_exit = false
+		self._saw_lookahead_unsafe_function_after_newline = false
 
 		if _recursive_continue_count == 1:
 			_state.variables_state.batch_observing_variable_changes = false
 
 		self._async_continue_active = false
+		emit_signal("on_did_continue")
 
 	self._recursive_continue_count -= 1
 
 	if _profiler != null:
 		_profiler.post_continue()
+
+	if self.state.has_error || self.state.has_warning:
+		if !self.get_signal_connection_list("on_error").empty():
+			if self.state.has_error:
+				for err in self.state.current_errors:
+					emit_signal("on_error", err, ErrorType.ERROR)
+
+			if self.state.has_warning:
+				for err in self.state.current_warnings:
+					emit_signal("on_error", err, ErrorType.WARNING)
+
+			self.reset_errors()
+		else:
+			var exception = "Ink had "
+
+			if self.state.has_error:
+				exception += str(self.state.current_errors.size())
+				exception += " error" if self.state.current_errors.size() == 1 else " errors"
+				if self.state.has_warning:
+					exception += " and "
+
+			if self.state.has_warning:
+				exception += str(self.state.current_warnings.size())
+				exception += " warning" if self.state.current_warnings.size() == 1 else " warnings"
+
+			exception += ". It is strongly suggested that you assign an error handler to story.onError. The first issue was: "
+			exception += self.state.current_errors[0] if self.state.has_error else self.state.current_warnings[0]
+
+			# If you get this exception, please connect an error handler to the appropriate signal: "on_error".
+			Utils.throw_story_exception(exception)
 
 # ()
 func continue_single_step():
@@ -351,7 +415,7 @@ func continue_single_step():
 				self._state_snapshot_at_last_newline.current_tags.size(), self.state.current_tags.size()
 			)
 
-			if change == OutputStateChange.EXTENDED_BEYOND_NEWLINE:
+			if change == OutputStateChange.EXTENDED_BEYOND_NEWLINE || self._saw_lookahead_unsafe_function_after_newline:
 				self.restore_state_snapshot()
 
 				return true
@@ -521,7 +585,7 @@ func step():
 	state.current_pointer = pointer.duplicate()
 
 	if _profiler != null:
-		_profiler.step(state.call_stack)
+		_profiler.step(state.callstack)
 
 	var current_content_obj = pointer.resolve()
 	var is_logic_or_flow_control = perform_logic_and_flow_control(current_content_obj)
@@ -592,9 +656,15 @@ func visit_changed_containers_due_to_divert():
 
 	var current_container_ancestor = Utils.as_or_null(current_child_of_container.parent, "InkContainer")
 
+	var all_children_entered_at_start = true
 	while current_container_ancestor && (self._prev_containers.find(current_container_ancestor) < 0 || current_container_ancestor.counting_at_start_only):
 
-		var entering_at_start = current_container_ancestor.content.size() > 0 && current_child_of_container == current_container_ancestor.content[0]
+		var entering_at_start = (current_container_ancestor.content.size() > 0 &&
+								current_child_of_container == current_container_ancestor.content[0] &&
+								all_children_entered_at_start)
+
+		if !entering_at_start:
+			all_children_entered_at_start = false
 
 		self.visit_container(current_container_ancestor, entering_at_start)
 
@@ -871,7 +941,13 @@ func perform_logic_and_flow_control(content_obj):
 					error("Invalid value for maximum parameter of RANDOM(min, max)")
 					return false
 
-				var random_range = max_int.value - min_int.value + 1
+				var random_range
+				if max_int.value == (1 << 63) - 1 && min_int.value == 0:
+					random_range = max_int.value
+					error(str("RANDOM was called with a range that exceeds the size that ink numbers can use."))
+					return false
+				else:
+					random_range = max_int.value - min_int.value + 1
 				if random_range <= 0:
 					error(str("RANDOM was called with minimum as ", min_int.value,
 							  " and maximum as ", max_int.value, ". The maximum must be larger"))
@@ -1045,6 +1121,8 @@ func choose_path_string(path, reset_callstack = true, arguments = null):
 	if async_we_cant("call ChoosePathString right now"):
 		return
 
+	emit_signal("on_choose_path_string", path, arguments)
+
 	if reset_callstack:
 		self.reset_callstack()
 	else:
@@ -1087,6 +1165,8 @@ func choose_choice_index(choice_idx):
 	self.assert(choice_idx >= 0 && choice_idx < choices.size(), "choice out of range")
 
 	var choice_to_choose = choices[choice_idx]
+	emit_signal("on_make_choice", choice_to_choose)
+
 	var state = self.state.callstack
 	state.current_thread = choice_to_choose.thread_at_generation
 
@@ -1104,6 +1184,7 @@ func evaluate_function(function_name, arguments = null, return_text_output = fal
 	# plus an optional third parameter return_text_output. If set to true, we will
 	# return both the text_output and the returned value, as a Dictionary.
 
+	emit_signal("on_evaluate_function", function_name, arguments)
 	if async_we_cant("evaluate a function"):
 		return
 
@@ -1134,6 +1215,7 @@ func evaluate_function(function_name, arguments = null, return_text_output = fal
 
 	var result = self.state.complete_function_evaluation_from_game()
 
+	emit_signal("on_complete_evaluate_function", function_name, arguments, text_output, result)
 	if return_text_output:
 		return { "result": result, "output": text_output }
 	else:
@@ -1168,13 +1250,16 @@ var allow_external_function_fallbacks = false # bool
 
 # (String, int) -> void
 func call_external_function(func_name, number_of_arguments):
-	var _func = null # ExternalFunction
+	var _func_def = null # ExternalFunctionDef
 	var fallback_function_container = null # InkContainer
 
 	if self._externals.has(func_name):
-		_func = self._externals.get(func_name)
+		_func_def = self._externals.get(func_name)
+		if _func_def != null && !_func_def.lookahead_safe && self._state_snapshot_at_last_newline != null:
+			self._saw_lookahead_unsafe_function_after_newline = true
+			return
 
-	if _func == null:
+	if _func_def == null:
 		if allow_external_function_fallbacks:
 			fallback_function_container = self.knot_container_with_name(func_name)
 			self.assert(fallback_function_container != null,
@@ -1206,7 +1291,7 @@ func call_external_function(func_name, number_of_arguments):
 
 	arguments.invert()
 
-	var func_result = _func.execute(arguments)
+	var func_result = _func_def.execute(arguments)
 
 	var return_obj = null
 	if func_result != null:
@@ -1219,22 +1304,22 @@ func call_external_function(func_name, number_of_arguments):
 
 	self.state.push_evaluation_stack(return_obj)
 
-# (String, ExternalFunction) -> void
-func bind_external_function_general(func_name, object, method):
+# (String, ExternalFunctionDef) -> void
+func bind_external_function_general(func_name, object, method, lookahead_safe = true):
 	if async_we_cant("bind an external function"):
 		return
 
 	self.assert(!_externals.has(func_name),
 				str("Function '", func_name, "' has already been bound."))
-	_externals[func_name] = ExternalFunction.new(object, method)
+	_externals[func_name] = ExternalFunctionDef.new(object, method, lookahead_safe)
 
 # try_coerce not needed.
 
 # (String, Variant, String) -> void
-func bind_external_function(func_name, object, method_name):
+func bind_external_function(func_name, object, method_name, lookahead_safe = false):
 	self.assert(object != null || method_name != null, "Can't bind a null function")
 
-	bind_external_function_general(func_name, object, method_name)
+	bind_external_function_general(func_name, object, method_name, lookahead_safe)
 
 # (String) -> void
 func unbind_external_function(func_name):
@@ -1298,8 +1383,8 @@ func observe_variable(variable_name, object, method_name):
 		_variable_observers = {}
 
 	if !self.state.variables_state.global_variable_exists_with_name(variable_name):
-		Utils.throw_story_exception(str("Cannot observe variable '", variable_name,
-										"' because it wasn't declared in the ink story."))
+		Utils.throw_exception(str("Cannot observe variable '", variable_name,
+								  "' because it wasn't declared in the ink story."))
 		return
 
 	if _variable_observers.has(variable_name):
@@ -1316,7 +1401,20 @@ func observe_variables(variable_names, object, method_name):
 		observe_variable(var_name, object, method_name)
 
 # (Object, String, String) -> void
-func remove_variable_observer(object, method_name, specific_variable_name):
+# TODO: Rewrite this poor documentation and improve method beyond what
+#       upstream offers.
+#
+# Potential cases:
+#     - specific_variable_name is null, but object and method_name are both present
+#       -> all signals, pointing to object & method_name and regardless of the
+#          variable they listen to, are disconnected.
+#
+#     - specific_variable_name is present, but both object and method_name are null
+#       -> all signals listening to changes of specific_variable_name are disconnected.
+#
+#     - object and method_name have mismatched presence
+#       -> this is an unsuported case at the moment.
+func remove_variable_observer(object = null, method_name = null, specific_variable_name = null):
 	if async_we_cant("remove a variable observer"):
 		return
 
@@ -1326,11 +1424,19 @@ func remove_variable_observer(object, method_name, specific_variable_name):
 	if specific_variable_name != null:
 		if _variable_observers.has(specific_variable_name):
 			var observer = _variable_observers[specific_variable_name]
-			observer.disconnect("variable_changed", object, method_name)
+			if object != null && method_name != null:
+				observer.disconnect("variable_changed", object, method_name)
 
-			if observer.get_signal_connection_list("variable_changed").empty():
+				if observer.get_signal_connection_list("variable_changed").empty():
+					_variable_observers.erase(specific_variable_name)
+			else:
+				var connections = observer.get_signal_connection_list("variable_changed");
+				for connection in connections:
+					observer.disconnect(connection.signal, connection.target, connection.method)
+
 				_variable_observers.erase(specific_variable_name)
-	else:
+
+	elif object != null && method_name != null:
 		var keys_to_remove = []
 		for observer_key in _variable_observers:
 			var observer = _variable_observers[observer_key]
@@ -1487,6 +1593,9 @@ func try_follow_default_invisible_choice():
 	var callstack = self.state.callstack
 	callstack.current_thread = choice.thread_at_generation
 
+	if self._state_snapshot_at_last_newline != null:
+		self.state.callstack.current_thread = self.state.callstack.fork_thread()
+
 	choose_path(choice.target_path, false)
 
 	return true
@@ -1630,7 +1739,7 @@ func get_main_content_container():
 var _main_content_container = null # InkContainer
 var _list_definitions = null # ListDefinitionsOrigin
 
-var _externals = null # Dictionary<String, ExternalFunction>
+var _externals = null # Dictionary<String, ExternalFunctionDef>
 var _variable_observers = null # Dictionary<String, VariableObserver>
 
 var _has_validated_externals = false # bool
@@ -1641,6 +1750,7 @@ var _state = null # StoryState
 
 var _async_continue_active = false # bool
 var _state_snapshot_at_last_newline = null # StoryState
+var _saw_lookahead_unsafe_function_after_newline = false # bool
 
 var _recursive_continue_count = 0 # int
 
@@ -1686,13 +1796,15 @@ class VariableObserver extends Reference:
 	func _init(variable_name):
 		self.variable_name = variable_name
 
-class ExternalFunction extends Reference:
+class ExternalFunctionDef extends Reference:
 	var object # WeakRef<Reference>
 	var method # String
+	var lookahead_safe # bool
 
-	func _init(object, method):
+	func _init(object, method, lookahead_safe):
 		self.object = weakref(object)
 		self.method = method
+		self.lookahead_safe = lookahead_safe
 
 	func execute(params):
 		var object_ref = object.get_ref()

@@ -22,7 +22,7 @@ func test_choice_diverts_to_done():
 	story.choose_choice_index(0)
 
 	assert_eq(story.continue(), "choice")
-	assert_false(story.has_error)
+	assert_false(story.has_error) # Removed in ink 1.0.0 but kept here for now.
 
 func test_choice_with_brackets_only():
 	var story = Story.new(load_file("choice_with_brackets_only"))
@@ -133,7 +133,7 @@ func test_once_only_choices_can_link_back_to_self():
 	story.choose_choice_index(0)
 	story.continue_maximally()
 
-	assert_false(story.has_error)
+	assert_false(story.has_error) # Removed in ink 1.0.0 but kept here for now.
 
 func test_once_only_choices_with_own_content():
 	var story = Story.new(load_file("once_only_choices_with_own_content"))
@@ -164,6 +164,12 @@ func test_should_not_gather_due_to_choice():
 	story.choose_choice_index(0)
 
 	assert_eq(story.continue_maximally(), "opt\ntext\n")
+
+func test_state_rollback_over_default_choice():
+	var story = Story.new(load_file("state_rollback_over_default_choice"))
+
+	assert_eq(story.continue(), "Text.\n");
+	assert_eq(story.continue(), "5\n");
 
 func test_sticky_choices_stay_sticky():
 	var story = Story.new(load_file("sticky_choices_stay_sticky"))

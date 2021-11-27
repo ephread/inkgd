@@ -17,6 +17,8 @@ extends Reference
 # ############################################################################ #
 
 var PushPopType = preload("res://addons/inkgd/runtime/push_pop.gd").PushPopType
+var Utils = preload("res://addons/inkgd/runtime/extra/utils.gd")
+
 var Ink = load("res://addons/inkgd/runtime/value.gd")
 var Glue = load("res://addons/inkgd/runtime/glue.gd")
 var ControlCommand = load("res://addons/inkgd/runtime/control_command.gd")
@@ -34,7 +36,6 @@ var Void = load("res://addons/inkgd/runtime/void.gd")
 var InkContainer = load("res://addons/inkgd/runtime/container.gd")
 var Choice = load("res://addons/inkgd/runtime/choice.gd")
 var InkPath = load("res://addons/inkgd/runtime/ink_path.gd")
-var Utils = load("res://addons/inkgd/runtime/extra/utils.gd")
 
 # ############################################################################ #
 
@@ -124,6 +125,11 @@ func write_runtime_object(writer, obj):
 		writer.write_property("*", choice_point.path_string_on_choice)
 		writer.write_property("flg", choice_point.flags)
 		writer.write_object_end()
+		return
+
+	var bool_val = Utils.as_or_null(obj, "BoolValue")
+	if bool_val:
+		writer.write(bool_val.value)
 		return
 
 	var int_val = Utils.as_or_null(obj, "IntValue")
@@ -253,7 +259,7 @@ func jobject_to_int_dictionary(jobject):
 # (Variant) -> InkObject
 func jtoken_to_runtime_object(token):
 
-	if token is int || token is float:
+	if token is int || token is float || token is bool:
 		return Ink.Value.create(token)
 
 	if token is String:

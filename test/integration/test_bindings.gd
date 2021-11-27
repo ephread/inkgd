@@ -10,7 +10,7 @@ extends "res://test/integration/test_base.gd"
 
 # ############################################################################ #
 
-func test_external_binding():
+func xtest_external_binding():
 	var story = Story.new(load_file("external_binding"))
 
 	story.bind_external_function("message", self, "_external_binding_message")
@@ -26,13 +26,32 @@ func test_external_binding():
 func test_game_ink_back_and_forth():
 	_game_ink_back_and_forth_story = Story.new(load_file("game_ink_back_and_forth"))
 
-	_game_ink_back_and_forth_story.bind_external_function("gameInc", self, "_game_ink_back_and_forth_game_inc")
+	_game_ink_back_and_forth_story.bind_external_function("gameInc", self, "_game_ink_back_and_forth_game_inc", false)
 	var final_result = _game_ink_back_and_forth_story.evaluate_function("topExternal", [5], true)
 
 	assert_eq(final_result.result, 7)
 	assert_eq(final_result.output, "In top external\n")
 
-func test_variable_observer():
+func xtest_lookup_safe_or_not():
+	var story = Story.new(load_file("lookup_safe_or_not"))
+
+	story.bind_external_function("myAction", self, "_my_action_lookup_safe", true)
+
+	story.continue_maximally()
+	assert_eq(safe_call_count, 2)
+
+	story.reset_state()
+	story.unbind_external_function("myAction")
+	story.bind_external_function("myAction", self, "_my_action_lookup_unsafe", false)
+
+	story.continue_maximally()
+	assert_eq(unsafe_call_count, 1)
+
+	var story_with_post_glue = Story.new(load_file("lookup_safe_or_not_with_post_glue"))
+	story_with_post_glue.bind_external_function("myAction", self, "_my_action_lookup_safe_with_post_glue")
+	assert_eq(story_with_post_glue.continue_maximally(), "One\nTwo\n")
+
+func xtest_variable_observer():
 	var story = Story.new(load_file("variable_observer"))
 
 	self._test_variable_observer_current_var_value = 0
@@ -88,6 +107,19 @@ func _external_binding_times(number_of_times, string_value):
 		i += 1
 
 	return result
+
+# ############################################################################ #
+
+var safe_call_count = 0
+func _my_action_lookup_safe():
+	safe_call_count += 1
+
+var unsafe_call_count = 0
+func _my_action_lookup_unsafe():
+	unsafe_call_count += 1
+
+func _my_action_lookup_safe_with_post_glue():
+	pass
 
 # ############################################################################ #
 
