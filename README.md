@@ -29,8 +29,8 @@ Implementation of [inkle's Ink] in pure GDScript, with editor support.
 ## Features
 - [x] Fully featured Ink runtime
 - [x] Automatic recompilation of the master Ink file on each build
-- [ ] Multi-file support in the editor
 - [ ] Story previewer integrated in the editor
+- [ ] Multi-file support in the editor
 
 ## Requirements
 - Godot 3.1+
@@ -194,7 +194,35 @@ var result = story.evaluate_function("multiply", [5, 3], true)
 # }
 ```
 
-##### 7. Error Handling
+##### 7. Handlers
+
+Starting with Ink version 1.0.0, it's possible to attach different types of handlers to a story to receive callbacks. In C#, those handlers are implemented using events. In _inkgd_, those are implemented using signals.
+
+```gdscript
+# GDScript API
+
+signal on_error(message, type)
+signal on_did_continue()
+signal on_make_choice(choice)
+signal on_evaluate_function(function_name, arguments)
+signal on_complete_evaluate_function(function_name, arguments, text_output, result)
+signal on_choose_path_string(path, arguments)
+
+story.connect("on_did_continue", self, "_handle_did_continue")
+
+# Original C# API
+#
+# public event Ink.ErrorHandler onError;
+# public event Action onDidContinue;
+# public event Action<Choice> onMakeChoice;
+# public event Action<string, object[]> onEvaluateFunction;
+# public event Action<string, object[], string, object> onCompleteEvaluateFunction;
+# public event Action<string, object[]> onChoosePathString;
+```
+
+It's recommended that you connect a handler to `on_error` to receive errors and warnings. If you don't, the story may stop unfolding when an error is encountered.
+
+##### 8. Error Handling
 
 The original implementation relies on C#'s exceptions to report and recover from inconsistent states.
 Exceptions are not available in GDScript, so the runtime may behave slightly differently. In particular,
