@@ -14,6 +14,8 @@ extends Reference
 # ############################################################################ #
 
 enum ValueType {
+	BOOL = -1,
+
 	INT,
 	FLOAT,
 	LIST,
@@ -70,9 +72,7 @@ class Value extends "res://addons/inkgd/runtime/ink_object.gd":
 		# But it's not applicable here.
 
 		if val is bool:
-			var b = val
-			val = 1 if b else 0
-
+			return BoolValue.new_with(val)
 		if val is int:
 			return IntValue.new_with(val)
 		elif val is float:
@@ -115,6 +115,51 @@ class Value extends "res://addons/inkgd/runtime/ink_object.gd":
 		value._init_with(val)
 		return value
 
+class BoolValue extends Value:
+	func get_value_type():
+		return ValueType.BOOL
+
+	func get_is_truthy():
+		return value
+
+	func _init():
+		value = false
+
+	func cast(new_type):
+		if new_type == self.value_type:
+			return self
+
+		if new_type == ValueType.INT:
+			return IntValue.new_with(1 if value else 0)
+
+		if new_type == ValueType.FLOAT:
+			return FloatValue.new_with(1.0 if value else 0.0)
+
+		if new_type == ValueType.STRING:
+			return StringValue.new_with("true" if value else "false")
+
+		Utils.throw_story_exception(bad_cast_exception_message(new_type))
+		return null
+
+	func to_string():
+		return "true" if value else "false"
+
+	# ######################################################################## #
+	# GDScript extra methods
+	# ######################################################################## #
+
+	func is_class(type):
+		return type == "BoolValue" || .is_class(type)
+
+	func get_class():
+		return "BoolValue"
+
+	static func new_with(val):
+		var value = BoolValue.new()
+		value._init_with(val)
+		return value
+
+
 class IntValue extends Value:
 	func get_value_type():
 		return ValueType.INT
@@ -128,6 +173,9 @@ class IntValue extends Value:
 	func cast(new_type):
 		if new_type == self.value_type:
 			return self
+
+		if new_type == ValueType.BOOL:
+			return BoolValue.new_with(false if value == 0 else 1)
 
 		if new_type == ValueType.FLOAT:
 			return FloatValue.new_with(float(value))
@@ -166,6 +214,9 @@ class FloatValue extends Value:
 	func cast(new_type):
 		if new_type == self.value_type:
 			return self
+
+		if new_type == ValueType.BOOL:
+			return BoolValue.new_with(false if value == 0 else 1)
 
 		if new_type == ValueType.INT:
 			return IntValue.new_with(int(value))

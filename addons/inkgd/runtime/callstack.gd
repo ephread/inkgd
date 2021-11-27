@@ -367,7 +367,7 @@ func set_temporary_variable(name, value, declare_new, context_index = -1):
 	var context_element = self.callstack[context_index - 1]
 
 	if !declare_new && !context_element.temporary_variables.has(name):
-		Utils.throw_story_exception("Could not find temporary variable to set: " + name)
+		Utils.throw_exception("Could not find temporary variable to set: " + name)
 		return
 
 	if context_element.temporary_variables.has(name):

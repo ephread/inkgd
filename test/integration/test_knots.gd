@@ -32,7 +32,7 @@ func test_knot_thread_interaction():
 	story.choose_choice_index(1)
 	assert_eq(story.continue(), "wigwag\n")
 	assert_eq(story.continue(), "THE END\n")
-	assert_false(story.has_error)
+	assert_false(story.has_error)  # Removed in ink 1.0.0 but kept here for now.
 
 func test_knot_thread_interaction_2():
 	var story = Story.new(load_file("knot_thread_interaction_2"))
@@ -43,7 +43,7 @@ func test_knot_thread_interaction_2():
 
 	story.choose_choice_index(0)
 	assert_eq(story.continue_maximally(), "I’m an option\nFinishing thread.\n")
-	assert_false(story.has_error)
+	assert_false(story.has_error) # Removed in ink 1.0.0 but kept here for now.
 
 # ############################################################################ #
 

@@ -41,7 +41,7 @@ window/stretch/aspect="expand"
 
 [editor_plugins]
 
-enabled=PoolStringArray( "res://addons/gut/plugin.cfg", "res://addons/inkgd/plugin.cfg" )
+enabled=PoolStringArray(  )
 
 [network]
 

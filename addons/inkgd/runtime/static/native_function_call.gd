@@ -201,16 +201,16 @@ func int_binary_op_divide(x, y):                   return x / y
 func int_binary_op_mod(x, y):                      return x % y
 func int_unary_op_negate(x):                       return -x
 
-func int_binary_op_equals(x, y):                   return 1 if x == y else 0
-func int_binary_op_greater(x, y):                  return 1 if x > y else 0
-func int_binary_op_less(x, y):                     return 1 if x < y else 0
-func int_binary_op_greater_than_or_equals(x, y):   return 1 if x >= y else 0
-func int_binary_op_less_than_or_equals(x, y):      return 1 if x <= y else 0
-func int_binary_op_not_equals(x, y):               return 1 if x != y else 0
-func int_unary_op_not(x):                          return 1 if x == 0 else 0
+func int_binary_op_equals(x, y):                   return x == y
+func int_binary_op_greater(x, y):                  return x > y
+func int_binary_op_less(x, y):                     return x < y
+func int_binary_op_greater_than_or_equals(x, y):   return x >= y
+func int_binary_op_less_than_or_equals(x, y):      return x <= y
+func int_binary_op_not_equals(x, y):               return x != y
+func int_unary_op_not(x):                          return x == 0
 
-func int_binary_op_and(x, y):                      return 1 if x != 0 && y != 0 else 0
-func int_binary_op_or(x, y):                       return 1 if x != 0 || y != 0 else 0
+func int_binary_op_and(x, y):                      return x != 0 && y != 0
+func int_binary_op_or(x, y):                       return x != 0 || y != 0
 
 func int_binary_op_max(x, y):                      return max(x, y)
 func int_binary_op_min(x, y):                      return min(x, y)
@@ -228,16 +228,16 @@ func float_binary_op_divide(x, y):                 return x / y
 func float_binary_op_mod(x, y):                    return fmod(x, y)
 func float_unary_op_negate(x):                     return -x
 
-func float_binary_op_equals(x, y):                 return 1 if x == y else 0
-func float_binary_op_greater(x, y):                return 1 if x > y else 0
-func float_binary_op_less(x, y):                   return 1 if x < y else 0
-func float_binary_op_greater_than_or_equals(x, y): return 1 if x >= y else 0
-func float_binary_op_less_than_or_equals(x, y):    return 1 if x <= y else 0
-func float_binary_op_not_equals(x, y):             return 1 if x != y else 0
-func float_unary_op_not(x):                        return 1 if x == 0.0 else 0
+func float_binary_op_equals(x, y):                 return x == y
+func float_binary_op_greater(x, y):                return x > y
+func float_binary_op_less(x, y):                   return x < y
+func float_binary_op_greater_than_or_equals(x, y): return x >= y
+func float_binary_op_less_than_or_equals(x, y):    return x <= y
+func float_binary_op_not_equals(x, y):             return x != y
+func float_unary_op_not(x):                        return x == 0.0
 
-func float_binary_op_and(x, y):                    return 1 if x != 0.0 && y != 0.0 else 0
-func float_binary_op_or(x, y):                     return 1 if x != 0.0 || y != 0.0 else 0
+func float_binary_op_and(x, y):                    return x != 0.0 && y != 0.0
+func float_binary_op_or(x, y):                     return x != 0.0 || y != 0.0
 
 func float_binary_op_max(x, y):                    return max(x, y)
 func float_binary_op_min(x, y):                    return min(x, y)
@@ -249,29 +249,29 @@ func float_unary_op_int(x):                        return int(x)
 func float_unary_op_float(x):                      return x
 
 func string_binary_op_add(x, y):                   return str(x, y)
-func string_binary_op_equals(x, y):                return 1 if x == y else 0
-func string_binary_op_not_equals(x, y):            return 1 if x != y else 0
+func string_binary_op_equals(x, y):                return x == y
+func string_binary_op_not_equals(x, y):            return x != y
 
-# Note: The Content Test (in) operator does not returns true wehen testing
+# Note: The Content Test (in) operator does not returns true when testing
 # against the empty string, unlike the behaviour of the original C# runtime.
-func string_binary_op_has(x, y):                   return 1 if y == "" || (y in x) else 0
-func string_binary_op_hasnt(x, y):                 return 1 if !(y in x) && y != "" else 0
+func string_binary_op_has(x, y):                   return y == "" || (y in x)
+func string_binary_op_hasnt(x, y):                 return !(y in x) && y != ""
 
 func list_binary_op_add(x, y):                     return x.union(y)
 func list_binary_op_substract(x, y):               return x.without(y)
-func list_binary_op_has(x, y):                     return 1 if x.contains(y) else 0
-func list_binary_op_hasnt(x, y):                   return 1 if !x.contains(y) else 0
+func list_binary_op_has(x, y):                     return x.contains(y)
+func list_binary_op_hasnt(x, y):                   return !x.contains(y)
 func list_binary_op_intersect(x, y):               return x.intersection(y)
 
-func list_binary_op_equals(x, y):                  return 1 if x.equals(y) else 0
-func list_binary_op_greater(x, y):                 return 1 if x.greater_than(y) else 0
-func list_binary_op_less(x, y):                    return 1 if x.less_than(y) else 0
-func list_binary_op_greater_than_or_equals(x, y):  return 1 if x.greater_than_or_equals(y) else 0
-func list_binary_op_less_than_or_equals(x, y):     return 1 if x.less_than_or_equals(y) else 0
-func list_binary_op_not_equals(x, y):              return 1 if !x.equals(y) else 0
+func list_binary_op_equals(x, y):                  return x.equals(y)
+func list_binary_op_greater(x, y):                 return x.greater_than(y)
+func list_binary_op_less(x, y):                    return x.less_than(y)
+func list_binary_op_greater_than_or_equals(x, y):  return x.greater_than_or_equals(y)
+func list_binary_op_less_than_or_equals(x, y):     return x.less_than_or_equals(y)
+func list_binary_op_not_equals(x, y):              return !x.equals(y)
 
-func list_binary_op_and(x, y):                     return 1 if x.size() > 0 && y.size() > 0 else 0
-func list_binary_op_or(x, y):                      return 1 if x.size() > 0 || y.size() > 0 else 0
+func list_binary_op_and(x, y):                     return x.size() > 0 && y.size() > 0
+func list_binary_op_or(x, y):                      return x.size() > 0 || y.size() > 0
 
 func list_unary_op_not(x):                         return 1 if x.size() == 0 else 0
 
@@ -282,5 +282,5 @@ func list_unary_op_list_max(x):                    return x.max_as_list()
 func list_unary_op_count(x):                       return x.size()
 func list_unary_op_value_of_list(x):               return x.max_item.value
 
-func native_func_divert_targets_equal(d1, d2):     return 1 if d1.equals(d2) else 0
-func native_func_divert_targets_not_equal(d1, d2): return 1 if !d1.equals(d2) else 0
+func native_func_divert_targets_equal(d1, d2):     return d1.equals(d2)
+func native_func_divert_targets_not_equal(d1, d2): return !d1.equals(d2)
