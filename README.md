@@ -33,8 +33,8 @@ Implementation of [inkle's Ink] in pure GDScript, with editor support.
 - [ ] Multi-file support in the editor
 
 ## Requirements
-- Godot 3.1+
-- Inklecate 0.8.2+
+- Godot 3.4+
+- Inklecate 1.0.0+
 
 ## Asking Questions / Contributing
 
@@ -271,8 +271,9 @@ If you're working in a team, you may want to commit `.inkgd_ink.cfg` and keep `.
 |:---------------:|:-----------------:|:---------------:|
 |  0.1.0 – 0.1.4  |   0.8.2 – 0.8.3   |   3.1 – 3.2.1   |
 |  0.2.0 – 0.2.1  |       0.9.0       |   3.1 – 3.2.1   |
-|      0.2.2      |       0.9.0       |  3.2.1 – 3.2.3  |
-|      0.2.3      |       0.9.0       |   3.2.1 – 3.4   |
+|      0.2.2      |       0.9.0       |   3.2 – 3.2.3   |
+|      0.2.3      |       0.9.0       |    3.2 – 3.4    |
+|      0.3.0      |       1.0.0       |    3.2 – 3.4    |
 
 ## License
 
