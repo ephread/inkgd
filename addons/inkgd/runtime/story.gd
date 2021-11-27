@@ -233,8 +233,7 @@ func reset_globals():
 
 		self.continue_internal()
 
-		var state = self.state
-		state.current_pointer = original_pointer
+		self.state.current_pointer = original_pointer
 
 	self.state.variables_state.snapshot_default_globals()
 
@@ -344,8 +343,7 @@ func continue_internal(millisecs_limit_async = 0):
 				else:
 					add_error("unexpectedly reached end of content for unknown reason. Please debug compiler!")
 
-		var state = self.state
-		state.did_safe_exit = false
+		self.state.did_safe_exit = false
 		self._saw_lookahead_unsafe_function_after_newline = false
 
 		if _recursive_continue_count == 1:
@@ -581,8 +579,7 @@ func step():
 		pointer = Pointer.start_of(container_to_enter)
 		container_to_enter = Utils.as_or_null(pointer.resolve(), "InkContainer")
 
-	var state = self.state
-	state.current_pointer = pointer.duplicate()
+	self.state.current_pointer = pointer.duplicate()
 
 	if _profiler != null:
 		_profiler.step(state.callstack)
@@ -763,15 +760,13 @@ func perform_logic_and_flow_control(content_obj):
 				return false
 
 			var target = var_contents
-			var state = self.state
-			state.diverted_pointer = self.pointer_at_path(target.target_path)
+			self.state.diverted_pointer = self.pointer_at_path(target.target_path)
 
 		elif current_divert.is_external:
 			call_external_function(current_divert.target_path_string, current_divert.external_args)
 			return true
 		else:
-			var state = self.state
-			state.diverted_pointer = current_divert.target_pointer.duplicate()
+			self.state.diverted_pointer = current_divert.target_pointer.duplicate()
 
 		if current_divert.pushes_to_stack:
 			self.state.callstack.push(
@@ -796,13 +791,11 @@ func perform_logic_and_flow_control(content_obj):
 
 			ControlCommand.CommandType.EVAL_START:
 				self.assert(self.state.in_expression_evaluation == false, "Already in expression evaluation?")
-				var state = self.state
-				state.in_expression_evaluation = true
+				self.state.in_expression_evaluation = true
 
 			ControlCommand.CommandType.EVAL_END:
 				self.assert(self.state.in_expression_evaluation == true, "Not in expression evaluation mode")
-				var state = self.state
-				state.in_expression_evaluation = false
+				self.state.in_expression_evaluation = false
 
 			ControlCommand.CommandType.EVAL_OUTPUT:
 				if self.state.evaluation_stack.size() > 0:
@@ -851,16 +844,14 @@ func perform_logic_and_flow_control(content_obj):
 					self.state.pop_callstack()
 
 					if override_tunnel_return_target:
-						var state = self.state
-						state.diverted_pointer = self.pointer_at_path(override_tunnel_return_target.target_path)
+						self.state.diverted_pointer = self.pointer_at_path(override_tunnel_return_target.target_path)
 
 			ControlCommand.CommandType.BEGIN_STRING:
 				self.state.push_to_output_stream(eval_command)
 
 				self.assert(self.state.in_expression_evaluation == true,
 							"Expected to be in an expression when evaluating a string")
-				var state = self.state
-				state.in_expression_evaluation = false
+				self.state.in_expression_evaluation = false
 
 			ControlCommand.CommandType.END_STRING:
 				var content_stack_for_string = [] # Stack<InkObject>
@@ -888,8 +879,7 @@ func perform_logic_and_flow_control(content_obj):
 				for c in content_stack_for_string:
 					_str += c.to_string()
 
-				var state = self.state
-				state.in_expression_evaluation = true
+				self.state.in_expression_evaluation = true
 				self.state.push_evaluation_stack(Ink.StringValue.new_with(_str))
 
 			ControlCommand.CommandType.CHOICE_COUNT:
@@ -960,8 +950,7 @@ func perform_logic_and_flow_control(content_obj):
 				var chosen_value = (next_random % random_range) + min_int.value
 				self.state.push_evaluation_stack(Ink.IntValue.new_with(chosen_value))
 
-				var state = self.state
-				state.previous_random = next_random
+				self.state.previous_random = next_random
 
 			ControlCommand.CommandType.SEED_RANDOM:
 				var _seed = Utils.as_or_null(self.state.pop_evaluation_stack(), "IntValue")
@@ -969,9 +958,8 @@ func perform_logic_and_flow_control(content_obj):
 					error("Invalid value passed to SEED_RANDOM")
 					return false
 
-				var state = self.state
-				state.story_seed = _seed.value
-				state.previous_random = 0
+				self.state.story_seed = _seed.value
+				self.state.previous_random = 0
 
 				self.state.push_evaluation_stack(Void.new())
 
@@ -990,9 +978,8 @@ func perform_logic_and_flow_control(content_obj):
 				if self.state.callstack.can_pop_thread:
 					self.state.callstack.pop_thread()
 				else:
-					var state = self.state
-					state.did_safe_exit = true
-					state.current_pointer = Pointer.null()
+					self.state.did_safe_exit = true
+					self.state.current_pointer = Pointer.null()
 
 			ControlCommand.CommandType.END:
 				self.state.force_end()
@@ -1066,8 +1053,7 @@ func perform_logic_and_flow_control(content_obj):
 					new_list = InkList.new_with_origin(random_item.origin_name, self)
 					new_list.set_raw(raw_random_item, random_item_value)
 
-					var state = self.state
-					state.previous_random = next_random
+					self.state.previous_random = next_random
 
 				self.state.push_evaluation_stack(Ink.ListValue.new_with(new_list))
 
@@ -1167,8 +1153,7 @@ func choose_choice_index(choice_idx):
 	var choice_to_choose = choices[choice_idx]
 	emit_signal("on_make_choice", choice_to_choose)
 
-	var state = self.state.callstack
-	state.current_thread = choice_to_choose.thread_at_generation
+	self.state.callstack.current_thread = choice_to_choose.thread_at_generation
 
 	choose_path(choice_to_choose.target_path)
 
@@ -1272,8 +1257,7 @@ func call_external_function(func_name, number_of_arguments):
 				self.state.output_stream.size()
 			)
 
-			var state = self.state
-			state.diverted_pointer = Pointer.start_of(fallback_function_container)
+			self.state.diverted_pointer = Pointer.start_of(fallback_function_container)
 			return
 		else:
 			self.assert(false,
@@ -1508,13 +1492,12 @@ func build_string_of_container_with(container):
 # () -> void
 func next_content():
 
-	var state = self.state
-	state.previous_pointer = self.state.current_pointer.duplicate()
+	self.state.previous_pointer = self.state.current_pointer.duplicate()
 
 	if !self.state.diverted_pointer.is_null:
 
-		state.current_pointer = self.state.diverted_pointer.duplicate()
-		state.diverted_pointer = Pointer.null()
+		self.state.current_pointer = self.state.diverted_pointer.duplicate()
+		self.state.diverted_pointer = Pointer.null()
 
 		self.visit_changed_containers_due_to_divert()
 
