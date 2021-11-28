@@ -9,6 +9,8 @@
 tool
 extends Control
 
+class_name InkPanel
+
 # ############################################################################ #
 # Properties
 # ############################################################################ #
@@ -20,6 +22,8 @@ enum FileDialogSelectionEnum {
 	SOURCE_FILE,
 	TARGET_FILE
 }
+
+const _BOM = "\ufeff"
 
 var InkCompiler = load("res://addons/inkgd/editor/ink_compiler.gd")
 var InkRichDialog = load("res://addons/inkgd/editor/ink_rich_dialog.tscn")
@@ -92,9 +96,9 @@ func _ready():
 	TestButton.connect("pressed", self, "_test_button_pressed")
 	BuildButton.connect("pressed", self, "_build_button_pressed")
 	InkFileDialog.connect("file_selected", self, "_on_file_selected")
-	
+
 	_progress_texture = _create__progress_texture()
-	
+
 	_update_mono_availability()
 
 	add_child(InkFileDialog)
@@ -106,7 +110,7 @@ func _ready():
 func _use_mono_toggled(toggled: bool):
 	configuration.use_mono = !configuration.use_mono
 	configuration.persist()
-	
+
 	_update_mono_availability()
 
 func _mono_button_pressed():
@@ -181,28 +185,28 @@ func _test_button_pressed():
 		return_code = OS.execute(configuration.inklecate_path, [], true, output, true)
 	else:
 		return_code = OS.execute(configuration.mono_path, [configuration.inklecate_path], true, output, true)
-	
+
 	var output_array = PoolStringArray(output)
-	
-	if return_code == 0 || output_array.size() > 0 && (output_array[0].find("Usage: inklecate2") == 0):
+
+	if return_code == 0 || _contains_inklecate_output_prefix(output_array):
 		var dialog = AcceptDialog.new()
 		add_child(dialog)
-		
+
 		dialog.window_title = "Success"
 		dialog.dialog_text = "inklecate was successfully executed!"
-		
+
 		if output_array.size() > 0:
 			print("inklecate was found and executed:")
 			print(output_array.join("\n"))
 		else:
 			print("inklecate was found and executed.")
-		
+
 		dialog.popup_centered()
 	else:
 		var output_text = output_array.join("\n")
 		var dialog = InkRichDialog.instance()
 		add_child(dialog)
-		
+
 		print("Something went wrong while testing inklecate's setup.")
 		print(output_text)
 
@@ -218,10 +222,10 @@ func _build_button_pressed():
 func _compile_story():
 	BuildButton.icon = _progress_texture
 	BuildButton.disabled = true
-	
+
 	var compiler_configuration = InkCompiler.Configuration.new(configuration, true)
 	var compiler = InkCompiler.new(compiler_configuration)
-	
+
 	_compilers[compiler.identifier] = compiler
 	compiler.connect("did_compile", self, "_handle_compilation_result")
 	compiler.compile_story()
@@ -232,7 +236,7 @@ func _compile_story():
 
 func _update_mono_availability():
 	var is_visible = !_is_running_on_windows() && configuration.use_mono
-	
+
 	MonoLabel.visible = is_visible
 	MonoHBoxContainer.visible = is_visible
 	UseMonoCheckBox.set_pressed_no_signal(configuration.use_mono)
@@ -261,43 +265,48 @@ func _create__progress_texture() -> AnimatedTexture:
 
 	return animated_texture
 
-func _handle_compilation_result(result: InkCompiler.Result):
+func _contains_inklecate_output_prefix(output_array: PoolStringArray):
+	if output_array.size() == 0: return false
+
+	var cleaned_line = output_array[0].replace(_BOM, "").strip_edges()
+	return cleaned_line.find("Usage: inklecate2") == 0
+
+func _handle_compilation_result(result):
 	var compiler_identifier = result.compiler_identifier
 	var use_threads = result.use_threads
-	var return_code = result.return_code
-	var output_array = result.output
-	
+	var success = result.success
+	var output = result.output
+
 	BuildButton.icon = null
 	BuildButton.disabled = false
 
-	var output_text = output_array.join("\n")
-	if return_code == 0:
-		if output_text.strip_edges().length() == 0:
-			var dialog = AcceptDialog.new()
-			add_child(dialog)
-			
-			dialog.window_title = "Success!"
-			dialog.dialog_text = "The story was successfully compiled."
-			
-			dialog.popup_centered()
-		else:
+	if result.success:
+		if output && !output.empty():
 			var dialog = InkRichDialog.instance()
 			add_child(dialog)
 
 			dialog.window_title = "Success!"
 			dialog.message_text = "The story was successfully compiled."
-			dialog.output_text = output_text
+			dialog.output_text = output
 
 			dialog.popup_centered(Vector2(700, 400))
+		else:
+			var dialog = AcceptDialog.new()
+			add_child(dialog)
+
+			dialog.window_title = "Success!"
+			dialog.dialog_text = "The story was successfully compiled."
+
+			dialog.popup_centered()
 	else:
 		var dialog = InkRichDialog.instance()
 		add_child(dialog)
 
 		dialog.window_title = "Error"
 		dialog.message_text = "The story could not be compiled. See inklecate's output below."
-		dialog.output_text = output_text
+		dialog.output_text = output
 
 		dialog.popup_centered(Vector2(700, 400))
-	
+
 	if _compilers.has(compiler_identifier):
 		_compilers.erase(compiler_identifier)

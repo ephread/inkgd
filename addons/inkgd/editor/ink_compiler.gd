@@ -9,20 +9,38 @@ extends Reference
 class_name InkCompiler
 
 # ############################################################################ #
+# Constants
+# ############################################################################ #
 
-var _configuration: Configuration
-var _thread: Thread
-var _last_execution_result: Result
-var _use_thread: bool
+const _BOM = "\ufeff"
 
+# ############################################################################ #
+# Properties
+# ############################################################################ #
+
+## The identifier of this compiler.
 var identifier setget , get_identifier
 func get_identifier() -> int:
 	return get_instance_id()
 
 # ############################################################################ #
+# Private Properties
+# ############################################################################ #
+
+## Ink Configuration
+var _configuration: Configuration
+
+## Thread used to compile the story.
+var _thread: Thread
+
+# ############################################################################ #
+# Signals
+# ############################################################################ #
 
 signal did_compile(result)
 
+# ############################################################################ #
+# Overrides
 # ############################################################################ #
 
 func _init(configuration: Configuration):
@@ -32,7 +50,14 @@ func _init(configuration: Configuration):
 		_thread = Thread.new()
 
 # ############################################################################ #
+# Methods
+# ############################################################################ #
 
+## Compile the story, based on the compilation configuration provided
+## by this object. If `configuration.use_thread` is set to `false`,
+## this method will return `true` if the compilation succeeded and `false`
+## otherwise. If `configuration.use_thread` is set to `false`, this method
+## always returns `true`.
 func compile_story() -> bool:
 	if _configuration.use_threads:
 		_thread.start(self, "_compile_story", _configuration, Thread.PRIORITY_HIGH)
@@ -41,11 +66,20 @@ func compile_story() -> bool:
 		return _compile_story(_configuration)
 
 # ############################################################################ #
+# Private Helpers
+# ############################################################################ #
 
+## Compile the story, based on the given compilation configuration
+## If `configuration.use_thread` is set to `false`, this method will
+## return `true` if the compilation succeeded and `false` otherwise.
+## If `configuration.use_thread` is set to `false`, this method always
+## returns `true`.
 func _compile_story(config: Configuration) -> bool:
 	print("Executing compilation command…")
 	var return_code = 0
 	var output = []
+
+	var start_time = OS.get_ticks_msec()
 
 	if config.use_mono:
 		return_code = OS.execute(config.mono_path, [
@@ -61,77 +95,93 @@ func _compile_story(config: Configuration) -> bool:
 			config.source_file_path
 		], true, output, true)
 	
-	print(str("Compilation ", "succeeded" if return_code == 0 else "failed."))
-
-	_last_execution_result = Result.new(
-		self.identifier,
-		config.use_threads,
-		return_code,
-		PoolStringArray(output)
-	)
+	var end_time = OS.get_ticks_msec()
 	
-	_process_compilation_result(config, _last_execution_result)
+	print("Command executed in %dms." % (end_time - start_time))
 
+	var string_output = PoolStringArray(output)
 	if _configuration.use_threads:
-		call_deferred("_handle_compilation_result", _last_execution_result)
-	
-	return return_code == 0
+		call_deferred("_handle_compilation_result", config, return_code, string_output)
+		return true
+	else:
+		var result = _process_compilation_result(config, return_code, string_output)
+		return result.success
 
-func _handle_compilation_result(result: Result):
+## Handles the compilation results when exectuted in a different thread.
+##
+## This method should be executed on the main thread.
+func _handle_compilation_result(config: Configuration, return_code: int, output: Array):
 	_thread.wait_to_finish()
+
+	var result = _process_compilation_result(config, return_code, output)
 	emit_signal("did_compile", result)
 
-func _process_compilation_result(config: Configuration, result: Result):
-	var output_text = result.output.join("\n")
-	if result.return_code == 0:
-		print(str("[", config.source_file_path ,"] was successfully compiled."))
+## Process the compilation results turning them into an instance of `Result`.
+##
+## This method will also print to the editor's output panel.
+func _process_compilation_result(
+	config: Configuration,
+	return_code: int,
+	output: PoolStringArray
+) -> Result:
+	var success: bool = (return_code == 0)
+	var output_text: String = output.join("\n").replace(_BOM, "").strip_edges()
 
-		if output_text.strip_edges().length() > 0:
-			push_warning(output_text)
+	if success:
+		print("[" + config.source_file_path + "] was successfully compiled.")
+		if output_text.length() > 0:
+			print(output_text)
 	else:
-		print(str("Could not compile [", config.source_file_path ,"]."))
-		push_error(output_text)
+		printerr("Could not compile [" + config.source_file_path + "].")
+		printerr(output_text)
+
+	return Result.new(self.identifier, config.use_threads, success, output_text)
 
 # ############################################################################ #
+# Inner Classes
+# ############################################################################ #
 
-class Configuration:
+class Configuration extends Reference:
 	var use_threads: bool = false
-	
+
 	var use_mono: bool = false
-	
+
 	var mono_path: String = ""
 	var inklecate_path: String = ""
 	var source_file_path: String = ""
 	var target_file_path: String = ""
-	
+
 	func _init(configuration: InkConfiguration, use_threads: bool):
 		self.use_threads = use_threads
 
 		self.use_mono = !_is_running_on_windows() && configuration.use_mono
-		
+
 		self.mono_path = configuration.mono_path
 		self.inklecate_path = configuration.inklecate_path
 		self.source_file_path = ProjectSettings.globalize_path(configuration.source_file_path)
 		self.target_file_path = ProjectSettings.globalize_path(configuration.target_file_path)
-		
+
 	func _is_running_on_windows():
 		var os_name = OS.get_name()
 		return (os_name == "Windows" || os_name == "UWP")
 
-class Result:
-	var compiler_identifier: int
-	var use_threads: bool
-	
-	var return_code: int
-	var output: PoolStringArray
-	
+class Result extends Reference:
+	var compiler_identifier: int = 0
+
+	## `true` to compile the story in a thread, `false` otherwise. It's
+	## advised to use threads when the compilation was triggered by the user.
+	var use_threads: bool = false
+
+	var success: bool = false
+	var output: String = ""
+
 	func _init(
 		identifier: int,
 		use_threads: bool,
-		return_code: bool,
-		output: PoolStringArray
+		success: bool,
+		output: String
 	):
 		self.compiler_identifier = identifier
 		self.use_threads = use_threads
-		self.return_code = return_code
+		self.success = success
 		self.output = output

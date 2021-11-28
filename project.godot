@@ -18,10 +18,22 @@ _global_script_classes=[ {
 "class": "InkConfiguration",
 "language": "GDScript",
 "path": "res://addons/inkgd/editor/ink_configuration.gd"
+}, {
+"base": "Control",
+"class": "InkPanel",
+"language": "GDScript",
+"path": "res://addons/inkgd/editor/ink_panel.gd"
+}, {
+"base": "WindowDialog",
+"class": "InkRichDialog",
+"language": "GDScript",
+"path": "res://addons/inkgd/editor/ink_rich_dialog.gd"
 } ]
 _global_script_class_icons={
 "InkCompiler": "",
-"InkConfiguration": ""
+"InkConfiguration": "",
+"InkPanel": "",
+"InkRichDialog": ""
 }
 
 [application]
