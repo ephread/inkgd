@@ -12,7 +12,14 @@ extends Control
 class_name InkPanel
 
 # ############################################################################ #
-# Properties
+# Imports
+# ############################################################################ #
+
+var InkCompiler = load("res://addons/inkgd/editor/ink_compiler.gd")
+var InkRichDialog = load("res://addons/inkgd/editor/ink_rich_dialog.tscn")
+
+# ############################################################################ #
+# Enums
 # ############################################################################ #
 
 enum FileDialogSelectionEnum {
@@ -23,12 +30,21 @@ enum FileDialogSelectionEnum {
 	TARGET_FILE
 }
 
+# ############################################################################ #
+# Constants
+# ############################################################################ #
+
 const _BOM = "\ufeff"
 
-var InkCompiler = load("res://addons/inkgd/editor/ink_compiler.gd")
-var InkRichDialog = load("res://addons/inkgd/editor/ink_rich_dialog.tscn")
+# ############################################################################ #
+# Properties
+# ############################################################################ #
 
 var configuration: InkConfiguration
+
+# ############################################################################ #
+# Private Properties
+# ############################################################################ #
 
 var _progress_texture: AnimatedTexture
 var _compilers: Dictionary = {}
