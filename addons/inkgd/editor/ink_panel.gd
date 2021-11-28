@@ -60,10 +60,6 @@ onready var TargetFileDialogButton = find_node("TargetFileDialogButton")
 # Overrides
 # ############################################################################ #
 
-func _notification(what):
-	if what == NOTIFICATION_PREDELETE:
-		configuration.free()
-
 func _ready():
 	configuration.retrieve()
 
@@ -74,10 +70,10 @@ func _ready():
 
 	UseMonoCheckBox.connect("toggled", self, "_use_mono_toggled")
 
-	MonoLineEdit.connect("text_entered", self, "_mono_selected")
-	ExecutableLineEdit.connect("text_entered", self, "_executable_selected")
-	SourceFileLineEdit.connect("text_entered", self, "_source_file_selected")
-	TargetFileLineEdit.connect("text_entered", self, "_target_file_selected")
+	MonoLineEdit.connect("text_entered", self, "_configuration_entered")
+	ExecutableLineEdit.connect("text_entered", self, "_configuration_entered")
+	SourceFileLineEdit.connect("text_entered", self, "_configuration_entered")
+	TargetFileLineEdit.connect("text_entered", self, "_configuration_entered")
 
 	MonoLineEdit.connect("focus_exited", self, "_configuration_focus_exited")
 	ExecutableLineEdit.connect("focus_exited", self, "_configuration_focus_exited")
@@ -164,6 +160,9 @@ func _on_file_selected(path: String):
 		_:
 			printerr("Unknown FileDialogSelection, failed to save FileDialog file.")
 	FileDialogSelection = FileDialogSelectionEnum.UNKNOWN
+
+func _configuration_entered(new_text):
+	_configuration_focus_exited()
 
 func _configuration_focus_exited():
 	configuration.mono_path = MonoLineEdit.text

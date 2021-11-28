@@ -33,6 +33,7 @@ func _enter_tree():
 func _exit_tree():
 	remove_control_from_bottom_panel(_panel)
 	_panel.free()
+	_configuration.free()
 
 	_remove_autoloads()
 	_remove_templates()
