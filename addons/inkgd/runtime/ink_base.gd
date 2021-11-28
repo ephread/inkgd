@@ -25,6 +25,10 @@ func equals(ink_base) -> bool:
 func to_string() -> String:
 	return str(self)
 
+# ############################################################################ #
+# GDScript extra methods
+# ############################################################################ #
+
 func is_class(type):
 	return type == "InkBase" || .is_class(type)
 

@@ -25,6 +25,8 @@ func _init():
 func _init_with_ink_list(other_list):
 	_dictionary = other_list._dictionary.duplicate()
 	_origin_names = other_list.origin_names
+	if other_list.origins != null:
+		self.origins = other_list.origins.duplicate()
 
 func _init_with_single_item(single_item, single_value):
 	set(single_item, single_value)
@@ -40,6 +42,14 @@ func _init_with_origin(single_origin_list_name, origin_story):
 
 func _init_with_element(key, value):
 	set(key, value)
+
+# (string, Story) -> InkList
+static func from_string(my_list_item, origin_story):
+	var list_value = origin_story.list_definitions.find_single_item_list_with_name(my_list_item)
+	if list_value:
+		return InkList().new_with_ink_list(list_value.value)
+	else:
+		Utils().throw_exception("Could not find the InkListItem from the string '" + my_list_item + "' to create an InkList because it doesn't exist in the original list definition in ink.")
 
 # (InkListItem) -> void
 func add_item(item):
@@ -435,3 +445,6 @@ func get_class():
 
 static func InkList():
 	return load("res://addons/inkgd/runtime/ink_list.gd")
+
+static func Utils():
+	return load("res://addons/inkgd/runtime/extra/utils.gd")

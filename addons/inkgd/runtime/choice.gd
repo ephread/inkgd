@@ -14,7 +14,7 @@ extends "res://addons/inkgd/runtime/ink_object.gd"
 # Imports
 # ############################################################################ #
 
-var CallStack = load("res://addons/inkgd/runtime/call_stack.gd")
+var CallStack = load("res://addons/inkgd/runtime/callstack.gd")
 
 # ############################################################################ #
 

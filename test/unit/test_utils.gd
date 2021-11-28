@@ -98,8 +98,8 @@ func test_array_remove_invalid_range():
 class InkBaseObject extends "res://addons/inkgd/runtime/ink_base.gd":
 	var value
 
-	func _init(value):
-		self.value = value
+	func _init(new_value):
+		self.value = new_value
 
 	func to_string():
 		return str(value)

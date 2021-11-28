@@ -158,7 +158,6 @@ size_flags_horizontal = 3
 margin_right = 921.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
-text = "/Library/Frameworks/Mono.framework/Versions/Current/Commands/mono"
 
 [node name="MonoDialogButton" type="Button" parent="TabContainer/Configuration/VBoxContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer/MonoHBoxContainer"]
 margin_left = 925.0

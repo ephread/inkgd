@@ -7,3 +7,13 @@ export_presets.cfg
 
 .inkgd_compiler.cfg
 inkgd-issue-*
+
+# template ignores
+
+script_templates
+
+# sphinx build folder
+docs/build
+
+# Visual Studio code
+.vscode

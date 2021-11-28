@@ -18,7 +18,7 @@ func test_string_constants():
 func test_string_contains():
 	var story = Story.new(load_file("string_contains"))
 
-	assert_eq(story.continue_maximally(), "1\n0\n1\n1\n")
+	assert_eq(story.continue_maximally(), "true\nfalse\ntrue\ntrue\n")
 
 func test_string_type_coercion():
 	var story = Story.new(load_file("string_type_coercion"))

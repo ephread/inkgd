@@ -1,15 +1,17 @@
 # ![inkgd](https://i.imgur.com/QbLG9Xp.png)
 
 [![build](https://github.com/ephread/inkgd/workflows/build/badge.svg)](https://github.com/ephread/inkgd/actions)
-![Version](https://img.shields.io/badge/version-0.2.3-orange.svg)
+[![Documentation Status](https://readthedocs.org/projects/inkgd/badge/?version=latest)](https://inkgd.readthedocs.io/en/latest/?badge=latest)
+![Version](https://img.shields.io/badge/version-0.3.0-orange.svg)
 ![Godot Version](https://img.shields.io/badge/godot-3.1+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
 Implementation of [inkle's Ink] in pure GDScript, with editor support.
 
-⚠️ **Note:** While the implementation of the runtime is feature-complete and passes the test suite, you may still encounter some weird behaviors and bugs that will need to be ironed out. The runtime is not yet considered production ready, but it's almost there.
+⚠️ **Note:** While the implementation of the runtime is feature-complete and passes the test suite, it's unlikely to ever be considered _production-ready_. _inkgd_ shines for rapid-prototyping in GDScript and small games, but for bigger projects it's likely to be way too slow. If you need a more bulletproof solution and don't mind Mono, you should consider using [godot-ink].
 
 [inkle's Ink]: https://github.com/inkle/ink
+[godot-ink]: https://github.com/paulloz/godot-ink
 
 ## Table of contents
 
@@ -28,12 +30,12 @@ Implementation of [inkle's Ink] in pure GDScript, with editor support.
 ## Features
 - [x] Fully featured Ink runtime
 - [x] Automatic recompilation of the master Ink file on each build
-- [ ] Multi-file support in the editor
 - [ ] Story previewer integrated in the editor
+- [ ] Multi-file support in the editor
 
 ## Requirements
-- Godot 3.1+
-- Inklecate 0.8.2+
+- Godot 3.4+
+- Inklecate 1.0.0+
 
 ## Asking Questions / Contributing
 
@@ -72,7 +74,11 @@ You can also download an archive and install _inkgd_ manually. Head over to the 
 
 The GDScript API is mostly compatible with the original C# one. It's a good idea to take a look at the [original documentation].
 
+If you want to start from a template, the plugin adds templates that will show up when creating a new script. Add this script to a node that you want to use to control the story. These templates should disappear if you deactivate the plugin.
+
 Additionally, feel free to take a look in the `example/` directory and run `ink_runner.tscn`, which will play The Intercept.
+
+Note: _inkgd_ has a .gitattributes file which makes sure that only `addons/inkgd` is added to the Github archive. The only way to get the example folder (and a bunch of other important files) is to clone the project.
 
 [original documentation]: https://github.com/inkle/ink/blob/master/Documentation/RunningYourInk.md
 
@@ -88,7 +94,9 @@ Functions are all snake_cased rather than CamelCased. For instance `ContinueMaxi
 
 Since GDScript doesn't support static properties, any static property was moved into a singleton node called `__InkRuntime` which needs to be added to the root object current tree before starting the story.
 
-Note that the tree is locked during notification calls (`_ready`, `_enter_tree`, `_exit_tree`), so you will need to defer the calls adding/removing the runtime node.
+This singleton node is added to the AutoLoad list of your project automatically when the plugin is activated (bear in mind that deactivating the plugin will also remove the node from the list).
+
+However, you may want to manage the singleton yourself in the code for efficiency. Since the tree is locked during notification calls (`_ready`, `_enter_tree`, `_exit_tree`), you will need to defer the calls adding/removing the runtime node.
 
 ```gdscript
 var InkRuntime = load("res://addons/inkgd/runtime.gd")
@@ -139,7 +147,7 @@ The event / delegate mechanism found in C# is translated into a signal-based log
 story.observe_variable("health", self, "_observe_health")
 
 func _observe_health(variable_name, new_value):
-	set_health_in_ui(int(new_value))
+    set_health_in_ui(int(new_value))
 
 # Original C# API
 #
@@ -153,16 +161,16 @@ func _observe_health(variable_name, new_value):
 The event / delegate mechanism found in C# is again translated into a signal-based logic.
 
 ```gdscript
-story.bind_external_function("multiply", self, "_multiply")
+story.bind_external_function("multiply", self, "_multiply", true)
 
 func _multiply(arg1, arg2):
-	return arg1 * arg2
+    return arg1 * arg2
 
 # Original C# API
 #
 # _inkStory.BindExternalFunction ("multiply", (int arg1, float arg2) => {
 #     return arg1 * arg2;
-# });
+# }, true);
 ```
 
 ##### 6. Getting the ouput of `evaluate_function`
@@ -187,7 +195,35 @@ var result = story.evaluate_function("multiply", [5, 3], true)
 # }
 ```
 
-##### 7. Error Handling
+##### 7. Handlers
+
+Starting with Ink version 1.0.0, it's possible to attach different types of handlers to a story to receive callbacks. In C#, those handlers are implemented using events. In _inkgd_, those are implemented using signals.
+
+```gdscript
+# GDScript API
+
+signal on_error(message, type)
+signal on_did_continue()
+signal on_make_choice(choice)
+signal on_evaluate_function(function_name, arguments)
+signal on_complete_evaluate_function(function_name, arguments, text_output, result)
+signal on_choose_path_string(path, arguments)
+
+story.connect("on_did_continue", self, "_handle_did_continue")
+
+# Original C# API
+#
+# public event Ink.ErrorHandler onError;
+# public event Action onDidContinue;
+# public event Action<Choice> onMakeChoice;
+# public event Action<string, object[]> onEvaluateFunction;
+# public event Action<string, object[], string, object> onCompleteEvaluateFunction;
+# public event Action<string, object[]> onChoosePathString;
+```
+
+It's recommended that you connect a handler to `on_error` to receive errors and warnings. If you don't, the story may stop unfolding when an error is encountered.
+
+##### 8. Error Handling
 
 The original implementation relies on C#'s exceptions to report and recover from inconsistent states.
 Exceptions are not available in GDScript, so the runtime may behave slightly differently. In particular,
@@ -198,7 +234,7 @@ it can still more forward after calling `story.reset_errors()`.
 
 For bigger stories, loading the compiled story into the runtime can take a long time (more than a second). To avoid blocking the main thread, you may want to load the story from a background thread and display a loading indicator.
 
-A possible thread-based approach is implemented in `example/ink_runner.gd`.
+A possible thread-based approach is implemented in `example/ink_runner.gd`. You can also find it by selecting Ink Template when creating your code.
 
 ### Editor
 
@@ -236,8 +272,9 @@ If you're working in a team, you may want to commit `.inkgd_ink.cfg` and keep `.
 |:---------------:|:-----------------:|:---------------:|
 |  0.1.0 – 0.1.4  |   0.8.2 – 0.8.3   |   3.1 – 3.2.1   |
 |  0.2.0 – 0.2.1  |       0.9.0       |   3.1 – 3.2.1   |
-|      0.2.2      |       0.9.0       |  3.2.1 – 3.2.3  |
-|      0.2.3      |       0.9.0       |   3.2.1 – 3.4   |
+|      0.2.2      |       0.9.0       |   3.2 – 3.2.3   |
+|      0.2.3      |       0.9.0       |    3.2 – 3.4    |
+|      0.3.0      |       1.0.0       |    3.2 – 3.4    |
 
 ## License
 

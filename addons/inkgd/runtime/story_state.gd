@@ -24,18 +24,21 @@ static func StoryState():
 
 var PushPopType = preload("res://addons/inkgd/runtime/push_pop.gd").PushPopType
 var Pointer = load("res://addons/inkgd/runtime/pointer.gd")
-var CallStack = load("res://addons/inkgd/runtime/call_stack.gd")
+var CallStack = load("res://addons/inkgd/runtime/callstack.gd")
 var VariablesState = load("res://addons/inkgd/runtime/variables_state.gd")
 var InkPath = load("res://addons/inkgd/runtime/ink_path.gd")
 var Ink = load("res://addons/inkgd/runtime/value.gd")
 var ControlCommand = load("res://addons/inkgd/runtime/control_command.gd")
 var SimpleJson = load("res://addons/inkgd/runtime/simple_json.gd")
 var StatePatch = load("res://addons/inkgd/runtime/state_patch.gd")
+var Flow = load("res://addons/inkgd/runtime/flow.gd")
 
 # ############################################################################ #
 
-const INK_SAVE_STATE_VERSION = 8
+const INK_SAVE_STATE_VERSION = 9
 const MIN_COMPATIBLE_LOAD_VERSION = 8
+
+signal on_did_load_state()
 
 # () -> String
 func to_json():
@@ -47,6 +50,7 @@ func to_json():
 func load_json(json):
 	var jobject = SimpleJson.text_to_dictionary(json)
 	load_json_obj(jobject)
+	emit_signal("on_did_load_state")
 
 # (String) -> int
 func visit_count_at_path_string(path_string):
@@ -143,23 +147,28 @@ func get_callstack_depth():
 
 var output_stream setget , get_output_stream # Array<InkObject>
 func get_output_stream():
-	return self._output_stream
+	return self._current_flow.output_stream
 
 var current_choices setget , get_current_choices # Array<Choice>
 func get_current_choices():
 	if self.can_continue: return []
-	return self._current_choices
+	return self._current_flow.current_choices
 
 var generated_choices setget , get_generated_choices # Array<Choice>
 func get_generated_choices():
-	return self._current_choices
+	return self._current_flow.current_choices
 
 var current_errors = null # Array<String>
 var current_warnings = null # Array<String>
 var variables_state = null # VariableState
-var callstack = null # CallStack
+
+var callstack setget , get_callstack # CallStack
+func get_callstack():
+	return self._current_flow.callstack
+
 var evaluation_stack = null # Array<InkObject>
 var diverted_pointer = Pointer.null() # Pointer
+
 var current_turn_index = 0 # int
 var story_seed = 0 # int
 var previous_random = 0 # int
@@ -212,7 +221,7 @@ func get_current_text():
 	if self._output_stream_text_dirty:
 		var _str = ""
 
-		for output_obj in _output_stream:
+		for output_obj in self.output_stream:
 			var text_content = Utils.as_or_null(output_obj, "StringValue")
 			if text_content != null:
 				_str += text_content.value
@@ -242,8 +251,7 @@ func clean_output_whitespace(str_to_clean):
 			current_whitespace_start = i
 
 		if !is_inline_whitespace:
-			if (c != "\n" && current_whitespace_start > 0 &&
-				current_whitespace_start != start_of_line):
+			if (c != "\n" && current_whitespace_start > 0 && current_whitespace_start != start_of_line):
 				_str += " "
 
 			current_whitespace_start = -1
@@ -263,7 +271,7 @@ func get_current_tags():
 	if self._output_stream_tags_dirty:
 		self._current_tags = [] # Array<String>
 
-		for output_obj in self._output_stream:
+		for output_obj in self.output_stream:
 			var tag = Utils.as_or_null(output_obj, "Tag")
 			if tag != null:
 				self._current_tags.append(tag.text)
@@ -273,6 +281,10 @@ func get_current_tags():
 	return self._current_tags
 
 var _current_tags # Array<String>
+
+var current_flow_name setget , get_current_flow_name # String
+func get_current_flow_name():
+	return self._current_flow.name
 
 var in_expression_evaluation setget set_in_expression_evaluation, get_in_expression_evaluation # bool
 func get_in_expression_evaluation():
@@ -287,13 +299,12 @@ func _init(story):
 
 	self._story = weakref(story)
 
-	self._output_stream = [] # Array<InkObject>
+	self._current_flow = Flow.new_with_name(DEFAULT_FLOW_NAME, story)
 	self.output_stream_dirty()
 
 	self.evaluation_stack = [] # Array<InkObject>
 
-	self.callstack = CallStack.new(self.story)
-	self.variables_state = VariablesState.new(callstack, self.story.list_definitions)
+	self.variables_state = VariablesState.new(self.callstack, self.story.list_definitions)
 
 	self._visit_counts = {} # Dictionary<String, int>
 	self._turn_indices = {} # Dictionary<String, int>
@@ -303,8 +314,6 @@ func _init(story):
 	self.story_seed = randi() % 100
 	self.previous_random = 0
 
-	self._current_choices = [] # Array<Choice>
-
 	self.go_to_start()
 
 # () -> void
@@ -312,16 +321,70 @@ func go_to_start():
 	var current_element = self.callstack.current_element
 	current_element.current_pointer = Pointer.start_of(self.story.main_content_container)
 
+# (String) -> void
+func switch_flow_internal(flow_name):
+	if flow_name == null:
+		Utils.throw_exception("Must pass a non-null string to Story.SwitchFlow")
+
+	if self._named_flows == null:
+		self._named_flows = {} # Dictionary<String, Flow>
+		self._named_flows[DEFAULT_FLOW_NAME] = self._current_flow
+
+	if flow_name == self._current_flow.name:
+		return
+
+	var flow
+	if self._named_flows.has(flow_name):
+		flow = self._named_flows[flow_name]
+	else:
+		flow = Flow.new_with_name(flow_name, self.story)
+		self._named_flows[flow_name] = flow
+
+	self._current_flow = flow
+	self.variables_state.callstack = self._current_flow.callstack
+
+	self.output_stream_dirty()
+
+# () -> void
+func switch_to_default_flow_internal():
+	if self._named_flows == null:
+		return
+
+	self.switch_flow_internal(DEFAULT_FLOW_NAME)
+
+# () -> void
+func remove_flow_internal(flow_name):
+	if flow_name == null:
+		Utils.throw_exception("Must pass a non-null string to Story.DestroyFlow")
+		return
+
+	if flow_name == DEFAULT_FLOW_NAME:
+		Utils.throw_exception("Cannot destroy default flow")
+		return
+
+	if self._current_flow.name == flow_name:
+		self.switch_to_default_flow_internal()
+
+	self._named_flows.erase(flow_name)
+
 # () -> StoryState
 func copy_and_start_patching():
 	var copy = StoryState().new(self.story)
 
 	copy._patch = StatePatch.new(self._patch)
 
-	copy._output_stream += self._output_stream
+	copy._current_flow.name = self._current_flow.name
+	copy._current_flow.callstack = CallStack.new(self._current_flow.callstack)
+	copy._current_flow.current_choices += self._current_flow.current_choices
+	copy._current_flow.output_stream += self._current_flow.output_stream
 	copy.output_stream_dirty()
 
-	copy._current_choices += self._current_choices
+	if self._named_flows != null:
+		copy._named_flows = {} # Dictionary<String, Flow>
+		for named_flow_key in self._named_flows.keys():
+			var named_flow_value = self._named_flows[named_flow_key]
+			copy._named_flows[named_flow_key] = named_flow_value
+		copy._named_flows[self._current_flow.name] = copy._current_flow
 
 	if self.has_error:
 		copy.current_errors = [] # Array<String>
@@ -331,10 +394,8 @@ func copy_and_start_patching():
 		copy.current_warnings = [] # Array<String>
 		copy.current_warnings += self.current_warnings
 
-	copy.callstack = CallStack.new(self.callstack)
-
 	copy.variables_state = variables_state
-	copy.variables_state.call_stack = copy.callstack
+	copy.variables_state.callstack = copy.callstack
 	copy.variables_state.patch = copy._patch
 
 	copy.evaluation_stack += self.evaluation_stack
@@ -356,7 +417,7 @@ func copy_and_start_patching():
 
 # () -> void
 func restore_after_patch():
-	self.variables_state.call_stack = self.callstack
+	self.variables_state.callstack = self.callstack
 	self.variables_state.patch = self._patch
 
 # () -> void
@@ -383,29 +444,22 @@ func apply_count_changes(container, new_count, is_visit):
 func write_json(writer):
 	writer.write_object_start()
 
-	var has_choice_threads # Bool
-	for c in self._current_choices:
-		c.original_thread_index = c.thread_at_generation.thread_index
+	writer.write_property_start("flows")
+	writer.write_object_start()
 
-		if self.callstack.thread_with_index(c.original_thread_index) == null:
-			if !has_choice_threads:
-				has_choice_threads = true
-				writer.write_property_start("choiceThreads")
-				writer.write_object_start()
+	if self._named_flows != null:
+		for named_flow_key in self._named_flows.keys():
+			var named_flow_value = self._named_flows[named_flow_key]
+			writer.write_property(named_flow_key, funcref(named_flow_value, "write_json"))
+	else:
+		writer.write_property(self._current_flow.name, funcref(self._current_flow, "write_json"))
 
-			writer.write_property_start(c.original_thread_index)
-			c.thread_at_generation.write_json(writer)
-			writer.write_property_end()
+	writer.write_object_end()
+	writer.write_property_end()
 
-	if has_choice_threads:
-		writer.write_object_end()
-		writer.write_property_end()
-
-	writer.write_property("callstackThreads", funcref(self.callstack, "write_json"))
+	writer.write_property("currentFlowName", self._current_flow.name)
 	writer.write_property("variablesState", funcref(self.variables_state, "write_json"))
 	writer.write_property("evalStack", funcref(self, "_anonymous_write_property_eval_stack"))
-	writer.write_property("outputStream", funcref(self, "_anonymous_write_property_output_stream"))
-	writer.write_property("currentChoices", funcref(self, "_anonymous_write_property_current_choices"))
 
 	if !self.diverted_pointer.is_null:
 		writer.write_property("currentDivertTarget", self.diverted_pointer.path.components_string)
@@ -424,28 +478,58 @@ func write_json(writer):
 func load_json_obj(jobject):
 	var jsave_version = null # Variant
 	if !jobject.has("inkSaveVersion"):
-		Utils.throw_story_exception("ink save format incorrect, can't load.")
+		Utils.throw_exception("ink save format incorrect, can't load.")
 		return
 	else:
 		jsave_version = int(jobject["inkSaveVersion"])
 		if jsave_version < MIN_COMPATIBLE_LOAD_VERSION:
-			Utils.throw_story_exception(str(
+			Utils.throw_exception(str(
 				"Ink save format isn't compatible with the current version (saw '",
 				jsave_version, "', but minimum is ", MIN_COMPATIBLE_LOAD_VERSION,
 				"), so can't load."
 			))
 			return
 
-	self.callstack.set_json_token(jobject["callstackThreads"], self.story)
+	if jobject.has("flows"):
+		var flows_obj_dict = jobject["flows"]
 
-	self.variables_state.set_json_token(jobject["variablesState"])
+		if flows_obj_dict.size() == 1:
+			self._named_flows = null
+		elif self._named_flows == null:
+			self._named_flows = {} # Dictionary<String, Flow>
+		else:
+			self._named_flows.clear()
 
-	self.evaluation_stack = self.Json.jarray_to_runtime_obj_list(jobject["evalStack"])
+		for named_flow_obj_key in flows_obj_dict.keys():
+			var name = named_flow_obj_key
+			var flow_obj = flows_obj_dict[named_flow_obj_key]
 
-	self._output_stream = self.Json.jarray_to_runtime_obj_list(jobject["outputStream"])
+			var flow = Flow.new_with_name_and_jobject(name, self.story, flow_obj)
+
+			if flows_obj_dict.size() == 1:
+				self._current_flow = Flow.new_with_name_and_jobject(name, self.story, flow_obj)
+			else:
+				self._named_flows[name] = flow
+
+		if self._named_flows != null && self._named_flows.size() > 1:
+			var curr_flow_name = jobject["currentFlowName"]
+			self._current_flow = self._named_flows[curr_flow_name]
+	else:
+		self._named_flows = null
+		self._current_flow.name = DEFAULT_FLOW_NAME
+		self._current_flow.callstack.set_json_token(jobject["callstackThreads"], self.story)
+		self._current_flow.output_stream = self.Json.jarray_to_runtime_obj_list(jobject["outputStream"])
+		self._current_flow.current_choices = self.Json.jarray_to_runtime_obj_list(jobject["currentChoices"])
+
+		var jchoice_threads_obj = jobject["choiceThreads"] if jobject.has("choiceThreads") else null
+		self._current_flow.load_flow_choice_threads(jchoice_threads_obj, self.story)
+
 	self.output_stream_dirty()
 
-	self._current_choices = self.Json.jarray_to_runtime_obj_list(jobject["currentChoices"])
+	self.variables_state.set_json_token(jobject["variablesState"])
+	self.variables_state.callstack = self._current_flow.callstack
+
+	self.evaluation_stack = self.Json.jarray_to_runtime_obj_list(jobject["evalStack"])
 
 	if jobject.has("currentDivertTarget"):
 		var current_divert_target_path = jobject["currentDivertTarget"]
@@ -463,20 +547,7 @@ func load_json_obj(jobject):
 	else:
 		self.previous_random = 0
 
-	var jchoice_threads = null
-
-	if jobject.has("choiceThreads"):
-		jchoice_threads = jobject["choiceThreads"]
-
-	for c in self._current_choices:
-		var found_active_thread = self.callstack.thread_with_index(c.original_thread_index)
-		if found_active_thread != null:
-			c.thread_at_generation = found_active_thread.copy()
-		else:
-			var jsaved_choice_thread = jchoice_threads[str(c.original_thread_index)]
-			c.thread_at_generation = CallStack.InkThread.new_with(jsaved_choice_thread, self.story)
-
-	# Restore ability to continue.
+	# inkgd: Restore ability to continue.
 	var InkRuntime = _get_runtime()
 	if InkRuntime != null:
 		InkRuntime.should_interrupt = false
@@ -488,8 +559,8 @@ func reset_errors():
 
 # (Array<InkObject>) -> void
 func reset_output(objs = null):
-	self._output_stream.clear()
-	if objs != null: self._output_stream += objs
+	self.output_stream.clear()
+	if objs != null: self.output_stream += objs
 	self.output_stream_dirty()
 
 # (InkObject) -> void
@@ -537,19 +608,19 @@ func try_splitting_head_tail_whitespace(single):
 	var tail_last_newline_idx = -1
 	var tail_first_newline_idx = -1
 
-	i = 0
-	while (i < _str.length()):
-		var c = _str[i]
+	var j = _str.length() - 1
+	while (j >= 0):
+		var c = _str[j]
 		if (c == "\n"):
 			if tail_last_newline_idx == -1:
-				tail_last_newline_idx = i
-			tail_first_newline_idx = i
+				tail_last_newline_idx = j
+			tail_first_newline_idx = j
 		elif c == ' ' || c == '\t':
-			i += 1
+			j -= 1
 			continue
 		else:
 			break
-		i += 1
+		j -= 1
 
 	if head_first_newline_idx == -1 && tail_last_newline_idx == -1:
 		return null
@@ -599,9 +670,9 @@ func push_to_output_stream_individual(obj):
 			function_trim_index = curr_el.function_start_in_ouput_stream
 
 		var glue_trim_index = -1
-		var i = self._output_stream.size() - 1
+		var i = self.output_stream.size() - 1
 		while (i >= 0):
-			var o = self._output_stream[i]
+			var o = self.output_stream[i]
 			var c = Utils.as_or_null(o, "ControlCommand")
 			var g = Utils.as_or_null(o, "Glue")
 
@@ -648,16 +719,16 @@ func push_to_output_stream_individual(obj):
 				include_in_output = false
 
 	if include_in_output:
-		self._output_stream.append(obj)
+		self.output_stream.append(obj)
 		self.output_stream_dirty()
 
 # () -> void
 func trim_newlines_from_output_stream():
 	var remove_whitespace_from = -1 # int
 
-	var i = self._output_stream.size() - 1
+	var i = self.output_stream.size() - 1
 	while i >= 0:
-		var obj = self._output_stream[i]
+		var obj = self.output_stream[i]
 		var cmd = Utils.as_or_null(obj, "ControlCommand")
 		var txt = Utils.as_or_null(obj, "StringValue")
 
@@ -670,10 +741,10 @@ func trim_newlines_from_output_stream():
 
 	if remove_whitespace_from >= 0:
 		i = remove_whitespace_from
-		while i < _output_stream.size():
-			var text = Utils.as_or_null(_output_stream[i], "StringValue")
+		while i < self.output_stream.size():
+			var text = Utils.as_or_null(self.output_stream[i], "StringValue")
 			if text:
-				self._output_stream.remove(i)
+				self.output_stream.remove(i)
 			else:
 				i += 1
 
@@ -681,11 +752,11 @@ func trim_newlines_from_output_stream():
 
 # () -> void
 func remove_existing_glue():
-	var i = self._output_stream.size() - 1
+	var i = self.output_stream.size() - 1
 	while (i >= 0):
-		var c = self._output_stream[i]
+		var c = self.output_stream[i]
 		if Utils.is_ink_class(c, "Glue"):
-			self._output_stream.remove(i)
+			self.output_stream.remove(i)
 		elif Utils.is_ink_class(c, "ControlCommand"):
 			break
 
@@ -695,13 +766,13 @@ func remove_existing_glue():
 
 var output_stream_ends_in_newline setget , get_output_stream_ends_in_newline # bool
 func get_output_stream_ends_in_newline():
-	if self._output_stream.size() > 0:
-		var i = self._output_stream.size() - 1
+	if self.output_stream.size() > 0:
+		var i = self.output_stream.size() - 1
 		while (i >= 0):
-			var obj = self._output_stream[i]
+			var obj = self.output_stream[i]
 			if Utils.is_ink_class(obj, "ControlCommand"):
 				break
-			var text = Utils.as_or_null(self._output_stream[i], "StringValue")
+			var text = Utils.as_or_null(self.output_stream[i], "StringValue")
 			if text:
 				if text.is_newline:
 					return true
@@ -714,7 +785,7 @@ func get_output_stream_ends_in_newline():
 
 var output_stream_contains_content setget , get_output_stream_contains_content # bool
 func get_output_stream_contains_content():
-	for content in self._output_stream:
+	for content in self.output_stream:
 		if Utils.is_ink_class(content, "StringValue"):
 			return true
 
@@ -722,10 +793,10 @@ func get_output_stream_contains_content():
 
 var in_string_evaluation setget , get_in_string_evaluation # bool
 func get_in_string_evaluation():
-	var i = self._output_stream.size() - 1
+	var i = self.output_stream.size() - 1
 
 	while (i >= 0):
-		var cmd = Utils.as_or_null(self._output_stream[i], "ControlCommand")
+		var cmd = Utils.as_or_null(self.output_stream[i], "ControlCommand")
 		if cmd && cmd.command_type == ControlCommand.CommandType.BEGIN_STRING:
 			return true
 
@@ -777,7 +848,7 @@ func pop_evaluation_stack(number_of_objects = -1):
 func force_end():
 	self.callstack.reset()
 
-	self._current_choices.clear()
+	self._current_flow.current_choices.clear()
 
 	self.current_pointer = Pointer.null()
 	self.previous_pointer = Pointer.null()
@@ -786,16 +857,16 @@ func force_end():
 
 # () -> void
 func trim_whitespace_from_function_end():
-	assert(callstack.current_element.type == PushPopType.FUNCTION)
+	assert(self.callstack.current_element.type == PushPopType.FUNCTION)
 
-	var function_start_point = callstack.current_element.function_start_in_ouput_stream
+	var function_start_point = self.callstack.current_element.function_start_in_ouput_stream
 
 	if function_start_point == -1:
 		function_start_point = 0
 
-	var i = self._output_stream.size() - 1
+	var i = self.output_stream.size() - 1
 	while (i >= function_start_point):
-		var obj = self._output_stream[i]
+		var obj = self.output_stream[i]
 		var txt = Utils.as_or_null(obj, "StringValue")
 		var cmd = Utils.as_or_null(obj, "ControlCommand")
 		if !txt:
@@ -804,7 +875,7 @@ func trim_whitespace_from_function_end():
 		if cmd: break
 
 		if txt.is_newline || txt.is_inline_whitespace:
-			self._output_stream.remove(i)
+			self.output_stream.remove(i)
 			self.output_stream_dirty()
 		else:
 			break
@@ -820,7 +891,7 @@ func pop_callstack(pop_type = null):
 
 # (InkPath, bool) -> void
 func set_chosen_path(path, incrementing_turn_index):
-	self._current_choices.clear()
+	self._current_flow.current_choices.clear()
 
 	var new_pointer = self.story.pointer_at_path(path)
 
@@ -845,10 +916,13 @@ func pass_arguments_to_evaluation_stack(arguments):
 	if arguments != null:
 		var i = 0
 		while (i < arguments.size()):
-			if !(arguments[i] is int || arguments[i] is float || arguments[i] is String):
-				Utils.throw_argument_exception(str("ink arguments when calling EvaluateFunction / ",
-												  "ChoosePathStringWithParameters must be int, ",
-												  "float or string"))
+			if !(arguments[i] is int || arguments[i] is float || arguments[i] is String || ((arguments[i] is Object) && arguments[i].is_class("InkList"))):
+				Utils.throw_argument_exception(str(
+					"ink arguments when calling EvaluateFunction / ",
+					"ChoosePathStringWithParameters must be int, ",
+					"float, string or InkList. Argument was ",
+					"null" if arguments[i] == null else Utils.typename_of(arguments[i])
+				))
 				return
 
 			push_evaluation_stack(Ink.Value.create(arguments[i]))
@@ -867,9 +941,9 @@ func try_exit_function_evaluation_from_game():
 # () -> Variant
 func complete_function_evaluation_from_game():
 	if self.callstack.current_element.type != PushPopType.FUNCTION_EVALUATION_FROM_GAME:
-		Utils.throw_story_exception(str(
+		Utils.throw_exception(str(
 			"Expected external function evaluation to be complete. Stack trace: ",
-			callstack.callstack_trace
+			self.callstack_trace
 		))
 		return null
 
@@ -922,13 +996,14 @@ func output_stream_dirty():
 var _visit_counts = null # Dictionary<string, Int>
 var _turn_indices = null # Dictionary<string, Int>
 
-var _output_stream = null # Array<InkObject>
 var _output_stream_text_dirty = true # bool
 var _output_stream_tags_dirty = true # bool
 
-var _current_choices # Array<Choice>
-
 var _patch # StatePatch
+
+var _current_flow = null # Flow
+var _named_flows = null # Dictionary<String, Flow>
+const DEFAULT_FLOW_NAME = "DEFAULT_FLOW" # String
 
 # ############################################################################ #
 # GDScript extra methods
@@ -944,15 +1019,6 @@ func get_class():
 
 func _anonymous_write_property_eval_stack(writer):
 	self.Json.write_list_runtime_objs(writer, self.evaluation_stack)
-
-func _anonymous_write_property_output_stream(writer):
-	self.Json.write_list_runtime_objs(writer, self._output_stream)
-
-func _anonymous_write_property_current_choices(writer):
-	writer.write_array_start()
-	for c in self._current_choices:
-		self.Json.write_choice(writer, c)
-	writer.write_array_end()
 
 func _anonymous_write_property_visit_counts(writer):
 	self.Json.write_int_dictionary(writer, self._visit_counts)

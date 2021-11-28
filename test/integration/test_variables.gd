@@ -8,6 +8,8 @@
 
 extends "res://test/integration/test_base.gd"
 
+var ErrorType = preload("res://addons/inkgd/runtime/error.gd").ErrorType
+
 # ############################################################################ #
 
 func test_const():
@@ -35,9 +37,10 @@ func test_temp_global_conflict():
 
 func test_temp_not_found():
 	var story = Story.new(load_file("temp_not_found"))
+	story.connect("on_error", self, "_temp_not_found_on_error")
 
 	assert_eq(story.continue_maximally(), "0\nhello\n")
-	assert_true(story.has_warning)
+	assert_true(_temp_not_found_had_warning()) # Changed in ink 1.0.0 but kept here for now.
 
 func test_temp_usage_in_options():
 	var story = Story.new(load_file("temp_usage_in_options"))
@@ -108,6 +111,21 @@ func test_variable_tunnel():
 	var story = Story.new(load_file("variable_tunnel"))
 
 	assert_eq(story.continue_maximally(), "STUFF\n")
+
+# ############################################################################ #
+
+var _temp_not_found_last_error_type = -1
+var _temp_not_found_error_count = 0
+
+func _temp_not_found_on_error(message, type):
+	_temp_not_found_last_error_type = type
+	_temp_not_found_error_count += 1
+
+func _temp_not_found_had_warning():
+	return (
+		_temp_not_found_last_error_type == ErrorType.WARNING &&
+		_temp_not_found_error_count == 1
+	)
 
 # ############################################################################ #
 

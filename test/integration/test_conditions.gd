@@ -32,7 +32,7 @@ func test_trivial_condition():
 	var story = Story.new(load_file("trivial_condition"))
 	story.continue()
 
-	assert_false(story.has_error)
+	assert_false(story.has_error)  # Removed in ink 1.0.0 but kept here for now.
 
 # ############################################################################ #
 

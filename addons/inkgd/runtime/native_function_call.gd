@@ -131,13 +131,13 @@ func call_binary_list_operation(parameters):
 		(v1.value_type != Ink.ValueType.LIST || v2.value_type != Ink.ValueType.LIST)
 	):
 		var op = _operation_funcs[Ink.ValueType.INT]
-		var result = int(self.StaticNativeFunctionCall.call(
+		var result = bool(self.StaticNativeFunctionCall.call(
 			"op_for_type",
 			1 if v1.is_truthy else 0,
 			1 if v2.is_truthy else 0
 		))
 
-		return Ink.IntValue.new_with(result)
+		return Ink.BoolValue.new_with(result)
 
 	if v1.value_type == Ink.ValueType.LIST && v2.value_type == Ink.ValueType.LIST:
 		return call_coerced([v1, v2])

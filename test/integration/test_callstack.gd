@@ -11,7 +11,7 @@ extends "res://test/integration/test_base.gd"
 # ############################################################################ #
 
 func test_callstack_evaluation():
-	var story = Story.new(load_file("call_stack_evaluation"))
+	var story = Story.new(load_file("callstack_evaluation"))
 	assert_eq(story.continue(), "8\n")
 
 func test_clean_callstack_reset_on_path_choice():

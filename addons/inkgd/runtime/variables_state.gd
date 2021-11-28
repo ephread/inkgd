@@ -46,12 +46,12 @@ func set_batch_observing_variable_changes(value):
 
 var _batch_observing_variable_changes # bool
 
-var call_stack setget set_call_stack, get_call_stack
-func get_call_stack():
-		return _call_stack
+var callstack setget set_callstack, get_callstack
+func get_callstack():
+		return _callstack
 
-func set_call_stack(value):
-		_call_stack = value
+func set_callstack(value):
+		_callstack = value
 
 func get(variable_name):
 	if self.patch != null:
@@ -68,7 +68,7 @@ func get(variable_name):
 
 func set(variable_name, value):
 	if !_default_global_variables.has(variable_name):
-		Utils.throw_story_exception(str(
+		Utils.throw_exception(str(
 			"Cannot assign to a variable (",
 			variable_name,
 			") that hasn't been declared in the story"
@@ -78,9 +78,9 @@ func set(variable_name, value):
 	var val = Ink.Value.create(value)
 	if val == null:
 		if value == null:
-			Utils.throw_story_exception("Cannot pass null to VariableState")
+			Utils.throw_exception("Cannot pass null to VariableState")
 		else:
-			Utils.throw_story_exception(
+			Utils.throw_exception(
 				"Invalid value passed to VariableState: " + str(value)
 			)
 		return
@@ -90,10 +90,10 @@ func set(variable_name, value):
 func enumerate():
 	return _global_variables.keys()
 
-func _init(call_stack, list_defs_origin):
+func _init(callstack, list_defs_origin):
 	get_static_objects()
 	_global_variables = {}
-	_call_stack = call_stack
+	_callstack = callstack
 	_list_defs_origin = list_defs_origin
 
 # () -> void
@@ -139,13 +139,17 @@ func write_json(writer):
 func runtime_objects_equal(obj1, obj2):
 	if !Utils.are_of_same_type(obj1, obj2): return false
 
+	var bool_val = Utils.as_or_null(obj1, "BoolValue")
+	if bool_val != null:
+		return bool_val.value == Utils.cast(obj2, "BoolValue").value
+
 	var int_val = Utils.as_or_null(obj1, "IntValue")
 	if int_val != null:
 		return int_val.value == Utils.cast(obj2, "IntValue").value
 
 	var float_val = Utils.as_or_null(obj1, "FloatValue")
 	if float_val != null:
-		return float_val.value == Utils.cast(obj2, "FloatValue")
+		return float_val.value == Utils.cast(obj2, "FloatValue").value
 
 	var val1 = Utils.as_or_null(obj1, "Value")
 	var val2 = Utils.as_or_null(obj2, "Value")
@@ -202,7 +206,7 @@ func get_raw_variable_with_name(name, context_index):
 		if list_item_value:
 			return list_item_value
 
-	var_value = _call_stack.get_temporary_variable_with_name(name, context_index)
+	var_value = _callstack.get_temporary_variable_with_name(name, context_index)
 
 	return var_value
 
@@ -243,7 +247,7 @@ func assign(var_ass, value):
 	if set_global:
 		set_global(name, value)
 	else:
-		_call_stack.set_temporary_variable(name, value, var_ass.is_new_declaration, context_index)
+		_callstack.set_temporary_variable(name, value, var_ass.is_new_declaration, context_index)
 
 # () -> void
 func snapshot_default_globals():
@@ -315,12 +319,12 @@ func get_context_index_of_variable_named(var_name):
 	if global_variable_exists_with_name(var_name):
 		return 0
 
-	return _call_stack.current_element_index
+	return _callstack.current_element_index
 
 var _global_variables = null # Dictionary<String, InkObject>
 var _default_global_variables = null # Dictionary<String, InkObject>
 
-var _call_stack = null # CallStack
+var _callstack = null # CallStack
 var _changed_variables_for_batch_obs = null # StringSet
 var _list_defs_origin = null # ListDefinitionsOrigin
 

@@ -16,7 +16,7 @@ func test_multi_thread():
 	assert_eq(story.continue_maximally(), "This is place 1.\nThis is place 2.\n")
 	story.choose_choice_index(0)
 	assert_eq(story.continue_maximally(), "choice in place 1\nThe end\n")
-	assert_false(story.has_error)
+	assert_false(story.has_error) # Removed in ink 1.0.0 but kept here for now.
 
 func test_thread_done():
 	var story = Story.new(load_file("thread_done"))

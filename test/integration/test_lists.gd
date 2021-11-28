@@ -23,7 +23,7 @@ func test_empty_list_origin_after_assignment():
 func test_list_basic_operations():
 	var story = Story.new(load_file("list_basic_operations"))
 
-	assert_eq(story.continue_maximally(), "b, d\na, b, c, e\nb, c\n0\n1\n1\n")
+	assert_eq(story.continue_maximally(), "b, d\na, b, c, e\nb, c\nfalse\ntrue\ntrue\n")
 
 func test_list_mixed_items():
 	var story = Story.new(load_file("list_mixed_items"))

@@ -21,6 +21,10 @@ boot_splash/fullsize=false
 boot_splash/bg_color=Color( 0.929412, 0.898039, 0.854902, 1 )
 config/icon="res://icon.png"
 
+[autoload]
+
+__InkRuntime="*res://addons/inkgd/runtime/static/ink_runtime.gd"
+
 [debug]
 
 gdscript/completion/autocomplete_setters_and_getters=true
