@@ -21,11 +21,13 @@ enum FileDialogSelectionEnum {
 	TARGET_FILE
 }
 
-var configuration = preload("res://addons/inkgd/editor/configuration.gd").new()
-var InkRichDialog = preload("res://addons/inkgd/editor/ink_rich_dialog.tscn")
+var InkCompiler = load("res://addons/inkgd/editor/ink_compiler.gd")
+var InkRichDialog = load("res://addons/inkgd/editor/ink_rich_dialog.tscn")
 
-var progress_texture: AnimatedTexture
-var thread: Thread
+var configuration: InkConfiguration
+
+var _progress_texture: AnimatedTexture
+var _compilers: Dictionary = {}
 
 # ############################################################################ #
 # Nodes
@@ -95,15 +97,11 @@ func _ready():
 	BuildButton.connect("pressed", self, "_build_button_pressed")
 	InkFileDialog.connect("file_selected", self, "_on_file_selected")
 	
-	progress_texture = _create_progress_texture()
+	_progress_texture = _create__progress_texture()
 	
 	_update_mono_availability()
 
 	add_child(InkFileDialog)
-
-func _exit_tree():
-	if thread != null && !thread.is_alive():
-		thread.wait_to_finish()
 
 # ############################################################################ #
 # Signal Receivers
@@ -218,20 +216,16 @@ func _test_button_pressed():
 func _build_button_pressed():
 	_compile_story()
 
-func _compile_story(interactive = true):
-	BuildButton.icon = progress_texture
-	var is_windows = _is_running_on_windows()
-
-	var should_use_mono = (is_windows || !configuration.use_mono)
-	var compilation_config = CompilationConfiguration.new_with_configuration(
-		configuration, should_use_mono, interactive
-	)
-
-	if thread != null && !thread.is_alive():
-		thread.wait_to_finish()
+func _compile_story():
+	BuildButton.icon = _progress_texture
+	BuildButton.disabled = true
 	
-	thread = Thread.new()
-	thread.start(self, "_compile_story_in_thread", compilation_config, Thread.PRIORITY_HIGH)
+	var compiler_configuration = InkCompiler.Configuration.new(configuration, true)
+	var compiler = InkCompiler.new(compiler_configuration)
+	
+	_compilers[compiler.identifier] = compiler
+	compiler.connect("did_compile", self, "_handle_compilation_result")
+	compiler.compile_story()
 
 # ############################################################################ #
 # Private helpers
@@ -258,7 +252,7 @@ func _is_running_on_windows():
 	var os_name = OS.get_name()
 	return (os_name == "Windows" || os_name == "UWP")
 
-func _create_progress_texture() -> AnimatedTexture:
+func _create__progress_texture() -> AnimatedTexture:
 	var animated_texture = AnimatedTexture.new()
 	animated_texture.frames = 8
 
@@ -268,46 +262,18 @@ func _create_progress_texture() -> AnimatedTexture:
 
 	return animated_texture
 
-func _compile_story_in_thread(config):
-	var return_code = 0
-	var output = []
-
-	if config.should_use_mono:
-		return_code = OS.execute(config.mono_path, [
-			config.inklecate_path,
-			'-o',
-			config.target_file_path,
-			config.source_file_path
-		], true, output, true)
-	else:
-		return_code = OS.execute(config.inklecate_path, [
-			'-o',
-			config.target_file_path,
-			config.source_file_path
-		], true, output, true)
+func _handle_compilation_result(result: InkCompiler.Result):
+	var compiler_identifier = result.compiler_identifier
+	var use_threads = result.use_threads
+	var return_code = result.return_code
+	var output_array = result.output
 	
-	var execution_result = ExecutionResult.new()
-	execution_result.interactive = config.interactive
-	execution_result.return_code = return_code
-	execution_result.output = PoolStringArray(output)
-	
-	_handle_compilation_result(execution_result)
-	
-	# call_deferred("_handle_compilation_result", execution_result)
-
-func _handle_compilation_result(execution_result: ExecutionResult):
 	BuildButton.icon = null
-	
-	var interactive = execution_result.interactive
-	var return_code = execution_result.return_code
-	var output_array = execution_result.output
+	BuildButton.disabled = false
 
+	var output_text = output_array.join("\n")
 	if return_code == 0:
-		var output_text = output_array.join("\n")
 		if output_text.strip_edges().length() == 0:
-			print(str("(",configuration.source_file_path, ") was successfully compiled."))
-			if !interactive: return
-			
 			var dialog = AcceptDialog.new()
 			add_child(dialog)
 			
@@ -316,10 +282,6 @@ func _handle_compilation_result(execution_result: ExecutionResult):
 			
 			dialog.popup_centered()
 		else:
-			print(str("(",configuration.source_file_path, ") was successfully compiled:"))
-			push_warning(output_text)
-			
-			if !interactive: return
 			var dialog = InkRichDialog.instance()
 			add_child(dialog)
 
@@ -329,11 +291,6 @@ func _handle_compilation_result(execution_result: ExecutionResult):
 
 			dialog.popup_centered(Vector2(700, 400))
 	else:
-		var output_text = output_array.join("\n")
-		print(str("Could not compile (", configuration.source_file_path, "):"))
-		print(output_text)
-		
-		if !interactive: return
 		var dialog = InkRichDialog.instance()
 		add_child(dialog)
 
@@ -342,35 +299,6 @@ func _handle_compilation_result(execution_result: ExecutionResult):
 		dialog.output_text = output_text
 
 		dialog.popup_centered(Vector2(700, 400))
-
-class CompilationConfiguration:
-	var should_use_mono: bool
-	var interactive: bool
 	
-	var use_mono: bool = false
-	var mono_path: String = ""
-	var inklecate_path: String = ""
-	var source_file_path: String = ""
-	var target_file_path: String = ""
-	
-	static func new_with_configuration(
-		config,
-		should_use_mono,
-		interactive
-	):
-		var new_config = CompilationConfiguration.new()
-		
-		new_config.should_use_mono = should_use_mono
-		new_config.interactive = interactive
-		
-		new_config.use_mono = config.use_mono
-		new_config.mono_path = config.mono_path
-		new_config.inklecate_path = config.inklecate_path
-		new_config.source_file_path = ProjectSettings.globalize_path(config.source_file_path)
-		new_config.target_file_path = ProjectSettings.globalize_path(config.target_file_path)
-
-class ExecutionResult:
-	var interactive: bool
-	
-	var return_code: int
-	var output: PoolStringArray
+	if _compilers.has(compiler_identifier):
+		_compilers.erase(compiler_identifier)

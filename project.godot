@@ -8,8 +8,20 @@
 
 config_version=4
 
-_global_script_classes=[  ]
+_global_script_classes=[ {
+"base": "Reference",
+"class": "InkCompiler",
+"language": "GDScript",
+"path": "res://addons/inkgd/editor/ink_compiler.gd"
+}, {
+"base": "Object",
+"class": "InkConfiguration",
+"language": "GDScript",
+"path": "res://addons/inkgd/editor/ink_configuration.gd"
+} ]
 _global_script_class_icons={
+"InkCompiler": "",
+"InkConfiguration": ""
 }
 
 [application]

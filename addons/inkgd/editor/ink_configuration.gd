@@ -6,6 +6,10 @@
 
 extends Object
 
+class_name InkConfiguration
+
+# ############################################################################ #
+
 const _ROOT_DIR = "res://"
 
 const _COMPILER_CONFIG = _ROOT_DIR + ".inkgd_compiler.cfg"

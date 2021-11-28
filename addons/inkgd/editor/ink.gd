@@ -7,38 +7,57 @@
 tool
 extends EditorPlugin
 
-var dock = null
+# ############################################################################ #
+# Properties
+# ############################################################################ #
+
+var InkConfiguration = load("res://addons/inkgd/editor/ink_configuration.gd")
+var InkCompiler = load("res://addons/inkgd/editor/ink_compiler.gd")
+
+var _configuration = InkConfiguration.new()
+var _panel = null
+
+# ############################################################################ #
+# Overriden Methods
+# ############################################################################ #
 
 func _enter_tree():
-	dock = preload("res://addons/inkgd/editor/ink_dock.tscn").instance()
-	add_control_to_bottom_panel(dock, "Ink")
-	add_autoloads()
-	add_templates()
+	_panel = preload("res://addons/inkgd/editor/ink_panel.tscn").instance()
+	_panel.configuration = _configuration
+
+	add_control_to_bottom_panel(_panel, "Ink")
+	
+	_add_autoloads()
+	_add_templates()
 
 func _exit_tree():
-	# Remove from docks (must be called so layout is updated and saved)
-	remove_control_from_docks(dock)
-	remove_control_from_bottom_panel(dock)
-	# Remove the node
-	dock.queue_free()
-	remove_autoloads()
-	remove_templates()
+	remove_control_from_bottom_panel(_panel)
+	_panel.free()
+
+	_remove_autoloads()
+	_remove_templates()
 
 func build():
-	dock._compile_story(false)
-	return true
+	var compiler_configuration = InkCompiler.Configuration.new(_configuration, false)
+	var compiler = InkCompiler.new(compiler_configuration)
+	
+	return compiler.compile_story()
 
-func add_autoloads():
+# ############################################################################ #
+# Private Methods
+# ############################################################################ #
+
+func _add_autoloads():
 	# Find the Ink runtime code and add it as a singleton.
 	add_autoload_singleton("__InkRuntime", "res://addons/inkgd/runtime/static/ink_runtime.gd")
 
-func remove_autoloads():
+func _remove_autoloads():
 	# Remove the Ink runtime code.
 	remove_autoload_singleton("__InkRuntime")
 
-func add_templates():
+func _add_templates():
 	var dir = Directory.new()
-	var names = get_plugin_templates_names()
+	var names = _get_plugin_templates_names()
 
 	# Setup the templates folder for the project
 	var template_dir_path = ProjectSettings.get_setting("editor/script_templates_search_path")
@@ -49,9 +68,9 @@ func add_templates():
 		var template_file_path = template_dir_path + "/" + name
 		dir.copy("res://addons/inkgd/editor/templates/"+name, template_file_path)
 
-func remove_templates():
+func _remove_templates():
 	var dir = Directory.new()
-	var names = get_plugin_templates_names()
+	var names = _get_plugin_templates_names()
 	var template_dir_path = ProjectSettings.get_setting("editor/script_templates_search_path")
 
 	for name in names:
@@ -59,7 +78,7 @@ func remove_templates():
 		if dir.file_exists(template_file_path):
 			dir.remove(template_file_path)
 
-func get_plugin_templates_names():
+func _get_plugin_templates_names():
 	# Get all the templates from the plugin
 	var dir = Directory.new()
 	var plugin_template_names = []
