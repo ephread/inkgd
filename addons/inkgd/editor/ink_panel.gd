@@ -188,12 +188,14 @@ func _test_button_pressed():
 
 	var output_array = PoolStringArray(output)
 
+	# NOTE: At the moment, inklecate doesn't support a subcommand that would just
+	# exit with 0 so `_contains_inklecate_output_prefix` will always be executed.
 	if return_code == 0 || _contains_inklecate_output_prefix(output_array):
 		var dialog = AcceptDialog.new()
 		add_child(dialog)
 
 		dialog.window_title = "Success"
-		dialog.dialog_text = "inklecate was successfully executed!"
+		dialog.dialog_text = "The configuration seems to be valid!"
 
 		if output_array.size() > 0:
 			print("inklecate was found and executed:")
@@ -265,10 +267,18 @@ func _create__progress_texture() -> AnimatedTexture:
 
 	return animated_texture
 
+## Guess whether the provided `output_array` looks like the usage inklecate
+## outputs when run with no parameters.
 func _contains_inklecate_output_prefix(output_array: PoolStringArray):
+	# No valid output -> it's not inklecate.
 	if output_array.size() == 0: return false
 
+	# The first line of the output is cleaned up by removing the BOM and
+	# any sort of whitespace/unprintable character.
 	var cleaned_line = output_array[0].replace(_BOM, "").strip_edges()
+	
+	# If the first line starts with the correct substring, it's likely
+	# to be inklecate!
 	return cleaned_line.find("Usage: inklecate2") == 0
 
 func _handle_compilation_result(result):
