@@ -173,29 +173,7 @@ func _multiply(arg1, arg2):
 # }, true);
 ```
 
-##### 6. Getting the ouput of `evaluate_function`
-
-`evaluate_function` evaluates an ink function from GDScript. Since it's not possible to have in-out variables in GDScript, if you want to retrieve the text output of the function, you need to pass `true` to `return_text_output`. `evaluate_function` will then return a dictionary containing both the return value and the outputed text.
-
-```gdscript
-# story.ink
-#
-# === function multiply(x, y) ===
-#     Hello World
-#     ~ return x * y
-#
-
-var result = story.evaluate_function("multiply", [5, 3])
-# result == 15
-
-var result = story.evaluate_function("multiply", [5, 3], true)
-# result == {
-#     "result": 15,
-#     "output": "Hello World"
-# }
-```
-
-##### 7. Handlers
+##### 6. [Handlers](https://github.com/inkle/ink/blob/master/Documentation/RunningYourInk.md#error-handling)
 
 Starting with Ink version 1.0.0, it's possible to attach different types of handlers to a story to receive callbacks. In C#, those handlers are implemented using events. In _inkgd_, those are implemented using signals.
 
@@ -223,7 +201,29 @@ story.connect("on_did_continue", self, "_handle_did_continue")
 
 It's recommended that you connect a handler to `on_error` to receive errors and warnings. If you don't, the story may stop unfolding when an error is encountered.
 
-##### 8. Error Handling
+##### 7. Getting the ouput of `evaluate_function`
+
+`evaluate_function` evaluates an ink function from GDScript. Since it's not possible to have in-out variables in GDScript, if you want to retrieve the text output of the function, you need to pass `true` to `return_text_output`. `evaluate_function` will then return a dictionary containing both the return value and the outputed text.
+
+```gdscript
+# story.ink
+#
+# === function multiply(x, y) ===
+#     Hello World
+#     ~ return x * y
+#
+
+var result = story.evaluate_function("multiply", [5, 3])
+# result == 15
+
+var result = story.evaluate_function("multiply", [5, 3], true)
+# result == {
+#     "result": 15,
+#     "output": "Hello World"
+# }
+```
+
+##### 8. Error Recovery
 
 The original implementation relies on C#'s exceptions to report and recover from inconsistent states.
 Exceptions are not available in GDScript, so the runtime may behave slightly differently. In particular,
@@ -244,18 +244,19 @@ Note: you will need [inklecate] installed somewhere on your system.
 
 Navigate to "Project" > "Project Settings" and then, in the "Plugins" tab, change the status of the "InkGD" to "active".
 
-A new panel should pop up on the right side of your editor.
+A new tab should appear in the bottom panel.
 
-![Ink panel](https://i.imgur.com/oMkP4IW.png)
+![Ink panel](https://i.imgur.com/b6ui7c9.png)
 
-Here, you need to provide four (or three on Windows) different paths:
+Here, you need to provide at least three different paths:
 
-- *Mono*: path to mono _(note: doesn't appear on Windows)_.
 - *Executable*: path to inklecate _(note: an absolute path is expected here)_.
 - *Source File*: path to the ink file you want to compile.
 - *Target File*: output path of the compiled story.
 
-By clicking on "Test", you can test that the plugin can sucessfully run inklecate. You can also compile the story manually by clicking on "Compile".
+Additionally, on all platforms except windows, you can also use a custom Mono runtime (with a compatible inklecate) if you wish so. Just enable the *Use Mono* seting and provide a path to *Mono*.
+
+By clicking on "Test configuration", you can test that the plugin can sucessfully run inklecate. You can also compile the story manually by clicking on "Compile story".
 
 The configuration is saved as two files inside the root directory of the project:
 
