@@ -4,6 +4,7 @@
 # See LICENSE in the project root for license information.
 # ############################################################################ #
 
+tool
 extends Reference
 
 class_name InkCompiler
@@ -12,7 +13,7 @@ class_name InkCompiler
 # Constants
 # ############################################################################ #
 
-const _BOM = "\ufeff"
+const BOM = "\ufeff"
 
 # ############################################################################ #
 # Properties
@@ -125,7 +126,7 @@ func _process_compilation_result(
 	output: PoolStringArray
 ) -> Result:
 	var success: bool = (return_code == 0)
-	var output_text: String = output.join("\n").replace(_BOM, "").strip_edges()
+	var output_text: String = output.join("\n").replace(BOM, "").strip_edges()
 
 	if success:
 		print("[" + config.source_file_path + "] was successfully compiled.")

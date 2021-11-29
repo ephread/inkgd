@@ -14,7 +14,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/inkgd/editor/ink_compiler.gd"
 }, {
-"base": "Object",
+"base": "Reference",
 "class": "InkConfiguration",
 "language": "GDScript",
 "path": "res://addons/inkgd/editor/ink_configuration.gd"

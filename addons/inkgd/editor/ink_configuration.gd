@@ -5,7 +5,7 @@
 # ############################################################################ #
 
 tool
-extends Object
+extends Reference
 
 class_name InkConfiguration
 

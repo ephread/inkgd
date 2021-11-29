@@ -34,18 +34,20 @@ enum FileDialogSelectionEnum {
 # Constants
 # ############################################################################ #
 
-const _BOM = "\ufeff"
+const BOM = "\ufeff"
 
 # ############################################################################ #
 # Properties
 # ############################################################################ #
 
-var configuration: InkConfiguration
+var configuration = InkConfiguration.new()
+var editor_scale: float
 
 # ############################################################################ #
 # Private Properties
 # ############################################################################ #
 
+var _editor_scale: float = 1.0
 var _progress_texture: AnimatedTexture
 var _compilers: Dictionary = {}
 
@@ -80,14 +82,11 @@ onready var TargetFileDialogButton = find_node("TargetFileDialogButton")
 # Overrides
 # ############################################################################ #
 
-func _ready():
+func _init():
+	_retrieve_editor_scale()
 	configuration.retrieve()
 
-	MonoLineEdit.text = configuration.mono_path
-	ExecutableLineEdit.text = configuration.inklecate_path
-	SourceFileLineEdit.text = configuration.source_file_path
-	TargetFileLineEdit.text = configuration.target_file_path
-
+func _ready():
 	UseMonoCheckBox.connect("toggled", self, "_use_mono_toggled")
 
 	MonoLineEdit.connect("text_entered", self, "_configuration_entered")
@@ -112,10 +111,16 @@ func _ready():
 	TestButton.connect("pressed", self, "_test_button_pressed")
 	BuildButton.connect("pressed", self, "_build_button_pressed")
 	InkFileDialog.connect("file_selected", self, "_on_file_selected")
-
-	_progress_texture = _create__progress_texture()
+	
+	MonoLineEdit.text = configuration.mono_path
+	ExecutableLineEdit.text = configuration.inklecate_path
+	SourceFileLineEdit.text = configuration.source_file_path
+	TargetFileLineEdit.text = configuration.target_file_path
+	
+	_progress_texture = _create_progress_texture()
 
 	_update_mono_availability()
+	_set_minimum_panel_size()
 
 	add_child(InkFileDialog)
 
@@ -135,7 +140,7 @@ func _mono_button_pressed():
 	FileDialogSelection = FileDialogSelectionEnum.MONO
 	InkFileDialog.set_mode(FileDialog.MODE_OPEN_FILE)
 	InkFileDialog.set_access(FileDialog.ACCESS_FILESYSTEM)
-	InkFileDialog.popup_centered(Vector2(1280, 800))
+	InkFileDialog.popup_centered(Vector2(1280, 800) * _editor_scale)
 
 func _executable_button_pressed():
 	_reset_file_dialog()
@@ -143,7 +148,7 @@ func _executable_button_pressed():
 	FileDialogSelection = FileDialogSelectionEnum.EXECUTABLE
 	InkFileDialog.set_mode(FileDialog.MODE_OPEN_FILE)
 	InkFileDialog.set_access(FileDialog.ACCESS_FILESYSTEM)
-	InkFileDialog.popup_centered(Vector2(1280, 800))
+	InkFileDialog.popup_centered(Vector2(1280, 800) * _editor_scale)
 
 func _source_file_button_pressed():
 	_reset_file_dialog()
@@ -152,7 +157,7 @@ func _source_file_button_pressed():
 	InkFileDialog.set_mode(FileDialog.MODE_OPEN_FILE)
 	InkFileDialog.set_access(FileDialog.ACCESS_FILESYSTEM)
 	InkFileDialog.add_filter("*.ink;Ink source file")
-	InkFileDialog.popup_centered(Vector2(1280, 800))
+	InkFileDialog.popup_centered(Vector2(1280, 800) * _editor_scale)
 
 func _target_file_button_pressed():
 	_reset_file_dialog()
@@ -161,7 +166,7 @@ func _target_file_button_pressed():
 	InkFileDialog.set_mode(FileDialog.MODE_SAVE_FILE)
 	InkFileDialog.set_access(FileDialog.ACCESS_FILESYSTEM)
 	InkFileDialog.add_filter("*.json;Compiled Ink project")
-	InkFileDialog.popup_centered(Vector2(1280, 800))
+	InkFileDialog.popup_centered(Vector2(1280, 800) * _editor_scale)
 
 func _on_file_selected(path: String):
 	match FileDialogSelection:
@@ -225,14 +230,14 @@ func _test_button_pressed():
 		var dialog = InkRichDialog.instance()
 		add_child(dialog)
 
-		print("Something went wrong while testing inklecate's setup.")
-		print(output_text)
+		printerr("Something went wrong while testing inklecate's setup.")
+		printerr(output_text)
 
 		dialog.window_title = "Error"
 		dialog.message_text = "Something went wrong while testing inklecate's setup. Please see the output below."
 		dialog.output_text = output_text
 
-		dialog.popup_centered(Vector2(700, 400))
+		dialog.popup_centered(Vector2(700, 400) * _editor_scale)
 
 func _build_button_pressed():
 	_compile_story()
@@ -277,7 +282,7 @@ func _is_running_on_windows():
 	var os_name = OS.get_name()
 	return (os_name == "Windows" || os_name == "UWP")
 
-func _create__progress_texture() -> AnimatedTexture:
+func _create_progress_texture() -> AnimatedTexture:
 	var animated_texture = AnimatedTexture.new()
 	animated_texture.frames = 8
 
@@ -295,7 +300,7 @@ func _contains_inklecate_output_prefix(output_array: PoolStringArray):
 
 	# The first line of the output is cleaned up by removing the BOM and
 	# any sort of whitespace/unprintable character.
-	var cleaned_line = output_array[0].replace(_BOM, "").strip_edges()
+	var cleaned_line = output_array[0].replace(BOM, "").strip_edges()
 	
 	# If the first line starts with the correct substring, it's likely
 	# to be inklecate!
@@ -319,7 +324,7 @@ func _handle_compilation_result(result):
 			dialog.message_text = "The story was successfully compiled."
 			dialog.output_text = output
 
-			dialog.popup_centered(Vector2(700, 400))
+			dialog.popup_centered(Vector2(700, 400) * _editor_scale)
 		else:
 			var dialog = AcceptDialog.new()
 			add_child(dialog)
@@ -336,7 +341,23 @@ func _handle_compilation_result(result):
 		dialog.message_text = "The story could not be compiled. See inklecate's output below."
 		dialog.output_text = output
 
-		dialog.popup_centered(Vector2(700, 400))
+		dialog.popup_centered(Vector2(700, 400) * _editor_scale)
 
 	if _compilers.has(compiler_identifier):
 		_compilers.erase(compiler_identifier)
+
+func _retrieve_editor_scale():
+	# HACK: For some reason, it's not possible to pass data from the EditorPlugin
+	# to this node, because InkPanel is somehow instantiated twice and the one shown
+	# in the bottom panel isn't the one instantiated by the original EditorPlugin.
+	#
+	# Thus, we just create a dummy EditorPlugin to get the EditorInterface here.
+	#
+	# This needs more investigation.
+	var editor_interface = EditorPlugin.new().get_editor_interface()
+	if editor_interface != null:
+		_editor_scale = editor_interface.get_editor_scale()
+
+func _set_minimum_panel_size():
+	# Adapting the minimum size of the panel to the scale of the editor.
+	rect_min_size = Vector2(0, 245) * _editor_scale

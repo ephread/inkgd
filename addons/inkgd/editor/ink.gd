@@ -20,19 +20,16 @@ var InkCompiler = load("res://addons/inkgd/editor/ink_compiler.gd")
 # Private Properties
 # ############################################################################ #
 
-var _configuration: InkConfiguration = null
 var _panel: InkPanel = null
+var _tool_button: ToolButton = null
 
 # ############################################################################ #
 # Overrides
 # ############################################################################ #
 
 func _enter_tree():
-	_configuration = InkConfiguration.new()
 	_panel = InkPanel.instance()
-	_panel.configuration = _configuration
-
-	add_control_to_bottom_panel(_panel, "Ink")
+	_tool_button = add_control_to_bottom_panel(_panel, "Ink")
 
 	_add_autoloads()
 	_add_templates()
@@ -40,15 +37,19 @@ func _enter_tree():
 func _exit_tree():
 	remove_control_from_bottom_panel(_panel)
 
-	_panel.free()
-	_configuration.free()
+	_panel.queue_free()
 
 	_remove_autoloads()
 	_remove_templates()
 
 func build():
-	var configuration = InkCompiler.Configuration.new(_configuration, false)
-	var compiler = InkCompiler.new(configuration)
+	# Read only here, so there shouldn't be any issue with the fact it's
+	# also instantiated in InkPanel.
+	var configuration = InkConfiguration.new()
+	configuration.retrieve()
+
+	var compiler_configuration = InkCompiler.Configuration.new(configuration, false)
+	var compiler = InkCompiler.new(compiler_configuration)
 
 	return compiler.compile_story()
 
