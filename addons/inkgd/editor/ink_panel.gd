@@ -253,7 +253,11 @@ func _compile_story():
 # ############################################################################ #
 
 func _update_mono_availability():
-	var is_visible = !_is_running_on_windows() && configuration.use_mono
+	var is_running_on_windows = _is_running_on_windows()
+	var is_visible = !is_running_on_windows && configuration.use_mono
+
+	UseMonoLabel.visible = !is_running_on_windows
+	UseMonoCheckBox.visible = !is_running_on_windows
 
 	MonoLabel.visible = is_visible
 	MonoHBoxContainer.visible = is_visible
