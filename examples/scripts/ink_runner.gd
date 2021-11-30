@@ -6,7 +6,7 @@
 
 extends Node
 
-const SHOULD_LOAD_IN_BACKGROUND = true
+var SHOULD_LOAD_IN_BACKGROUND = true
 
 # ############################################################################ #
 # Imports
@@ -32,6 +32,10 @@ onready var LoadingAnimationPlayer = get_node("LoadingAnimationPlayer")
 # ############################################################################ #
 
 var story
+export(String) var ink_json_resource = "res://examples/ink/the_intercept.ink.json"
+export(Array) var observed_vars = ["forceful", "evasive"]
+export(String, "OS_dependent", "foreground", "background") var load_style = "background"
+export(String) start_knot = "start"
 
 # ############################################################################ #
 # Private Properties
@@ -45,6 +49,10 @@ var _loading_thread
 # ############################################################################ #
 
 func _ready():
+	if load_style == "OS_dependent":
+		SHOULD_LOAD_IN_BACKGROUND = not (OS.get_name()=="HTML5")
+	else:
+		SHOULD_LOAD_IN_BACKGROUND = load_style == "background"
 	call_deferred("start_story")
 
 func _exit_tree():
@@ -59,9 +67,9 @@ func start_story():
 
 	if SHOULD_LOAD_IN_BACKGROUND:
 		_loading_thread = Thread.new()
-		_loading_thread.start(self, "_async_load_story", "res://examples/ink/the_intercept.ink.json")
+		_loading_thread.start(self, "_async_load_story", ink_json_resource)
 	else:
-		_load_story("res://examples/ink/the_intercept.ink.json")
+		_load_story(ink_json_resource)
 		_bind_externals()
 		continue_story()
 		_remove_loading_overlay()
@@ -121,7 +129,7 @@ func _load_story(ink_story_path):
 	self.story = Story.new(content)
 
 func _bind_externals():
-	story.observe_variables(["forceful", "evasive"], self, "_observe_variables")
+	story.observe_variables(observed_vars, self, "_observe_variables")
 	story.bind_external_function("should_show_debug_menu", self, "_should_show_debug_menu")
 
 func _async_load_completed():
@@ -129,7 +137,8 @@ func _async_load_completed():
 	_loading_thread = null
 
 	_bind_externals()
-	story.choose_path_string("start")
+	if start_knot: 
+		story.choose_path_string(start_knot)
 	story.reset_errors()
 	continue_story()
 	_remove_loading_overlay()
