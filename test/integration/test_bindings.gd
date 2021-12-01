@@ -10,7 +10,7 @@ extends "res://test/integration/test_base.gd"
 
 # ############################################################################ #
 
-func xtest_external_binding():
+func test_external_binding():
 	var story = Story.new(load_file("external_binding"))
 
 	story.bind_external_function("message", self, "_external_binding_message")
@@ -32,7 +32,7 @@ func test_game_ink_back_and_forth():
 	assert_eq(final_result.result, 7)
 	assert_eq(final_result.output, "In top external\n")
 
-func xtest_lookup_safe_or_not():
+func test_lookup_safe_or_not():
 	var story = Story.new(load_file("lookup_safe_or_not"))
 
 	story.bind_external_function("myAction", self, "_my_action_lookup_safe", true)
@@ -51,7 +51,7 @@ func xtest_lookup_safe_or_not():
 	story_with_post_glue.bind_external_function("myAction", self, "_my_action_lookup_safe_with_post_glue")
 	assert_eq(story_with_post_glue.continue_maximally(), "One\nTwo\n")
 
-func xtest_variable_observer():
+func test_variable_observer():
 	var story = Story.new(load_file("variable_observer"))
 
 	self._test_variable_observer_current_var_value = 0
