@@ -9,6 +9,7 @@
 # inkgd is licensed under the terms of the MIT license.
 # ############################################################################ #
 
+tool
 extends Reference
 
 # ############################################################################ #
@@ -175,7 +176,7 @@ class IntValue extends Value:
 			return self
 
 		if new_type == ValueType.BOOL:
-			return BoolValue.new_with(false if value == 0 else 1)
+			return BoolValue.new_with(false if value == 0 else true)
 
 		if new_type == ValueType.FLOAT:
 			return FloatValue.new_with(float(value))
@@ -216,7 +217,7 @@ class FloatValue extends Value:
 			return self
 
 		if new_type == ValueType.BOOL:
-			return BoolValue.new_with(false if value == 0 else 1)
+			return BoolValue.new_with(false if value == 0 else true)
 
 		if new_type == ValueType.INT:
 			return IntValue.new_with(int(value))

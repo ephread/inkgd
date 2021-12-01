@@ -1,0 +1,246 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://addons/inkgd/editor/panel/configuration/ink_configuration_panel.gd" type="Script" id=1]
+
+[sub_resource type="Image" id=8]
+data = {
+"data": PoolByteArray( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
+"format": "LumAlpha8",
+"height": 16,
+"mipmaps": false,
+"width": 16
+}
+
+[sub_resource type="ImageTexture" id=7]
+flags = 4
+flags = 4
+image = SubResource( 8 )
+size = Vector2( 16, 16 )
+
+[sub_resource type="Image" id=9]
+data = {
+"data": PoolByteArray( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
+"format": "LumAlpha8",
+"height": 16,
+"mipmaps": false,
+"width": 16
+}
+
+[sub_resource type="ImageTexture" id=5]
+flags = 4
+flags = 4
+image = SubResource( 9 )
+size = Vector2( 16, 16 )
+
+[node name="Configuration" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="InklecateVBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
+margin_right = 1920.0
+margin_bottom = 110.0
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ScrollContainer/InklecateVBoxContainer"]
+margin_right = 1920.0
+margin_bottom = 20.0
+
+[node name="Label" type="Label" parent="ScrollContainer/InklecateVBoxContainer/HBoxContainer"]
+margin_top = 3.0
+margin_right = 1790.0
+margin_bottom = 17.0
+size_flags_horizontal = 3
+text = "Inklecate"
+
+[node name="TestButton" type="Button" parent="ScrollContainer/InklecateVBoxContainer/HBoxContainer"]
+margin_left = 1794.0
+margin_right = 1920.0
+margin_bottom = 20.0
+mouse_filter = 1
+text = "Test configuration"
+__meta__ = {
+"_editor_description_": "Attempt to execute inklecate using the configuration below."
+}
+
+[node name="InklecateMarginContainer" type="MarginContainer" parent="ScrollContainer/InklecateVBoxContainer"]
+margin_top = 24.0
+margin_right = 1920.0
+margin_bottom = 110.0
+
+[node name="Panel" type="Panel" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer"]
+self_modulate = Color( 1, 1, 1, 0.686275 )
+margin_right = 1920.0
+margin_bottom = 86.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer"]
+margin_right = 1920.0
+margin_bottom = 86.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/margin_right = 5
+custom_constants/margin_top = 5
+custom_constants/margin_left = 5
+custom_constants/margin_bottom = 5
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer"]
+margin_left = 5.0
+margin_top = 5.0
+margin_right = 1915.0
+margin_bottom = 81.0
+size_flags_horizontal = 3
+
+[node name="GridContainer" type="GridContainer" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer"]
+margin_right = 1910.0
+margin_bottom = 76.0
+size_flags_horizontal = 3
+columns = 2
+
+[node name="UseMonoLabel" type="Label" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer"]
+margin_right = 953.0
+margin_bottom = 24.0
+hint_tooltip = "When toggled, run inklecate through Mono.
+
+Only enable this setting is you want to use an older version of inklecate or you have a custom setup.
+Modern versions of inklecate come bundled with a mono runtime on all platforms."
+mouse_filter = 1
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "Use Mono"
+
+[node name="UseMonoCheckBox" type="CheckBox" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer"]
+margin_left = 957.0
+margin_right = 1910.0
+margin_bottom = 24.0
+text = "Yes"
+
+[node name="MonoLabel" type="Label" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer"]
+visible = false
+margin_top = 28.0
+margin_right = 953.0
+margin_bottom = 52.0
+hint_tooltip = "The path to Mono."
+mouse_filter = 1
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "Mono"
+
+[node name="MonoHBoxContainer" type="HBoxContainer" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer"]
+visible = false
+margin_left = 957.0
+margin_top = 28.0
+margin_right = 1910.0
+margin_bottom = 52.0
+size_flags_horizontal = 3
+
+[node name="MonoLineEdit" type="LineEdit" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer/MonoHBoxContainer"]
+margin_right = 921.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+text = "/Library/Frameworks/Mono.framework/Versions/Current/Commands/mono"
+
+[node name="MonoDialogButton" type="Button" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer/MonoHBoxContainer"]
+margin_left = 925.0
+margin_right = 953.0
+margin_bottom = 24.0
+icon = SubResource( 7 )
+
+[node name="ExecutableLabel" type="Label" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer"]
+margin_top = 28.0
+margin_right = 953.0
+margin_bottom = 52.0
+hint_tooltip = "The path to inklecate."
+mouse_filter = 1
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "Executable"
+
+[node name="ExecutableHBoxContainer" type="HBoxContainer" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer"]
+margin_left = 957.0
+margin_top = 28.0
+margin_right = 1910.0
+margin_bottom = 52.0
+size_flags_horizontal = 3
+
+[node name="ExecutableLineEdit" type="LineEdit" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer/ExecutableHBoxContainer"]
+margin_right = 921.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+text = "/opt/homebrew/bin/inklecate"
+
+[node name="ExecutableDialogButton" type="Button" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer/ExecutableHBoxContainer"]
+margin_left = 925.0
+margin_right = 953.0
+margin_bottom = 24.0
+icon = SubResource( 7 )
+
+[node name="Recompilation Mode" type="Label" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer"]
+margin_top = 56.0
+margin_right = 953.0
+margin_bottom = 76.0
+hint_tooltip = "Define if/when your stories should be recompiled.
+
+– Manual: no automatic compilation.
+– During Build: every time the project is built/ran, the stories will be recompiled.
+– On change: as soon as an Ink resource is reimported by Godot, trigger a recompilation. A folder to watch can be defined in the \"Story\" tab."
+mouse_filter = 1
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "Recompilation Mode"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="RecompilationModeOptionButton" type="OptionButton" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer"]
+margin_left = 957.0
+margin_top = 56.0
+margin_right = 1910.0
+margin_bottom = 76.0
+text = "Manual"
+items = [ "Manual", null, false, 0, null, "During build", null, false, 1, null, "On change (unstable)", null, false, 2, null ]
+selected = 0
+
+[node name="InkDirectoryLabel" type="Label" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer"]
+visible = false
+margin_top = 80.0
+margin_right = 949.0
+margin_bottom = 104.0
+hint_tooltip = "The path to Mono."
+mouse_filter = 1
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "Mono"
+
+[node name="InkDirectoryHBoxContainer" type="HBoxContainer" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer"]
+visible = false
+margin_top = 80.0
+margin_right = 949.0
+margin_bottom = 104.0
+size_flags_horizontal = 3
+
+[node name="InkDirectoryLineEdit" type="LineEdit" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer/InkDirectoryHBoxContainer"]
+margin_right = 917.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+
+[node name="InkDIrectoryDialogButton" type="Button" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer/InkDirectoryHBoxContainer"]
+margin_left = 921.0
+margin_right = 949.0
+margin_bottom = 24.0
+icon = SubResource( 5 )

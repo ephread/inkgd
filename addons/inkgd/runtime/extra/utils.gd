@@ -7,6 +7,7 @@
 # inkgd is licensed under the terms of the MIT license.
 # ############################################################################ #
 
+tool
 extends Reference
 
 # ############################################################################ #
@@ -14,29 +15,16 @@ extends Reference
 # ############################################################################ #
 
 static func throw_exception(message):
-	var exception_message = str("Story execution will stop: ", message)
-	_schedule_story_for_interruption_with_error(exception_message)
+	print_stack_trace()
+	InkRuntime().handle_exception(message)
 
 static func throw_story_exception(message):
-	var exception_message = str("Story execution will stop: ", message)
-	_schedule_story_for_interruption_with_error(exception_message)
+	print_stack_trace()
+	InkRuntime().handle_story_exception(message)
 
 static func throw_argument_exception(message):
-	var exception_message = str("Story execution will stop: ", message)
-	_schedule_story_for_interruption_with_error(exception_message)
-
-static func _schedule_story_for_interruption_with_error(message):
-	var InkRuntime = InkRuntime()
-
-	InkRuntime.should_interrupt = true
-
-	if InkRuntime.should_pause_execution_on_runtime_error && OS.is_debug_build():
-		assert(false, message)
-	else:
-		push_error(message)
-		printerr(message)
-
 	print_stack_trace()
+	InkRuntime().handle_argument_exception(message)
 
 static func print_stack_trace():
 	print("Stacktrace:")

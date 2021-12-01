@@ -8,6 +8,7 @@
 # inkgd is licensed under the terms of the MIT license.
 # ############################################################################ #
 
+tool
 extends Node
 
 # Expected to be added to the SceneTree as a singleton object.
@@ -18,6 +19,12 @@ extends Node
 
 var StaticJson = load("res://addons/inkgd/runtime/static/json.gd")
 var StaticNativeFunctionCall = load("res://addons/inkgd/runtime/static/native_function_call.gd")
+
+# ############################################################################ #
+# Signals
+# ############################################################################ #
+
+signal exception(message)
 
 # ############################################################################ #
 
@@ -46,3 +53,23 @@ var dont_save_default_values = true
 
 func _init():
 	name = "__InkRuntime"
+
+func handle_exception(message):
+	handle_generic_exception("EXCEPTION: %s" % message)
+
+func handle_story_exception(message):
+	handle_generic_exception("STORY EXCEPTION: %s" % message)
+
+func handle_argument_exception(message):
+	handle_generic_exception("ARGUMENT EXCEPTION: %s" % message)
+
+func handle_generic_exception(message):
+	should_interrupt = true
+
+	if should_pause_execution_on_runtime_error && OS.is_debug_build():
+		assert(false, message)
+	else:
+		push_error(message)
+		printerr(message)
+
+	emit_signal("exception", message)

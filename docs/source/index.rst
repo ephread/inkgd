@@ -6,7 +6,16 @@ Inkgd: Ink for Godot – *main* branch
    :caption: Getting started
    :name: sec-getting-started
 
-   getting_started/index
+   getting_started/introduction
+   getting_started/using_ink_player
+   getting_started/ink_panel
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Advanced
+   :name: sec-advanced
+
+   advanced/differences_between_api
 
 .. toctree::
    :maxdepth: 1

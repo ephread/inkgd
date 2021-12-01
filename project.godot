@@ -9,37 +9,133 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "MarginContainer",
+"class": "ChoiceContainer",
+"language": "GDScript",
+"path": "res://examples/scripts/choice_container.gd"
+}, {
+"base": "Control",
+"class": "InkBottomPanel",
+"language": "GDScript",
+"path": "res://addons/inkgd/editor/panel/ink_bottom_panel.gd"
+}, {
+"base": "Reference",
+"class": "InkCompilationConfiguration",
+"language": "GDScript",
+"path": "res://addons/inkgd/editor/common/executors/structures/ink_compilation_configuration.gd"
+}, {
 "base": "Reference",
 "class": "InkCompiler",
 "language": "GDScript",
-"path": "res://addons/inkgd/editor/ink_compiler.gd"
+"path": "res://addons/inkgd/editor/common/executors/ink_compiler.gd"
 }, {
 "base": "Reference",
 "class": "InkConfiguration",
 "language": "GDScript",
-"path": "res://addons/inkgd/editor/ink_configuration.gd"
+"path": "res://addons/inkgd/editor/common/ink_configuration.gd"
 }, {
 "base": "Control",
-"class": "InkPanel",
+"class": "InkConfigurationPanel",
 "language": "GDScript",
-"path": "res://addons/inkgd/editor/ink_panel.gd"
+"path": "res://addons/inkgd/editor/panel/configuration/ink_configuration_panel.gd"
+}, {
+"base": "Reference",
+"class": "InkConfigurationTester",
+"language": "GDScript",
+"path": "res://addons/inkgd/editor/common/executors/ink_configuration_tester.gd"
+}, {
+"base": "Reference",
+"class": "InkEditorInterface",
+"language": "GDScript",
+"path": "res://addons/inkgd/editor/common/ink_editor_interface.gd"
+}, {
+"base": "EditorPlugin",
+"class": "InkEditorPlugin",
+"language": "GDScript",
+"path": "res://addons/inkgd/editor/ink_editor_plugin.gd"
+}, {
+"base": "Reference",
+"class": "InkExecutionConfiguration",
+"language": "GDScript",
+"path": "res://addons/inkgd/editor/common/executors/structures/ink_execution_configuration.gd"
+}, {
+"base": "Reference",
+"class": "InkExecutionResult",
+"language": "GDScript",
+"path": "res://addons/inkgd/editor/common/executors/structures/ink_execution_result.gd"
+}, {
+"base": "Reference",
+"class": "InkExternalCommandExecuter",
+"language": "GDScript",
+"path": "res://addons/inkgd/editor/common/executors/ink_executor.gd"
+}, {
+"base": "EditorImportPlugin",
+"class": "InkJsonImportPlugin",
+"language": "GDScript",
+"path": "res://addons/inkgd/editor/import_plugins/ink_json_import_plugin.gd"
+}, {
+"base": "Node",
+"class": "InkPlayer",
+"language": "GDScript",
+"path": "res://addons/inkgd/ink_player.gd"
+}, {
+"base": "Control",
+"class": "InkPreviewPanel",
+"language": "GDScript",
+"path": "res://addons/inkgd/editor/panel/preview/ink_preview_panel.gd"
+}, {
+"base": "Resource",
+"class": "InkResource",
+"language": "GDScript",
+"path": "res://addons/inkgd/editor/import_plugins/ink_resource.gd"
 }, {
 "base": "WindowDialog",
 "class": "InkRichDialog",
 "language": "GDScript",
-"path": "res://addons/inkgd/editor/ink_rich_dialog.gd"
+"path": "res://addons/inkgd/editor/panel/common/ink_rich_dialog.gd"
+}, {
+"base": "EditorImportPlugin",
+"class": "InkSourceImportPlugin",
+"language": "GDScript",
+"path": "res://addons/inkgd/editor/import_plugins/ink_source_import_plugin.gd"
+}, {
+"base": "VBoxContainer",
+"class": "InkStoryConfiguration",
+"language": "GDScript",
+"path": "res://addons/inkgd/editor/panel/stories/ink_story_configuration.gd"
+}, {
+"base": "Control",
+"class": "InkStoryPanel",
+"language": "GDScript",
+"path": "res://addons/inkgd/editor/panel/stories/ink_story_panel.gd"
 } ]
 _global_script_class_icons={
+"ChoiceContainer": "",
+"InkBottomPanel": "",
+"InkCompilationConfiguration": "",
 "InkCompiler": "",
 "InkConfiguration": "",
-"InkPanel": "",
-"InkRichDialog": ""
+"InkConfigurationPanel": "",
+"InkConfigurationTester": "",
+"InkEditorInterface": "",
+"InkEditorPlugin": "",
+"InkExecutionConfiguration": "",
+"InkExecutionResult": "",
+"InkExternalCommandExecuter": "",
+"InkJsonImportPlugin": "",
+"InkPlayer": "",
+"InkPreviewPanel": "",
+"InkResource": "",
+"InkRichDialog": "",
+"InkSourceImportPlugin": "",
+"InkStoryConfiguration": "",
+"InkStoryPanel": ""
 }
 
 [application]
 
 config/name="inkgd"
-run/main_scene="res://examples/scenes/ink_runner.tscn"
+run/main_scene="res://examples/scenes/the_intercept.tscn"
 boot_splash/image="res://examples/images/transparent.png"
 boot_splash/fullsize=false
 boot_splash/bg_color=Color( 0.929412, 0.898039, 0.854902, 1 )
@@ -51,6 +147,7 @@ __InkRuntime="*res://addons/inkgd/runtime/static/ink_runtime.gd"
 
 [debug]
 
+gdscript/warnings/exclude_addons=false
 gdscript/completion/autocomplete_setters_and_getters=true
 gdscript/warnings/unused_variable=false
 gdscript/warnings/unused_argument=false

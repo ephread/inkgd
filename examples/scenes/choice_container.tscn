@@ -8,6 +8,9 @@ anchor_bottom = 1.0
 custom_constants/margin_right = 150
 custom_constants/margin_left = 150
 script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="ChoiceVBoxContainer" type="VBoxContainer" parent="."]
 margin_left = 150.0

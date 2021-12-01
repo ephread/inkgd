@@ -6,6 +6,7 @@
 # inkgd is licensed under the terms of the MIT license.
 # ############################################################################ #
 
+tool
 extends Node
 
 static func init(root_node, should_pause_on_runtime_error = true):

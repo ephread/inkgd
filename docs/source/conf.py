@@ -6,13 +6,12 @@
 
 # -- Path setup --------------------------------------------------------------
 
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
-#
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+
+# Sphinx extension module names and templates location
+sys.path.append(os.path.abspath("_extensions"))
+extensions = ["gdscript"]
 
 
 # -- Project information -----------------------------------------------------
@@ -22,7 +21,7 @@ copyright = '2021, Frédéric Maquin'
 author = 'Frédéric Maquin'
 
 # The full version, including alpha/beta/rc tags
-release = '0.2.1'
+release = '0.4.0'
 
 
 # -- General configuration ---------------------------------------------------
@@ -55,3 +54,11 @@ html_theme = 'sphinx_rtd_theme'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+# These imports should *not* be moved to the start of the file,
+# they depend on the sys.path.append call registering "_extensions".
+# GDScript syntax highlighting
+from gdscript import GDScriptLexer
+from sphinx.highlighting import lexers
+
+lexers["gdscript"] = GDScriptLexer()

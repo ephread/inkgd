@@ -6,17 +6,13 @@
 
 extends MarginContainer
 
+class_name ChoiceContainer
+
 # ############################################################################ #
 # Imports
 # ############################################################################ #
 
 var ChoiceButton = load("res://examples/scenes/button.tscn")
-
-# ############################################################################ #
-# Nodes
-# ############################################################################ #
-
-onready var ChoiceVBoxContainer = get_node("ChoiceVBoxContainer")
 
 # ############################################################################ #
 # Signal
@@ -37,11 +33,11 @@ var _buttons = []
 func create_choices(choices):
 	for choice in choices:
 		var button = ChoiceButton.instance()
-		button.text = choice.text
+		button.text = choice
 		button.connect("pressed", self, "_button_pressed", [button])
 
 		_buttons.append(button)
-		ChoiceVBoxContainer.add_child(button)
+		$ChoiceVBoxContainer.add_child(button)
 
 # ############################################################################ #
 # Private Methods

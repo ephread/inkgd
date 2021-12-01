@@ -7,6 +7,8 @@
 # inkgd is licensed under the terms of the MIT license.
 # ############################################################################ #
 
+tool
+
 enum ErrorType {
 	AUTHOR,
 	WARNING,

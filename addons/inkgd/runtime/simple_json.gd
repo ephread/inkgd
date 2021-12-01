@@ -7,6 +7,8 @@
 # inkgd is licensed under the terms of the MIT license.
 # ############################################################################ #
 
+tool
+
 const Utils = preload("res://addons/inkgd/runtime/extra/utils.gd")
 
 # (String) -> Dictionary<String, Variant>

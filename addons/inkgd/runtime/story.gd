@@ -1,5 +1,6 @@
 # warning-ignore-all:shadowed_variable
 # warning-ignore-all:unused_class_variable
+# warning-ignore-all:unused_signal
 # ############################################################################ #
 # Copyright © 2015-present inkle Ltd.
 # Copyright © 2019-present Frédéric Maquin <fred@ephread.com>
@@ -9,6 +10,7 @@
 # inkgd is licensed under the terms of the MIT license.
 # ############################################################################ #
 
+tool
 extends "res://addons/inkgd/runtime/ink_object.gd"
 
 const INK_VERSION_CURRENT = 20
@@ -1750,6 +1752,13 @@ func is_class(type):
 
 func get_class():
 	return "Story"
+
+func connect_exception(target: Object, method: String, binds = [], flags = 0) -> int:
+	var runtime = _get_runtime()
+	if runtime == null:
+		return ERR_UNAVAILABLE
+
+	return _get_runtime().connect("exception", target, method, binds, flags)
 
 # ############################################################################ #
 

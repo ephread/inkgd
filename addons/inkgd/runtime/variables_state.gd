@@ -10,6 +10,7 @@
 # inkgd is licensed under the terms of the MIT license.
 # ############################################################################ #
 
+tool
 extends "res://addons/inkgd/runtime/ink_base.gd"
 
 # ############################################################################ #

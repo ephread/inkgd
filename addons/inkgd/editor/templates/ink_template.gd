@@ -1,110 +1,96 @@
-# This version of the template uses a while loop to have the code continue
-# the story until it reaches the choice point. It then checks for choices and,
-# on getting a choice, recursively calls the continue_story function to continue
-# the story.
+# warning-ignore-all:return_value_discarded
 
 extends %BASE%
-
-const SHOULD_LOAD_IN_BACKGROUND = true
 
 # ############################################################################ #
 # Imports
 # ############################################################################ #
 
-var Story = load("res://addons/inkgd/runtime/story.gd")
+var InkPlayer = load("res://addons/inkgd/ink_player.gd")
 
 # ############################################################################ #
-# Public Properties
+# Public Nodes
 # ############################################################################ #
 
-var story
-export(String, FILE, "*.json") var exported_story_location
-
-# ############################################################################ #
-# Private Properties
-# ############################################################################ #
-
-var _loading_thread
+# Alternatively, it could also be retrieved from the tree.
+# onready var ink_player = $InkPlayer
+onready var ink_player = InkPlayer.new()
 
 # ############################################################################ #
 # Lifecycle
 # ############################################################################ #
 
 func _ready():
-%TS%call_deferred("start_story")
+# Replace the example path with the path to your story.
+%TS%_ink_player.ink_file = load("res://path/to/file.ink.json")
+
+# It's recommended to load the story in the background. On platforms that
+# don't support threads, the value of this variable is ignored.
+%TS%_ink_player.loads_in_background = true
+
+%TS%_ink_player.connect("loaded", self, "_story_loaded")
+
+# Creates the story. 'loaded' will be emitted once Ink is ready
+# continue the story.
+%TS%_ink_player.create_story()
+
 
 # ############################################################################ #
-# Public Methods
+# Signal Receivers
 # ############################################################################ #
 
-func start_story():
-%TS%if SHOULD_LOAD_IN_BACKGROUND:
-%TS%%TS%_loading_thread = Thread.new()
-%TS%%TS%_loading_thread.start(self, "_async_load_story", exported_story_location)
-%TS%else:
-%TS%%TS%_load_story(exported_story_location)
-%TS%%TS%_bind_externals()
-%TS%%TS%continue_story()
+func _story_loaded(successfully: bool):
+%TS%if !successfully:
+%TS%%TS%return
 
+%TS%# _observe_variables()
+%TS%# _bind_externals()
 
-func continue_story():
-%TS%while story.can_continue:
-%TS%%TS%var text = story.continue()
-%TS%%TS%# This text is a line of text from the ink story.
-%TS%%TS%# Set the text of a Label to this value to display it in your game.
-%TS%%TS%print(text)
-%TS%if story.current_choices.size() > 0:
-%TS%%TS%# current_choices contains a list of the choices.
-%TS%%TS%# Each choice has a text property that contains the text of the choice.
+%TS%_continue_story()
 
-%TS%%TS%for choice in story.current_choices:
-%TS%%TS%%TS%print(choice.text)
-%TS%
-%TS%%TS%# _choice_selected is a function that will take the index of your selection
-%TS%%TS%# and continue the story.
-
-%TS%%TS%_choice_selected(0)
-%TS%else:
-%TS%%TS%# This code runs when the story reaches it's end.
-%TS%
-%TS%%TS%print("The End")
 
 # ############################################################################ #
 # Private Methods
 # ############################################################################ #
 
-func _should_show_debug_menu(debug):
-%TS%# Contrived external function example, where we just return the pre-existing value.
-%TS%return debug
+func _continue_story():
+%TS%while _ink_player.can_continue:
+%TS%%TS%var text = _ink_player.continue_story()
+%TS%%TS%# This text is a line of text from the ink story.
+%TS%%TS%# Set the text of a Label to this value to display it in your game.
+%TS%%TS%print(text)
+%TS%if _ink_player.has_choices:
+%TS%%TS%# 'current_choices' contains a list of the choices, as strings.
+%TS%%TS%for choice in _ink_player.current_choices:
+%TS%%TS%%TS%print(choice)
+%TS%%TS%# '_select_choice' is a function that will take the index of
+%TS%%TS%# your selection and continue the story.
+%TS%%TS%_select_choice(0)
+%TS%else:
+%TS%%TS%# This code runs when the story reaches it's end.
+%TS%%TS%print("The End")
 
-func _observe_variables(variable_name, new_value):
-%TS%print(str("Variable '", variable_name, "' changed to: ", new_value))
 
-func _choice_selected(index):
-%TS%story.choose_choice_index(index)
-%TS%continue_story()
+func _select_choice(index):
+%TS%_ink_player.choose_choice_index(index)
+%TS%_continue_story()
 
-func _async_load_story(ink_story_path):
-%TS%_load_story(ink_story_path)
-%TS%call_deferred("_async_load_completed")
 
-func _load_story(ink_story_path):
-%TS%var ink_story = File.new()
-%TS%ink_story.open(ink_story_path, File.READ)
-%TS%var content = ink_story.get_as_text()
-%TS%ink_story.close()
+# Uncomment to bind an external function.
+#
+# func _bind_externals():
+# %TS%_ink_player.bind_external_function("<function_name>", self, "_external_function")
+#
+#
+# func _external_function(arg1, arg2):
+# %TS%pass
 
-%TS%self.story = Story.new(content)
 
-func _bind_externals():
-%TS%# Uncomment the line below to observe the variables from your ink story.
-%TS%# You can observe multiple variables by putting them into the list as the first argument.
-%TS%# story.observe_variables(["variable1", "variable2"], self, "_observe_variables")
-%TS%story.bind_external_function("should_show_debug_menu", self, "_should_show_debug_menu")
-
-func _async_load_completed():
-%TS%_loading_thread.wait_to_finish()
-%TS%_loading_thread = null
-
-%TS%_bind_externals()
-%TS%continue_story()
+# Uncomment to observe the variables from your ink story.
+# You can observe multiple variables by putting adding them in the array.
+# func _observe_variables():
+# %TS%_ink_player.observe_variables(["var1", "var2"], self, "_variable_changed")
+#
+#
+# func _variable_changed(variable_name, new_value):
+# %TS%print("Variable '%s' changed to: %s" %[variable_name, new_value])
