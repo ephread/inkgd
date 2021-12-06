@@ -45,6 +45,8 @@ var progress_texture: AnimatedTexture
 # Private Properties
 # ############################################################################ #
 
+var _scrollbar_max_value = -1
+
 var _compilers: Dictionary = {}
 
 var _file_dialog = EditorFileDialog.new()
@@ -72,6 +74,7 @@ onready var _build_all_button = find_node("BuildAllButton")
 onready var _add_new_story_button = find_node("AddNewStoryButton")
 
 onready var _story_configuration_container = find_node("StoryConfigurationVBoxContainer")
+onready var _scroll_container = find_node("ScrollContainer")
 
 # ############################################################################ #
 # Overrides
@@ -279,6 +282,17 @@ func _on_file_selected(path: String):
 
 	_file_dialog_selection = FileDialogSelection.UNKNOWN
 
+
+func _scrollbar_changed():
+	var max_value = _scroll_container.get_v_scrollbar().max_value
+
+	if _scrollbar_max_value == max_value && _scrollbar_max_value != -1:
+		return
+
+	_scrollbar_max_value = max_value
+	_scroll_container.scroll_vertical = max_value
+
+
 # ############################################################################ #
 # Private helpers
 # ############################################################################ #
@@ -417,3 +431,4 @@ func _connect_signals():
 	_file_dialog.connect("file_selected", self, "_on_file_selected")
 	_file_dialog.connect("dir_selected", self, "_on_file_selected")
 
+	_scroll_container.get_v_scrollbar().connect("changed", self, "_scrollbar_changed")

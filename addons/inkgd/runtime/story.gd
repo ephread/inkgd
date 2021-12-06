@@ -1758,7 +1758,10 @@ func connect_exception(target: Object, method: String, binds = [], flags = 0) ->
 	if runtime == null:
 		return ERR_UNAVAILABLE
 
-	return _get_runtime().connect("exception", target, method, binds, flags)
+	if runtime.is_connected("exception", target, method):
+		return OK
+
+	return runtime.connect("exception", target, method, binds, flags)
 
 # ############################################################################ #
 

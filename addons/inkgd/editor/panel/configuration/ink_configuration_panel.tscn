@@ -213,7 +213,7 @@ margin_top = 56.0
 margin_right = 1910.0
 margin_bottom = 76.0
 text = "Manual"
-items = [ "Manual", null, false, 0, null, "During build", null, false, 1, null, "On change (unstable)", null, false, 2, null ]
+items = [ "Manual", null, false, 0, null, "During build", null, false, 1, null, "On change (experimental)", null, false, 2, null ]
 selected = 0
 
 [node name="InkDirectoryLabel" type="Label" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer"]

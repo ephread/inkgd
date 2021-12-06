@@ -80,7 +80,7 @@ EXTERNAL should_show_debug_menu(debug)
 === start ===
 
 //  Intro
-	- 	They are keeping me waiting. # First tag
+	- 	They are keeping me waiting. # Test tag
 		*	Hut 14[]. The door was locked after I sat down.
 		I don't even have a pen to do any work. There's a copy of the morning's intercept in my pocket, but staring at the jumbled letters will only drive me mad.
 		I am not a machine, whatever they say about me.
@@ -93,7 +93,7 @@ EXTERNAL should_show_debug_menu(debug)
 			-> opts
  		*	(plan) [Plan]
  			{not think:What I am is|I am} a problem—solver. Good with figures, quick with crosswords, excellent at chess.
- 			But in this scenario — in this trap — what is the winning play? # Second Tag # Third Tag
+ 			But in this scenario — in this trap — what is the winning play?
  			* * 	(cooperate) [Co—operate]
 	 				I must co—operate. My credibility is my main asset. To contradict myself, or another source, would be fatal.
 	 				I must simply hope they do not ask the questions I do not want to answer.

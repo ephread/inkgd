@@ -196,15 +196,15 @@ func _update_save_and_cleanup(value, line_edit):
 func _apply_configuration():
 	var compilation_mode = configuration.compilation_mode
 	var item_count = _recompilation_mode_button.get_item_count()
-	
+
 	if compilation_mode >= 0 && compilation_mode < item_count:
 		_recompilation_mode_button.select(configuration.compilation_mode)
 	else:
 		_recompilation_mode_button.select(0)
-		
+
 	_mono_line_edit.text = configuration.mono_path
 	_executable_line_edit.text = configuration.inklecate_path
-	
+
 	_update_mono_availability()
 
 
@@ -240,5 +240,5 @@ func _connect_signals():
 	_executable_dialog_button.connect("pressed", self, "_executable_button_pressed")
 
 	_recompilation_mode_button.connect("item_selected", self, "_recompilation_mode_button_selected")
-	
+
 	_file_dialog.connect("file_selected", self, "_on_file_selected")
