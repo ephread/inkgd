@@ -1,5 +1,5 @@
 
-Using the *InkPlayer* node
+Using *InkPlayer*
 ==========================
 
 Activating the editor plugin will register a custom node greatly simplifying

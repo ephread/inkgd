@@ -3,7 +3,10 @@ Differences between the GDScript and C# APIs
 ============================================
 
 There are subtle differences between the original C# runtime and the
-GDScript version.
+GDScript version, but since the two APIs are mostly compatible, it's a good idea
+to take a look at the `original documentation`_.
+
+.. _`original documentation`: https://github.com/inkle/ink/blob/master/Documentation/RunningYourInk.md
 
 Style
 *****
@@ -53,11 +56,6 @@ then call the appropriate methods in ``_ready()`` and ``_exit_tree()``
 
 Alternatively, the runtime node can also be added as a singleton with AutoLoad,
 see :ref:`here <autoload-singletons>` for more information.
-
-.. note::
-
-
-
 
 ``__InkRuntime`` contains a few configuration settings you may want to
 tweak. To that end, ``InkRuntime.init()`` returns the node added to the tree.

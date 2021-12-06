@@ -1,5 +1,5 @@
 
-The Ink panel
+Ink panel
 ================
 
 *inkgd* ships with a fully-featured editor plugin taking a the from of a new tab

@@ -18,7 +18,8 @@ Once imported, you can use *inkgd* to load and run compiled Ink stories
 (files with the ``.ink.json`` extension) inside Godot.
 
 The GDScript API is 100% compatible with the original C# API, with a couple of
-minor divergences to accomodate the differences between the two languages.
+minor divergences to accomodate the differences between the two languages. For
+more information, see :doc:`/advanced/differences_between_api`.
 
 A typical use of *inkgd* involves calling ``InkPlayer.continue_story()`` until
 a branch is found. At this point, an array of choices can be retrieved and
@@ -191,4 +192,4 @@ singletons as described above, but it's also possible to add the node through
 scripting. See :ref:`here <ink-runtime>` for more information.
 
 That's it! You can now start using *inkgd* in your Godot scripts.
-Jump over to the next section to create your first game with *inkgd*.
+..Jump over to the next section to create your first game with *inkgd*.

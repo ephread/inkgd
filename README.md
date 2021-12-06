@@ -45,8 +45,8 @@ and don't mind C#, you should consider using [godot-ink].
 
 ### Asking questions
 
-If you need help with something in particular, [start a dicussion].
-If you want to report a problemn, [open an issue].
+If you need help with something in particular, [start a discussion].
+If you want to report a problem, [open an issue].
 
 [start a discussion]: https://github.com/ephread/inkgd/discussions/new
 [open an issue]: https://github.com/ephread/inkgd/issues/new/choose
@@ -83,16 +83,9 @@ create one first.
 
 ### Getting Started
 
-Most of *inkgd*'s documentation is now hosted on [Read The Docs].
+*inkgd*'s documentation is hosted on [Read The Docs].
 
-The GDScript API is mostly compatible with the original C# one. It's a good idea
-to take a look at the [original documentation].
-
-If you want to start from a template, the plugin adds templates that will show
-up when creating a new script. Add this script to a node that you want to use
-to control the story.
-
-Additionally, feel free to take a look in the `example/` directory and run
+Feel free to take a look in the `example/` directory and run
 `the_intercept.tscn`, which will play The Intercept.
 
 Note: _inkgd_ has a .gitattributes file which makes sure that only
@@ -100,7 +93,6 @@ Note: _inkgd_ has a .gitattributes file which makes sure that only
 folder (and a bunch of other important files) is to clone the project.
 
 [Read The Docs]: https://inkgd.readthedocs.io/en/latest/
-[original documentation]: https://github.com/inkle/ink/blob/master/Documentation/RunningYourInk.md
 
 ## Compatibility Table
 
