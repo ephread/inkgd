@@ -108,7 +108,7 @@ func _use_mono_toggled(toggled: bool):
 	configuration.use_mono = !configuration.use_mono
 	configuration.persist()
 
-	_update_mono_availability()
+	_update_mono_availability(false)
 
 
 func _mono_button_pressed():
@@ -205,10 +205,10 @@ func _apply_configuration():
 	_mono_line_edit.text = configuration.mono_path
 	_executable_line_edit.text = configuration.inklecate_path
 
-	_update_mono_availability()
+	_update_mono_availability(true)
 
 
-func _update_mono_availability():
+func _update_mono_availability(updates_checkbox = false):
 	var is_running_on_windows = editor_interface.is_running_on_windows
 	var is_visible = !is_running_on_windows && configuration.use_mono
 
@@ -217,7 +217,9 @@ func _update_mono_availability():
 
 	_mono_label.visible = is_visible
 	_mono_container.visible = is_visible
-	_use_mono_checkbox.set_pressed_no_signal(configuration.use_mono)
+
+	if updates_checkbox:
+		_use_mono_checkbox.set_pressed(configuration.use_mono)
 
 
 func _set_button_icons():

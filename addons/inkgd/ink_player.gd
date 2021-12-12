@@ -204,12 +204,12 @@ func create_story():
 
 	if loads_in_background && _current_platform_supports_threads():
 		_thread = Thread.new()
-		var error = _thread.start(self, "_async_create_story")
+		var error = _thread.start(self, "_async_create_story", ink_file.json)
 		if error != OK:
 			printerr("Could not start the thread: error code %d", error)
 			emit_signal("loaded", true)
 	else:
-		_create_story()
+		_create_story(ink_file.json)
 		_finalise_story_creation()
 
 
@@ -471,12 +471,12 @@ func _on_choose_path_string(path, arguments):
 # Private Methods
 # ############################################################################ #
 
-func _create_story():
-	_story = Story.new(ink_file.json)
+func _create_story(json_story):
+	_story = Story.new(json_story)
 
 
-func _async_create_story():
-	_create_story()
+func _async_create_story(json_story):
+	_create_story(json_story)
 	call_deferred("_async_creation_completed")
 
 

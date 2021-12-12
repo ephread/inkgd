@@ -11,6 +11,7 @@
 /.gutconfig.json           export-ignore
 /.inkgd_compiler.cfg       export-ignore
 /.inkgd_ink.cfg            export-ignore
+/AUTHORS                   export-ignore
 /CHANGELOG.md              export-ignore
 /CONTRIBUTING.md           export-ignore
 /default_env.tres          export-ignore

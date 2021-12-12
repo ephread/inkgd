@@ -91,9 +91,9 @@ func _compile_story(config: InkCompilationConfiguration) -> bool:
 	else:
 		var args = ['-o', config.target_file_path, config.source_file_path]
 		return_code = OS.execute(config.inklecate_path, args, true, output, true)
-	
+
 	var end_time = OS.get_ticks_msec()
-	
+
 	print("Command executed in %dms." % (end_time - start_time))
 
 	var string_output = PoolStringArray(output)
