@@ -96,6 +96,6 @@ Once you have the content of the repository on your computer, copy the folder
 
 .. _`stable version`: https://github.com/ephread/inkgd/tags
 
-----------
+--------------------------------------------------------------------------------
 
 Well done, *inkgd* is installed. Next stop, basic configuration!

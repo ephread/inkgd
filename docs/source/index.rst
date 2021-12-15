@@ -15,7 +15,7 @@ the topic you are looking for. If it's your first time using *inkgd*, we
 recommend you start with :doc:`getting_started/introduction` first.
 
 Feel free to take a look in the `example directory`_ and run
-``the_intercept.tscn``, which will play *The Intercept*.
+``the_intercept.tscn``, which plays *The Intercept*.
 
 .. _`example directory`: https://github.com/ephread/inkgd/tree/main/examples
 

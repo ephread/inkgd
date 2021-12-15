@@ -56,7 +56,7 @@ node manually. The simplest way is to add the node to the list of AutoLoad
 singletons as described above, but it's also possible to add the node through
 scripting. See :ref:`here <ink-runtime>` for more information.
 
-----------
+--------------------------------------------------------------------------------
 
 That's it! You can now start using *inkgd* in your Godot scripts.
 

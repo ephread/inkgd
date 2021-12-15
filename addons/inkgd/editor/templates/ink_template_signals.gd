@@ -14,18 +14,18 @@ var InkPlayer = load("res://addons/inkgd/ink_player.gd")
 
 # Alternatively, it could also be retrieved from the tree.
 # onready var ink_player = $InkPlayer
-onready var ink_player = InkPlayer.new()
+onready var _ink_player = InkPlayer.new()
 
 # ############################################################################ #
 # Lifecycle
 # ############################################################################ #
 
 func _ready():
-# Replace the example path with the path to your story.
+%TS%# Replace the example path with the path to your story.
 %TS%_ink_player.ink_file = load("res://path/to/file.ink.json")
 
-# It's recommended to load the story in the background. On platforms that
-# don't support threads, the value of this variable is ignored.
+%TS%# It's recommended to load the story in the background. On platforms that
+%TS%# don't support threads, the value of this variable is ignored.
 %TS%_ink_player.loads_in_background = true
 
 %TS%_ink_player.connect("loaded", self, "_story_loaded")
@@ -33,8 +33,8 @@ func _ready():
 %TS%_ink_player.connect("prompt_choices", self, "_prompt_choices")
 %TS%_ink_player.connect("ended", self, "_ended")
 
-# Creates the story. 'loaded' will be emitted once Ink is ready
-# continue the story.
+%TS%# Creates the story. 'loaded' will be emitted once Ink is ready
+%TS%# continue the story.
 %TS%_ink_player.create_story()
 
 # ############################################################################ #

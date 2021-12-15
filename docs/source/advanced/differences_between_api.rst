@@ -9,7 +9,7 @@ a look at the `original documentation`_.
 .. _`original documentation`: https://github.com/inkle/ink/blob/master/Documentation/RunningYourInk.md
 
 Style
-*****
+-----
 
 Functions are all snake_cased rather than CamelCased. For instance
 ``ContinueMaximally`` becomes ``continue_maximally``.
@@ -17,19 +17,18 @@ Functions are all snake_cased rather than CamelCased. For instance
 .. _ink-runtime:
 
 *inkgd*'s runtime node
-**********************
+----------------------
 
 Since GDScript doesn't support static properties, any static property was moved
 into a singleton node called *__InkRuntime* which needs to be added to the root
 object current tree before starting the story.
 
 This singleton node is added to the AutoLoad list of your project automatically
-when the plugin is activated (bear in mind that deactivating the plugin will
-also remove the node from the list). If you don't want to use the plugin, the
-runtime node can also be added manually, see :ref:`here <autoload-singletons>`
+when the editor plugin is activated. If you don't want to use the plugin, the
+runtime node can be registered manually, see :ref:`here <autoload-singletons>`
 for more information.
 
-Alternatively, you may want to manage the singleton manually. Import
+Alternatively, you can also manage the singleton in code. Import
 ``res://addons/inkgd/runtime/static/ink_runtime.gd`` in your script, then call
 the appropriate methods in ``_ready()`` and ``_exit_tree()``
 
@@ -73,7 +72,7 @@ interfere with your environment.
     yourself.
 
 `Getting and setting variables`_
-********************************
+--------------------------------
 
 .. _`Getting and setting variables`: https://github.com/inkle/ink<https://github.com/inkle/ink/blob/master/Documentation/RunningYourInk.md#settinggetting-ink-variables>
 
@@ -91,7 +90,7 @@ Since the ``[]`` operator can't be overloaded in GDScript, simple ``get`` and
    # _inkStory.VariablesState["player_health"] = 10
 
 `Variable Observers`_
-*********************
+---------------------
 
 .. _`Variable Observers`: https://github.com/inkle/ink/blob/master/Documentation/RunningYourInk.md#variable-observers
 
@@ -112,7 +111,7 @@ logic in the GDScript runtime.
    # });
 
 `External Functions`_
-*********************
+---------------------
 
 .. _`External Functions`: https://github.com/inkle/ink/blob/master/Documentation/RunningYourInk.md#external-functions
 
@@ -133,13 +132,13 @@ signal-based logic.
    # }, true);
 
 `Handlers`_
-***********
+-----------
 
 .. _`Handlers`: https://github.com/inkle/ink/blob/master/Documentation/RunningYourInk.md#error-handling
 
 Starting with Ink version 1.0.0, it's possible to attach different types of
-handlers to a story to receive callbacks. In C#, those handlers are implemented
-using events. In *inkgd*, those are implemented using signals.
+handlers to a story to receive callbacks. In C#, they are implemented using
+events. In *inkgd*, they are again implemented using signals.
 
 .. code:: gdscript
 
@@ -170,10 +169,10 @@ encountered.
 .. note::
 
     When using ``InkPlayer``, the list of handler is a bit different, see
-    :doc:`/getting_started/using_ink_player` for more information.
+    :doc:`ink_player_node` for more information.
 
 Getting the ouput of ``evaluate_function``
-******************************************
+------------------------------------------
 
 ``evaluate_function`` evaluates an ink function from GDScript. Since it's not
 possible to have in-out variables in GDScript, if you want to retrieve the text
@@ -205,7 +204,7 @@ value and the outputed text.
     ``evaluate_function`` and ``evaluate_function_and_get_output``.
 
 Error Recovery
-**************
+--------------
 
 The original implementation relies on C#'s exceptions to report and recover from
 inconsistent states. Exceptions are not available in GDScript, so the runtime

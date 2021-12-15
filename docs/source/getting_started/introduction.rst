@@ -35,6 +35,6 @@ branch is found).
 
 |
 
-----------
+--------------------------------------------------------------------------------
 
 Click on the *Next* button to discover how to install *inkgd*!
