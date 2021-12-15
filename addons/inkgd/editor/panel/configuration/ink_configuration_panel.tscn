@@ -49,7 +49,7 @@ __meta__ = {
 
 [node name="InklecateVBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
 margin_right = 1920.0
-margin_bottom = 110.0
+margin_bottom = 138.0
 size_flags_horizontal = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="ScrollContainer/InklecateVBoxContainer"]
@@ -76,19 +76,19 @@ __meta__ = {
 [node name="InklecateMarginContainer" type="MarginContainer" parent="ScrollContainer/InklecateVBoxContainer"]
 margin_top = 24.0
 margin_right = 1920.0
-margin_bottom = 110.0
+margin_bottom = 138.0
 
 [node name="Panel" type="Panel" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer"]
 self_modulate = Color( 1, 1, 1, 0.686275 )
 margin_right = 1920.0
-margin_bottom = 86.0
+margin_bottom = 114.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="MarginContainer" type="MarginContainer" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer"]
 margin_right = 1920.0
-margin_bottom = 86.0
+margin_bottom = 114.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/margin_right = 5
@@ -103,12 +103,12 @@ __meta__ = {
 margin_left = 5.0
 margin_top = 5.0
 margin_right = 1915.0
-margin_bottom = 81.0
+margin_bottom = 109.0
 size_flags_horizontal = 3
 
 [node name="GridContainer" type="GridContainer" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer"]
 margin_right = 1910.0
-margin_bottom = 76.0
+margin_bottom = 104.0
 size_flags_horizontal = 3
 columns = 2
 
@@ -122,7 +122,7 @@ Modern versions of inklecate come bundled with a mono runtime on all platforms."
 mouse_filter = 1
 size_flags_horizontal = 3
 size_flags_vertical = 1
-text = "Use Mono"
+text = "Use Mono / .NET Core"
 
 [node name="UseMonoCheckBox" type="CheckBox" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer"]
 margin_left = 957.0
@@ -131,7 +131,6 @@ margin_bottom = 24.0
 text = "Yes"
 
 [node name="MonoLabel" type="Label" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer"]
-visible = false
 margin_top = 28.0
 margin_right = 953.0
 margin_bottom = 52.0
@@ -139,10 +138,9 @@ hint_tooltip = "The path to Mono."
 mouse_filter = 1
 size_flags_horizontal = 3
 size_flags_vertical = 1
-text = "Mono"
+text = "Mono / .NET Core Executable"
 
 [node name="MonoHBoxContainer" type="HBoxContainer" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer"]
-visible = false
 margin_left = 957.0
 margin_top = 28.0
 margin_right = 1910.0
@@ -162,9 +160,9 @@ margin_bottom = 24.0
 icon = SubResource( 7 )
 
 [node name="ExecutableLabel" type="Label" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer"]
-margin_top = 28.0
+margin_top = 56.0
 margin_right = 953.0
-margin_bottom = 52.0
+margin_bottom = 80.0
 hint_tooltip = "The path to inklecate."
 mouse_filter = 1
 size_flags_horizontal = 3
@@ -173,9 +171,9 @@ text = "Executable"
 
 [node name="ExecutableHBoxContainer" type="HBoxContainer" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer"]
 margin_left = 957.0
-margin_top = 28.0
+margin_top = 56.0
 margin_right = 1910.0
-margin_bottom = 52.0
+margin_bottom = 80.0
 size_flags_horizontal = 3
 
 [node name="ExecutableLineEdit" type="LineEdit" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer/ExecutableHBoxContainer"]
@@ -191,9 +189,9 @@ margin_bottom = 24.0
 icon = SubResource( 7 )
 
 [node name="Recompilation Mode" type="Label" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer"]
-margin_top = 56.0
+margin_top = 84.0
 margin_right = 953.0
-margin_bottom = 76.0
+margin_bottom = 104.0
 hint_tooltip = "Define if/when your stories should be recompiled.
 
 – Manual: no automatic compilation.
@@ -209,9 +207,9 @@ __meta__ = {
 
 [node name="RecompilationModeOptionButton" type="OptionButton" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer"]
 margin_left = 957.0
-margin_top = 56.0
+margin_top = 84.0
 margin_right = 1910.0
-margin_bottom = 76.0
+margin_bottom = 104.0
 text = "Manual"
 items = [ "Manual", null, false, 0, null, "During build", null, false, 1, null, "On change (experimental)", null, false, 2, null ]
 selected = 0

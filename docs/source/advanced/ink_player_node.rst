@@ -1,8 +1,8 @@
 
-Using *InkPlayer*
-==========================
+*InkPlayer* node
+================
 
-Activating the editor plugin will register a custom node greatly simplifying
+Activating the editor plugin will register a custom node that greatly simplifies
 the use of Ink within Godot.
 
 Loading the story from a background thread

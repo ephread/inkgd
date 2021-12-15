@@ -60,48 +60,16 @@ If you want to contribute, be sure to take a look at [the contributing guide].
 
 [the contributing guide]: https://github.com/ephread/inkgd/blob/master/CONTRIBUTING.md
 
-## Installation
+## Installation & Getting Started
 
-### Godot Asset Library
+*inkgd* is available on Godot's [Asset Library]. The full documentation is hosted on [Read The Docs].
 
-_inkgd_ is available through the official Godot Asset Library.
-
-1. Click on the AssetLib button at the top of the editor.
-2. Search for “inkgd” and click on the resulting element.
-3. In the dialog poppin up, click “Install”.
-4. Once the download completes, click on the second “Install” button
-   that appeared.
-5. Once more, click on the third “Install” button.
-6. All done!
-
-### Manually
-
-You can also download an archive and install _inkgd_ manually. Head over to the
-[releases], and download the latest version. Then extract the downloaded zip and
-place the `inkgd` directory into the `addons` directory of your project. If you
-don’t have an `addons` directory at the root of the project, you’ll have to
-create one first.
-
-[releases]: https://github.com/ephread/inkgd/releases
-
-### Getting Started
-
-*inkgd*’s documentation is hosted on [Read The Docs].
-
-#### Example Project
-
-Feel free to take a look in the `example/` directory and run
-`the_intercept.tscn`, which will play The Intercept.
-
-Note: _inkgd_ has a .gitattributes file which makes sure that only
-`addons/inkgd` is added to the Github archive. The only way to get the example
-folder (and a bunch of other important files) is to clone the project.
-
+[Asset Library]: http://godotengine.org/asset-library/asset/349
 [Read The Docs]: https://inkgd.readthedocs.io/en/latest/
 
-#### Editor Plugin
+## Editor Plugin
 
-![Ink panel demo](docs/source/getting_started/img/ink_panel/ink_panel.gif)
+![Ink panel demo](docs/source/advanced/editor_plugin/img/ink_panel/ink_panel.gif)
 
 ## Compatibility Table
 

@@ -1,4 +1,4 @@
-Inkgd API
-=========
+*inkgd* API
+===========
 
 TODO: Complete this section.

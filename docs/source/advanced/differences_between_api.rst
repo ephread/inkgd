@@ -2,9 +2,9 @@
 Differences between the GDScript and C# APIs
 ============================================
 
-There are subtle differences between the original C# runtime and the
-GDScript version, but since the two APIs are mostly compatible, it's a good idea
-to take a look at the `original documentation`_.
+There are subtle differences between the original C# runtime and the GDScript
+version, but since the two APIs are mostly compatible, it's a good idea to take
+a look at the `original documentation`_.
 
 .. _`original documentation`: https://github.com/inkle/ink/blob/master/Documentation/RunningYourInk.md
 
@@ -19,17 +19,19 @@ Functions are all snake_cased rather than CamelCased. For instance
 *inkgd*'s runtime node
 **********************
 
-Since GDScript doesn't support static properties, any static property
-was moved into a singleton node called *__InkRuntime* which needs to
-be added to the root object current tree before starting the story.
+Since GDScript doesn't support static properties, any static property was moved
+into a singleton node called *__InkRuntime* which needs to be added to the root
+object current tree before starting the story.
 
-This singleton node is added to the AutoLoad list of your project
-automatically when the plugin is activated (bear in mind that
-deactivating the plugin will also remove the node from the list).
+This singleton node is added to the AutoLoad list of your project automatically
+when the plugin is activated (bear in mind that deactivating the plugin will
+also remove the node from the list). If you don't want to use the plugin, the
+runtime node can also be added manually, see :ref:`here <autoload-singletons>`
+for more information.
 
-However, you may want to manage the singleton yourself in the code.
-Import ``res://addons/inkgd/runtime/static/ink_runtime.gd`` in your script,
-then call the appropriate methods in ``_ready()`` and ``_exit_tree()``
+Alternatively, you may want to manage the singleton manually. Import
+``res://addons/inkgd/runtime/static/ink_runtime.gd`` in your script, then call
+the appropriate methods in ``_ready()`` and ``_exit_tree()``
 
 .. code-block:: gdscript
 
@@ -53,14 +55,10 @@ then call the appropriate methods in ``_ready()`` and ``_exit_tree()``
     func _remove_runtime():
         InkRuntime.deinit(get_tree().root)
 
-
-Alternatively, the runtime node can also be added as a singleton with AutoLoad,
-see :ref:`here <autoload-singletons>` for more information.
-
-``__InkRuntime`` contains a few configuration settings you may want to
-tweak. To that end, ``InkRuntime.init()`` returns the node added to the tree.
-The two following settings are enabled by default, but you can disable them if
-they interfere with your environment.
+``__InkRuntime`` contains a few configuration settings you may want to tweak. To
+that end, ``InkRuntime.init()`` returns the node added to the tree. The two
+following settings are enabled by default, but you can disable them if they
+interfere with your environment.
 
 -  ``should_pause_execution_on_runtime_error``: pause the execution in
    debug when a runtime error is raised.
@@ -69,7 +67,7 @@ they interfere with your environment.
 
 .. note::
 
-    When using `InkPlayer`, you don't need to manually add the runtime node to
+    When using ``InkPlayer``, you don't need to manually add the runtime node to
     the tree. The two properties described above are also available on
     *InkPlayer*, use them instead if you did not instantiate the node by
     yourself.
@@ -79,8 +77,8 @@ they interfere with your environment.
 
 .. _`Getting and setting variables`: https://github.com/inkle/ink<https://github.com/inkle/ink/blob/master/Documentation/RunningYourInk.md#settinggetting-ink-variables>
 
-Since the ``[]`` operator can't be overloaded in GDScript, simple
-``get`` and ``set`` calls replace it.
+Since the ``[]`` operator can't be overloaded in GDScript, simple ``get`` and
+``set`` calls replace it.
 
 .. code:: gdscript
 
@@ -97,8 +95,8 @@ Since the ``[]`` operator can't be overloaded in GDScript, simple
 
 .. _`Variable Observers`: https://github.com/inkle/ink/blob/master/Documentation/RunningYourInk.md#variable-observers
 
-The event / delegate mechanism found in C# is translated into a
-signal-based logic in the GDScript runtime.
+The event / delegate mechanism found in C# is translated into a signal-based
+logic in the GDScript runtime.
 
 .. code:: gdscript
 
@@ -139,10 +137,9 @@ signal-based logic.
 
 .. _`Handlers`: https://github.com/inkle/ink/blob/master/Documentation/RunningYourInk.md#error-handling
 
-Starting with Ink version 1.0.0, it's possible to attach different types
-of handlers to a story to receive callbacks. In C#, those handlers are
-implemented using events. In *inkgd*, those are implemented using
-signals.
+Starting with Ink version 1.0.0, it's possible to attach different types of
+handlers to a story to receive callbacks. In C#, those handlers are implemented
+using events. In *inkgd*, those are implemented using signals.
 
 .. code:: gdscript
 
@@ -166,23 +163,23 @@ signals.
    # public event Action<string, object[], string, object> onCompleteEvaluateFunction;
    # public event Action<string, object[]> onChoosePathString;
 
-It's recommended that you connect a handler to ``on_error`` to receive
-errors and warnings. If you don't, the story may stop unfolding when an
-error is encountered.
+It's recommended that you connect a handler to ``on_error`` to receive errors
+and warnings. If you don't, the story may stop unfolding when an error is
+encountered.
 
 .. note::
 
-    When using `InkPlayer`, the list of handler is a bit different, see
+    When using ``InkPlayer``, the list of handler is a bit different, see
     :doc:`/getting_started/using_ink_player` for more information.
 
 Getting the ouput of ``evaluate_function``
 ******************************************
 
-``evaluate_function`` evaluates an ink function from GDScript. Since
-it's not possible to have in-out variables in GDScript, if you want to
-retrieve the text output of the function, you need to pass ``true`` to
-``return_text_output``. ``evaluate_function`` will then return a
-dictionary containing both the return value and the outputed text.
+``evaluate_function`` evaluates an ink function from GDScript. Since it's not
+possible to have in-out variables in GDScript, if you want to retrieve the text
+output of the function, you need to pass ``true`` to ``return_text_output``.
+``evaluate_function`` will then return a dictionary containing both the return
+value and the outputed text.
 
 .. code:: gdscript
 
@@ -204,15 +201,14 @@ dictionary containing both the return value and the outputed text.
 
 .. note::
 
-    `InkPlayer` uses two different functions, instead of a boolean flag,
+    ``InkPlayer`` uses two different functions, instead of a boolean flag:
     ``evaluate_function`` and ``evaluate_function_and_get_output``.
 
 Error Recovery
 **************
 
-The original implementation relies on C#'s exceptions to report and
-recover from inconsistent states. Exceptions are not available in
-GDScript, so the runtime may behave slightly differently. In particular,
-if an error is encountered during ``story.continue()``, the story may be
-inconsistent state even though it can still more forward after calling
-``story.reset_errors()``.
+The original implementation relies on C#'s exceptions to report and recover from
+inconsistent states. Exceptions are not available in GDScript, so the runtime
+may behave slightly differently. In particular, if an error is encountered
+during ``story.continue()``, the story may be inconsistent state even though it
+can still move forward after calling ``story.reset_errors()``.

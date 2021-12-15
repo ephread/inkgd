@@ -61,22 +61,22 @@ func _ready():
 	_story_panel.editor_interface = editor_interface
 	_story_panel.configuration = configuration
 	_story_panel.progress_texture = _progress_texture
-	
+
 	_preview_panel.editor_interface = editor_interface
 	_preview_panel.configuration = configuration
 	_preview_panel.progress_texture = _progress_texture
-	
+
 	_configuration_panel.editor_interface = editor_interface
 	_configuration_panel.configuration = configuration
-	
+
 	_tab_container.add_child(_story_panel)
 	_tab_container.add_child(_preview_panel)
 	_tab_container.add_child(_configuration_panel)
-	
+
 	_beta_button.connect("pressed", self, "_open_github_issues")
-	
+
 	_set_minimum_panel_size()
-	
+
 
 # ############################################################################ #
 # Signals Receivers
