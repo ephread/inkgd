@@ -55,7 +55,7 @@ func load_json(json):
 # (String) -> int
 func visit_count_at_path_string(path_string):
 	if self._patch != null:
-		var container = self.story.content_at_path(Path.new_with_components_string(path_string)).container
+		var container = self.story.content_at_path(InkPath.new_with_components_string(path_string)).container
 		if container == null:
 			Utils.throw_exception(str("Content at path not found: ", path_string))
 			return 0
