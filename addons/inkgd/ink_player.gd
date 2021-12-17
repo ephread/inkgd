@@ -77,8 +77,26 @@ export(bool) var loads_in_background = true
 # Properties
 # ############################################################################ #
 
+## `true` to allow external function fallbacks, `false` otherwise. If this
+## property is `false` and the appropriate function hasn't been binded, the
+## story will output an error.
+var allow_external_function_fallbacks: bool setget set_aeff, get_aeff
+func set_aeff(value):
+	if _story == null:
+		_push_null_story_error()
+		return
+
+	_story.allow_external_function_fallbacks = value
+func get_aeff() -> bool:
+	return _story.allow_external_function_fallbacks
+
+
+# ############################################################################ #
+# Read-only Properties
+# ############################################################################ #
+
 ## `true` if the story can continue (i. e. is not expecting a choice to be
-## choosen and hasn't reached the end.
+## choosen and hasn't reached the end).
 var can_continue: bool setget , get_can_continue
 func get_can_continue() -> bool:
 	if _story == null:
@@ -143,21 +161,7 @@ func get_global_tags() -> Array:
 
 	return _story.global_tags
 
-
-## `true` to allow external function fallbacks, `false` otherwise. If this
-## property is `false` and the appropriate function hasn't been binded, the
-## story will output an error.
-var allow_external_function_fallbacks: bool setget set_aeff, get_aeff
-func set_aeff(new_value):
-	if _story == null:
-		_push_null_story_error()
-		return
-
-	_story.allow_external_function_fallbacks = new_value
-func get_aeff() -> bool:
-	return _story.allow_external_function_fallbacks
-
-## `true` if the story currenlty has choices, `false` otherwise.
+## `true` if the story currently has choices, `false` otherwise.
 var has_choices: bool setget , get_has_choices
 func get_has_choices() -> bool:
 	return !self.current_choices.empty()
@@ -224,7 +228,7 @@ func reset():
 # ############################################################################ #
 
 ## Continues the story.
-func continue_story():
+func continue_story() -> String:
 	var text: String = ""
 	if self.can_continue:
 		_story.continue()
@@ -257,7 +261,7 @@ func choose_path_string(path_string: String):
 
 
 ## Switches the flow, creating a new flow if it doesn't exist.
-func switch_flow(flow_name):
+func switch_flow(flow_name: String):
 	if _story == null:
 		return
 
@@ -265,7 +269,7 @@ func switch_flow(flow_name):
 
 
 ## Switches the the default flow.
-func switch_to_default_flow(flow_name):
+func switch_to_default_flow():
 	if _story == null:
 		return
 
@@ -273,11 +277,32 @@ func switch_to_default_flow(flow_name):
 
 
 ## Remove the given flow.
-func remove_flow(flow_name):
+func remove_flow(flow_name: String):
 	if _story == null:
 		return
 
 	_story.remove_flow(flow_name)
+
+
+# ############################################################################ #
+# Methods | Tags
+# ############################################################################ #
+
+## Returns the tags declared at the given path.
+func tags_for_content_at_path(path: String) -> Array:
+	if _story == null:
+		return []
+
+	return _story.tags_for_content_at_path(path)
+
+
+# ############################################################################ #
+# Methods | Visit Count
+# ############################################################################ #
+
+## Returns the visit count of the given path.
+func visit_count_at_path_string(path: String) -> int:
+	return _story.visit_count_at_path_string(path)
 
 
 # ############################################################################ #
@@ -318,39 +343,18 @@ func load_state_from_path(path: String):
 
 	var file = File.new()
 	file.open(path, File.READ)
-	load_state_to_file(file)
+	load_state_from_file(file)
 	file.close()
 
 
 ## Loads the state from the given file.
-func load_state_to_file(file: File):
+func load_state_from_file(file: File):
 	if !file.is_open():
 		return
 
 	file.seek(0);
 	if file.get_len() > 0:
 		_story.state.load_json(file.get_as_text())
-
-
-# ############################################################################ #
-# Methods | Tags
-# ############################################################################ #
-
-## Returns the tags declared at the given path.
-func tags_for_content_at_path(path) -> Array:
-	if _story == null:
-		return []
-
-	return _story.tags_for_content_at_path(path)
-
-
-# ############################################################################ #
-# Methods | Visit Count
-# ############################################################################ #
-
-## Returns the visit count of the given path.
-func visit_count_at_path_string(path: String) -> int:
-	return _story.visit_count_at_path_string(path)
 
 
 # ############################################################################ #
@@ -418,7 +422,7 @@ func unbind_external_function(func_name: String):
 
 ## Evaluate a given ink function, returning its return value (but not
 ## its output).
-func evaluate_function(function_name: String, arguments = null):
+func evaluate_function(function_name: String, arguments = []):
 	return _story.evaluate_function(function_name, arguments, false)
 
 
@@ -428,7 +432,7 @@ func evaluate_function(function_name: String, arguments = null):
 ## ```
 ## { "result": "<return_value>", "output": "<text_output>" }
 ## ```
-func evaluate_function_and_get_output(function_name: String, arguments = null) -> Dictionary:
+func evaluate_function_and_get_output(function_name: String, arguments = []) -> Dictionary:
 	return _story.evaluate_function(function_name, arguments, true)
 
 

@@ -1,9 +1,9 @@
 [gd_scene load_steps=14 format=2]
 
-[ext_resource path="res://examples/images/transparent.png" type="Texture" id=1]
+[ext_resource path="res://examples/scenes/the_intercept.gd" type="Script" id=1]
 [ext_resource path="res://addons/inkgd/ink_player.gd" type="Script" id=2]
 [ext_resource path="res://examples/images/spinner.png" type="Texture" id=3]
-[ext_resource path="res://examples/scripts/the_intercept.gd" type="Script" id=4]
+[ext_resource path="res://examples/images/transparent.png" type="Texture" id=4]
 [ext_resource path="res://examples/ink/the_intercept/the_intercept.ink.json" type="Resource" id=5]
 [ext_resource path="res://examples/images/inkgd_the_intercept.png" type="Texture" id=6]
 
@@ -21,10 +21,10 @@ bg_color = Color( 0.270588, 0.270588, 0.270588, 1 )
 [sub_resource type="StyleBoxEmpty" id=5]
 
 [sub_resource type="Theme" id=6]
-VScrollBar/icons/decrement = ExtResource( 1 )
-VScrollBar/icons/decrement_highlight = ExtResource( 1 )
-VScrollBar/icons/increment = ExtResource( 1 )
-VScrollBar/icons/increment_highlight = ExtResource( 1 )
+VScrollBar/icons/decrement = ExtResource( 4 )
+VScrollBar/icons/decrement_highlight = ExtResource( 4 )
+VScrollBar/icons/increment = ExtResource( 4 )
+VScrollBar/icons/increment_highlight = ExtResource( 4 )
 VScrollBar/styles/grabber = SubResource( 1 )
 VScrollBar/styles/grabber_highlight = SubResource( 2 )
 VScrollBar/styles/grabber_pressed = SubResource( 3 )
@@ -51,7 +51,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 1.0
 margin_right = 1.0
-script = ExtResource( 4 )
+script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }

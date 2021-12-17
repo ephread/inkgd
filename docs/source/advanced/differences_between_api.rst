@@ -169,12 +169,12 @@ encountered.
 .. note::
 
     When using ``InkPlayer``, the list of handler is a bit different, see
-    :doc:`ink_player_node` for more information.
+    :doc:`/classes/class_inkplayer` for more information.
 
 Getting the ouput of ``evaluate_function``
 ------------------------------------------
 
-``evaluate_function`` evaluates an ink function from GDScript. Since it's not
+``evaluate_function`` evaluates an Ink function from GDScript. Since it's not
 possible to have in-out variables in GDScript, if you want to retrieve the text
 output of the function, you need to pass ``true`` to ``return_text_output``.
 ``evaluate_function`` will then return a dictionary containing both the return

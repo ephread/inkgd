@@ -11,8 +11,8 @@ extends Node
 # Imports
 # ############################################################################ #
 
-var ChoiceContainer = load("res://examples/scenes/choice_container.tscn")
-var LineLabel = load("res://examples/scenes/label.tscn")
+var ChoiceContainer = load("res://examples/scenes/common/choice_container.tscn")
+var LineLabel = load("res://examples/scenes/common/label.tscn")
 
 
 # ############################################################################ #
@@ -121,7 +121,7 @@ func _choice_selected(index):
 	_ink_player.choose_choice_index(index)
 	_continue_story()
 
-func _exception_raised(message):
+func _exception(message):
 	# This method gives a chance to react to a story-breaking exception.
 	pass
 
@@ -161,4 +161,4 @@ func _connect_optional_signals():
 	_ink_player.connect("prompt_choices", self, "_prompt_choices")
 	_ink_player.connect("ended", self, "_ended")
 
-	_ink_player.connect("exception_raised", self, "_exception_raised")
+	_ink_player.connect("exception", self, "_exception")

@@ -12,7 +12,7 @@ class_name ChoiceContainer
 # Imports
 # ############################################################################ #
 
-var ChoiceButton = load("res://examples/scenes/button.tscn")
+var ChoiceButton = load("res://examples/scenes/common/button.tscn")
 
 # ############################################################################ #
 # Signal

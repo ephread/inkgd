@@ -12,7 +12,7 @@ _global_script_classes=[ {
 "base": "MarginContainer",
 "class": "ChoiceContainer",
 "language": "GDScript",
-"path": "res://examples/scripts/choice_container.gd"
+"path": "res://examples/scenes/common/choice_container.gd"
 }, {
 "base": "Control",
 "class": "InkBottomPanel",

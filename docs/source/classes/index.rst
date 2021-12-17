@@ -1,4 +1,7 @@
 *inkgd* API
 ===========
 
-TODO: Complete this section.
+.. toctree::
+   :maxdepth: 1
+
+   class_inkplayer
