@@ -26,6 +26,7 @@ Properties
 | bool_ | :ref:`dont_save_default_values<class_inkruntime_dont_save_default_values>`                       | ``true`` |
 +-------+--------------------------------------------------------------------------------------------------+----------+
 
+
 Signals
 -------
 
@@ -36,6 +37,7 @@ Signals
 Emitted when the runtime encounters an exception. Exceptions are not recoverable
 and may corrupt the state. They are the consequence of either a programmer error
 or a bug in the runtime.
+
 
 Property Descriptions
 ---------------------

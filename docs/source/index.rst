@@ -37,9 +37,10 @@ Feel free to take a look in the `example directory`_ and run
    :maxdepth: 1
    :caption: Advanced
 
+   advanced/editor_plugin/index
    advanced/differences_between_api
    advanced/using_inkplayer
-   advanced/editor_plugin/index
+   advanced/exception_error_management
 
 .. toctree::
    :maxdepth: 2

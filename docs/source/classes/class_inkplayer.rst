@@ -346,6 +346,58 @@ The global tags for the story. Empty if none have been declared.
 
 ``true`` if the story currently has choices, ``false`` otherwise.
 
+----
+
+.. _class_inkruntime_should_pause_execution_on_exception:
+
+- bool_ **should_pause_execution_on_exception**
+
++-----------+-----------------------+
+| *Default* | ``true``              |
++-----------+-----------------------+
+| *Setter*  | set_speoex(value)     |
++-----------+-----------------------+
+| *Getter*  | get_speoex()          |
++-----------+-----------------------+
+
+When set to ``true``, *inkgd* uses ``assert()`` instead of ``push_error`` to
+report exceptions, thus making them more explicit during development.
+
+----
+
+.. _class_inkruntime_should_pause_execution_on_error:
+
+- bool_ **should_pause_execution_on_error**
+
++-----------+-----------------------+
+| *Default* | ``true``              |
++-----------+-----------------------+
+| *Setter*  | set_speoer(value)     |
++-----------+-----------------------+
+| *Getter*  | get_speoer()          |
++-----------+-----------------------+
+
+When set to ``true``, *inkgd* uses ``assert()`` instead of ``push_error`` to
+report errors, thus making them more explicit during development.
+
+----
+
+.. _class_inkruntime_dont_save_default_values:
+
+- bool_ **dont_save_default_values**
+
++-----------+-----------------------+
+| *Default* | ``true``              |
++-----------+-----------------------+
+| *Setter*  | set_dsdv(value)       |
++-----------+-----------------------+
+| *Getter*  | get_dsdv()            |
++-----------+-----------------------+
+
+When set to ``true``, *inkgd* skips saving global values that remain
+equal to the initial values that were declared in ink. This property matches
+the static property declared in `VariablesState.cs`_.
+
 Method Descriptions
 -------------------
 

@@ -42,6 +42,17 @@ var should_pause_execution_on_exception: bool = true
 var should_pause_execution_on_error: bool = true
 
 # ############################################################################ #
+# Original Static Properties
+# ############################################################################ #
+
+# skips saving global values that remain equal to the initial values that were
+# declared in Ink.
+var dont_save_default_values: bool = true
+
+var native_function_call = StaticNativeFunctionCall.new()
+var json = StaticJson.new(native_function_call)
+
+# ############################################################################ #
 # Internal Properties
 # ############################################################################ #
 
@@ -49,15 +60,6 @@ var should_pause_execution_on_error: bool = true
 # expected to be processed by the story and emitted through 'on_error'.
 var record_story_exceptions: bool = false
 var current_story_exceptions: Array = []
-
-# ############################################################################ #
-# Original Static Properties
-# ############################################################################ #
-
-var native_function_call = StaticNativeFunctionCall.new()
-var json = StaticJson.new(native_function_call)
-
-var dont_save_default_values: bool = true
 
 # ############################################################################ #
 # Overrides

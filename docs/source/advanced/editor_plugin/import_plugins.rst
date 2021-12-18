@@ -34,3 +34,6 @@ the ``json`` property.
     var bytecode = load("res://examples/ink/the_intercept.ink.json")
 
     print(bytecode.json)
+
+Since JSON file are very common and might be imported by multiple plugins,
+make sure to use the appropriate importer when reimporting them.

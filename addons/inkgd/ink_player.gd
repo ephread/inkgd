@@ -169,9 +169,54 @@ func get_has_choices() -> bool:
 	return !self.current_choices.empty()
 
 # ############################################################################ #
+
+## Uses `assert` instead of `push_error` to report critical errors, thus
+## making them more explicit during development.
+var should_pause_execution_on_exception: bool setget set_speoex, get_speoex
+func get_speoex():
+	var ink_runtime = _ink_runtime.get_ref()
+	if ink_runtime == null:
+		return false
+	return ink_runtime.should_pause_execution_on_exception
+
+func set_speoex(value):
+	var ink_runtime = _ink_runtime.get_ref()
+	if ink_runtime != null:
+		ink_runtime.should_pause_execution_on_exception = value
+
+## Uses `assert` instead of `push_error` to report story errors, thus
+## making them more explicit during development.
+var should_pause_execution_on_error: bool setget set_speoer, get_speoer
+func get_speoer():
+	var ink_runtime = _ink_runtime.get_ref()
+	if ink_runtime == null:
+		return false
+	return ink_runtime.should_pause_execution_on_error
+
+func set_speoer(value):
+	var ink_runtime = _ink_runtime.get_ref()
+	if ink_runtime != null:
+		ink_runtime.should_pause_execution_on_error = value
+
+# skips saving global values that remain equal to the initial values that were
+# declared in Ink.
+var dont_save_default_values: bool setget set_dsdv, get_dsdv
+func get_dsdv():
+	var ink_runtime = _ink_runtime.get_ref()
+	if ink_runtime == null:
+		return false
+	return ink_runtime.dont_save_default_values
+
+func set_dsdv(value):
+	var ink_runtime = _ink_runtime.get_ref()
+	if ink_runtime != null:
+		ink_runtime.dont_save_default_values = value
+
+# ############################################################################ #
 # Private Properties
 # ############################################################################ #
 
+var _ink_runtime: WeakRef = WeakRef.new()
 var _story = null
 var _thread: Thread
 var _manages_runtime: bool = false
@@ -511,9 +556,12 @@ func _finalise_story_creation():
 func _add_runtime():
 	# The InkRuntime is normaly an auto-loaded singleton,
 	# but if it's not present, it's added here.
-	if get_tree().root.get_node("__InkRuntime") == null:
+	var runtime = get_tree().root.get_node("__InkRuntime")
+	if runtime == null:
 		_manages_runtime = true
-		InkRuntime.init(get_tree().root)
+		runtime = InkRuntime.init(get_tree().root)
+
+	_ink_runtime = weakref(runtime)
 
 
 func _remove_runtime():
