@@ -1,4 +1,6 @@
-.. Ideally, this class should be generated. But for now, it's written by hand.
+.. This class should be generated. But for now, it's written by hand.
+
+.. _class_inkplayer:
 
 InkPlayer
 =========
@@ -21,32 +23,34 @@ so you can focus on building your game.
 ``the_intercept.tscn`` and ``the_intercept.gd`` contain a real world example of
 how InkPlayer can be used. They are found in the `example directory`_.
 
-Main differences between *InkPlayer* and *story.gd*
+.. _`example directory`: https://github.com/ephread/inkgd/tree/main/examples
+
+Main differences with *story.gd*
 ***************************************************
 
-1. The node takes a resource as its input, rather than a string containing
+1. InkPlayer takes a resource as its input, rather than a string containing
    the JSON bytecode.
 
-2. The node unifies Ink's original handlers and *inkgd* custom signals under
+2. It unifies Ink's original handlers and *inkgd* custom signals under
    a same set of consistent signals.
 
-3. The node adds convenience methods to save and load the story state.
+3. It adds convenience methods to save and load the story state.
 
-4. The node simplifies certain APIs.
-
-5. Finally, the node can easily be added to a scene!
+4. It simplifies certain APIs, such as :ref:`evaluate_function<class_inkplayer_evaluate_function>`
+   or :ref:`remove_variable_observer<class_inkplayer_remove_variable_observer>`.
 
 Loop-based vs. signal-based flow
 ********************************
 
-InkPlayer can be used in two different ways. The example below are
-incomplete and assume the story is already loaded. For a working example,
-take a look at ``the_intercept.gd`` in the `example directory`_.
+InkPlayer can be used in two different ways. The examples below are
+incomplete, for a working example, refer to `the_intercept.gd`_.
+
+.. _`the_intercept.gd`: https://github.com/ephread/inkgd/blob/main/examples/scenes/the_intercept.gd
 
 Loop-based
 ''''''''''
 
-This is the traditional way, recommended by the creator of Ink.
+This is the traditional way to use Ink.
 
 .. code-block:: gdscript
 
@@ -159,8 +163,6 @@ in code.
 On platforms that don't support threads, the feature is automatically disabled
 regardles of the value of
 :ref:`loads_in_background<class_inkplayer_loads_in_background>`.
-
-.. _`example directory`: https://github.com/ephread/inkgd/tree/main/examples
 
 
 Properties
@@ -377,7 +379,8 @@ Property Descriptions
 
 - Resource_ **ink_file**
 
-The compiled Ink file (.json) to play.
+The compiled Ink file (.json) to play. While you can set this property to
+any resource, it should be an instance of *InkResource*.
 
 ----
 
@@ -511,7 +514,7 @@ reported through :ref:`loaded<class_inkplayer_loaded>`.
 
 - void **reset (** **)**
 
-Destroys the current story. ALways call this method first if you want to
+Destroys the current story. Always call this method first if you want to
 recreate the story.
 
 ----

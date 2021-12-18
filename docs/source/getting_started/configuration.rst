@@ -58,6 +58,10 @@ scripting. See :ref:`here <ink-runtime>` for more information.
 
 --------------------------------------------------------------------------------
 
-That's it! You can now start using *inkgd* in your Godot scripts.
+That's it! You can now start using *inkgd* in your Godot scripts. From here you
+can:
+
+- take a look at documentation of :ref:`InkPlayer<class_inkplayer>`;
+- learn how to use all the features offered by the :ref:`editor plugin<editor_plugin>`.
 
 .. Jump over to the next section to create your first game with *inkgd*.

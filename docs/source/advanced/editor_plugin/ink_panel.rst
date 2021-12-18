@@ -1,9 +1,8 @@
-*********
 Ink Panel
-*********
+=========
 
 Configuration tab
-=================
+-----------------
 
 In the Ink panel, select the *Configuration* tab to change inklecate's
 configuration settings.
@@ -22,7 +21,7 @@ configuration settings.
     members.
 
 Basic Configuration
--------------------
+*******************
 
 To let plugin know where inklecate is located, click on the folder icon opposite
 of the *Executable* field and navigate to the desired binary. You can also paste
@@ -41,7 +40,7 @@ command that inklecate tried to execute.
 
 
 Recompilation Modes
--------------------
+*******************
 
 The editor plugin supports three recompilation mode.
 
@@ -61,13 +60,13 @@ On change
     an experimental feature, recompiling the stories when changes are detected
     in ink files. For more information, see :ref:`below <watched-directory>`.
 
-.. note::
+.. warning::
 
     *On change* is an experimental mode, use with caution.
 
 
 Custom Mono / .NET Core Runtimes
---------------------------------
+********************************
 
 On platforms other than Windows, advanced users can use specific versions of
 .NET runtimes or custom inklecates that don't come bundled with a Mono runtime.
@@ -82,7 +81,7 @@ appear. This field expects a path to the .NET runtime you want to use.
 
 
 Story tab
-=========
+---------
 
 In the Ink panel, select the *Story* tab to let the plugin manage Ink stories
 in the project.
@@ -148,7 +147,7 @@ recompilation.
 |
 
 The Preview tab
-===============
+---------------
 
 In the Ink panel, select the *Preview* tab to preview a story. You can load
 any valid JSON through *Load new…*.

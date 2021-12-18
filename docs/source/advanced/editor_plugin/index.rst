@@ -1,6 +1,7 @@
-**************
+.. _editor_plugin:
+
 Editor Plugin
-**************
+=============
 
 *inkgd* ships with an editor plugin providing two major features:
 

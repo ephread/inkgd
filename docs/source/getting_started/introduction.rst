@@ -5,15 +5,21 @@
 Introduction
 ============
 
-*inkgd* is an implementation of the Ink_ runtime, in pure GDScript. It can
-load Ink's JSON bytecode files (usually ending with ``*.ink.json``) and
-play them inside Godot.
+*inkgd* is an implementation of the Ink_ runtime, in pure GDScript.
+
+If you are not familiar with Ink, it's a good idea to take a quick look at
+two documents from the original documentation:
+
+- `Writing with Ink`_ – which describes how to write Ink stories;
+- `Running your Ink`_ – which describes how to integrate the Ink runtime in a C# environment.
 
 .. _Ink: https://github.com/inkle/ink
+.. _`Writing with Ink`: https://github.com/inkle/ink/blob/master/Documentation/WritingWithInk.md
+.. _`Running your Ink`: https://github.com/inkle/ink/blob/master/Documentation/RunningYourInk.md
 
-The GDScript API is 100% compatible with the original C# API, with a couple of
-minor divergences to accomodate the differences between the two languages. For
-more information, see :doc:`/advanced/differences_between_api`.
+The GDScript API is 100% compatible with the original C# API, except for a
+couple of minor divergences to accomodate the differences between the two
+languages. For more information, see :doc:`/advanced/differences_between_api`.
 
 .. note::
 
@@ -21,7 +27,7 @@ more information, see :doc:`/advanced/differences_between_api`.
     the content to your players.
 
 Playing a story typically involves calling ``InkPlayer.continue_story()`` until
-a branch is found. Then presenting an array of choices to the player and
+a branch is found, then presenting an array of choices to the player and
 reporting back the selected choice through its index. Finally, repeating the
 process from the beginning (i. e. calling ``continue_story()`` until another
 branch is found).
