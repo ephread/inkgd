@@ -38,6 +38,7 @@ Feel free to take a look in the `example directory`_ and run
    :caption: Advanced
 
    advanced/differences_between_api
+   advanced/using_inkplayer
    advanced/editor_plugin/index
 
 .. toctree::

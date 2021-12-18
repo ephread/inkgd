@@ -301,21 +301,21 @@ func continue_internal(millisecs_limit_async = 0):
 
 	var output_stream_ends_in_newline = false
 	self._saw_lookahead_unsafe_function_after_newline = false
+
+	# In the original code, exceptions raised during 'continue_single_step()'
+	# are catched and added to the error array. Since exceptions don't exist
+	# in GDScript, they are recorded instead. See 'ink_runtime.gd' for more
+	# information.
+	self._enable_story_exception_recording(true)
 	var first_time = true
 	while (first_time || self.can_continue):
 		first_time = false
 
 		output_stream_ends_in_newline = self.continue_single_step()
-		if _error_raised_during_step.size() > 0:
-			for error in _error_raised_during_step:
+		var recorded_exceptions = _get_and_clear_recorded_story_exceptions()
+		if recorded_exceptions.size() > 0:
+			for error in recorded_exceptions:
 				add_error(error.message, false, error.use_end_line_number)
-			_error_raised_during_step.clear()
-
-			# Restore ability to continue.
-			push_warning("The story has recovered from an exception and may be in an inconsistent state. Proceed with care.")
-			var InkRuntime = _get_runtime()
-			if InkRuntime != null:
-				InkRuntime.should_interrupt = false
 			break
 
 		if output_stream_ends_in_newline:
@@ -324,6 +324,7 @@ func continue_internal(millisecs_limit_async = 0):
 		if _async_continue_active && duration_stopwatch.elapsed_milliseconds > millisecs_limit_async:
 			break
 
+	self._enable_story_exception_recording(false)
 	duration_stopwatch.stop()
 
 	if output_stream_ends_in_newline || !self.can_continue:
@@ -561,10 +562,6 @@ func background_save_complete():
 
 # () -> void
 func step():
-	var InkRuntime = _get_runtime()
-	if InkRuntime != null && InkRuntime.should_interrupt:
-		self.state.force_end()
-
 	var should_add_to_stream = true
 
 	var pointer = self.state.current_pointer.duplicate()
@@ -1632,14 +1629,7 @@ func next_sequence_shuffle_index():
 
 # (String, bool) -> void
 func error(message, use_end_line_number = false):
-	var InkRuntime = _get_runtime()
-	if InkRuntime != null:
-		InkRuntime.should_interrupt = true
-
-	if InkRuntime.should_pause_execution_on_runtime_error:
-		Utils.throw_story_exception(message)
-	else:
-		_error_raised_during_step.append(Error.new(message, use_end_line_number))
+	Utils.throw_story_exception(message, use_end_line_number)
 
 # (String) -> void
 func warning(message):
@@ -1758,10 +1748,25 @@ func connect_exception(target: Object, method: String, binds = [], flags = 0) ->
 	if runtime == null:
 		return ERR_UNAVAILABLE
 
-	if runtime.is_connected("exception", target, method):
+	if runtime.is_connected("exception_raised", target, method):
 		return OK
 
-	return runtime.connect("exception", target, method, binds, flags)
+	return runtime.connect("exception_raised", target, method, binds, flags)
+
+func _enable_story_exception_recording(enable: bool):
+	var runtime = _get_runtime()
+	if runtime != null:
+		runtime.record_story_exceptions = enable
+
+func _get_and_clear_recorded_story_exceptions() -> Array:
+	var runtime = _get_runtime()
+	if runtime == null:
+		return []
+
+	var exceptions = runtime.current_story_exceptions
+	runtime.current_story_exceptions.clear()
+
+	return exceptions
 
 # ############################################################################ #
 
@@ -1805,11 +1810,3 @@ class ExternalFunctionDef extends Reference:
 		var object_ref = object.get_ref()
 		if object_ref:
 			return object_ref.callv(method, params)
-
-class Error:
-	var message
-	var use_end_line_number
-
-	func _init(message, use_end_line_number):
-		self.message = message
-		self.use_end_line_number = use_end_line_number

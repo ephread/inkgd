@@ -1,4 +1,3 @@
-
 Differences between the GDScript and C# APIs
 ============================================
 
@@ -20,8 +19,8 @@ Functions are all snake_cased rather than CamelCased. For instance
 ----------------------
 
 Since GDScript doesn't support static properties, any static property was moved
-into a singleton node called *__InkRuntime* which needs to be added to the root
-object current tree before starting the story.
+into a singleton node called :doc:`/classes/class_inkruntime` which needs to be
+added to the root object current tree before starting the story.
 
 This singleton node is added to the AutoLoad list of your project automatically
 when the editor plugin is activated. If you don't want to use the plugin, the
@@ -54,21 +53,14 @@ the appropriate methods in ``_ready()`` and ``_exit_tree()``
     func _remove_runtime():
         InkRuntime.deinit(get_tree().root)
 
-``__InkRuntime`` contains a few configuration settings you may want to tweak. To
-that end, ``InkRuntime.init()`` returns the node added to the tree. The two
-following settings are enabled by default, but you can disable them if they
-interfere with your environment.
-
--  ``should_pause_execution_on_runtime_error``: pause the execution in
-   debug when a runtime error is raised.
--  ``should_pause_execution_on_story_error``: pause the execution in
-   debug when a story error is raised.
+InkRuntime contains a few configuration settings you may want to tweak, see the
+:doc:`API documentation</classes/class_inkruntime>`.
 
 .. note::
 
-    When using ``InkPlayer``, you don't need to manually add the runtime node to
-    the tree. The two properties described above are also available on
-    *InkPlayer*, use them instead if you did not instantiate the node by
+    When using InkPlayer, you don't need to manually add the runtime node to
+    the tree. All the properties defined on InkRuntime also available on
+    InkPlayer, use them instead if you did not instantiate the node by
     yourself.
 
 `Getting and setting variables`_
@@ -79,15 +71,21 @@ interfere with your environment.
 Since the ``[]`` operator can't be overloaded in GDScript, simple ``get`` and
 ``set`` calls replace it.
 
+GDScript API
+************
+
 .. code:: gdscript
 
-   story.variables_state.get("player_health")
-   story.variables_state.set("player_health", 10)
+    story.variables_state.get("player_health")
+    story.variables_state.set("player_health", 10)
 
-   # Original C# API
-   #
-   # _inkStory.VariablesState["player_health"]
-   # _inkStory.VariablesState["player_health"] = 10
+Original C# API
+***************
+
+.. code:: csharp
+
+    _inkStory.VariablesState["player_health"]
+    _inkStory.VariablesState["player_health"] = 10
 
 `Variable Observers`_
 ---------------------
@@ -97,18 +95,24 @@ Since the ``[]`` operator can't be overloaded in GDScript, simple ``get`` and
 The event / delegate mechanism found in C# is translated into a signal-based
 logic in the GDScript runtime.
 
+GDScript API
+************
+
 .. code:: gdscript
 
-   story.observe_variable("health", self, "_observe_health")
+    story.observe_variable("health", self, "_observe_health")
 
-   func _observe_health(variable_name, new_value):
-       set_health_in_ui(int(new_value))
+    func _observe_health(variable_name, new_value):
+        set_health_in_ui(int(new_value))
 
-   # Original C# API
-   #
-   # _inkStory.ObserveVariable("health", (string varName, object newValue) => {
-   #    SetHealthInUI((int)newValue);
-   # });
+Original C# API
+***************
+
+.. code:: csharp
+
+    _inkStory.ObserveVariable("health", (string varName, object newValue) => {
+       SetHealthInUI((int)newValue);
+    });
 
 `External Functions`_
 ---------------------
@@ -118,18 +122,28 @@ logic in the GDScript runtime.
 The event / delegate mechanism found in C# is again translated into a
 signal-based logic.
 
+GDScript API
+************
+
 .. code:: gdscript
 
-   story.bind_external_function("multiply", self, "_multiply", true)
+    # GDScript API
 
-   func _multiply(arg1, arg2):
-       return arg1 * arg2
+    story.bind_external_function("multiply", self, "_multiply", true)
 
-   # Original C# API
-   #
-   # _inkStory.BindExternalFunction ("multiply", (int arg1, float arg2) => {
-   #     return arg1 * arg2;
-   # }, true);
+    func _multiply(arg1, arg2):
+        return arg1 * arg2
+
+Original C# API
+***************
+
+.. code:: csharp
+
+    // Original C# API
+
+    _inkStory.BindExternalFunction ("multiply", (int arg1, float arg2) => {
+        return arg1 * arg2;
+    }, true);
 
 `Handlers`_
 -----------
@@ -140,36 +154,51 @@ Starting with Ink version 1.0.0, it's possible to attach different types of
 handlers to a story to receive callbacks. In C#, they are implemented using
 events. In *inkgd*, they are again implemented using signals.
 
+GDScript API
+************
+
 .. code:: gdscript
 
-   # GDScript API
+    signal on_error(message, type)
+    signal on_did_continue()
+    signal on_make_choice(choice)
+    signal on_evaluate_function(function_name, arguments)
+    signal on_complete_evaluate_function(function_name, arguments, text_output, result)
+    signal on_choose_path_string(path, arguments)
 
-   signal on_error(message, type)
-   signal on_did_continue()
-   signal on_make_choice(choice)
-   signal on_evaluate_function(function_name, arguments)
-   signal on_complete_evaluate_function(function_name, arguments, text_output, result)
-   signal on_choose_path_string(path, arguments)
+Original C# API
+***************
 
-   story.connect("on_did_continue", self, "_handle_did_continue")
+.. code:: csharp
 
-   # Original C# API
-   #
-   # public event Ink.ErrorHandler onError;
-   # public event Action onDidContinue;
-   # public event Action<Choice> onMakeChoice;
-   # public event Action<string, object[]> onEvaluateFunction;
-   # public event Action<string, object[], string, object> onCompleteEvaluateFunction;
-   # public event Action<string, object[]> onChoosePathString;
+    public event Ink.ErrorHandler onError;
+    public event Action onDidContinue;
+    public event Action<Choice> onMakeChoice;
+    public event Action<string, object[]> onEvaluateFunction;
+    public event Action<string, object[], string, object> onCompleteEvaluateFunction;
+    public event Action<string, object[]> onChoosePathString;
 
-It's recommended that you connect a handler to ``on_error`` to receive errors
-and warnings. If you don't, the story may stop unfolding when an error is
-encountered.
+The new handler system also supports reporting errors and warnings. It's
+recommended that you connect a handler to ``on_error`` to receive them.
+
+
+Error Management
+----------------
+
+The original implementation relies on C#'s exceptions to report and recover from
+inconsistent states. Exceptions are not available in GDScript, so the runtime
+may behave slightly differently. In particular, if an error or an exception is
+encountered during ``story.continue()``, the story may be inconsistent state
+even though it can still move forward after calling ``story.reset_errors()``.
+
+Runtime exceptions are emitted through
+:ref:`exception_raised<class_inkruntime_exception_raised>`.
 
 .. note::
 
-    When using ``InkPlayer``, the list of handler is a bit different, see
-    :doc:`/classes/class_inkplayer` for more information.
+    :doc:`/classes/class_inkplayer` has a different API regarding handlers and
+    signals and fowards
+    :ref:`exception_raised<class_inkruntime_exception_raised>`.
 
 Getting the ouput of ``evaluate_function``
 ------------------------------------------
@@ -200,14 +229,6 @@ value and the outputed text.
 
 .. note::
 
-    ``InkPlayer`` uses two different functions, instead of a boolean flag:
-    ``evaluate_function`` and ``evaluate_function_and_get_output``.
-
-Error Recovery
---------------
-
-The original implementation relies on C#'s exceptions to report and recover from
-inconsistent states. Exceptions are not available in GDScript, so the runtime
-may behave slightly differently. In particular, if an error is encountered
-during ``story.continue()``, the story may be inconsistent state even though it
-can still move forward after calling ``story.reset_errors()``.
+    :doc:`/classes/class_inkplayer` splits this function into two different
+    functions, ``evaluate_function`` and ``evaluate_function_and_get_output``,
+    instead of a boolean flag.

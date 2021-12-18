@@ -14,32 +14,14 @@ extends Reference
 # Exceptions
 # ############################################################################ #
 
-static func throw_exception(message):
-	print_stack_trace()
+static func throw_exception(message: String):
 	InkRuntime().handle_exception(message)
 
-static func throw_story_exception(message):
-	print_stack_trace()
-	InkRuntime().handle_story_exception(message)
+static func throw_story_exception(message: String, use_end_line_number = false):
+	InkRuntime().handle_story_exception(message, use_end_line_number)
 
-static func throw_argument_exception(message):
-	print_stack_trace()
+static func throw_argument_exception(message: String):
 	InkRuntime().handle_argument_exception(message)
-
-static func print_stack_trace():
-	print("Stacktrace:")
-	var i = 1
-	for stack_element in get_stack():
-		if i <= 3:
-			i += 1
-			continue
-
-		print(str(
-			"    ", (i - 3), " ", stack_element["source"], ":",
-			stack_element["line"], "  (", stack_element["function"] ,")"
-		))
-
-		i += 1
 
 # ############################################################################ #
 # Assertions

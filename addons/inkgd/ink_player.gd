@@ -14,6 +14,8 @@ class_name InkPlayer
 # Imports
 # ############################################################################ #
 
+var ErrorType = preload("res://addons/inkgd/runtime/error.gd").ErrorType
+
 var InkRuntime = load("res://addons/inkgd/runtime.gd")
 var InkResource = load("res://addons/inkgd/editor/import_plugins/ink_resource.gd")
 var Story = load("res://addons/inkgd/runtime/story.gd")
@@ -29,7 +31,7 @@ signal exception_raised(message)
 
 ## Emitted when the story encountered an error. These errors are usually
 ## recoverable.
-signal story_error(message, type)
+signal error_encountered(message, type)
 
 ## Emitted with `true` when the runtime had loaded the JSON file and created
 ## the story. If an error was encountered, `successfully` will be `false` and
@@ -166,7 +168,6 @@ var has_choices: bool setget , get_has_choices
 func get_has_choices() -> bool:
 	return !self.current_choices.empty()
 
-
 # ############################################################################ #
 # Private Properties
 # ############################################################################ #
@@ -197,12 +198,15 @@ func _exit_tree():
 ## method is reported through the 'story_loaded' signal.
 func create_story():
 	if ink_file == null:
-		_push_error("'ink_file' is 'Nil', did Godot import the resource correctly?")
+		_push_error("'ink_file' is 'Nil', did Godot import the resource correctly?", ErrorType.ERROR)
 		call_deferred("emit_signal", "loaded", false)
 		return
 
 	if !("json" in ink_file) || typeof(ink_file.json) != TYPE_STRING:
-		_push_error("'ink_file' doesn't have the appropriate resource type. Are you sure you imported a JSON file?")
+		_push_error(
+				"'ink_file' doesn't have the appropriate resource type. Are you sure you imported a JSON file?",
+				ErrorType.ERROR
+		)
 		call_deferred("emit_signal", "loaded", false)
 		return
 
@@ -445,10 +449,10 @@ func _exception_raised(message):
 
 
 func _on_error(message, type):
-	if get_signal_connection_list("on_error").size() == 0:
-		printerr(message) # TODO: Deal with type.
+	if get_signal_connection_list("error_encountered").size() == 0:
+		_push_error(message, type)
 	else:
-		emit_signal("story_error", message, type)
+		emit_signal("error_encountered", message, type)
 
 
 func _on_did_continue():
@@ -522,16 +526,22 @@ func _current_platform_supports_threads():
 
 
 func _push_null_story_error():
-	_push_error("The story is 'Nil', was it loaded properly?")
+	_push_error("The story is 'Nil', was it loaded properly?", ErrorType.ERROR)
 
 
 func _push_null_state_error(variable: String):
 	var message = "'%s' is 'Nil', the internal state is corrupted or missing, this is an unrecoverable error."
-	_push_error(message % variable)
+	_push_error(message % variable, ErrorType.ERROR)
 
 
-func _push_error(message: String):
-	if Engine.is_editor_hint():
-		printerr(message)
+func _push_error(message: String, type: int):
+	if Engine.editor_hint:
+		match type:
+			ErrorType.ERROR: printerr(message)
+			ErrorType.WARNING: print(message)
+			ErrorType.AUTHOR: print(message)
 	else:
-		push_error(message)
+		match type:
+			ErrorType.ERROR: push_error(message)
+			ErrorType.WARNING: push_warning(message)
+			ErrorType.AUTHOR: push_warning(message)

@@ -11,6 +11,8 @@ extends Node
 # Imports
 # ############################################################################ #
 
+var ErrorType = preload("res://addons/inkgd/runtime/error.gd").ErrorType
+
 var ChoiceContainer = load("res://examples/scenes/common/choice_container.tscn")
 var LineLabel = load("res://examples/scenes/common/label.tscn")
 
@@ -19,7 +21,7 @@ var LineLabel = load("res://examples/scenes/common/label.tscn")
 # Constants
 # ############################################################################ #
 
-const USE_SIGNALS = false
+const USE_SIGNALS = true
 
 
 # ############################################################################ #
@@ -121,9 +123,19 @@ func _choice_selected(index):
 	_ink_player.choose_choice_index(index)
 	_continue_story()
 
-func _exception(message):
+func _exception_raised(message):
 	# This method gives a chance to react to a story-breaking exception.
+	printerr(message)
 	pass
+
+func _error_encountered(message, type):
+	match type:
+		ErrorType.ERROR:
+			printerr(message)
+		ErrorType.WARNING:
+			print(message)
+		ErrorType.AUTHOR:
+			print(message)
 
 # ############################################################################ #
 # Private Methods
@@ -161,4 +173,5 @@ func _connect_optional_signals():
 	_ink_player.connect("prompt_choices", self, "_prompt_choices")
 	_ink_player.connect("ended", self, "_ended")
 
-	_ink_player.connect("exception", self, "_exception")
+	_ink_player.connect("exception_raised", self, "_exception_raised")
+	_ink_player.connect("error_encountered", self, "_error_encountered")
