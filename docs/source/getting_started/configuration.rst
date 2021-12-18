@@ -7,17 +7,19 @@ GDScript don't support them, it uses a singleton node instead. This runtime
 node must be added to the scene tree before executing any of the methods
 of the GDScript API.
 
-There are three major ways to deal with the runtime node.
+By default, the singleton node is autoconfigured an AutoLoad singleton,
+but there are other methods you may want to explore depending on your needs.
 
 .. _autoload-singletons:
 
 Project-wide AutoLoad singletons
 --------------------------------
 
-If you enabled the editor plugin, the runtime node will be added as an
-AutoLoad singleton in your project automatically (unless you manually removed
-it afterwards). It's also possible to manually add
-``res://addons/inkgd/runtime.gd`` to the AutoLoad list.
+As said above, this is the default configuration. The runtime node is added in
+your project automatically as long as the editor plugin is enabled.
+
+It's also possible to add ``res://addons/inkgd/runtime.gd`` to the AutoLoad list
+manually if it doesn't appear in the list or was previously removed.
 
 .. image:: img/introduction/auto_load_file_button.png
     :align: center
@@ -37,16 +39,18 @@ it afterwards). It's also possible to manually add
 
 |
 
-When added as an AutoLoad singleton, the node will remain present int the scene
-tree even when the current scene is changed.
+When added as an AutoLoad singleton, the node will remain in the scene tree even
+when the current scene changes.
 
-InkPlayer Node
---------------
 
-``InkPlayer`` is a custom node provided by the plugin. It will also add the
-runtime node automatically if it's not already present in the scene tree. When
-added by ``InkPlayer``, the runtime node will be removed as soon as the node is
-itself removed from the scene tree.
+InkPlayer
+---------
+
+:ref:`InkPlayer<class_inkplayer>` is a custom node provided by the plugin. It
+will also add the runtime node automatically if it's not already present in the
+scene tree. When added by InkPlayer, the runtime node will be removed as soon as
+InkPlayer is itself removed from the scene tree.
+
 
 Adding the runtime node manually
 --------------------------------
