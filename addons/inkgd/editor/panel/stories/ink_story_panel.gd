@@ -349,6 +349,9 @@ func _add_new_story_configuration() -> InkStoryConfiguration:
 	var count = _story_configuration_container.get_child_count()
 	story_configuration.story_label.text = "Story %d" % count
 
+	var show_folder = (configuration.compilation_mode == InkConfiguration.BuildMode.AFTER_CHANGE)
+	story_configuration.show_watched_folder(show_folder)
+
 	return story_configuration
 
 

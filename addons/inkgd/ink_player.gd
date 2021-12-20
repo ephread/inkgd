@@ -553,8 +553,6 @@ func _finalise_story_creation():
 		_push_error("InkRuntime not found, did you remove it from the tree?", ErrorType.ERROR)
 		return
 
-	ink_runtime.connect("exception_raised", self, "_exception_raised")
-
 	emit_signal("loaded", true)
 
 
@@ -565,6 +563,8 @@ func _add_runtime():
 	if runtime == null:
 		_manages_runtime = true
 		runtime = InkRuntime.init(get_tree().root)
+
+	runtime.connect("exception_raised", self, "_exception_raised")
 
 	_ink_runtime = weakref(runtime)
 

@@ -112,13 +112,13 @@ func append_new_story_configuration(
 		TARGET_FILE_PATH: target_file_path,
 		WATCHED_FOLDER_PATH: wacthed_folder_path
 	})
-	
+
 	emit_signal("story_configuration_changed")
 
 func remove_story_configuration_at_index(index: int):
 	if index >= 0 && index < stories.size():
 		stories.remove(index)
-		
+
 		emit_signal("story_configuration_changed")
 
 func get_story_configuration_at_index(index):
@@ -150,7 +150,7 @@ func _retrieve_inklecate():
 	use_mono = _compiler_config_file.get_value(INKGD_SECTION, USE_MONO, false)
 	mono_path = _compiler_config_file.get_value(INKGD_SECTION, MONO_PATH, "")
 	inklecate_path = _compiler_config_file.get_value(INKGD_SECTION, INKLECATE_PATH, "")
-	
+
 	if _compiler_config_file.get_value(FORMAT_SECTION, VERSION, 0) >= 2:
 		compilation_mode = _compiler_config_file.get_value(INKGD_SECTION, COMPILATION_MODE, 0)
 
@@ -160,14 +160,14 @@ func _retrieve_ink():
 	if err != OK:
 		# Assuming it doesn't exist.
 		return
-	
+
 	if _ink_config_file.get_value(FORMAT_SECTION, VERSION, 0) >= 2:
 		stories = _ink_config_file.get_value(INKGD_SECTION, STORIES, DEFAULT_STORIES)
 	else:
 		var source_file_path = _ink_config_file.get_value(INKGD_SECTION, SOURCE_FILE_PATH, "")
 		var target_file_path = _ink_config_file.get_value(INKGD_SECTION, TARGET_FILE_PATH, "")
 		var watched_folder_path = _ink_config_file.get_value(INKGD_SECTION, WATCHED_FOLDER_PATH, "")
-		
+
 		stories[0] = {
 			SOURCE_FILE_PATH: source_file_path,
 			TARGET_FILE_PATH: target_file_path,
@@ -177,7 +177,7 @@ func _retrieve_ink():
 ## Stores the content of the inklecate configuration to the disk.
 func _persist_inklecate():
 	_compiler_config_file.set_value(FORMAT_SECTION, VERSION, COMPILER_CONFIG_FORMAT_VERSION)
-	
+
 	_compiler_config_file.set_value(INKGD_SECTION, USE_MONO, use_mono)
 	_compiler_config_file.set_value(INKGD_SECTION, MONO_PATH, mono_path)
 	_compiler_config_file.set_value(INKGD_SECTION, INKLECATE_PATH, inklecate_path)
@@ -192,10 +192,10 @@ func _persist_ink():
 	# Clean up the file if it was created before version 2.
 	if _ink_config_file.has_section_key(INKGD_SECTION, SOURCE_FILE_PATH):
 		_ink_config_file.erase_section_key(INKGD_SECTION, SOURCE_FILE_PATH)
-	
+
 	if _ink_config_file.has_section_key(INKGD_SECTION, TARGET_FILE_PATH):
 		_ink_config_file.erase_section_key(INKGD_SECTION, TARGET_FILE_PATH)
-	
+
 	# Write version 2 values.
 	_ink_config_file.set_value(FORMAT_SECTION, VERSION, COMPILER_CONFIG_FORMAT_VERSION)
 	_ink_config_file.set_value(INKGD_SECTION, STORIES, stories)

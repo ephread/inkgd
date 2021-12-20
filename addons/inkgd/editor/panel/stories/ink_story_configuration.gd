@@ -68,11 +68,11 @@ func _ready():
 	_apply_custom_header_color()
 	_set_button_icons()
 	_connect_signals()
-	
+
 	show_watched_folder(false)
 
 # ############################################################################ #
-# Signals 
+# Signals
 # ############################################################################ #
 
 func _configuration_entered(new_text):
@@ -85,8 +85,8 @@ func _configuration_focus_exited():
 
 func _remove_button_pressed():
 	emit_signal("remove_button_pressed", self)
-	
-	
+
+
 func _build_button_pressed():
 	emit_signal("build_button_pressed", self)
 
@@ -125,7 +125,7 @@ func _set_button_icons():
 	source_file_dialog_button.icon = folder_icon
 	target_file_dialog_button.icon = folder_icon
 	watched_folder_dialog_button.icon = folder_icon
-	
+
 	var trash_icon = get_icon("Remove", "EditorIcons")
 	remove_button.icon = trash_icon
 
@@ -133,10 +133,10 @@ func _set_button_icons():
 func _connect_signals():
 	source_file_line_edit.connect("text_entered", self, "_configuration_entered")
 	source_file_line_edit.connect("focus_exited", self, "_configuration_focus_exited")
-	
+
 	target_file_line_edit.connect("text_entered", self, "_configuration_entered")
 	target_file_line_edit.connect("focus_exited", self, "_configuration_focus_exited")
-	
+
 	source_file_dialog_button.connect("pressed", self, "_source_file_button_pressed")
 	target_file_dialog_button.connect("pressed", self, "_target_file_button_pressed")
 	watched_folder_dialog_button.connect("pressed", self, "_watched_folder_button_pressed")
