@@ -553,7 +553,7 @@ func _finalise_story_creation():
 		_push_error("InkRuntime not found, did you remove it from the tree?", ErrorType.ERROR)
 		return
 
-	ink_runtime.connect_exception("exception_raised", self, "_exception_raised")
+	ink_runtime.connect("exception_raised", self, "_exception_raised")
 
 	emit_signal("loaded", true)
 
