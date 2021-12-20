@@ -1,8 +1,8 @@
 # Change Log
 Important changes to _inkgd_ will be documented in this file.
 
-## 0.4.0
-Released on 2021-XX-XX.
+## [0.4.0](https://github.com/ephread/inkgd/releases/tag/0.4.0)
+Released on 2021-12-20.
 
 ### Changed
 - Rewrote the editor plugin.

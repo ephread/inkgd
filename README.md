@@ -2,8 +2,8 @@
 
 [![build](https://github.com/ephread/inkgd/workflows/build/badge.svg)](https://github.com/ephread/inkgd/actions)
 [![Documentation Status](https://readthedocs.org/projects/inkgd/badge/?version=latest)](https://inkgd.readthedocs.io/en/latest/?badge=latest)
-![Version](https://img.shields.io/badge/version-0.3.0-orange.svg)
-![Godot Version](https://img.shields.io/badge/godot-3.1+-blue.svg)
+![Version](https://img.shields.io/badge/version-0.4.0-orange.svg)
+![Godot Version](https://img.shields.io/badge/godot-3.3+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
 Implementation of [inkle’s Ink] in pure GDScript, with editor support.
@@ -41,7 +41,7 @@ and don’t mind C#, you should consider using [godot-ink].
 	- [x] Integrated story previewer
 
 ## Requirements
-- Godot 3.4+
+- Godot 3.3+
 - Inklecate 1.0.0+
 
 ## Asking Questions / Contributing
@@ -62,7 +62,8 @@ If you want to contribute, be sure to take a look at [the contributing guide].
 
 ## Installation & Getting Started
 
-*inkgd* is available on Godot's [Asset Library]. The full documentation is hosted on [Read The Docs].
+*inkgd* is available on Godot's [Asset Library]. The full documentation is
+hosted on [Read The Docs].
 
 [Asset Library]: http://godotengine.org/asset-library/asset/349
 [Read The Docs]: https://inkgd.readthedocs.io/en/latest/
@@ -80,6 +81,7 @@ If you want to contribute, be sure to take a look at [the contributing guide].
 |      0.2.2      |       0.9.0       |   3.2 – 3.2.3   |
 |      0.2.3      |       0.9.0       |    3.2 – 3.4    |
 |      0.3.0      |       1.0.0       |    3.2 – 3.4    |
+|      0.4.0      |       1.0.0       |    3.3 – 3.4    |
 
 ## Acknowledgement
 
