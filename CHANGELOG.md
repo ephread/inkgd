@@ -1,6 +1,19 @@
 # Change Log
 Important changes to _inkgd_ will be documented in this file.
 
+## 0.4.0
+Released on 2021-XX-XX.
+
+### Changed
+- Rewrote the editor plugin.
+- Moved the panel to the bottom panel.
+
+### Added
+- Added `InkPlayer` a new convenience node to play Ink stories.
+- Added a preview tab in the editor panel.
+- Added support for multiple stories.
+- Added support for JSON files, treating them as resources.
+
 ## [0.3.0](https://github.com/ephread/inkgd/releases/tag/0.3.0)
 Released on 2021-11-27.
 
