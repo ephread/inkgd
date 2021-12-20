@@ -44,6 +44,7 @@ If you prefer a more hands-on approach, feel free to tinker with the
    advanced/differences_between_api
    advanced/error_management
    advanced/performance
+   advanced/migrating_to_godot_ink
 
 .. toctree::
    :maxdepth: 2
