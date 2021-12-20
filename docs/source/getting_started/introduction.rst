@@ -18,7 +18,7 @@ two documents from the original documentation:
 .. _`Running your Ink`: https://github.com/inkle/ink/blob/master/Documentation/RunningYourInk.md
 
 The GDScript API is 100% compatible with the original C# API, except for a
-couple of minor divergences to accomodate the differences between the two
+couple of minor divergences accomodating the differences between the two
 languages. For more information, see :doc:`/advanced/differences_between_api`.
 
 .. note::
@@ -26,11 +26,13 @@ languages. For more information, see :doc:`/advanced/differences_between_api`.
     *inkgd* provides no GUI, only text. It's up to you to decide how to present
     the content to your players.
 
-Playing a story typically involves calling ``InkPlayer.continue_story()`` until
-a branch is found, then presenting an array of choices to the player and
-reporting back the selected choice through its index. Finally, repeating the
-process from the beginning (i. e. calling ``continue_story()`` until another
-branch is found).
+Playing a story typically involves repeating the following three steps until
+the story reaches its end:
+
+1. calling ``InkPlayer.continue_story()`` until a branch is found;
+2. presenting an array of choices to the player;
+3. reporting back the selected choice through
+   ``InkPlayer.choose_choice_index()``.
 
 .. flowchart.svg contains an editable copy of the original diagram.
 .. if you need to edit it, you can load it up in draw.io.

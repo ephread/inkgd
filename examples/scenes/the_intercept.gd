@@ -16,6 +16,7 @@ var ErrorType = preload("res://addons/inkgd/runtime/error.gd").ErrorType
 var ChoiceContainer = load("res://examples/scenes/common/choice_container.tscn")
 var LineLabel = load("res://examples/scenes/common/label.tscn")
 
+var Profiler = load("res://examples/scenes/common/profiler.gd")
 
 # ############################################################################ #
 # Constants
@@ -29,6 +30,7 @@ const USE_SIGNALS = true
 # ############################################################################ #
 
 var _current_choice_container: ChoiceContainer
+var _profiler: Profiler = Profiler.new()
 
 
 # ############################################################################ #
@@ -50,6 +52,8 @@ func _ready():
 		_connect_optional_signals()
 
 	_connect_signals()
+
+	_profiler.start()
 	_ink_player.create_story()
 
 
@@ -78,6 +82,9 @@ func _continue_story():
 func _loaded(successfully: bool):
 	if !successfully:
 		return
+
+	_profiler.stop()
+	print("Created The Intercept in %d ms." % _profiler.milliseconds_elaspsed)
 
 	_bind_externals()
 	_continue_story()

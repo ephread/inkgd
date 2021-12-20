@@ -13,7 +13,6 @@ Description
 A convenience node to run *inkgd*. Additional information on how to use it is
 available in :doc:`../advanced/using_inkplayer`.
 
-
 Properties
 ----------
 
@@ -645,3 +644,5 @@ in a dictionary of the form:
 
 .. _Node: https://docs.godotengine.org/en/stable/classes/class_node.html
 .. _Resource:  https://docs.godotengine.org/en/stable/classes/class_resource.html
+
+.. _`VariablesState.cs`: https://github.com/inkle/ink/blob/v1.0.0/ink-engine-runtime/VariablesState.cs

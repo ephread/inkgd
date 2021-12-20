@@ -42,6 +42,24 @@ var should_pause_execution_on_exception: bool = true
 var should_pause_execution_on_error: bool = true
 
 # ############################################################################ #
+
+var should_pause_execution_on_runtime_error setget set_speore, get_speore
+func get_speore():
+	printerr("'should_pause_execution_on_runtime_error' is deprecated, use 'should_pause_execution_on_exception' instead.")
+	return should_pause_execution_on_exception
+func set_speore(value):
+	printerr("'should_pause_execution_on_runtime_error' is deprecated, use 'should_pause_execution_on_exception' instead.")
+	should_pause_execution_on_exception = value
+
+var should_pause_execution_on_story_error setget set_speose, get_speose
+func get_speose():
+	printerr("'should_pause_execution_on_story_error' is deprecated, use 'should_pause_execution_on_error' instead.")
+	return should_pause_execution_on_error
+func set_speose(value):
+	printerr("'should_pause_execution_on_story_error' is deprecated, use 'should_pause_execution_on_error' instead.")
+	should_pause_execution_on_error = value
+
+# ############################################################################ #
 # Original Static Properties
 # ############################################################################ #
 
@@ -82,7 +100,7 @@ func handle_exception(message: String):
 			stack_trace
 	)
 
-	emit_signal("exception", exception_message)
+	emit_signal("exception_raised", exception_message)
 
 func handle_argument_exception(message: String):
 	var exception_message = "ARGUMENT EXCEPTION: %s" % message
@@ -94,7 +112,7 @@ func handle_argument_exception(message: String):
 			stack_trace
 	)
 
-	emit_signal("exception", exception_message, stack_trace)
+	emit_signal("exception_raised", exception_message, stack_trace)
 
 func handle_story_exception(message: String, use_end_line_number: bool):
 	if record_story_exceptions:
@@ -106,7 +124,7 @@ func handle_story_exception(message: String, use_end_line_number: bool):
 	_handle_generic_exception(exception_message, should_pause_execution_on_error, stack_trace)
 
 	if !record_story_exceptions:
-		emit_signal("exception", exception_message, stack_trace)
+		emit_signal("exception_raised", exception_message, stack_trace)
 
 # ############################################################################ #
 # Private Methods
@@ -140,8 +158,8 @@ func _get_stack_trace() -> PoolStringArray:
 			continue
 
 		trace.append(str(
-				"    ", (i - 3), " ", stack_element["source"], ":",
-				stack_element["line"], "  (", stack_element["function"] ,")"
+				"    ", (i - 3), " - ", stack_element["source"], ":",
+				stack_element["line"], " - at function: ", stack_element["function"]
 		))
 
 		i += 1

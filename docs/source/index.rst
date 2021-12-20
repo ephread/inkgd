@@ -8,22 +8,24 @@
 |
 
 Welcome to the official documentation of *inkgd*, an implementation of Ink's
-runtime in pure GDScript for Godot.
+runtime for Godot, in pure GDScript.
 
-The table of contents below as well as the sidebar should let you easily find
-the topic you are looking for. If it's your first time using *inkgd*, we
+The table of contents below, as well as the sidebar, should let you easily find
+the topic you're looking for. If it's your first time using *inkgd*, we
 recommend you start with :doc:`getting_started/introduction` first.
 
-Feel free to take a look in the `example directory`_ and run
-``the_intercept.tscn``, which plays *The Intercept*.
+If you prefer a more hands-on approach, feel free to tinker with the
+`example project`_ (*inkgd*'s repository is the example project itself).
 
-.. _`example directory`: https://github.com/ephread/inkgd/tree/main/examples
+.. _`example project`: https://github.com/ephread/inkgd/
 
 .. note::
 
    *inkgd* has a .gitattributes file which makes sure that only ``addons/inkgd``
-   is added to the Github archive. The only way to get the example folder (and
-   a bunch of other important files) is to clone the project.
+   is added to the Github archive. The only way to get the example folder and
+   the project file is to clone the project.
+
+.. .......................................................................... ..
 
 .. toctree::
    :maxdepth: 1
@@ -37,10 +39,11 @@ Feel free to take a look in the `example directory`_ and run
    :maxdepth: 1
    :caption: Advanced
 
+   advanced/using_inkplayer
    advanced/editor_plugin/index
    advanced/differences_between_api
-   advanced/using_inkplayer
-   advanced/exception_error_management
+   advanced/error_management
+   advanced/performance
 
 .. toctree::
    :maxdepth: 2

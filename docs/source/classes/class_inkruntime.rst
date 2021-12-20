@@ -80,6 +80,9 @@ When set to ``true``, *inkgd* skips saving global values that remain
 equal to the initial values that were declared in ink. This property matches
 the static property declared in `VariablesState.cs`_.
 
+.. Those links are duplicated.
+.. TODO: Use sphinx.ext.extlinks?
+
 .. _`VariablesState.cs`: https://github.com/inkle/ink/blob/v1.0.0/ink-engine-runtime/VariablesState.cs
 
 .. _bool: https://docs.godotengine.org/en/stable/classes/class_bool.html

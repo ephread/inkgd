@@ -548,7 +548,12 @@ func _finalise_story_creation():
 	_story.connect("on_complete_evaluate_function", self, "_on_complete_evaluate_function")
 	_story.connect("on_choose_path_string", self, "_on_choose_path_string")
 
-	_story.connect_exception(self, "_exception_raised")
+	var ink_runtime = _ink_runtime.get_ref()
+	if ink_runtime == null:
+		_push_error("InkRuntime not found, did you remove it from the tree?", ErrorType.ERROR)
+		return
+
+	ink_runtime.connect_exception("exception_raised", self, "_exception_raised")
 
 	emit_signal("loaded", true)
 

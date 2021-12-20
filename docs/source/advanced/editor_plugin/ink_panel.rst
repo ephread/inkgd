@@ -18,14 +18,14 @@ configuration settings.
     The configuration settings defined in this tab are saved in
     ``.inkgd_compiler.cfg``. If you work in a team, it's recommended to keep
     this file out of version control, as the environment may differ between
-    members.
+    team members.
 
 Basic Configuration
 *******************
 
-To let plugin know where inklecate is located, click on the folder icon opposite
-of the *Executable* field and navigate to the desired binary. You can also paste
-the path directly in the field.
+To let the plugin know where inklecate is located, click on the folder icon
+opposite of the *Executable* field and navigate to the desired binary. You can
+also paste the path directly in the field.
 
 Click on *Test configuration*. If the selected executable is valid, a
 dialog will appear and confirm that inklecate was successfully executed by the
@@ -58,7 +58,7 @@ During build
 
 On change
     an experimental feature, recompiling the stories when changes are detected
-    in ink files. For more information, see :ref:`below <watched-directory>`.
+    in ink files. For more information, see :ref:`below<watched-directory>`.
 
 .. warning::
 
@@ -69,9 +69,10 @@ Custom Mono / .NET Core Runtimes
 ********************************
 
 On platforms other than Windows, advanced users can use specific versions of
-.NET runtimes or custom inklecates that don't come bundled with a Mono runtime.
-By ticking the *Use Mono / .NET Core* checkbox, a new configuration field will
-appear. This field expects a path to the .NET runtime you want to use.
+.NET runtimes with custom inklecates that don't come bundled with a Mono
+runtime. By ticking the *Use Mono / .NET Core* checkbox, a new configuration
+field will appear. This field expects a path to the .NET runtime you want to
+use.
 
 .. image:: img/ink_panel/ink_panel_configuration_mono.png
     :align: center
@@ -83,8 +84,7 @@ appear. This field expects a path to the .NET runtime you want to use.
 Story tab
 ---------
 
-In the Ink panel, select the *Story* tab to let the plugin manage Ink stories
-in the project.
+In the Ink panel, select the *Story* tab to manage Ink stories in the project.
 
 .. note::
 
@@ -99,7 +99,7 @@ in the project.
 |
 
 There should be no stories yet, so click on *New Story* to start registering
-new stories.
+a new story.
 
 .. image:: img/ink_panel/ink_panel_stories.png
     :align: center
@@ -107,8 +107,8 @@ new stories.
 
 |
 
-To manage stories, the plugin expect two paths. The path to the main ink file
-that should be compiled (*Source File*) and where to write the compiled story,
+To manage a story, the plugin expect two paths. The path to the main Ink file
+that should be compiled (*Source File*) and where to write the compiled story
 (*Target File*). Both files need to be inside the project's file system, thus
 they can be accessed through the regular ``res://`` scheme. To set the path of
 the source file, either click on the folder icon or paste the path in the field
@@ -132,12 +132,12 @@ on each *Compile* button.
 
 |
 
+.. _watched-directory:
+
 When the selected recompilation mode is *On change*, each entry shows an
 additional field specifying which folder to watch. Any *\*.ink* file under that
 folder that is reimported by Godot (i. e. changed externally) will trigger a
 recompilation.
-
-.. _watched-directory:
 
 .. image:: img/ink_panel/ink_panel_stories_watched.png
     :align: center
@@ -180,7 +180,7 @@ At any point during the execution, you can press *Clear* to remove all the
 previous lines.
 
 The previewer automatically unfolds the story until it encounters a branch.
-When input in required, choices are displayed on the right side as buttons.
+When input in required, choices are displayed on the right side of the panel.
 
 .. image:: img/ink_panel/ink_panel_preview_playing.png
     :align: center

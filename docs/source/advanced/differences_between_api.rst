@@ -20,7 +20,7 @@ Functions are all snake_cased rather than CamelCased. For instance
 
 Since GDScript doesn't support static properties, any static property was moved
 into a singleton node called :doc:`/classes/class_inkruntime` which needs to be
-added to the root object current tree before starting the story.
+added to the current tree before starting the story.
 
 This singleton node is added to the AutoLoad list of your project automatically
 when the editor plugin is activated. If you don't want to use the plugin, the
@@ -192,7 +192,8 @@ encountered during ``story.continue()``, the story may be inconsistent state
 even though it can still move forward after calling ``story.reset_errors()``.
 
 Runtime exceptions are emitted through
-:ref:`exception_raised<class_inkruntime_exception_raised>`.
+:ref:`exception_raised<class_inkruntime_exception_raised>`. For more
+information, refer to :doc:`this document</advanced/error_management>`.
 
 .. note::
 
@@ -200,12 +201,13 @@ Runtime exceptions are emitted through
     signals and fowards
     :ref:`exception_raised<class_inkruntime_exception_raised>`.
 
+
 Getting the ouput of ``evaluate_function``
 ------------------------------------------
 
 ``evaluate_function`` evaluates an Ink function from GDScript. Since it's not
-possible to have in-out variables in GDScript, if you want to retrieve the text
-output of the function, you need to pass ``true`` to ``return_text_output``.
+possible to have in-out variables in GDScript you need to pass ``true`` to
+``return_text_output`` to retrieve the text output of the function.
 ``evaluate_function`` will then return a dictionary containing both the return
 value and the outputed text.
 
@@ -232,3 +234,8 @@ value and the outputed text.
     :doc:`/classes/class_inkplayer` splits this function into two different
     functions, ``evaluate_function`` and ``evaluate_function_and_get_output``,
     instead of a boolean flag.
+
+Observing Variables
+-------------------
+
+To be added.

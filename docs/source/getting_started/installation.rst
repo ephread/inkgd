@@ -13,11 +13,11 @@ then search for *inkgd*.
 
 |
 
-Select *inkgd* from author *ephread*.
+Select *inkgd*.
 
 .. image:: img/introduction/asset_lib_inkgd.png
     :align: center
-    :alt: The AssetLib tab, showing an "inkgd" item.
+    :alt: The AssetLib tab, showing an "inkgd" item published by ephread.
 
 |
 
@@ -57,7 +57,7 @@ The new files should appear in the FileSystem dock, under the *addons* folder.
 
 |
 
-*inkgd* also comes with an editor plugin to manage Ink stories. The plugin
+*inkgd* also provides with an editor plugin to manage Ink stories. The plugin
 should be enabled by default, but it can be disabled from the project settings.
 (*Project > Project Settings > Plugins*).
 

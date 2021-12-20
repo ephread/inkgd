@@ -42,7 +42,7 @@ func test_multiple_constant_references():
 
 	assert_eq(story.continue(), "success\n")
 
-func test_set_non_existant_variable():
+func test_set_non_existent_variable():
 	var story = Story.new(load_file("set_non_existant_variable"))
 
 	assert_eq(story.continue(), "Hello world.\n")

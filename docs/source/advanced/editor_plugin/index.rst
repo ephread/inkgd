@@ -18,8 +18,8 @@ Settings* and, in the *Plugins* tab, enable *InkGD*.
 |
 
 .. note::
-    To take full advantage of the panel, it is recommended that you download
-    latest compatible version of inklecate for your system here_.
+    To take full advantage of the panel, it's recommended that you download
+    the latest compatible version of inklecate for your system here_.
 
 .. _here: https://github.com/inkle/ink/releases
 

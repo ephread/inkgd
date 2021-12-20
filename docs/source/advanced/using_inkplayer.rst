@@ -1,22 +1,27 @@
 Using InkPlayer
 ===============
 
-Activating the editor plugin registers a custom node that greatly simplifies
-the use of Ink in Godot. While it's possible to instantiate ``story.gd``
-directly, it's highly recommended that you use
-:doc:`../classes/class_inkplayer`. instead.
+InkPlayer is a custom node that greatly simplifies the use of Ink in Godot.
 
 ``story.gd`` is a direct port of ``Story.cs``, to use it in any engine, a bit
 of boilerplate code is necessary. InkPlayer takes care of that boilerplate
 so you can focus on building your game.
 
-``the_intercept.tscn`` and ``the_intercept.gd`` contain a real world example of
-how InkPlayer can be used. They are found in the `example directory`_.
+While it's possible to instantiate ``story.gd`` directly, it's highly
+recommended that you use InkPlayer instead.
 
-.. _`example directory`: https://github.com/ephread/inkgd/tree/main/examples
+In addition to reading this document, feel free to glance at
+`the_intercept.tscn`_ and `the_intercept.gd`_, which use InkPlayer to run
+*The Intercept*.
+
+.. note::
+
+    InkPlayer's API documentation is available
+    :doc:`here <../classes/class_inkplayer>`.
+
 
 Main differences with *story.gd*
-***************************************************
+--------------------------------
 
 1. InkPlayer takes a resource as its input, rather than a string containing
    the JSON bytecode.
@@ -26,19 +31,26 @@ Main differences with *story.gd*
 
 3. It adds convenience methods to save and load the story state.
 
-4. It simplifies certain APIs, such as :ref:`evaluate_function<class_inkplayer_evaluate_function>`
-   or :ref:`remove_variable_observer<class_inkplayer_remove_variable_observer>`.
+4. It simplifies certain APIs, such as
+   :ref:`evaluate_function<class_inkplayer_evaluate_function>`
+   or
+   :ref:`remove_variable_observer<class_inkplayer_remove_variable_observer>`.
+
 
 Loop-based vs. signal-based flow
-********************************
+--------------------------------
 
 InkPlayer can be used in two different ways. The examples below are
 incomplete, for a working example, refer to `the_intercept.gd`_.
 
-.. _`the_intercept.gd`: https://github.com/ephread/inkgd/blob/main/examples/scenes/the_intercept.gd
+.. warning::
+
+    The example below are not complete. For a working example, refer to
+    `the_intercept.gd`_.
+
 
 Loop-based
-''''''''''
+**********
 
 This is the traditional way to use Ink.
 
@@ -81,8 +93,9 @@ This is the traditional way to use Ink.
             # This code runs when the story reaches it's end.
             print("The End")
 
+
 Signal-based
-''''''''''''
+************
 
 Using signals makes the code a little bit more idiomatic for Godot. It's also
 more flexible.
@@ -130,8 +143,9 @@ more flexible.
         _ink_player.choose_choice_index(index)
         _continue_story()
 
+
 Loading the story from a background thread
-******************************************
+------------------------------------------
 
 For bigger stories, loading the compiled story into the runtime can take a
 long time (more than a second). To avoid blocking the main thread, you may
@@ -153,3 +167,6 @@ in code.
 On platforms that don't support threads, the feature is automatically disabled
 regardles of the value of
 :ref:`loads_in_background<class_inkplayer_loads_in_background>`.
+
+.. _`the_intercept.tscn`: https://github.com/ephread/inkgd/blob/main/examples/scenes/the_intercept.tscn
+.. _`the_intercept.gd`: https://github.com/ephread/inkgd/blob/main/examples/scenes/the_intercept.gd

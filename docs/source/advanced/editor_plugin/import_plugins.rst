@@ -16,17 +16,17 @@ recompilation when appropriate. For more information, refer to the section about
 
 .. note::
 
-    If you import Ink files, it's recommended that you exclude them from
-    exports, as they serve no purpose in the final game.
+    If you store Ink files in your project, it's recommended that you exclude
+    them from exports, as they serve no purpose in the final game.
 
 
 JSON Importer
 -------------
 
 The *\*.json* importer converts compiled stories into instances of
-``InkResource`` that can be passed to ``InkRunner``.
+*InkResource* that can be passed to :doc:`../../classes/class_inkplayer`.
 
-After loading an ``InkResource``, you can retrieve its JSON content through
+After loading an *InkResource*, you can retrieve its JSON content through
 the ``json`` property.
 
 .. code-block:: gdscript
@@ -35,5 +35,5 @@ the ``json`` property.
 
     print(bytecode.json)
 
-Since JSON file are very common and might be imported by multiple plugins,
+Since JSON files are very common and might be imported by multiple plugins,
 make sure to use the appropriate importer when reimporting them.
