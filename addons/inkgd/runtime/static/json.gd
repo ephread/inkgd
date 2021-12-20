@@ -7,6 +7,7 @@
 # inkgd is licensed under the terms of the MIT license.
 # ############################################################################ #
 
+tool
 extends Reference
 
 # In the C# code this class has only static methods. In the GDScript, it will rather

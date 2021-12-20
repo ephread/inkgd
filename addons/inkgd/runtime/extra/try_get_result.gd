@@ -8,6 +8,8 @@
 # inkgd is licensed under the terms of the MIT license.
 # ############################################################################ #
 
+tool
+
 extends Reference
 
 var exists = false # Bool

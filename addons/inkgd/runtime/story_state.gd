@@ -9,6 +9,7 @@
 # inkgd is licensed under the terms of the MIT license.
 # ############################################################################ #
 
+tool
 extends "res://addons/inkgd/runtime/ink_base.gd"
 
 # ############################################################################ #
@@ -547,11 +548,6 @@ func load_json_obj(jobject):
 	else:
 		self.previous_random = 0
 
-	# inkgd: Restore ability to continue.
-	var InkRuntime = _get_runtime()
-	if InkRuntime != null:
-		InkRuntime.should_interrupt = false
-
 # () -> void
 func reset_errors():
 	self.current_errors = null
@@ -976,17 +972,10 @@ func add_error(message, is_warning):
 		if self.current_errors == null:
 			self.current_errors = [] # Array<string>
 		self.current_errors.append(message)
-		if OS.is_debug_build():
-			var InkRuntime = _get_runtime()
-			if InkRuntime != null && InkRuntime.should_pause_execution_on_story_error:
-				assert(false, message)
-			else:
-				push_error(message)
 	else:
 		if self.current_warnings == null:
 			self.current_warnings = [] # Array<string>
 		self.current_warnings.append(message)
-		if OS.is_debug_build(): push_warning(message)
 
 # () -> void
 func output_stream_dirty():

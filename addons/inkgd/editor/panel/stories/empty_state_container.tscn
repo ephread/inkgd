@@ -1,0 +1,13 @@
+[gd_scene format=2]
+
+[node name="EmptyStateContainer" type="CenterContainer"]
+margin_right = 1902.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 0, 100 )
+
+[node name="Label" type="Label" parent="."]
+margin_left = 879.0
+margin_top = 43.0
+margin_right = 1022.0
+margin_bottom = 57.0
+text = "No stories to compile."

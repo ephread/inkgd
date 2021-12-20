@@ -29,6 +29,8 @@ func test_invalid_as_INamedContent():
 
 	assert_eq(Utils.as_INamedContent_or_null(node), null)
 
+	node.free()
+
 # ############################################################################ #
 
 func test_trim_default():

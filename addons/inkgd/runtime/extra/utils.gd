@@ -7,51 +7,21 @@
 # inkgd is licensed under the terms of the MIT license.
 # ############################################################################ #
 
+tool
 extends Reference
 
 # ############################################################################ #
 # Exceptions
 # ############################################################################ #
 
-static func throw_exception(message):
-	var exception_message = str("Story execution will stop: ", message)
-	_schedule_story_for_interruption_with_error(exception_message)
+static func throw_exception(message: String):
+	InkRuntime().handle_exception(message)
 
-static func throw_story_exception(message):
-	var exception_message = str("Story execution will stop: ", message)
-	_schedule_story_for_interruption_with_error(exception_message)
+static func throw_story_exception(message: String, use_end_line_number = false):
+	InkRuntime().handle_story_exception(message, use_end_line_number)
 
-static func throw_argument_exception(message):
-	var exception_message = str("Story execution will stop: ", message)
-	_schedule_story_for_interruption_with_error(exception_message)
-
-static func _schedule_story_for_interruption_with_error(message):
-	var InkRuntime = InkRuntime()
-
-	InkRuntime.should_interrupt = true
-
-	if InkRuntime.should_pause_execution_on_runtime_error && OS.is_debug_build():
-		assert(false, message)
-	else:
-		push_error(message)
-		printerr(message)
-
-	print_stack_trace()
-
-static func print_stack_trace():
-	print("Stacktrace:")
-	var i = 1
-	for stack_element in get_stack():
-		if i <= 3:
-			i += 1
-			continue
-
-		print(str(
-			"    ", (i - 3), " ", stack_element["source"], ":",
-			stack_element["line"], "  (", stack_element["function"] ,")"
-		))
-
-		i += 1
+static func throw_argument_exception(message: String):
+	InkRuntime().handle_argument_exception(message)
 
 # ############################################################################ #
 # Assertions

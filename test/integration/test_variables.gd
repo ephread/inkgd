@@ -10,6 +10,27 @@ extends "res://test/integration/test_base.gd"
 
 var ErrorType = preload("res://addons/inkgd/runtime/error.gd").ErrorType
 
+var _temp_not_found_last_error_type = -1
+var _temp_not_found_error_count = 0
+
+var _exception_raised_count = 0
+
+# ############################################################################ #
+
+func before_all():
+	.before_all()
+	ink_runtime.connect("exception_raised", self, "_exception_raised")
+
+func after_all():
+	ink_runtime.disconnect("exception_raised", self, "_exception_raised")
+	.after_all()
+
+func after_each():
+	_temp_not_found_last_error_type = -1
+	_temp_not_found_error_count = 0
+
+	_exception_raised_count = 0
+
 # ############################################################################ #
 
 func test_const():
@@ -21,14 +42,14 @@ func test_multiple_constant_references():
 
 	assert_eq(story.continue(), "success\n")
 
-func test_set_non_existant_variable():
+func test_set_non_existent_variable():
 	var story = Story.new(load_file("set_non_existant_variable"))
 
 	assert_eq(story.continue(), "Hello world.\n")
 
 	story.variables_state.set("y", "earth")
-	var InkRuntime = get_tree().root.get_node("__InkRuntime")
-	assert_true(InkRuntime.should_interrupt)
+
+	assert_eq(_exception_raised_count, 1)
 
 func test_temp_global_conflict():
 	var story = Story.new(load_file("temp_global_conflict"))
@@ -94,8 +115,7 @@ func test_variable_get_set_api():
 	assert_eq(story.variables_state.get("z"), null)
 
 	story.variables_state.set("x", [])
-	var InkRuntime = get_tree().root.get_node("__InkRuntime")
-	assert_true(InkRuntime.should_interrupt)
+	assert_eq(_exception_raised_count, 1)
 
 func test_variable_pointer_ref_from_knot():
 	var story = Story.new(load_file("variable_pointer_ref_from_knot"))
@@ -114,9 +134,6 @@ func test_variable_tunnel():
 
 # ############################################################################ #
 
-var _temp_not_found_last_error_type = -1
-var _temp_not_found_error_count = 0
-
 func _temp_not_found_on_error(message, type):
 	_temp_not_found_last_error_type = type
 	_temp_not_found_error_count += 1
@@ -126,6 +143,10 @@ func _temp_not_found_had_warning():
 		_temp_not_found_last_error_type == ErrorType.WARNING &&
 		_temp_not_found_error_count == 1
 	)
+
+func _exception_raised(message):
+	_exception_raised_count += 1
+	printerr(message)
 
 # ############################################################################ #
 

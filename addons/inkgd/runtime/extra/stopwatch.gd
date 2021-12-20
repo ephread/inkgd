@@ -12,6 +12,8 @@
 # Less accurate than the original implemntation, but good enough for
 # the use-case.
 
+tool
+
 var _start_time = null
 
 var elapsed_milliseconds setget , get_elapsed_milliseconds

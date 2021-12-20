@@ -27,9 +27,6 @@ func after_all():
 	InkRuntime.deinit(get_tree().root)
 	ink_runtime = null
 
-func after_each():
-	ink_runtime.should_interrupt = false
-
 # ############################################################################ #
 
 func load_file(file_name):

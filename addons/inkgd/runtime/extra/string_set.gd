@@ -13,6 +13,7 @@
 
 # This simple set is designed to hold Strings only.
 
+tool
 extends Reference
 
 # ############################################################################ #
