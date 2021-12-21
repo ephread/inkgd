@@ -4,12 +4,10 @@ export.cfg
 export_presets.cfg
 
 # inkgd ignores
-
 .inkgd_compiler.cfg
 inkgd-issue-*
 
 # template ignores
-
 script_templates
 
 # sphinx build folder
@@ -17,3 +15,9 @@ docs/build
 
 # Visual Studio code
 .vscode
+
+# ipsuminious
+ipsuminious.ink
+ipsuminious.ink.json
+ipsuminious.ink.import
+ipsuminious.ink.json.import
