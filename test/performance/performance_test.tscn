@@ -1,8 +1,7 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://test/performance/performance_test.gd" type="Script" id=1]
 [ext_resource path="res://addons/inkgd/ink_player.gd" type="Script" id=2]
-[ext_resource path="res://test/performance/ink/ipsuminious.ink.json" type="Resource" id=3]
 [ext_resource path="res://examples/fonts/Vollkorn-Regular.tres" type="DynamicFont" id=4]
 [ext_resource path="res://examples/images/spinner.png" type="Texture" id=5]
 
@@ -33,7 +32,6 @@ __meta__ = {
 
 [node name="InkPlayer" type="Node" parent="."]
 script = ExtResource( 2 )
-ink_file = ExtResource( 3 )
 
 [node name="ColorRect" type="ColorRect" parent="."]
 anchor_right = 1.0

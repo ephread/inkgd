@@ -144,6 +144,10 @@ func _error_encountered(message, type):
 		ErrorType.AUTHOR:
 			print(message)
 
+# This is for testing purposes only.
+func _change_scene():
+	get_tree().change_scene("res://test/performance/performance_test.tscn")
+
 # ############################################################################ #
 # Private Methods
 # ############################################################################ #

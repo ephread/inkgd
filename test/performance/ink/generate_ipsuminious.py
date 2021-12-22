@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-# ./generate.py 8 && inklecate -o ipsumignious.ink.json ipsumignious.ink
-
 import os
 import argparse
 
@@ -10,30 +8,40 @@ from jinja2 import Environment, FileSystemLoader
 # ############################################################################ #
 
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
-
-INK_FILE = 'ipsuminious.ink'
-TEMPLATE_FILE = '%s.tmpl' % INK_FILE
-JSON_FILE = '%s.json' % INK_FILE
+TEMPLATE_FILE = 'ipsuminious.ink.tmpl'
 
 # ############################################################################ #
 
-parser = argparse.ArgumentParser(description='Generate an ipsuminious Ink file of the given size')
-parser.add_argument('size', type=int,
-                    help='The size of the story (the number of internal copies of the base story)')
-parser.add_argument('--run-inklecate', action='store_true',
+parser = argparse.ArgumentParser(description='Generate an ipsuminious Ink files')
+parser.add_argument('-s', '--size', type=int,
+                    help='When set, generates only one story with the given size'\
+                         '(the number of internal copies of the base story)')
+parser.add_argument('-r', '--run-inklecate', action='store_true',
                     help='Compile the generated Ink file (inklecate needs to be available in $PATH)')
 args = parser.parse_args()
 
 # ############################################################################ #
 
-env = Environment(loader=FileSystemLoader(THIS_DIR))
-template = env.get_template('ipsuminious.ink.tmpl')
-output = template.render(size=args.size)
+if hasattr(parser, "size"):
+    sizes = [parser.size]
+else:
+    sizes = [1, 6, 12]
 
-with open("ipsuminious.ink", "w") as fh:
-    fh.write(output)
+for size in sizes:
+    env = Environment(loader=FileSystemLoader(THIS_DIR))
+    template = env.get_template(TEMPLATE_FILE)
+    output = template.render(size=size)
+
+    if hasattr(parser, "size"):
+        name = "ipsuminious.ink"
+    else:
+        name = "ipsuminious.%d.ink" % size
+
+    with open(name, "w") as fh:
+        fh.write(output)
+
+    if args.run_inklecate:
+        json_file = '%s.json' % name
+        os.system("inklecate -o %s %s" % (json_file, name))
 
 # ############################################################################ #
-
-if args.run_inklecate:
-    os.system("inklecate -o %s %s" % (JSON_FILE, INK_FILE))

@@ -17,7 +17,9 @@ docs/build
 .vscode
 
 # ipsuminious
-ipsuminious.ink
-ipsuminious.ink.json
-ipsuminious.ink.import
-ipsuminious.ink.json.import
+ipsuminious*.ink
+ipsuminious*.json
+ipsuminious*.import
+
+# python
+__pycache__
