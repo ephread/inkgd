@@ -14,7 +14,7 @@ In addition to reading this document, feel free to glance at
 `the_intercept.tscn`_ and `the_intercept.gd`_, which use InkPlayer to run
 *The Intercept*.
 
-.. note::
+.. tip::
 
     InkPlayer's API documentation is available
     :doc:`here <../classes/class_inkplayer>`.

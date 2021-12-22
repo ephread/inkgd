@@ -1,8 +1,18 @@
 Installation
 ============
 
+You can either install *inkgd* manually (more difficult) or through the
+Asset Library (simpler).
+
 Asset Library Installation
 **************************
+
+.. note::
+
+    Due to review processes, there is often a delay between the moment a new
+    version of the documentation is published and the new version of *inkgd* is
+    available in the Asset Library. Always double check whether the version in
+    the library matches the version of the documentation you are reading.
 
 Open a Godot project, click on the to *AssetLib* tab, at the top of the screen,
 then search for *inkgd*.
@@ -94,7 +104,7 @@ of the archive.
 Once you have the content of the repository on your computer, copy the folder
 ``addons/inkgd`` to ``res://addons/`` in your project.
 
-.. _`stable version`: https://github.com/ephread/inkgd/tags
+.. _`stable version`: https://github.com/ephread/inkgd/releases/tag/0.4.0
 
 --------------------------------------------------------------------------------
 

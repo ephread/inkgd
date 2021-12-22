@@ -1,5 +1,5 @@
-*inkgd* Docs – *main* branch
-============================
+*inkgd* Docs – 0.4.0
+====================
 
 .. image:: img/inkgd.png
     :align: center
