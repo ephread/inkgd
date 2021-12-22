@@ -11,67 +11,73 @@
 tool
 extends "res://addons/inkgd/runtime/ink_object.gd"
 
+class_name InkList
+
 # ############################################################################ #
 # Imports
 # ############################################################################ #
 
-var InkListItem = load("res://addons/inkgd/runtime/ink_list_item.gd")
-var KeyValuePair = load("res://addons/inkgd/runtime/extra/key_value_pair.gd")
+var InkListItem = preload("res://addons/inkgd/runtime/lists/ink_list_item.gd")
+var KeyValuePair = preload("res://addons/inkgd/runtime/extra/key_value_pair.gd")
 
 # ############################################################################ #
 
 func _init():
 	pass
 
-func _init_with_ink_list(other_list):
+# (InkList) -> InkList
+func _init_with_ink_list(other_list: InkList):
 	_dictionary = other_list._dictionary.duplicate()
 	_origin_names = other_list.origin_names
 	if other_list.origins != null:
 		self.origins = other_list.origins.duplicate()
 
-func _init_with_single_item(single_item, single_value):
-	set(single_item, single_value)
-
-func _init_with_origin(single_origin_list_name, origin_story):
+# (string, Story) -> InkList
+func _init_with_origin(single_origin_list_name: String, origin_story):
 	set_initial_origin_name(single_origin_list_name)
 
-	var def = origin_story.list_definitions.try_list_get_definition (single_origin_list_name)
+	var def: InkTryGetResult = origin_story.list_definitions.try_list_get_definition(single_origin_list_name)
 	if def.exists:
 		origins = [def.result]
 	else:
-		Utils.throw_exception("InkList origin could not be found in story when constructing new list: " + single_origin_list_name)
+		Utils.throw_exception(
+			"InkList origin could not be found in story when constructing new list: %s" % single_origin_list_name
+		)
 
-func _init_with_element(key, value):
-	set(key, value)
+# (InkListItem, int) -> InkList
+func _init_with_single_item(single_item: InkListItem, single_value: int):
+	set(single_item, single_value)
 
 # (string, Story) -> InkList
-static func from_string(my_list_item, origin_story):
-	var list_value = origin_story.list_definitions.find_single_item_list_with_name(my_list_item)
+static func from_string(my_list_item: String, origin_story) -> InkList:
+	var list_value: InkListValue = origin_story.list_definitions.find_single_item_list_with_name(my_list_item)
 	if list_value:
 		return InkList().new_with_ink_list(list_value.value)
 	else:
-		Utils().throw_exception("Could not find the InkListItem from the string '" + my_list_item + "' to create an InkList because it doesn't exist in the original list definition in ink.")
+		Utils().throw_exception("Could not find the InkListItem from the string '%s' to create an InkList because it doesn't exist in the original list definition in ink." % my_list_item)
+		return null
 
 # (InkListItem) -> void
-func add_item(item):
+func add_item(item: InkListItem) -> void:
 	if item.origin_name == null:
 		add_item(item.item_name)
 		return
 
 	for origin in origins:
 		if origin.name == item.origin_name:
-			var int_val = origin.try_get_value_for_item(item)
+			var int_val: Dictionary = origin.try_get_value_for_item(item)
 			if int_val.exists:
 				set(item, int_val.result)
 				return
 			else:
-				Utils.throw_exception("Could not add the item " + item + " to this list because it doesn't exist in the original list definition in ink.")
+				Utils.throw_exception("Could not add the item '%s' to this list because it doesn't exist in the original list definition in ink." % item.to_string())
 				return
 
 	Utils.throw_exception("Failed to add item to list because the item was from a new list definition that wasn't previously known to this list. Only items from previously known lists can be used, so that the int value can be found.")
 
-func add_item_by_string(item_name):
-	var found_list_def = null # ListDefinition
+# (String) -> void
+func add_item_by_string(item_name: String) -> void:
+	var found_list_def: InkListDefinition = null
 
 	for origin in origins:
 		if origin.contains_item_with_name(item_name):
@@ -85,12 +91,11 @@ func add_item_by_string(item_name):
 		Utils.throw_exception("Could not add the item " + item_name + " to this list because it isn't known to any list definitions previously associated with this list.")
 		return
 
-	var item = InkListItem.new_with_origin_name(found_list_def.name, item_name)
-	var item_val = found_list_def.value_for_item(item)
+	var item: InkListItem = InkListItem.new_with_origin_name(found_list_def.name, item_name)
+	var item_val: int = found_list_def.value_for_item(item)
 	set(item, item_val)
 
-# (String) -> Bool
-func contains_item_named(item_name):
+func contains_item_named(item_name: String) -> bool:
 	for item_key in keys():
 		if item_key.item_name == item_name:
 			return true
@@ -98,11 +103,12 @@ func contains_item_named(item_name):
 	return false
 
 var origins = null # Array<ListDefinition>
-var origin_of_max_item setget , get_origin_of_max_item # ListDefinition
-func get_origin_of_max_item():
-	if origins == null: return null
+var origin_of_max_item: InkListDefinition setget , get_origin_of_max_item
+func get_origin_of_max_item() -> InkListDefinition:
+	if origins == null:
+		return null
 
-	var max_origin_name = self.max_item.key.origin_name
+	var max_origin_name: String = self.max_item.key.origin_name
 	for origin in origins:
 		if origin.name == max_origin_name:
 			return origin
@@ -125,11 +131,11 @@ func get_origin_names():
 var _origin_names = null # Array<String>
 
 # (String) -> void
-func set_initial_origin_name(initial_origin_name):
+func set_initial_origin_name(initial_origin_name: String) -> void:
 	_origin_names = [ initial_origin_name ]
 
 # (Array<String>) -> void
-func set_initial_origin_names(initial_origin_names):
+func set_initial_origin_names(initial_origin_names) -> void:
 	if initial_origin_names == null:
 		_origin_names = null
 	else:
@@ -445,7 +451,7 @@ func get_class():
 	return "InkList"
 
 static func InkList():
-	return load("res://addons/inkgd/runtime/ink_list.gd")
+	return load("res://addons/inkgd/runtime/lists/ink_list.gd")
 
 static func Utils():
 	return load("res://addons/inkgd/runtime/extra/utils.gd")

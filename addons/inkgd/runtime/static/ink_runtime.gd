@@ -91,7 +91,7 @@ func _init():
 # Internal Methods
 # ############################################################################ #
 
-func handle_exception(message: String):
+func handle_exception(message: String) -> void:
 	var exception_message = "EXCEPTION: %s" % message
 	var stack_trace = _get_stack_trace()
 
@@ -103,7 +103,7 @@ func handle_exception(message: String):
 
 	emit_signal("exception_raised", exception_message)
 
-func handle_argument_exception(message: String):
+func handle_argument_exception(message: String) -> void:
 	var exception_message = "ARGUMENT EXCEPTION: %s" % message
 	var stack_trace = _get_stack_trace()
 
@@ -115,7 +115,7 @@ func handle_argument_exception(message: String):
 
 	emit_signal("exception_raised", exception_message, stack_trace)
 
-func handle_story_exception(message: String, use_end_line_number: bool):
+func handle_story_exception(message: String, use_end_line_number: bool) -> void:
 	if record_story_exceptions:
 		current_story_exceptions.append(StoryError.new(message, use_end_line_number))
 
@@ -135,9 +135,10 @@ func _handle_generic_exception(
 		message: String,
 		should_pause_execution: bool,
 		stack_trace: PoolStringArray
-):
+) -> void:
 	if OS.is_debug_build():
 		if stack_trace.size() > 0:
+			printerr(message)
 			printerr("Stack trace:")
 			for line in stack_trace:
 				printerr(line)

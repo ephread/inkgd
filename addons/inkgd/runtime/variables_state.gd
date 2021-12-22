@@ -19,7 +19,10 @@ extends "res://addons/inkgd/runtime/ink_base.gd"
 
 var TryGetResult = load("res://addons/inkgd/runtime/extra/try_get_result.gd")
 var StringSet = load("res://addons/inkgd/runtime/extra/string_set.gd")
-var Ink = load("res://addons/inkgd/runtime/value.gd")
+
+var Value = load("res://addons/inkgd/runtime/values/value.gd")
+var ListValue = load("res://addons/inkgd/runtime/values/list_value.gd")
+var VariablePointerValue = load("res://addons/inkgd/runtime/values/variable_pointer_value.gd")
 
 # ############################################################################ #
 
@@ -76,7 +79,7 @@ func set(variable_name, value):
 		))
 		return
 
-	var val = Ink.Value.create(value)
+	var val = Value.create(value)
 	if val == null:
 		if value == null:
 			Utils.throw_exception("Cannot pass null to VariableState")
@@ -277,7 +280,7 @@ func set_global(variable_name, value):
 		if self._global_variables.has(variable_name):
 			old_value = self._global_variables[variable_name]
 
-	Ink.ListValue.retain_list_origins_for_assignment(old_value, value)
+	ListValue.retain_list_origins_for_assignment(old_value, value)
 
 	if patch != null:
 		self.patch.set_global(variable_name, value)
@@ -311,7 +314,7 @@ func resolve_variable_pointer(var_pointer):
 	if double_redirection_pointer:
 		return double_redirection_pointer
 	else:
-		return Ink.VariablePointerValue.new_with_context(var_pointer.variable_name, context_index)
+		return VariablePointerValue.new_with_context(var_pointer.variable_name, context_index)
 
 # ############################################################################ #
 

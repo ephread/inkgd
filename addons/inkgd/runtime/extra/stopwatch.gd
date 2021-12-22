@@ -17,14 +17,14 @@ tool
 var _start_time = null
 
 var elapsed_milliseconds setget , get_elapsed_milliseconds
-func get_elapsed_milliseconds():
+func get_elapsed_milliseconds() -> int:
 	if _start_time == null:
 		return 0
 
 	return OS.get_ticks_msec() - _start_time
 
-func start():
+func start() -> void:
 	_start_time = OS.get_ticks_msec()
 
-func stop():
+func stop() -> void:
 	_start_time = null

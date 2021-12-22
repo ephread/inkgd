@@ -12,22 +12,26 @@
 tool
 extends "res://addons/inkgd/runtime/ink_object.gd"
 
+class_name InkListDefinition
+
 # ############################################################################ #
 # Imports
 # ############################################################################ #
 
 var TryGetResult = preload("res://addons/inkgd/runtime/extra/try_get_result.gd")
-var InkListItem = load("res://addons/inkgd/runtime/ink_list_item.gd")
+var InkListItem = preload("res://addons/inkgd/runtime/lists/ink_list_item.gd")
 
 # ############################################################################ #
 
-var name setget , get_name # String
-func get_name():
+var name: String setget , get_name
+func get_name() -> String:
 	return _name
 
-var items setget , get_items # Dictionary<InkListItem, int>
-							 # Note: InkListItem should be serialized into a String.
-func get_items():
+# Dictionary<InkListItem, int> => Dictionary<String, int>
+# Note: 'InkListItem' should actually be serialized into a String, because it
+# needs to be a value type.
+var items: Dictionary setget , get_items
+func get_items() -> Dictionary:
 	if _items == null:
 		_items = {}
 		for item_name_and_value_key in _item_name_to_values:
@@ -35,40 +39,36 @@ func get_items():
 			_items[item.serialized()] = _item_name_to_values[item_name_and_value_key]
 
 	return _items
-var _items # Dictionary<InkListItem, int>
-		   # Note: InkListItem should be serialized into a String.
+var _items
 
 # ############################################################################ #
 
-# (InkListItem) -> int
-func value_for_item(item):
+func value_for_item(item: InkListItem) -> int:
 	if (_item_name_to_values.has(item.item_name)):
 		var intVal = _item_name_to_values[item.item_name]
 		return intVal
 	else:
 		return 0
 
-# (InkListItem) -> bool
-func contains_item(item):
+func contains_item(item: InkListItem) -> bool:
 	if item.origin_name != self.name:
 		return false
 
 	return _item_name_to_values.has(item.item_name)
 
-# (String) -> bool
-func contains_item_with_name(item_name):
+func contains_item_with_name(item_name: String) -> bool:
 	return _item_name_to_values.has(item_name)
 
 # (int) -> { result: InkListItem, exists: bool }
-func try_get_item_with_value(val):
+func try_get_item_with_value(val: int) -> Dictionary:
 	for named_item_key in _item_name_to_values:
 		if (_item_name_to_values[named_item_key] == val):
 			return TryGetResult.new(true, InkListItem.new_with_origin_name(self.name, named_item_key))
 
 	return TryGetResult.new(false, InkListItem.null())
 
-# (int) -> { result: InkListItem, exists: bool }
-func try_get_value_for_item(item):
+# (InkListItem) -> { result: InkListItem, exists: bool }
+func try_get_value_for_item(item: InkListItem) -> Dictionary:
 	if !item.item_name:
 		return TryGetResult.new(false, 0)
 
@@ -80,19 +80,19 @@ func try_get_value_for_item(item):
 	return TryGetResult.new(true, value)
 
 # (String name, Dictionary<String, int>) -> InkListDefinition
-func _init(name, items):
+func _init(name: String, items: Dictionary):
 	_name = name
 	_item_name_to_values = items
 
-var _name # String
-var _item_name_to_values # Dictionary<String, int>
+var _name: String
+var _item_name_to_values: Dictionary # Dictionary<String, int>
 
 # ############################################################################ #
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type):
-	return type == "InkListDefinition" || .is_class(type)
+func is_class(type: String) -> bool:
+	return type == get_class() || .is_class(type)
 
-func get_class():
+func get_class() -> String:
 	return "InkListDefinition"

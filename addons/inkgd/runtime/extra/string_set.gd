@@ -30,7 +30,7 @@ var _dictionary = {}
 
 # ############################################################################ #
 
-func clear():
+func clear() -> void:
 	_dictionary.clear()
 
 func duplicate():
@@ -38,26 +38,26 @@ func duplicate():
 	set._dictionary = self._dictionary.duplicate()
 	return set
 
-func enumerate():
+func enumerate() -> Array:
 	return _dictionary.keys()
 
-func empty():
-	_dictionary.empty()
+func empty() -> bool:
+	return _dictionary.empty()
 
-func contains(element: String):
+func contains(element: String) -> bool:
 	return _dictionary.has(element)
 
-func contains_all(elements: Array):
+func contains_all(elements: Array) -> bool:
 	return _dictionary.has_all(elements)
 
-func size():
+func size() -> int:
 	return _dictionary.size()
 
-func to_array():
+func to_array() -> Array:
 	return _dictionary.keys()
 
-func append(value: String):
+func append(value: String) -> void:
 	_dictionary[value] = null
 
-func erase(value: String):
-	_dictionary.erase(value)
+func erase(value: String) -> bool:
+	return _dictionary.erase(value)

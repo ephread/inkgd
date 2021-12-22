@@ -1,4 +1,5 @@
 # warning-ignore-all:shadowed_variable
+# warning-ignore-all:unused_class_variable
 # ############################################################################ #
 # Copyright © 2015-present inkle Ltd.
 # Copyright © 2019-present Frédéric Maquin <fred@ephread.com>
@@ -10,17 +11,14 @@
 
 tool
 
-extends Reference
+enum ValueType {
+	BOOL = -1,
 
-class_name InkTryGetResult
+	INT,
+	FLOAT,
+	LIST,
+	STRING,
 
-# ############################################################################ #
-
-var exists: bool = false # Bool
-var result = null # Variant
-
-# ############################################################################ #
-
-func _init(exists: bool, result):
-	self.exists = exists
-	self.result = result
+	DIVERT_TARGET,
+	VARIABLE_POINTER
+}

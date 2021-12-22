@@ -15,11 +15,10 @@ extends Reference
 # Imports
 # ############################################################################ #
 
+const ValueType = preload("res://addons/inkgd/runtime/values/value_type.gd").ValueType
+
 static func NativeFunctionCall():
 	return load("res://addons/inkgd/runtime/native_function_call.gd")
-
-static func Ink():
-	return load("res://addons/inkgd/runtime/value.gd")
 
 # ############################################################################ #
 
@@ -156,9 +155,9 @@ func generate_native_functions_if_necessary():
 		add_list_unary_op (COUNT,                   "list_unary_op_count")
 		add_list_unary_op (VALUE_OF_LIST,           "list_unary_op_value_of_list")
 
-		add_op_to_native_func(EQUALS, 2, Ink().ValueType.DIVERT_TARGET,
+		add_op_to_native_func(EQUALS, 2, ValueType.DIVERT_TARGET,
 							  "native_func_divert_targets_equal")
-		add_op_to_native_func(NOT_EQUALS, 2, Ink().ValueType.DIVERT_TARGET,
+		add_op_to_native_func(NOT_EQUALS, 2, ValueType.DIVERT_TARGET,
 							  "native_func_divert_targets_not_equal")
 
 # (String, int, ValueType, Variant)
@@ -173,25 +172,25 @@ func add_op_to_native_func(name, args, val_type, op):
 	native_func.add_op_func_for_type(val_type, op)
 
 func add_int_binary_op(name, op_function_name):
-	add_op_to_native_func(name, 2, Ink().ValueType.INT, op_function_name)
+	add_op_to_native_func(name, 2, ValueType.INT, op_function_name)
 
 func add_int_unary_op(name, op_function_name):
-	add_op_to_native_func(name, 1, Ink().ValueType.INT, op_function_name)
+	add_op_to_native_func(name, 1, ValueType.INT, op_function_name)
 
 func add_float_binary_op(name, op_function_name):
-	add_op_to_native_func(name, 2, Ink().ValueType.FLOAT, op_function_name)
+	add_op_to_native_func(name, 2, ValueType.FLOAT, op_function_name)
 
 func add_float_unary_op(name, op_function_name):
-	add_op_to_native_func(name, 1, Ink().ValueType.FLOAT, op_function_name)
+	add_op_to_native_func(name, 1, ValueType.FLOAT, op_function_name)
 
 func add_string_binary_op(name, op_function_name):
-	add_op_to_native_func(name, 2, Ink().ValueType.STRING, op_function_name)
+	add_op_to_native_func(name, 2, ValueType.STRING, op_function_name)
 
 func add_list_binary_op(name, op_function_name):
-	add_op_to_native_func(name, 2, Ink().ValueType.LIST, op_function_name)
+	add_op_to_native_func(name, 2, ValueType.LIST, op_function_name)
 
 func add_list_unary_op(name, op_function_name):
-	add_op_to_native_func(name, 1, Ink().ValueType.LIST, op_function_name)
+	add_op_to_native_func(name, 1, ValueType.LIST, op_function_name)
 
 # ############################################################################ #
 

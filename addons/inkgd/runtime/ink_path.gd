@@ -12,6 +12,8 @@
 tool
 extends "res://addons/inkgd/runtime/ink_base.gd"
 
+class_name InkPath
+
 # ############################################################################ #
 
 const parent_id = "^"

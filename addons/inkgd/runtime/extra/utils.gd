@@ -14,20 +14,20 @@ extends Reference
 # Exceptions
 # ############################################################################ #
 
-static func throw_exception(message: String):
+static func throw_exception(message: String) -> void:
 	InkRuntime().handle_exception(message)
 
-static func throw_story_exception(message: String, use_end_line_number = false):
+static func throw_story_exception(message: String, use_end_line_number = false) -> void:
 	InkRuntime().handle_story_exception(message, use_end_line_number)
 
-static func throw_argument_exception(message: String):
+static func throw_argument_exception(message: String) -> void:
 	InkRuntime().handle_argument_exception(message)
 
 # ############################################################################ #
 # Assertions
 # ############################################################################ #
 
-static func assert(condition, message = ""):
+static func assert(condition: bool, message = "") -> void:
 	if !condition && message != "":
 		printerr(message)
 
@@ -37,7 +37,7 @@ static func assert(condition, message = ""):
 # Type Assertion
 # ############################################################################ #
 
-static func as_or_null(variant, name_of_class):
+static func as_or_null(variant, name_of_class: String):
 	if (is_ink_class(variant, name_of_class) ||
 		name_of_class == "Dictionary" && variant is Dictionary ||
 		name_of_class == "Array" && variant is Array
@@ -46,7 +46,7 @@ static func as_or_null(variant, name_of_class):
 	else:
 		return null
 
-static func cast(variant, name_of_class):
+static func cast(variant, name_of_class: String):
 	if is_ink_class(variant, name_of_class):
 		return variant
 	else:
@@ -78,16 +78,16 @@ static func as_INamedContent_or_null(variant):
 
 	return null
 
-static func is_ink_class(object, name_of_class):
+static func is_ink_class(object: Object, name_of_class: String) -> bool:
 	return (object is Object) && object.is_class(name_of_class)
 
-static func are_of_same_type(object1, object2):
+static func are_of_same_type(object1: Object, object2: Object) -> bool:
 	if (object1 is Object) && (object2 is Object):
 		return object1.get_class() == object2.get_class()
 
 	return typeof(object1) == typeof(object2)
 
-static func typename_of(variant):
+static func typename_of(variant) -> String:
 	match typeof(variant):
 		TYPE_NIL: return "null"
 		TYPE_BOOL: return "bool"
@@ -122,8 +122,8 @@ static func typename_of(variant):
 # String Utils
 # ############################################################################ #
 
-static func trim(string_to_trim, characters = null):
-	if characters == null:
+static func trim(string_to_trim: String, characters = []) -> String:
+	if characters.empty():
 		return string_to_trim.strip_edges()
 
 	var length = string_to_trim.length()
@@ -159,7 +159,7 @@ static func trim(string_to_trim, characters = null):
 # Array Utils
 # ############################################################################ #
 
-static func join(joiner, array):
+static func join(joiner: String, array: Array) -> String:
 	var joined_string = ""
 
 	var i = 0
@@ -179,7 +179,7 @@ static func join(joiner, array):
 
 	return joined_string
 
-static func get_range(array, index, count):
+static func get_range(array: Array, index: int, count: int) -> Array:
 	if !(index >= 0 && index < array.size()):
 		printerr("get_range: index (" + str(index) + ") is out of bounds.")
 		return array.duplicate()
@@ -198,7 +198,7 @@ static func get_range(array, index, count):
 
 	return new_array
 
-static func remove_range(array, index, count):
+static func remove_range(array: Array, index: int, count: int) -> void:
 	if !(index >= 0 && index < array.size()):
 		printerr("get_range: index (" + str(index) + ") is out of bounds.")
 		return
@@ -214,7 +214,7 @@ static func remove_range(array, index, count):
 		array.remove(i)
 		c += 1
 
-static func array_equal(a1, a2, use_equals = false):
+static func array_equal(a1: Array, a2: Array, use_equals = false) -> bool:
 	if a1.size() != a2.size():
 		return false
 
@@ -242,5 +242,5 @@ static func array_equal(a1, a2, use_equals = false):
 
 # ############################################################################ #
 
-static func InkRuntime():
+static func InkRuntime() -> Node:
 	return Engine.get_main_loop().root.get_node("__InkRuntime")

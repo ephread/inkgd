@@ -24,10 +24,10 @@ enum State {
 	STRING,
 }
 
-var type = State.NONE # State
-var child_count = 0 # int
+var type: int = State.NONE # State
+var child_count: int = 0
 
-func _init(type):
+func _init(type: int):
 	self.type = type
 
 # ############################################################################ #

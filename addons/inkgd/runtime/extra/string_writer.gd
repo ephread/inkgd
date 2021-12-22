@@ -14,14 +14,19 @@
 
 tool
 
-var internal_string
+# ############################################################################ #
+
+var _internal_string: String = ""
+
+# ############################################################################ #
 
 func _init():
-	internal_string = ""
+	pass
 
-func write(s):
+# ############################################################################ #
 
-	internal_string += str(s)
+func write(s: String) -> void:
+	_internal_string += str(s)
 
-func to_string():
-	return internal_string
+func to_string() -> String:
+	return _internal_string

@@ -28,11 +28,15 @@ var Pointer = load("res://addons/inkgd/runtime/pointer.gd")
 var CallStack = load("res://addons/inkgd/runtime/callstack.gd")
 var VariablesState = load("res://addons/inkgd/runtime/variables_state.gd")
 var InkPath = load("res://addons/inkgd/runtime/ink_path.gd")
-var Ink = load("res://addons/inkgd/runtime/value.gd")
 var ControlCommand = load("res://addons/inkgd/runtime/control_command.gd")
 var SimpleJson = load("res://addons/inkgd/runtime/simple_json.gd")
 var StatePatch = load("res://addons/inkgd/runtime/state_patch.gd")
 var Flow = load("res://addons/inkgd/runtime/flow.gd")
+
+var ValueType = preload("res://addons/inkgd/runtime/values/value_type.gd").ValueType
+
+var Value = load("res://addons/inkgd/runtime/values/value.gd")
+var StringValue = load("res://addons/inkgd/runtime/values/string_value.gd")
 
 # ############################################################################ #
 
@@ -627,10 +631,10 @@ func try_splitting_head_tail_whitespace(single):
 
 	if head_first_newline_idx != -1:
 		if head_first_newline_idx > 0:
-			var leading_spaces = Ink.StringValue.new_with(_str.substr(0, head_first_newline_idx))
+			var leading_spaces = StringValue.new_with(_str.substr(0, head_first_newline_idx))
 			list_texts.append(leading_spaces)
 
-		list_texts.append(Ink.StringValue.new_with("\n"))
+		list_texts.append(StringValue.new_with("\n"))
 		inner_str_start = head_last_newline_idx + 1
 
 	if tail_last_newline_idx != -1:
@@ -638,13 +642,13 @@ func try_splitting_head_tail_whitespace(single):
 
 	if inner_str_end > inner_str_start:
 		var inner_str_text = _str.substr(inner_str_start, inner_str_end - inner_str_start)
-		list_texts.append(Ink.StringValue.new(inner_str_text))
+		list_texts.append(StringValue.new(inner_str_text))
 
 	if tail_last_newline_idx != -1 && tail_first_newline_idx > head_last_newline_idx:
-		list_texts.append(Ink.StringValue.new("\n"))
+		list_texts.append(StringValue.new("\n"))
 		if tail_last_newline_idx < _str.length() - 1:
 			var num_spaces = (_str.length() - tail_last_newline_idx) - 1
-			var trailing_spaces = Ink.StringValue.new(_str.substr(tail_last_newline_idx + 1, num_spaces))
+			var trailing_spaces = StringValue.new(_str.substr(tail_last_newline_idx + 1, num_spaces))
 			list_texts.append(trailing_spaces)
 
 	return list_texts
@@ -822,13 +826,13 @@ func peek_evaluation_stack():
 	return self.evaluation_stack.back()
 
 # (int) -> Array<InkObject>
-func pop_evaluation_stack(number_of_objects = -1):
+func pop_evaluation_stack(number_of_objects = -1) -> Array:
 	if number_of_objects == -1:
 		return self.evaluation_stack.pop_back()
 
 	if number_of_objects > self.evaluation_stack.size():
 		Utils.throw_argument_exception("trying to pop too many objects")
-		return
+		return []
 
 	var popped = Utils.get_range(self.evaluation_stack,
 								 self.evaluation_stack.size() - number_of_objects,
@@ -921,7 +925,7 @@ func pass_arguments_to_evaluation_stack(arguments):
 				))
 				return
 
-			push_evaluation_stack(Ink.Value.create(arguments[i]))
+			push_evaluation_stack(Value.create(arguments[i]))
 
 			i += 1
 
@@ -959,7 +963,7 @@ func complete_function_evaluation_from_game():
 
 		var return_val = Utils.as_or_null(returned_obj, "Value")
 
-		if return_val.value_type == Ink.ValueType.DIVERT_TARGET:
+		if return_val.value_type == ValueType.DIVERT_TARGET:
 			return return_val.value_object.to_string()
 
 		return return_val.value_object

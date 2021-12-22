@@ -62,6 +62,12 @@ There are two important rules to follow:
 
 [official style guide]: http://docs.godotengine.org/en/latest/getting_started/scripting/gdscript/gdscript_styleguide.html
 
+##### Type System
+
+1. The String type can't be used in most cases, because unlike C#, Strings are
+value types and. Only add the String type when you're certain the value can't or
+shouldn't be null.
+
 #### Testing
 
 Make sure all the tests are all green! _inkgd_ uses [Gut] to run tests. Adding

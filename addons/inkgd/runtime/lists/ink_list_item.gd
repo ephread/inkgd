@@ -16,12 +16,14 @@
 tool
 extends "res://addons/inkgd/runtime/ink_object.gd"
 
+class_name InkListItem
+
 # ############################################################################ #
 # Self-reference
 # ############################################################################ #
 
 static func InkListItem():
-	return load("res://addons/inkgd/runtime/ink_list_item.gd")
+	return load("res://addons/inkgd/runtime/lists/ink_list_item.gd")
 
 # ############################################################################ #
 
@@ -41,45 +43,51 @@ func _init_with_full_name(full_name):
 	self.origin_name = name_parts[0]
 	self.item_name = name_parts[1]
 
-# () -> InkListItem
-static func null():
+static func null() -> InkListItem:
 	return InkListItem().new_with_origin_name(null, null)
 
 # ############################################################################ #
 
-var is_null setget , get_is_null # bool
-func get_is_null():
+var is_null: bool setget , get_is_null
+func get_is_null() -> bool:
 	return self.origin_name == null && self.item_name == null
 
-var full_name setget , get_full_name # String
+# String
+var full_name setget , get_full_name
 func get_full_name():
 	# In C#, concatenating null produce nothing, in GDScript, it appends "Null".
-	return (self.origin_name if self.origin_name else "?") + "." + str(self.item_name if self.item_name else "")
+	return (
+		(self.origin_name if self.origin_name else "?") + "." +
+		(self.item_name if self.item_name else "")
+	)
 
 # ############################################################################ #
 
 # () -> String
-func to_string():
+func to_string() -> String:
 	return self.full_name
 
 # (InkObject) -> bool
-func equals(obj):
+func equals(obj: InkObject) -> bool:
 	if obj.is_class("InkListItem"):
 		var other_item = obj
-		return other_item.item_name == self.item_name && self.other_item.origin_name == self.origin_name
+		return (
+			other_item.item_name == self.item_name &&
+			self.other_item.origin_name == self.origin_name
+		)
 
 	return false
 
 # ############################################################################ #
 
 # (string, string) -> InkListItem
-static func new_with_origin_name(origin_name, item_name):
+static func new_with_origin_name(origin_name, item_name) -> InkListItem:
 	var list_item = InkListItem().new()
 	list_item._init_with_origin_name(origin_name, item_name)
 	return list_item
 
 # (string) -> InkListItem
-static func new_with_full_name(full_name):
+static func new_with_full_name(full_name) -> InkListItem:
 	var list_item = InkListItem().new()
 	list_item._init_with_full_name(full_name)
 	return list_item
@@ -88,10 +96,10 @@ static func new_with_full_name(full_name):
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type):
+func is_class(type: String) -> bool:
 	return type == "InkListItem" || .is_class(type)
 
-func get_class():
+func get_class() -> String:
 	return "InkListItem"
 
 # ############################################################################ #
@@ -102,16 +110,12 @@ func get_class():
 
 # Create a shallow copy of the InkListItem (use it when assigning to mimic
 # a value-type).
-#
-# () -> InkListItem
-func duplicate():
+func duplicate() -> InkListItem:
 	return InkListItem().init_with_origin_name(origin_name, item_name)
 
 # Returns a `SerializedInkListItem` representing the current
 # instance. The result is intended to be used as a key inside a Map.
-#
-# () -> String
-func serialized():
+func serialized() -> String:
 	# We are simply using a JSON representation as a value-typed key.
 	var json_print = JSON.print({"originName": origin_name, "itemName": item_name})
 	return json_print
@@ -119,7 +123,7 @@ func serialized():
 # Reconstructs a `InkListItem` from the given SerializedInkListItem.
 #
 # (String) -> InkListItem
-static func from_serialized_key(key):
+static func from_serialized_key(key: String) -> InkListItem:
 	var obj = JSON.parse(key).result
 	if !InkListItem()._is_like_ink_list_item(obj):
 		return InkListItem().null()
@@ -130,7 +134,7 @@ static func from_serialized_key(key):
 # to be used as a template when reconstructing the InkListItem.
 #
 # (Variant) -> bool
-static func _is_like_ink_list_item(item):
+static func _is_like_ink_list_item(item) -> bool:
 	if !(item is Dictionary):
 		return false
 

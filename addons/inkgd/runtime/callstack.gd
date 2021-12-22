@@ -12,13 +12,16 @@
 tool
 extends "res://addons/inkgd/runtime/ink_base.gd"
 
+class_name InkCallStack
+
 # ############################################################################ #
 # Imports
 # ############################################################################ #
 
 var PushPopType = preload("res://addons/inkgd/runtime/push_pop.gd").PushPopType
 var Pointer = load("res://addons/inkgd/runtime/pointer.gd")
-var Ink = load("res://addons/inkgd/runtime/value.gd")
+
+var ListValue = load("res://addons/inkgd/runtime/values/list_value.gd")
 
 # ############################################################################ #
 
@@ -373,7 +376,7 @@ func set_temporary_variable(name, value, declare_new, context_index = -1):
 
 	if context_element.temporary_variables.has(name):
 		var old_value = context_element.temporary_variables[name]
-		Ink.ListValue.retain_list_origins_for_assignment(old_value, value)
+		ListValue.retain_list_origins_for_assignment(old_value, value)
 
 	context_element.temporary_variables[name] = value
 

@@ -20,7 +20,16 @@ extends Reference
 var PushPopType = preload("res://addons/inkgd/runtime/push_pop.gd").PushPopType
 var Utils = preload("res://addons/inkgd/runtime/extra/utils.gd")
 
-var Ink = load("res://addons/inkgd/runtime/value.gd")
+var InkListItem = preload("res://addons/inkgd/runtime/lists/ink_list_item.gd")
+
+var NativeFunctionCall = load("res://addons/inkgd/runtime/native_function_call.gd")
+
+var Value = load("res://addons/inkgd/runtime/values/value.gd")
+var StringValue = load("res://addons/inkgd/runtime/values/string_value.gd")
+var DivertTargetValue = load("res://addons/inkgd/runtime/values/divert_target_value.gd")
+var VariablePointerValue = load("res://addons/inkgd/runtime/values/variable_pointer_value.gd")
+var ListValue = load("res://addons/inkgd/runtime/values/list_value.gd")
+
 var Glue = load("res://addons/inkgd/runtime/glue.gd")
 var ControlCommand = load("res://addons/inkgd/runtime/control_command.gd")
 var Divert = load("res://addons/inkgd/runtime/divert.gd")
@@ -28,11 +37,10 @@ var ChoicePoint = load("res://addons/inkgd/runtime/choice_point.gd")
 var VariableReference = load("res://addons/inkgd/runtime/variable_reference.gd")
 var VariableAssignment = load("res://addons/inkgd/runtime/variable_assignment.gd")
 var Tag = load("res://addons/inkgd/runtime/tag.gd")
-var ListDefinition = load("res://addons/inkgd/runtime/list_definition.gd")
-var ListDefinitionsOrigin = load("res://addons/inkgd/runtime/list_definitions_origin.gd")
-var InkListItem = load("res://addons/inkgd/runtime/ink_list_item.gd")
-var InkList = load("res://addons/inkgd/runtime/ink_list.gd")
-var NativeFunctionCall = load("res://addons/inkgd/runtime/native_function_call.gd")
+var ListDefinition = load("res://addons/inkgd/runtime/lists/list_definition.gd")
+var ListDefinitionsOrigin = load("res://addons/inkgd/runtime/lists/list_definitions_origin.gd")
+
+var InkList = load("res://addons/inkgd/runtime/lists/ink_list.gd")
 var Void = load("res://addons/inkgd/runtime/void.gd")
 var InkContainer = load("res://addons/inkgd/runtime/container.gd")
 var Choice = load("res://addons/inkgd/runtime/choice.gd")
@@ -40,8 +48,8 @@ var InkPath = load("res://addons/inkgd/runtime/ink_path.gd")
 
 # ############################################################################ #
 
-# (Array, bool) -> Array
-func jarray_to_runtime_obj_list(jarray, skip_last = false):
+# (Array<Variant>, bool) -> Array
+func jarray_to_runtime_obj_list(jarray: Array, skip_last = false) -> Array:
 	var count = jarray.size()
 	if skip_last:
 		count -= 1
@@ -58,7 +66,7 @@ func jarray_to_runtime_obj_list(jarray, skip_last = false):
 	return list
 
 # (self.Json.Writer, Dictionary<String, InkObject>) -> void
-func write_dictionary_runtime_objs(writer, dictionary):
+func write_dictionary_runtime_objs(writer, dictionary: Dictionary) -> void:
 	writer.write_object_start()
 	for key in dictionary:
 		writer.write_property_start(key)
@@ -67,21 +75,21 @@ func write_dictionary_runtime_objs(writer, dictionary):
 	writer.write_object_end()
 
 # (self.Json.Writer, Array<InkObject>) -> void
-func write_list_runtime_objs(writer, list):
+func write_list_runtime_objs(writer, list: Array) -> void:
 	writer.write_array_start()
 	for val in list:
 		write_runtime_object(writer, val)
 	writer.write_array_end()
 
 # (self.Json.Writer, Array<Int>) -> void
-func write_int_dictionary(writer, dict):
+func write_int_dictionary(writer, dict: Dictionary) -> void:
 	writer.write_object_start()
 	for key in dict:
 		writer.write_property(key, dict[key])
 	writer.write_object_end()
 
 # (self.Json.Writer, InkObject) -> void
-func write_runtime_object(writer, obj):
+func write_runtime_object(writer, obj: InkObject) -> void:
 	var container = Utils.as_or_null(obj, "InkContainer")
 	if container:
 		write_runtime_container(writer, container)
@@ -237,11 +245,11 @@ func write_runtime_object(writer, obj):
 		write_choice(writer, choice)
 		return
 
-	Utils.throw_exception(str("Failed to convert runtime object to Json token: ", obj))
-	return null
+	Utils.throw_exception("Failed to convert runtime object to Json token: %s", obj)
+	return
 
 # (Dictionary<String, Variant>) -> Dictionary<String, InkObject>
-func jobject_to_dictionary_runtime_objs(jobject):
+func jobject_to_dictionary_runtime_objs(jobject: Dictionary) -> Dictionary:
 	var dict = {}
 
 	for key in jobject:
@@ -250,7 +258,7 @@ func jobject_to_dictionary_runtime_objs(jobject):
 	return dict
 
 # (Dictionary<String, Variant>) -> Dictionary<String, int>
-func jobject_to_int_dictionary(jobject):
+func jobject_to_int_dictionary(jobject: Dictionary) -> Dictionary:
 	var dict = {}
 	for key in jobject:
 		dict[key] = int(jobject[key])
@@ -258,19 +266,19 @@ func jobject_to_int_dictionary(jobject):
 	return dict
 
 # (Variant) -> InkObject
-func jtoken_to_runtime_object(token):
+func jtoken_to_runtime_object(token) -> InkObject:
 
 	if token is int || token is float || token is bool:
-		return Ink.Value.create(token)
+		return Value.create(token)
 
 	if token is String:
 		var _str = token
 
 		var first_char = _str[0]
 		if first_char == "^":
-			return Ink.StringValue.new_with(_str.substr(1, _str.length() - 1))
+			return StringValue.new_with(_str.substr(1, _str.length() - 1))
 		elif first_char == "\n" && _str.length() == 1:
-			return Ink.StringValue.new_with("\n")
+			return StringValue.new_with("\n")
 
 		if _str == "<>": return Glue.new()
 
@@ -299,11 +307,11 @@ func jtoken_to_runtime_object(token):
 
 		if obj.has("^->"):
 			prop_value = obj["^->"]
-			return Ink.DivertTargetValue.new_with(InkPath.new_with_components_string(str(prop_value)))
+			return DivertTargetValue.new_with(InkPath.new_with_components_string(str(prop_value)))
 
 		if obj.has("^var"):
 			prop_value = obj["^var"]
-			var var_ptr = Ink.VariablePointerValue.new_with_context(str(prop_value))
+			var var_ptr = VariablePointerValue.new_with_context(str(prop_value))
 			if (obj.has("ci")):
 				prop_value = obj["ci"]
 				var_ptr.context_index = int(prop_value)
@@ -414,7 +422,7 @@ func jtoken_to_runtime_object(token):
 				var val = list_content[name_to_val_key]
 				raw_list.set(item, val)
 
-			return Ink.ListValue.new_with(raw_list)
+			return ListValue.new_with(raw_list)
 
 		if obj.has("originalChoicePath"):
 			return jobject_to_choice(obj)
@@ -430,7 +438,7 @@ func jtoken_to_runtime_object(token):
 	return null
 
 # (self.Json.Writer, InkContainer, Bool) -> void
-func write_runtime_container(writer, container, without_name = false):
+func write_runtime_container(writer, container: InkContainer, without_name = false) -> void:
 	writer.write_array_start()
 
 	for c in container.content:
@@ -467,7 +475,7 @@ func write_runtime_container(writer, container, without_name = false):
 	writer.write_array_end()
 
 # (Array<Variant>) -> InkContainer
-func jarray_to_container(jarray):
+func jarray_to_container(jarray: Array) -> InkContainer:
 	var container = InkContainer.new()
 	container.content = jarray_to_runtime_obj_list(jarray, true)
 
@@ -492,7 +500,7 @@ func jarray_to_container(jarray):
 	return container
 
 # (Dictionary<String, Variant>) -> Choice
-func jobject_to_choice(jobj):
+func jobject_to_choice(jobj: Dictionary) -> InkChoice:
 	var choice = Choice.new()
 	choice.text = str(jobj["text"])
 	choice.index = int(jobj["index"])
@@ -502,7 +510,7 @@ func jobject_to_choice(jobj):
 	return choice
 
 # (self.Json.Writer, Choice) -> Void
-func write_choice(writer, choice):
+func write_choice(writer, choice: InkChoice) -> void:
 	writer.write_object_start()
 	writer.write_property("text", choice.text)
 	writer.write_property("index", choice.index)
