@@ -19,9 +19,9 @@ class_name InkCallStack
 # ############################################################################ #
 
 var PushPopType = preload("res://addons/inkgd/runtime/enums/push_pop.gd").PushPopType
-var Pointer = preload("res://addons/inkgd/runtime/structs/pointer.gd")
+var InkPointer := preload("res://addons/inkgd/runtime/structs/pointer.gd") as GDScript
 
-var ListValue = load("res://addons/inkgd/runtime/values/list_value.gd")
+var InkListValue := load("res://addons/inkgd/runtime/values/list_value.gd") as GDScript
 
 # ############################################################################ #
 
@@ -256,7 +256,7 @@ func get_can_pop():
 func _init(story_context_or_to_copy):
 	if story_context_or_to_copy.is_class("Story"):
 		var story_context = story_context_or_to_copy
-		_start_of_root = Pointer.start_of(story_context.root_content_container)
+		_start_of_root = InkPointer.start_of(story_context.root_content_container)
 		reset()
 	elif story_context_or_to_copy.is_class("CallStack"):
 		var to_copy = story_context_or_to_copy
@@ -283,7 +283,7 @@ func set_json_token(jobject, story_context):
 		self._threads.append(thread)
 
 	self._thread_counter = int(jobject["threadCounter"])
-	self._start_of_root = Pointer.start_of(story_context.root_content_container)
+	self._start_of_root = InkPointer.start_of(story_context.root_content_container)
 
 
 # (SimpleJson.Writer) -> void
@@ -376,7 +376,7 @@ func set_temporary_variable(name, value, declare_new, context_index = -1):
 
 	if context_element.temporary_variables.has(name):
 		var old_value = context_element.temporary_variables[name]
-		ListValue.retain_list_origins_for_assignment(old_value, value)
+		InkListValue.retain_list_origins_for_assignment(old_value, value)
 
 	context_element.temporary_variables[name] = value
 
@@ -430,7 +430,7 @@ func get_callstack_trace():
 
 var _threads = null # Array<InkThread>
 var _thread_counter = 0 # int
-var _start_of_root = Pointer.null() # Pointer
+var _start_of_root = InkPointer.null() # Pointer
 
 # ############################################################################ #
 # GDScript extra methods
@@ -445,7 +445,7 @@ func get_class():
 # C# Actions & Delegates ##################################################### #
 
 #  (SimpleJson.Writer) -> void
-func _anonymous_write_json(writer):
+func _anonymous_write_json(writer: InkSimpleJSON.Writer) -> void:
 	writer.write_property_start("threads")
 	writer.write_array_start()
 	for thread in self._threads:
@@ -456,4 +456,3 @@ func _anonymous_write_json(writer):
 	writer.write_property_start("threadCounter")
 	writer.write(self._thread_counter)
 	writer.write_property_end()
-

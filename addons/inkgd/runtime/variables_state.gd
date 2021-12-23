@@ -19,12 +19,12 @@ class_name InkVariablesState
 # Imports
 # ############################################################################ #
 
-var InkTryGetResult = preload("res://addons/inkgd/runtime/extra/try_get_result.gd")
-var InkStringSet = preload("res://addons/inkgd/runtime/extra/string_set.gd")
+var InkTryGetResult := preload("res://addons/inkgd/runtime/extra/try_get_result.gd") as GDScript
+var InkStringSet := preload("res://addons/inkgd/runtime/extra/string_set.gd") as GDScript
 
-var InkValue = load("res://addons/inkgd/runtime/values/value.gd")
-var InkListValue = load("res://addons/inkgd/runtime/values/list_value.gd")
-var InkVariablePointerValue = load("res://addons/inkgd/runtime/values/variable_pointer_value.gd")
+var InkValue := load("res://addons/inkgd/runtime/values/value.gd") as GDScript
+var InkListValue := load("res://addons/inkgd/runtime/values/list_value.gd") as GDScript
+var InkVariablePointerValue := load("res://addons/inkgd/runtime/values/variable_pointer_value.gd") as GDScript
 
 # ############################################################################ #
 
@@ -344,10 +344,10 @@ var _list_defs_origin: InkListDefinitionsOrigin
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type):
+func is_class(type: String) -> bool:
 	return type == "VariableState" || .is_class(type)
 
-func get_class():
+func get_class() -> String:
 	return "VariableState"
 
 # ############################################################################ #

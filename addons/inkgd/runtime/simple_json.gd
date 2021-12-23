@@ -8,24 +8,23 @@
 # ############################################################################ #
 
 tool
-extends Reference
+extends InkBase
 
 class_name InkSimpleJSON
 
-const Utils = preload("res://addons/inkgd/runtime/extra/utils.gd")
+# ############################################################################ #
 
 # (String) -> Dictionary<String, Variant>
-static func text_to_dictionary(text):
+static func text_to_dictionary(text: String) -> Dictionary:
 	return Reader.new(text).to_dictionary()
 
-# (String) -> Dictionary<String, Variant>
-static func text_to_array(text):
+# (String) -> Array<Variant>
+static func text_to_array(text: String) -> Array:
 	return Reader.new(text).to_array()
 
-class Reader:
-
+class Reader extends InkBase:
 	# (String) -> Reader
-	func _init(text):
+	func _init(text: String):
 		_text = text
 		_offset = 0
 
@@ -34,22 +33,24 @@ class Reader:
 		_root_object = read_object()
 
 	# () -> Dictionary<String, Variant>
-	func to_dictionary():
+	func to_dictionary() -> Dictionary:
 		return _root_object
 
 	# () -> Array<Variant>
-	func to_array():
+	func to_array() -> Array:
 		return _root_object
 
 	# (String) -> bool
-	func is_number_char(c):
-		if c.length() > 1: return
+	func is_number_char(c: String) -> bool:
+		if c.length() > 1:
+			return false
 
 		return c.is_valid_integer() || c == "." || c == "-" || c == "+" || c == 'E' || c == 'e'
 
 	# (String) -> bool
-	func is_first_number_char(c):
-		if c.length() > 1: return
+	func is_first_number_char(c: String) -> bool:
+		if c.length() > 1:
+			return false
 
 		return c.is_valid_integer() || c == "-" || c == "+"
 
@@ -78,10 +79,10 @@ class Reader:
 		elif try_read("null"):
 			return null
 
-		Utils.throw_exception("Unhandled object type in JSON: " + _text.substr(_offset, 30))
+		Utils.throw_exception("Unhandled object type in JSON: %s" % _text.substr(_offset, 30))
 		return JsonError.new()
 
-	# () -> Dictionary<String, Variant>
+	# () -> Dictionary<String, Variant>?
 	func read_dictionary():
 		var dict = {} # Dictionary<String, Variant>
 
@@ -123,7 +124,7 @@ class Reader:
 
 		return dict
 
-	# () -> Array<Variant>
+	# () -> Array<Variant>?
 	func read_array():
 		var list = []
 
@@ -152,7 +153,7 @@ class Reader:
 
 		return list
 
-	# () -> String
+	# () -> String?
 	func read_string():
 		if !expect("\""):
 			return null
@@ -185,7 +186,7 @@ class Reader:
 
 						var json_parse_result = JSON.parse("\"\\u" + digits + "\"")
 						if json_parse_result.error != OK:
-							Utils.throw_exception("Invalid Unicode escape character at offset " + (_offset - 1))
+							Utils.throw_exception("Invalid Unicode escape character at offset %d" % (_offset - 1))
 							return null
 
 						sb += json_parse_result.result
@@ -193,7 +194,7 @@ class Reader:
 
 						break
 					_:
-						Utils.throw_exception("Invalid Unicode escape character at offset " + (_offset - 1))
+						Utils.throw_exception("Invalid Unicode escape character at offset %d " % (_offset - 1))
 						return null
 			elif c == "\"":
 				break
@@ -236,7 +237,7 @@ class Reader:
 		return JsonError.new()
 
 	# (String) -> bool
-	func try_read(text_to_read):
+	func try_read(text_to_read: String) -> bool:
 		if _offset + text_to_read.length() > _text.length():
 			return false
 
@@ -252,9 +253,8 @@ class Reader:
 
 		return true
 
-
 	# (bool | String, String) -> bool
-	func expect(condition_or_expected_str, message = null):
+	func expect(condition_or_expected_str, message = null) -> bool:
 		var _condition = false
 
 		if condition_or_expected_str is String:
@@ -284,35 +284,45 @@ class Reader:
 				break
 
 	var _text = null # String
-	var _offset = 0 # int
+	var _offset: int = 0 # int
 
 	var _root_object # Variant
 
-class Writer:
+	# ######################################################################## #
+	# GDScript extra methods
+	# ######################################################################## #
+
+	func is_class(type: String) -> bool:
+		return type == "InkSimpleJSON.Reader" || .is_class(type)
+
+	func get_class() -> String:
+		return "InkSimpleJSON.Reader"
+
+class Writer extends InkBase:
 	# ######################################################################## #
 	# Imports
 	# ######################################################################## #
 
-	var StringWriter = load("res://addons/inkgd/runtime/extra/string_writer.gd")
-	var StateElement = load("res://addons/inkgd/runtime/extra/state_element.gd")
+	var InkStringWriter := load("res://addons/inkgd/runtime/extra/string_writer.gd") as GDScript
+	var InkStateElement := load("res://addons/inkgd/runtime/extra/state_element.gd") as GDScript
 
 	# (String) -> Writer
 	func _init():
-		self._writer = StringWriter.new()
+		self._writer = InkStringWriter.new()
 
 	# (FuncRef) -> void
-	func write_object(inner):
+	func write_object(inner: FuncRef) -> void:
 		write_object_start()
 		inner.call_func(self)
 		write_object_end()
 
-	func write_object_start():
+	func write_object_start() -> void:
 		start_new_object(true)
-		self._state_stack.push_front(StateElement.new(StateElement.State.OBJECT))
+		self._state_stack.push_front(InkStateElement.new(InkStateElement.State.OBJECT))
 		self._writer.write("{")
 
-	func write_object_end():
-		assert_that(self.state == StateElement.State.OBJECT)
+	func write_object_end() -> void:
+		assert_that(self.state == InkStateElement.State.OBJECT)
 		self._writer.write("}")
 		self._state_stack.pop_front()
 
@@ -324,7 +334,7 @@ class Writer:
 	# Also include:
 	# void WriteProperty<T>(T name, Action<Writer> inner)
 	# (String, Variant) -> void
-	func write_property(name, content):
+	func write_property(name: String, content) -> void:
 		if (content is String || content is int || content is bool):
 			write_property_start(name)
 			write(content)
@@ -334,7 +344,7 @@ class Writer:
 			content.call_func(self)
 			write_property_end()
 		else:
-			push_error("Wrong type for 'content': " + str(content))
+			push_error("Wrong type for 'content': %s" % str(content))
 
 	# These two methods don't need to be implemented in GDScript.
 	#
@@ -342,14 +352,14 @@ class Writer:
 	# public void WritePropertyStart(int id)
 
 	# () -> void
-	func write_property_end():
-		assert_that(self.state == StateElement.State.PROPERTY)
+	func write_property_end() -> void:
+		assert_that(self.state == InkStateElement.State.PROPERTY)
 		assert_that(self.child_count == 1)
 		self._state_stack.pop_front()
 
 	# (String) -> void
-	func write_property_name_start():
-		assert_that(self.state == StateElement.State.OBJECT)
+	func write_property_name_start() -> void:
+		assert_that(self.state == InkStateElement.State.OBJECT)
 
 		if self.child_count > 0:
 			self._writer.write(',')
@@ -358,25 +368,25 @@ class Writer:
 
 		increment_child_count()
 
-		self._state_stack.push_front(StateElement.new(StateElement.State.PROPERTY))
-		self._state_stack.push_front(StateElement.new(StateElement.State.PROPERTY_NAME))
+		self._state_stack.push_front(InkStateElement.new(InkStateElement.State.PROPERTY))
+		self._state_stack.push_front(InkStateElement.new(InkStateElement.State.PROPERTY_NAME))
 
 	# () -> void
-	func write_property_name_end():
-		assert_that(self.state == StateElement.State.PROPERTY_NAME)
+	func write_property_name_end() -> void:
+		assert_that(self.state == InkStateElement.State.PROPERTY_NAME)
 
 		self._writer.write('":')
 
 		self._state_stack.pop_front()
 
 	# (String) -> void
-	func write_property_name_inner(string):
-		assert_that(self.state == StateElement.State.PROPERTY_NAME)
+	func write_property_name_inner(string: String) -> void:
+		assert_that(self.state == InkStateElement.State.PROPERTY_NAME)
 		self._writer.write(string)
 
 	# (Variant) -> void
-	func write_property_start(name):
-		assert_that(self.state == StateElement.State.OBJECT)
+	func write_property_start(name) -> void:
+		assert_that(self.state == InkStateElement.State.OBJECT)
 
 		if self.child_count > 0:
 			self._writer.write(',')
@@ -387,23 +397,23 @@ class Writer:
 
 		increment_child_count()
 
-		_state_stack.push_front(StateElement.new(StateElement.State.PROPERTY))
+		_state_stack.push_front(InkStateElement.new(InkStateElement.State.PROPERTY))
 
 	# () -> void
-	func write_array_start():
+	func write_array_start() -> void:
 		start_new_object(true)
-		_state_stack.push_front(StateElement.new(StateElement.State.ARRAY))
+		_state_stack.push_front(InkStateElement.new(InkStateElement.State.ARRAY))
 		_writer.write("[")
 
 	# () -> void
-	func write_array_end():
-		assert_that(self.state == StateElement.State.ARRAY)
+	func write_array_end() -> void:
+		assert_that(self.state == InkStateElement.State.ARRAY)
 		_writer.write("]")
 		_state_stack.pop_front()
 
 	# This method didn't exist as-is in the original implementation.
 	# (Variant) -> void
-	func write(content):
+	func write(content) -> void:
 		if content is int:
 			write_int(content)
 		elif content is float:
@@ -413,15 +423,15 @@ class Writer:
 		elif content is bool:
 			write_bool(content)
 		else:
-			push_error("Wrong type for 'content': " + str(content))
+			push_error("Wrong type for 'content': %s" % str(content))
 
 	# (int) -> void
-	func write_int(i):
+	func write_int(i: int) -> void:
 		start_new_object(false)
 		_writer.write(str(i))
 
 	# (float) -> void
-	func write_float(f):
+	func write_float(f: float) -> void:
 		start_new_object(false)
 
 		var float_str = str(f)
@@ -442,7 +452,7 @@ class Writer:
 				_writer.write(".0")
 
 	# (String, bool) -> void
-	func write_string(string, escape = true):
+	func write_string(string: String, escape: bool = true):
 		start_new_object(false)
 		_writer.write('"')
 		if escape:
@@ -452,37 +462,37 @@ class Writer:
 		_writer.write('"')
 
 	# (bool) -> void
-	func write_bool(b):
+	func write_bool(b: bool) -> void:
 		start_new_object(false)
 		_writer.write("true" if b else "false")
 
 	# () -> void
-	func write_null():
+	func write_null() -> void:
 		start_new_object(false)
 		_writer.write("null")
 
 	# () -> void
-	func write_string_start():
+	func write_string_start() -> void:
 		start_new_object(true)
-		_state_stack.push_front(StateElement.new(StateElement.State.STRING))
+		_state_stack.push_front(InkStateElement.new(InkStateElement.State.STRING))
 		_writer.write('"')
 
 	# () -> void
-	func write_string_end():
-		assert_that(state == StateElement.State.STRING)
+	func write_string_end() -> void:
+		assert_that(state == InkStateElement.State.STRING)
 		_writer.write('"')
 		_state_stack.pop_front()
 
 	# (string, bool) -> void
-	func write_string_inner(string, escape = true):
-		assert_that(self.state == StateElement.State.STRING)
+	func write_string_inner(string: String, escape: bool = true) -> void:
+		assert_that(self.state == InkStateElement.State.STRING)
 		if escape:
 			write_escaped_string(string)
 		else:
 			_writer.write(string)
 
 	# (String) -> void
-	func write_escaped_string(string):
+	func write_escaped_string(string: String) -> void:
 		for c in string:
 			if c < ' ':
 				match c:
@@ -499,56 +509,77 @@ class Writer:
 						_writer.write(c)
 
 	# (bool) -> void
-	func start_new_object(container):
+	func start_new_object(container: bool) -> void:
 		if container:
-			assert_that(self.state == StateElement.State.NONE || self.state == StateElement.State.PROPERTY || self.state == StateElement.State.ARRAY)
+			assert_that(
+					self.state == InkStateElement.State.NONE ||
+					self.state == InkStateElement.State.PROPERTY ||
+					self.state == InkStateElement.State.ARRAY
+			)
 		else:
-			assert_that(self.state == StateElement.State.PROPERTY || self.state == StateElement.State.ARRAY)
+			assert_that(
+					self.state == InkStateElement.State.PROPERTY ||
+					self.state == InkStateElement.State.ARRAY
+			)
 
-		if self.state == StateElement.State.ARRAY && self.child_count > 0:
+		if self.state == InkStateElement.State.ARRAY && self.child_count > 0:
 			_writer.write(",")
 
-		if self.state == StateElement.State.PROPERTY:
+		if self.state == InkStateElement.State.PROPERTY:
 			assert_that(self.child_count == 0)
 
-		if self.state == StateElement.State.ARRAY || self.state == StateElement.State.PROPERTY:
+		if (
+			self.state == InkStateElement.State.ARRAY ||
+			self.state == InkStateElement.State.PROPERTY
+		):
 			increment_child_count()
 
-	var state setget , get_state # StateElement.State
-	func get_state():
+	var state: int setget , get_state # StateElement.State
+	func get_state() -> int:
 		if _state_stack.size() > 0:
 			return _state_stack.front().type
 		else:
-			return StateElement.State.NONE
+			return InkStateElement.State.NONE
 
-	var child_count setget , get_child_count # int
-	func get_child_count():
+	var child_count: int setget , get_child_count # int
+	func get_child_count() -> int:
 		if _state_stack.size() > 0:
 			return _state_stack.front().child_count
 		else:
 			return 0
 
 	# () -> void
-	func increment_child_count():
+	func increment_child_count() -> void:
 		assert_that(_state_stack.size() > 0)
 		var curr_el = _state_stack.pop_front()
 		curr_el.child_count += 1
 		_state_stack.push_front(curr_el)
 
 	# (bool) -> void
-	func assert_that(condition):
-		if OS.is_debug_build(): return
+	func assert_that(condition: bool) -> void:
+		if OS.is_debug_build():
+			return
 
 		if !condition:
 			push_error("Assert failed while writing JSON")
 			assert(condition)
 
 	# () -> String
-	func to_string():
+	func to_string() -> String:
 		return _writer.to_string()
 
-	var _state_stack = [] # Array<StateElement>
-	var _writer # StringWriter
+	var _state_stack: Array = [] # Array<StateElement>
+	var _writer: InkStringWriter
+
+	# ######################################################################## #
+	# GDScript extra methods
+	# ######################################################################## #
+
+	func is_class(type: String) -> bool:
+		return type == "InkSimpleJSON.Writer" || .is_class(type)
+
+	func get_class() -> String:
+		return "InkSimpleJSON.Writer"
 
 
 class JsonError:

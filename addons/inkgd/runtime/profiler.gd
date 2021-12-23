@@ -16,49 +16,43 @@ func _init():
 	pass
 
 # () -> String
-func report():
+func report() -> String:
 	return ""
 
 # () -> void
-func pre_continue():
+func pre_continue() -> void:
 	pass
 
 # () -> void
-func post_continue():
+func post_continue() -> void:
 	pass
 
 # () -> void
-func pre_step():
+func pre_step() -> void:
 	pass
 
 # (CallStack) -> void
-func step(callstack):
+func step(callstack: InkCallStack) -> void:
 	pass
 
 # () -> void
-func post_step():
+func post_step() -> void:
 	pass
 
-# () -> String
-func step_length_record():
+func step_length_record() -> String:
 	return ""
 
-# () -> String
-func mega_log():
+func mega_log() -> String:
 	return ""
 
-# () -> void
-func pre_snapshot():
+func pre_snapshot() -> void:
 	pass
 
-# () -> void
-func post_snapshot():
+func post_snapshot() -> void:
 	pass
 
-# (Stopwatch) -> float
-func millisecs(watch):
-	pass
+func millisecs(watch: InkStopWatch) -> float:
+	return 0.0
 
-# (float) -> String
-static func format_millisecs(num):
+static func format_millisecs(num: float) -> String:
 	return ""
