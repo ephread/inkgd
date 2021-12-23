@@ -8,7 +8,7 @@
 
 extends "res://test/integration/test_base.gd"
 
-var ErrorType = preload("res://addons/inkgd/runtime/error.gd").ErrorType
+var ErrorType = preload("res://addons/inkgd/runtime/enums/error.gd").ErrorType
 
 var _temp_not_found_last_error_type = -1
 var _temp_not_found_error_count = 0

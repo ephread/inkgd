@@ -10,7 +10,7 @@
 # ############################################################################ #
 
 tool
-extends "res://addons/inkgd/runtime/ink_base.gd"
+extends InkBase
 
 class_name InkPath
 
@@ -20,7 +20,7 @@ const parent_id = "^"
 
 # ############################################################################ #
 
-class Component extends "res://addons/inkgd/runtime/ink_base.gd":
+class Component extends InkBase:
 	var index = 0 # int
 	var name = null # String
 

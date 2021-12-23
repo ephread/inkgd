@@ -1,4 +1,4 @@
-# ############################################################################ #
+ # ############################################################################ #
 # Copyright © 2015-present inkle Ltd.
 # Copyright © 2019-present Frédéric Maquin <fred@ephread.com>
 # All Rights Reserved
@@ -16,26 +16,27 @@
 tool
 extends Reference
 
+class_name InkStringSet
+
 # ############################################################################ #
 # Self-reference
 # ############################################################################ #
 
-var StringSet setget , get_StringSet
-func get_StringSet():
-	return load("res://addons/inkgd/runtime/extra/string_set.gd")
+static func InkStringSet() -> GDScript:
+	return load("res://addons/inkgd/runtime/extra/string_set.gd") as GDScript
 
 # ############################################################################ #
 
-var _dictionary = {}
+var _dictionary: Dictionary = {}
 
 # ############################################################################ #
 
 func clear() -> void:
 	_dictionary.clear()
 
-func duplicate():
-	var set = StringSet.new()
-	set._dictionary = self._dictionary.duplicate()
+func duplicate() -> InkStringSet:
+	var set = InkStringSet().new()
+	set._dictionary = _dictionary.duplicate()
 	return set
 
 func enumerate() -> Array:

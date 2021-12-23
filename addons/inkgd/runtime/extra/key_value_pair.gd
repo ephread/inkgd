@@ -11,12 +11,14 @@
 tool
 extends Reference
 
+class_name InkKeyValuePair
+
 # ############################################################################ #
 # Self-reference
 # ############################################################################ #
 
-static func KeyValuePair():
-	return load("res://addons/inkgd/runtime/extra/key_value_pair.gd")
+static func InkKeyValuePair() -> GDScript:
+	return load("res://addons/inkgd/runtime/extra/key_value_pair.gd") as GDScript
 
 # ############################################################################ #
 
@@ -34,8 +36,8 @@ func _init_with_key_value(key, value):
 
 # ############################################################################ #
 
-static func new_with_key_value(key, value):
-	var key_value_pair = KeyValuePair().new()
+static func new_with_key_value(key, value) -> InkKeyValuePair:
+	var key_value_pair = InkKeyValuePair().new()
 	key_value_pair._init_with_key_value(key, value)
 
 	return key_value_pair

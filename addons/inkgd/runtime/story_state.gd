@@ -10,7 +10,7 @@
 # ############################################################################ #
 
 tool
-extends "res://addons/inkgd/runtime/ink_base.gd"
+extends InkBase
 
 # ############################################################################ #
 # Self-reference
@@ -23,12 +23,12 @@ static func StoryState():
 # Imports
 # ############################################################################ #
 
-var PushPopType = preload("res://addons/inkgd/runtime/push_pop.gd").PushPopType
-var Pointer = load("res://addons/inkgd/runtime/pointer.gd")
+var PushPopType = preload("res://addons/inkgd/runtime/enums/push_pop.gd").PushPopType
+var Pointer = load("res://addons/inkgd/runtime/structs/pointer.gd")
 var CallStack = load("res://addons/inkgd/runtime/callstack.gd")
 var VariablesState = load("res://addons/inkgd/runtime/variables_state.gd")
 var InkPath = load("res://addons/inkgd/runtime/ink_path.gd")
-var ControlCommand = load("res://addons/inkgd/runtime/control_command.gd")
+var ControlCommand = load("res://addons/inkgd/runtime/content/control_command.gd")
 var SimpleJson = load("res://addons/inkgd/runtime/simple_json.gd")
 var StatePatch = load("res://addons/inkgd/runtime/state_patch.gd")
 var Flow = load("res://addons/inkgd/runtime/flow.gd")
@@ -1029,7 +1029,7 @@ var _Json = WeakRef.new()
 func get_json():
 	var InkRuntime = Engine.get_main_loop().root.get_node("__InkRuntime")
 
-	Utils.assert(InkRuntime != null,
+	Utils.__assert__(InkRuntime != null,
 				 str("Could not retrieve 'InkRuntime' singleton from the scene tree."))
 
 	_Json = weakref(InkRuntime.json)

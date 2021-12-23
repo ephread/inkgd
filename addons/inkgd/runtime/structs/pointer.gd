@@ -14,7 +14,7 @@
 # ############################################################################ #
 
 tool
-extends "res://addons/inkgd/runtime/ink_base.gd"
+extends InkBase
 
 class_name InkPointer
 
@@ -108,4 +108,4 @@ func duplicate():
 	return Pointer().new(self.container, index)
 
 static func Pointer():
-	return load("res://addons/inkgd/runtime/pointer.gd")
+	return load("res://addons/inkgd/runtime/structs/pointer.gd")

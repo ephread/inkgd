@@ -14,17 +14,23 @@
 
 tool
 
-var _start_time = null
+class_name InkStopWatch
+
+# ############################################################################ #
+
+var _start_time: int = -1
 
 var elapsed_milliseconds setget , get_elapsed_milliseconds
 func get_elapsed_milliseconds() -> int:
-	if _start_time == null:
+	if _start_time == -1:
 		return 0
 
 	return OS.get_ticks_msec() - _start_time
+
+# ############################################################################ #
 
 func start() -> void:
 	_start_time = OS.get_ticks_msec()
 
 func stop() -> void:
-	_start_time = null
+	_start_time = -1

@@ -10,14 +10,14 @@
 # ############################################################################ #
 
 tool
-extends "res://addons/inkgd/runtime/ink_object.gd"
+extends InkObject
 
 # ############################################################################ #
 # Imports
 # ############################################################################ #
 
-var PushPopType = preload("res://addons/inkgd/runtime/push_pop.gd").PushPopType
-var Pointer = load("res://addons/inkgd/runtime/pointer.gd")
+var PushPopType = preload("res://addons/inkgd/runtime/enums/push_pop.gd").PushPopType
+var Pointer = load("res://addons/inkgd/runtime/structs/pointer.gd")
 
 # ############################################################################ #
 

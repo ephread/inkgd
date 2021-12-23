@@ -10,6 +10,8 @@
 tool
 extends Reference
 
+class_name InkUtils
+
 # ############################################################################ #
 # Exceptions
 # ############################################################################ #
@@ -17,7 +19,10 @@ extends Reference
 static func throw_exception(message: String) -> void:
 	InkRuntime().handle_exception(message)
 
-static func throw_story_exception(message: String, use_end_line_number = false) -> void:
+static func throw_story_exception(
+		message: String,
+		use_end_line_number = false
+) -> void:
 	InkRuntime().handle_story_exception(message, use_end_line_number)
 
 static func throw_argument_exception(message: String) -> void:
@@ -27,7 +32,7 @@ static func throw_argument_exception(message: String) -> void:
 # Assertions
 # ############################################################################ #
 
-static func assert(condition: bool, message = "") -> void:
+static func __assert__(condition: bool, message = "") -> void:
 	if !condition && message != "":
 		printerr(message)
 
@@ -38,9 +43,10 @@ static func assert(condition: bool, message = "") -> void:
 # ############################################################################ #
 
 static func as_or_null(variant, name_of_class: String):
-	if (is_ink_class(variant, name_of_class) ||
-		name_of_class == "Dictionary" && variant is Dictionary ||
-		name_of_class == "Array" && variant is Array
+	if (
+			is_ink_class(variant, name_of_class) ||
+			name_of_class == "Dictionary" && variant is Dictionary ||
+			name_of_class == "Array" && variant is Array
 	):
 		return variant
 	else:
@@ -50,10 +56,10 @@ static func cast(variant, name_of_class: String):
 	if is_ink_class(variant, name_of_class):
 		return variant
 	else:
-		push_error(str(
-			"Original implementation threw a RuntimeException here, because of a ",
-			"cast issue. Undefined behaviors should be expected."
-		))
+		push_error(
+				"Original implementation threw a RuntimeException here, because of a " +
+				"cast issue. Undefined behaviors should be expected."
+		)
 
 		assert(false)
 		return null
@@ -242,5 +248,5 @@ static func array_equal(a1: Array, a2: Array, use_equals = false) -> bool:
 
 # ############################################################################ #
 
-static func InkRuntime() -> Node:
-	return Engine.get_main_loop().root.get_node("__InkRuntime")
+static func InkRuntime() -> InkRuntimeNode:
+	return Engine.get_main_loop().root.get_node("__InkRuntime") as InkRuntimeNode

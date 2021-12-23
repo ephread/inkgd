@@ -14,7 +14,7 @@
 # ############################################################################ #
 
 tool
-extends "res://addons/inkgd/runtime/ink_object.gd"
+extends InkObject
 
 class_name InkListItem
 
@@ -23,7 +23,7 @@ class_name InkListItem
 # ############################################################################ #
 
 static func InkListItem():
-	return load("res://addons/inkgd/runtime/lists/ink_list_item.gd")
+	return load("res://addons/inkgd/runtime/lists/structs/ink_list_item.gd")
 
 # ############################################################################ #
 
@@ -57,8 +57,8 @@ var full_name setget , get_full_name
 func get_full_name():
 	# In C#, concatenating null produce nothing, in GDScript, it appends "Null".
 	return (
-		(self.origin_name if self.origin_name else "?") + "." +
-		(self.item_name if self.item_name else "")
+			(self.origin_name if self.origin_name else "?") + "." +
+			(self.item_name if self.item_name else "")
 	)
 
 # ############################################################################ #

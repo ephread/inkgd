@@ -32,8 +32,8 @@ func to_string() -> String:
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type):
+func is_class(type: String) -> bool:
 	return type == "InkBase" || .is_class(type)
 
-func get_class():
+func get_class() -> String:
 	return "InkBase"

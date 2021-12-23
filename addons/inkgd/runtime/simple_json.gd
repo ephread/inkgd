@@ -8,6 +8,7 @@
 # ############################################################################ #
 
 tool
+extends Reference
 
 const Utils = preload("res://addons/inkgd/runtime/extra/utils.gd")
 

@@ -1,4 +1,3 @@
-# warning-ignore-all:shadowed_variable
 # warning-ignore-all:unused_class_variable
 # ############################################################################ #
 # Copyright © 2015-present inkle Ltd.
@@ -10,42 +9,42 @@
 # ############################################################################ #
 
 tool
-extends "res://addons/inkgd/runtime/ink_object.gd"
+extends InkObject
+
+class_name InkChoice
 
 # ############################################################################ #
-# Self-reference
+# Imports
 # ############################################################################ #
 
-static func VariableAssignment():
-	return load("res://addons/inkgd/runtime/variable_assignment.gd")
+var CallStack = load("res://addons/inkgd/runtime/callstack.gd")
 
 # ############################################################################ #
 
-var variable_name = null # String
-var is_new_declaration = false # bool
-var is_global = false # bool
+var text # String
 
-func _init():
-	_init_with(null, false)
+# () -> String
+# (String) -> void
+var path_string_on_choice setget set_path_string_on_choice, get_path_string_on_choice
+func get_path_string_on_choice():
+	return target_path.to_string()
 
-func _init_with(variable_name, is_new_declaration):
-	self.variable_name = variable_name
-	self.is_new_declaration = is_new_declaration
+func set_path_string_on_choice(value):
+	target_path = InkPath().new_with_components_string(value)
 
-func to_string():
-	return "VarAssign to " + variable_name
+var source_path = null # String
+var index = 0 # index
+var target_path = null # InkPath
+var thread_at_generation = null # CallStack.InkThread
+var original_thread_index = 0 # int
+var is_invisible_default = false # bool
 
 # ############################################################################ #
 # GDScript extra methods
 # ############################################################################ #
 
 func is_class(type):
-	return type == "VariableAssignment" || .is_class(type)
+	return type == "Choice" || .is_class(type)
 
 func get_class():
-	return "VariableAssignment"
-
-static func new_with(variable_name, is_new_declaration):
-	var variable_assignment = VariableAssignment().new()
-	variable_assignment._init_with(variable_name, is_new_declaration)
-	return variable_assignment
+	return "Choice"

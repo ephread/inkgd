@@ -11,7 +11,7 @@
 # ############################################################################ #
 
 tool
-extends "res://addons/inkgd/runtime/ink_object.gd"
+extends InkObject
 
 const INK_VERSION_CURRENT = 20
 const INK_VERSION_MINIMUM_COMPATIBLE = 18
@@ -20,15 +20,15 @@ const INK_VERSION_MINIMUM_COMPATIBLE = 18
 # Imports
 # ############################################################################ #
 
-var PushPopType = preload("res://addons/inkgd/runtime/push_pop.gd").PushPopType
-var ErrorType = preload("res://addons/inkgd/runtime/error.gd").ErrorType
-var InkListItem = preload("res://addons/inkgd/runtime/lists/ink_list_item.gd")
+var PushPopType = preload("res://addons/inkgd/runtime/enums/push_pop.gd").PushPopType
+var ErrorType = preload("res://addons/inkgd/runtime/enums/error.gd").ErrorType
+var InkListItem = preload("res://addons/inkgd/runtime/lists/structs/ink_list_item.gd")
 
 var ListDefinitionsOrigin = load("res://addons/inkgd/runtime/lists/list_definitions_origin.gd")
 var StoryState = load("res://addons/inkgd/runtime/story_state.gd")
 
-var Pointer = load("res://addons/inkgd/runtime/pointer.gd")
-var ControlCommand = load("res://addons/inkgd/runtime/control_command.gd")
+var Pointer = load("res://addons/inkgd/runtime/structs/pointer.gd")
+var ControlCommand = load("res://addons/inkgd/runtime/content/control_command.gd")
 
 var Value = load("res://addons/inkgd/runtime/values/value.gd")
 var IntValue = load("res://addons/inkgd/runtime/values/int_value.gd")
@@ -41,8 +41,8 @@ var InkList = load("res://addons/inkgd/runtime/lists/ink_list.gd")
 
 var StringSet = load("res://addons/inkgd/runtime/extra/string_set.gd")
 
-var Choice = load("res://addons/inkgd/runtime/choice.gd")
-var Void = load("res://addons/inkgd/runtime/void.gd")
+var Choice = load("res://addons/inkgd/runtime/content/choices/choice.gd")
+var Void = load("res://addons/inkgd/runtime/content/void.gd")
 
 var Profiler = load("res://addons/inkgd/runtime/profiler.gd")
 
@@ -796,11 +796,11 @@ func perform_logic_and_flow_control(content_obj):
 		match eval_command.command_type:
 
 			ControlCommand.CommandType.EVAL_START:
-				self.assert(self.state.in_expression_evaluation == false, "Already in expression evaluation?")
+				self.__assert__(self.state.in_expression_evaluation == false, "Already in expression evaluation?")
 				self.state.in_expression_evaluation = true
 
 			ControlCommand.CommandType.EVAL_END:
-				self.assert(self.state.in_expression_evaluation == true, "Not in expression evaluation mode")
+				self.__assert__(self.state.in_expression_evaluation == true, "Not in expression evaluation mode")
 				self.state.in_expression_evaluation = false
 
 			ControlCommand.CommandType.EVAL_OUTPUT:
@@ -829,7 +829,7 @@ func perform_logic_and_flow_control(content_obj):
 					var popped = self.state.pop_evaluation_stack()
 					override_tunnel_return_target = Utils.as_or_null(popped, "DivertTargetValue")
 					if override_tunnel_return_target == null:
-						self.assert(Utils.is_ink_class(popped, "Void"),
+						self.__assert__(Utils.is_ink_class(popped, "Void"),
 									"Expected void if ->-> doesn't override target")
 
 				if self.state.try_exit_function_evaluation_from_game():
@@ -855,7 +855,7 @@ func perform_logic_and_flow_control(content_obj):
 			ControlCommand.CommandType.BEGIN_STRING:
 				self.state.push_to_output_stream(eval_command)
 
-				self.assert(self.state.in_expression_evaluation == true,
+				self.__assert__(self.state.in_expression_evaluation == true,
 							"Expected to be in an expression when evaluating a string")
 				self.state.in_expression_evaluation = false
 
@@ -1154,7 +1154,7 @@ func choose_path(p, incrementing_turn_index = true):
 # (int) -> void
 func choose_choice_index(choice_idx):
 	var choices = self.current_choices
-	self.assert(choice_idx >= 0 && choice_idx < choices.size(), "choice out of range")
+	self.__assert__(choice_idx >= 0 && choice_idx < choices.size(), "choice out of range")
 
 	var choice_to_choose = choices[choice_idx]
 	emit_signal("on_make_choice", choice_to_choose)
@@ -1253,7 +1253,7 @@ func call_external_function(func_name, number_of_arguments):
 	if _func_def == null:
 		if allow_external_function_fallbacks:
 			fallback_function_container = self.knot_container_with_name(func_name)
-			self.assert(fallback_function_container != null,
+			self.__assert__(fallback_function_container != null,
 						str("Trying to call EXTERNAL function '", func_name,
 							"' which has not been bound, and fallback ink function could not be found."))
 
@@ -1266,7 +1266,7 @@ func call_external_function(func_name, number_of_arguments):
 			self.state.diverted_pointer = Pointer.start_of(fallback_function_container)
 			return
 		else:
-			self.assert(false,
+			self.__assert__(false,
 						str("Trying to call EXTERNAL function '", func_name,
 							"' which has not been bound (and ink fallbacks disabled)."))
 
@@ -1286,7 +1286,7 @@ func call_external_function(func_name, number_of_arguments):
 	var return_obj = null
 	if func_result != null:
 		return_obj = Value.create(func_result)
-		self.assert(return_obj != null,
+		self.__assert__(return_obj != null,
 					str("Could not create ink value from returned object of type ",
 						typeof(func_result)))
 	else:
@@ -1299,7 +1299,7 @@ func bind_external_function_general(func_name, object, method, lookahead_safe = 
 	if async_we_cant("bind an external function"):
 		return
 
-	self.assert(!_externals.has(func_name),
+	self.__assert__(!_externals.has(func_name),
 				str("Function '", func_name, "' has already been bound."))
 	_externals[func_name] = ExternalFunctionDef.new(object, method, lookahead_safe)
 
@@ -1307,7 +1307,7 @@ func bind_external_function_general(func_name, object, method, lookahead_safe = 
 
 # (String, Variant, String) -> void
 func bind_external_function(func_name, object, method_name, lookahead_safe = false):
-	self.assert(object != null || method_name != null, "Can't bind a null function")
+	self.__assert__(object != null || method_name != null, "Can't bind a null function")
 
 	bind_external_function_general(func_name, object, method_name, lookahead_safe)
 
@@ -1316,7 +1316,7 @@ func unbind_external_function(func_name):
 	if async_we_cant("unbind an external a function"):
 		return
 
-	self.assert(_externals.has(func_name), str("Function '", func_name, "' has not been bound."))
+	self.__assert__(_externals.has(func_name), str("Function '", func_name, "' has not been bound."))
 	_externals.erase(func_name)
 
 func validate_external_bindings():
@@ -1662,7 +1662,7 @@ func add_error(message, is_warning = false, use_end_line_number = false):
 		self.state.force_end()
 
 # (bool, message, Array<Variant>) -> void
-func assert(condition, message = null, format_params = null):
+func __assert__(condition, message = null, format_params = null):
 	if condition == false:
 		if message == null:
 			message = "Story assert"
@@ -1787,7 +1787,7 @@ var _error_raised_during_step = []
 func _initialize_runtime():
 	var InkRuntime = _get_runtime()
 
-	Utils.assert(InkRuntime != null,
+	Utils.__assert__(InkRuntime != null,
 				 str("Could not retrieve 'InkRuntime' singleton from the scene tree."))
 
 	_Json = weakref(InkRuntime.json)

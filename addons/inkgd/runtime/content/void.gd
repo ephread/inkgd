@@ -8,16 +8,18 @@
 # ############################################################################ #
 
 tool
-extends "res://addons/inkgd/runtime/ink_object.gd"
+extends InkObject
+
+class_name InkVoid
 
 # ############################################################################ #
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type):
+func is_class(type: String) -> bool:
 	return type == "Void" || .is_class(type)
 
-func get_class():
+func get_class() -> String:
 	return "Void"
 
 func to_string() -> String:

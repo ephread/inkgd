@@ -10,7 +10,7 @@
 # ############################################################################ #
 
 tool
-extends "res://addons/inkgd/runtime/ink_object.gd"
+extends "res://addons/inkgd/runtime/common/ink_object.gd"
 
 class_name InkListDefinition
 
@@ -18,8 +18,8 @@ class_name InkListDefinition
 # Imports
 # ############################################################################ #
 
-var TryGetResult = preload("res://addons/inkgd/runtime/extra/try_get_result.gd")
-var InkListItem = preload("res://addons/inkgd/runtime/lists/ink_list_item.gd")
+var InkTryGetResult = preload("res://addons/inkgd/runtime/extra/try_get_result.gd")
+var InkListItem = preload("res://addons/inkgd/runtime/lists/structs/ink_list_item.gd")
 
 # ############################################################################ #
 
@@ -60,24 +60,27 @@ func contains_item_with_name(item_name: String) -> bool:
 	return _item_name_to_values.has(item_name)
 
 # (int) -> { result: InkListItem, exists: bool }
-func try_get_item_with_value(val: int) -> Dictionary:
+func try_get_item_with_value(val: int) -> InkTryGetResult:
 	for named_item_key in _item_name_to_values:
 		if (_item_name_to_values[named_item_key] == val):
-			return TryGetResult.new(true, InkListItem.new_with_origin_name(self.name, named_item_key))
+			return InkTryGetResult.new(
+					true,
+					InkListItem.new_with_origin_name(self.name, named_item_key)
+			)
 
-	return TryGetResult.new(false, InkListItem.null())
+	return InkTryGetResult.new(false, InkListItem.null())
 
 # (InkListItem) -> { result: InkListItem, exists: bool }
-func try_get_value_for_item(item: InkListItem) -> Dictionary:
+func try_get_value_for_item(item: InkListItem) -> InkTryGetResult:
 	if !item.item_name:
-		return TryGetResult.new(false, 0)
+		return InkTryGetResult.new(false, 0)
 
 	var value = _item_name_to_values.get(item.item_name)
 
 	if (!value):
-		TryGetResult.new(false, 0)
+		InkTryGetResult.new(false, 0)
 
-	return TryGetResult.new(true, value)
+	return InkTryGetResult.new(true, value)
 
 # (String name, Dictionary<String, int>) -> InkListDefinition
 func _init(name: String, items: Dictionary):
@@ -92,7 +95,7 @@ var _item_name_to_values: Dictionary # Dictionary<String, int>
 # ############################################################################ #
 
 func is_class(type: String) -> bool:
-	return type == get_class() || .is_class(type)
+	return type == "InkListDefinition" || .is_class(type)
 
 func get_class() -> String:
 	return "InkListDefinition"

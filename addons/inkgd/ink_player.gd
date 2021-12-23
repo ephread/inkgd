@@ -14,7 +14,7 @@ class_name InkPlayer
 # Imports
 # ############################################################################ #
 
-var ErrorType = preload("res://addons/inkgd/runtime/error.gd").ErrorType
+var ErrorType = preload("res://addons/inkgd/runtime/enums/error.gd").ErrorType
 
 var InkRuntime = load("res://addons/inkgd/runtime.gd")
 var InkResource = load("res://addons/inkgd/editor/import_plugins/ink_resource.gd")

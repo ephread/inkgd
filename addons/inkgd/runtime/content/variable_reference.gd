@@ -10,46 +10,58 @@
 # ############################################################################ #
 
 tool
-extends "res://addons/inkgd/runtime/ink_object.gd"
+extends InkObject
+
+class_name InkVariableReference
 
 # ############################################################################ #
 
-var name = null # String
-var path_for_count = null # InkPath
+# String
+var name = null
 
-var container_for_count setget , get_container_for_count # Container
+# InkPath
+var path_for_count = null
+
+# Container?
+var container_for_count setget , get_container_for_count
 func get_container_for_count():
 	return self.resolve_path(path_for_count).container
 
-var path_string_for_count setget set_path_string_for_count , get_path_string_for_count # String
+# String?
+var path_string_for_count setget set_path_string_for_count , get_path_string_for_count
 func get_path_string_for_count():
 	if path_for_count == null:
 		return null
 
 	return compact_path_string(path_for_count)
+
 func set_path_string_for_count(value):
 	if value == null:
 		path_for_count = null
 	else:
 		path_for_count = InkPath().new_with_components_string(value)
 
+# ############################################################################ #
+
 func _init(name = null):
 	if name:
 		self.name = name
 
-func to_string():
+# ############################################################################ #
+
+func to_string() -> String:
 	if name != null:
-		return str("var(", name, ")")
+		return "var(%s)" % name
 	else:
 		var path_str = self.path_string_for_count
-		return str("read_count(", path_str, ")")
+		return "read_count(%s)" % path_str
 
 # ############################################################################ #
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type):
+func is_class(type: String) -> bool:
 	return type == "VariableReference" || .is_class(type)
 
-func get_class():
+func get_class() -> String:
 	return "VariableReference"

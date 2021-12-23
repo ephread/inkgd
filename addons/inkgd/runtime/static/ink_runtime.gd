@@ -12,6 +12,8 @@
 tool
 extends Node
 
+class_name InkRuntimeNode
+
 # Expected to be added to the SceneTree as a singleton object.
 
 # ############################################################################ #

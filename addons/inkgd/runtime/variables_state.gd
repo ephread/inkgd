@@ -11,7 +11,7 @@
 # ############################################################################ #
 
 tool
-extends "res://addons/inkgd/runtime/ink_base.gd"
+extends InkBase
 
 # ############################################################################ #
 # Imports
@@ -357,7 +357,7 @@ var _InkRuntime = WeakRef.new()
 func get_static_objects():
 	var InkRuntime = Engine.get_main_loop().root.get_node("__InkRuntime")
 
-	Utils.assert(InkRuntime != null,
+	Utils.__assert__(InkRuntime != null,
 				 str("Could not retrieve 'InkRuntime' singleton from the scene tree."))
 
 	_InkRuntime = weakref(InkRuntime)

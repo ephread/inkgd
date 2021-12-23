@@ -9,7 +9,9 @@
 # ############################################################################ #
 
 tool
-extends "res://addons/inkgd/runtime/ink_base.gd"
+extends InkBase
+
+class_name InkDebugMetadata
 
 # ############################################################################ #
 

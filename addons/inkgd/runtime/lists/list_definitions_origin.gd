@@ -10,7 +10,7 @@
 # ############################################################################ #
 
 tool
-extends "res://addons/inkgd/runtime/ink_object.gd"
+extends "res://addons/inkgd/runtime/common/ink_object.gd"
 
 class_name InkListDefinitionOrigin
 
@@ -19,7 +19,7 @@ class_name InkListDefinitionOrigin
 # ############################################################################ #
 
 var InkTryGetResult = preload("res://addons/inkgd/runtime/extra/try_get_result.gd")
-var InkListItem = preload("res://addons/inkgd/runtime/lists/ink_list_item.gd")
+var InkListItem = preload("res://addons/inkgd/runtime/lists/structs/ink_list_item.gd")
 
 var InkListValue = load("res://addons/inkgd/runtime/values/list_value.gd")
 
@@ -82,7 +82,7 @@ var _all_unambiguous_list_value_cache: Dictionary # Dictionary<String, InkListVa
 # ############################################################################ #
 
 func is_class(type: String) -> bool:
-	return type == get_class() || .is_class(type)
+	return type == "InkListDefinitionsOrigin" || .is_class(type)
 
 func get_class() -> String:
 	return "InkListDefinitionsOrigin"

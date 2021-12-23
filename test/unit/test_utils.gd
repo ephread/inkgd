@@ -97,7 +97,7 @@ func test_array_remove_invalid_range():
 
 # ############################################################################ #
 
-class InkBaseObject extends "res://addons/inkgd/runtime/ink_base.gd":
+class InkBaseObject extends InkBase:
 	var value
 
 	func _init(new_value):
@@ -112,6 +112,6 @@ class InkBaseObject extends "res://addons/inkgd/runtime/ink_base.gd":
 	func get_class():
 		return "InkBaseObject"
 
-class INamedContentLike extends "res://addons/inkgd/runtime/ink_base.gd":
+class INamedContentLike extends InkBase:
 	var has_valid_name = ""
 	var name = ""

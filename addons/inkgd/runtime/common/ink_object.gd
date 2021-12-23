@@ -10,7 +10,7 @@
 # ############################################################################ #
 
 tool
-extends "res://addons/inkgd/runtime/ink_base.gd"
+extends InkBase
 
 class_name InkObject
 
@@ -18,20 +18,20 @@ class_name InkObject
 # Imports
 # ############################################################################ #
 
-static func InkPath():
-	return load("res://addons/inkgd/runtime/ink_path.gd")
+static func InkPath() -> GDScript:
+	return load("res://addons/inkgd/runtime/ink_path.gd") as GDScript
 
 # ############################################################################ #
 
 # () -> InkObject
 # Encapsulating parent into a weak ref.
-var parent setget set_parent, get_parent
-func set_parent(value):
+var parent: InkObject setget set_parent, get_parent
+func set_parent(value: InkObject):
 	self._parent = weakref(value)
-func get_parent():
+func get_parent() -> InkObject:
 	return self._parent.get_ref()
 
-var _parent = WeakRef.new() # InkObject
+var _parent: WeakRef = WeakRef.new() # InkObject
 
 # ############################################################################ #
 
@@ -58,13 +58,13 @@ func get_own_debug_metadata():
 
 # ############################################################################ #
 
-# (InkPath) -> int
-func debug_line_number_of_path(path):
+# (InkPath) -> int?
+func debug_line_number_of_path(path: InkPath):
 	if path == null:
 		return null
 
 	var root = self.root_content_container
-	if root:
+	if root != null:
 		var target_content = root.content_at_path(path).obj
 		if target_content:
 			var dm = target_content.debug_metadata
@@ -73,13 +73,14 @@ func debug_line_number_of_path(path):
 
 	return null
 
-var path setget , get_path
-func get_path():
+# InkPath
+var path: Path setget , get_path
+func get_path() -> Path:
 	if _path == null:
 		if self.parent == null:
 			_path = InkPath().new()
 		else:
-			var comps = [] # Stack<Path.Component>
+			var comps: Array = [] # Stack<Path.Component>
 
 			var child = self
 			var container = Utils.as_or_null(child.parent, "InkContainer")
@@ -101,14 +102,19 @@ func get_path():
 var _path = null # InkPath
 
 # (InkPath) -> SearchResult
-func resolve_path(path):
+func resolve_path(path: InkPath) -> InkSearchResult:
 	if path.is_relative:
 		var nearest_container = Utils.as_or_null(self, "InkContainer")
 		if !nearest_container:
-			Utils.assert(self.parent != null, "Can't resolve relative path because we don't have a parent")
+			Utils.__assert__(
+					self.parent != null,
+					"Can't resolve relative path because we don't have a parent"
+			)
+
 			nearest_container = Utils.as_or_null(self.parent, "InkContainer")
-			Utils.assert(nearest_container != null, "Expected parent to be a container")
-			Utils.assert(path.get_component(0).is_parent)
+
+			Utils.__assert__(nearest_container != null, "Expected parent to be a container")
+			Utils.__assert__(path.get_component(0).is_parent)
 
 			path = path.tail
 
@@ -116,19 +122,18 @@ func resolve_path(path):
 	else:
 		return self.root_content_container.content_at_path(path)
 
-# (Path) -> Path
-func convert_path_to_relative(global_path):
+func convert_path_to_relative(global_path: InkPath) -> InkPath:
 	var own_path = self.path
 
 	var min_path_length = min(global_path.length, own_path.length)
 	var last_shared_path_comp_index = -1
 
 	var i = 0
-	while(i < min_path_length):
+	while i < min_path_length:
 		var own_comp = own_path.get_component(i)
 		var other_comp = global_path.get_component(i)
 
-		if (own_comp.equals(other_comp)):
+		if own_comp.equals(other_comp):
 			last_shared_path_comp_index = i
 		else:
 			break
@@ -140,7 +145,7 @@ func convert_path_to_relative(global_path):
 
 	var num_upwards_moves = (own_path.length - 1) - last_shared_path_comp_index
 
-	var new_path_comps = [] # Array<Path.Component>
+	var new_path_comps: Array = [] # Array<Path.Component>
 
 	var up = 0
 	while up < num_upwards_moves:
@@ -156,7 +161,7 @@ func convert_path_to_relative(global_path):
 	return relative_path
 
 # (Path) -> String
-func compact_path_string(other_path):
+func compact_path_string(other_path: InkPath) -> String:
 	var global_path_str = null # String
 	var relative_path_str = null # String
 
@@ -173,7 +178,7 @@ func compact_path_string(other_path):
 	else:
 		return global_path_str
 
-# () -> Container
+# () -> InkContainer
 var root_content_container setget , get_root_content_container
 func get_root_content_container():
 	var ancestor = self
@@ -188,7 +193,7 @@ func copy():
 	return null
 
 # (InkObject, InkObject) -> void
-func set_child(obj, value):
+func set_child(obj: InkObject, value: InkObject):
 	if obj:
 		obj.parent = null
 
@@ -201,8 +206,8 @@ func set_child(obj, value):
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type):
+func is_class(type: String) -> bool:
 	return type == "InkObject" || .is_class(type)
 
-func get_class():
+func get_class() -> String:
 	return "InkObject"

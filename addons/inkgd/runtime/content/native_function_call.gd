@@ -10,7 +10,9 @@
 # ############################################################################ #
 
 tool
-extends "res://addons/inkgd/runtime/ink_object.gd"
+extends InkObject
+
+class_name InkNativeFunctionCall
 
 # ############################################################################ #
 # Imports
@@ -24,7 +26,7 @@ var BoolValue = load("res://addons/inkgd/runtime/values/bool_value.gd")
 var ListValue = load("res://addons/inkgd/runtime/values/list_value.gd")
 
 static func NativeFunctionCall():
-	return load("res://addons/inkgd/runtime/native_function_call.gd")
+	return load("res://addons/inkgd/runtime/content/native_function_call.gd")
 
 # ############################################################################ #
 
@@ -162,7 +164,7 @@ func call_list_increment_operation(list_int_params):
 	var result_raw_list = InkList.new()
 
 	for list_item in list_val.value.keys(): # TODO: Optimize?
-		var list_item_value = list_val.value.get(list_item)
+		var list_item_value = list_val.value.get_item(list_item)
 
 		var int_op = _operation_funcs[ValueType.INT]
 
@@ -177,7 +179,7 @@ func call_list_increment_operation(list_int_params):
 		if item_origin != null:
 			var incremented_item = item_origin.try_get_item_with_value(target_int)
 			if incremented_item.exists:
-				result_raw_list.set(incremented_item.result, target_int)
+				result_raw_list.set_item(incremented_item.result, target_int)
 
 	return ListValue.new_with(result_raw_list)
 

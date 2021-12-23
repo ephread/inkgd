@@ -9,7 +9,7 @@
 # ############################################################################ #
 
 tool
-extends "res://addons/inkgd/runtime/ink_object.gd"
+extends InkObject
 
 class_name InkContainer
 
@@ -162,7 +162,7 @@ func try_add_named_content(content_obj):
 
 # (INamedContent) -> void
 func add_to_named_content_only(named_content_obj):
-	Utils.assert(named_content_obj.is_class("InkObject"), "Can only add Runtime.Objects to a Runtime.Container")
+	Utils.__assert__(named_content_obj.is_class("InkObject"), "Can only add Runtime.Objects to a Runtime.Container")
 	var runtime_obj = named_content_obj
 	runtime_obj.parent = self
 
@@ -279,7 +279,7 @@ func build_string_of_hierarchy(existing_hierarchy, indentation, pointed_obj):
 
 		for object_key in only_named:
 			var value = only_named[object_key]
-			Utils.assert(Utils.is_ink_class(value, "InkContainer"), "Can only print out named Containers")
+			Utils.__assert__(Utils.is_ink_class(value, "InkContainer"), "Can only print out named Containers")
 			var container = value
 			existing_hierarchy = container.build_string_of_hierarchy(existing_hierarchy, indentation, pointed_obj)
 			existing_hierarchy += "\n"

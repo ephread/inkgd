@@ -9,6 +9,8 @@
 tool
 extends Node
 
+class_name InkRuntime
+
 static func init(root_node, should_pause_on_error = true):
 	if root_node.has_node("__InkRuntime"):
 		return root_node.get_node("__InkRuntime")

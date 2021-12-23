@@ -15,6 +15,10 @@
 
 tool
 
+class_name InkStateElement
+
+# ############################################################################ #
+
 enum State {
 	NONE,
 	OBJECT,
@@ -24,8 +28,12 @@ enum State {
 	STRING,
 }
 
+# ############################################################################ #
+
 var type: int = State.NONE # State
 var child_count: int = 0
+
+# ############################################################################ #
 
 func _init(type: int):
 	self.type = type
@@ -34,8 +42,8 @@ func _init(type: int):
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type):
+func is_class(type) -> bool:
 	return type == "StateElement" || .is_class(type)
 
-func get_class():
+func get_class() -> String:
 	return "StateElement"

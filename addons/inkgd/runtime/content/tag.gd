@@ -8,18 +8,24 @@
 # ############################################################################ #
 
 tool
-extends "res://addons/inkgd/runtime/ink_object.gd"
+extends "res://addons/inkgd/runtime/common/ink_object.gd"
+
+var text # String
+
+# (String) -> Tag
+func _init(tag_text):
+	text = tag_text
 
 # () -> String
 func to_string():
-	return "Glue"
+	return '# ' + text
 
 # ############################################################################ #
 # GDScript extra methods
 # ############################################################################ #
 
 func is_class(type):
-	return type == "Glue" || .is_class(type)
+	return type == "Tag" || .is_class(type)
 
 func get_class():
-	return "Glue"
+	return "Tag"

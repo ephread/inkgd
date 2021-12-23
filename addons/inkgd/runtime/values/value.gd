@@ -10,7 +10,7 @@
 # ############################################################################ #
 
 tool
-extends "res://addons/inkgd/runtime/ink_object.gd"
+extends InkObject
 
 # This is a merge of the original Value class and its Value<T> subclass.
 class_name InkValue

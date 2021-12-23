@@ -17,12 +17,14 @@ extends Reference
 # IMPORTS
 # ############################################################################ #
 
-var PushPopType = preload("res://addons/inkgd/runtime/push_pop.gd").PushPopType
+var PushPopType = preload("res://addons/inkgd/runtime/enums/push_pop.gd").PushPopType
 var Utils = preload("res://addons/inkgd/runtime/extra/utils.gd")
 
-var InkListItem = preload("res://addons/inkgd/runtime/lists/ink_list_item.gd")
+var InkListItem = preload("res://addons/inkgd/runtime/lists/structs/ink_list_item.gd")
 
-var NativeFunctionCall = load("res://addons/inkgd/runtime/native_function_call.gd")
+# ############################################################################ #
+
+var InkNativeFunctionCall = load("res://addons/inkgd/runtime/content/native_function_call.gd")
 
 var Value = load("res://addons/inkgd/runtime/values/value.gd")
 var StringValue = load("res://addons/inkgd/runtime/values/string_value.gd")
@@ -30,20 +32,20 @@ var DivertTargetValue = load("res://addons/inkgd/runtime/values/divert_target_va
 var VariablePointerValue = load("res://addons/inkgd/runtime/values/variable_pointer_value.gd")
 var ListValue = load("res://addons/inkgd/runtime/values/list_value.gd")
 
-var Glue = load("res://addons/inkgd/runtime/glue.gd")
-var ControlCommand = load("res://addons/inkgd/runtime/control_command.gd")
-var Divert = load("res://addons/inkgd/runtime/divert.gd")
-var ChoicePoint = load("res://addons/inkgd/runtime/choice_point.gd")
-var VariableReference = load("res://addons/inkgd/runtime/variable_reference.gd")
-var VariableAssignment = load("res://addons/inkgd/runtime/variable_assignment.gd")
-var Tag = load("res://addons/inkgd/runtime/tag.gd")
+var Glue = load("res://addons/inkgd/runtime/content/glue.gd")
+var ControlCommand = load("res://addons/inkgd/runtime/content/control_command.gd")
+var Divert = load("res://addons/inkgd/runtime/content/divert.gd")
+var ChoicePoint = load("res://addons/inkgd/runtime/content/choices/choice_point.gd")
+var VariableReference = load("res://addons/inkgd/runtime/content/variable_reference.gd")
+var VariableAssignment = load("res://addons/inkgd/runtime/content/variable_assignment.gd")
+var Tag = load("res://addons/inkgd/runtime/content/tag.gd")
 var ListDefinition = load("res://addons/inkgd/runtime/lists/list_definition.gd")
 var ListDefinitionsOrigin = load("res://addons/inkgd/runtime/lists/list_definitions_origin.gd")
 
 var InkList = load("res://addons/inkgd/runtime/lists/ink_list.gd")
-var Void = load("res://addons/inkgd/runtime/void.gd")
-var InkContainer = load("res://addons/inkgd/runtime/container.gd")
-var Choice = load("res://addons/inkgd/runtime/choice.gd")
+var Void = load("res://addons/inkgd/runtime/content/void.gd")
+var InkContainer = load("res://addons/inkgd/runtime/content/container.gd")
+var Choice = load("res://addons/inkgd/runtime/content/choices/choice.gd")
 var InkPath = load("res://addons/inkgd/runtime/ink_path.gd")
 
 # ############################################################################ #
@@ -291,7 +293,7 @@ func jtoken_to_runtime_object(token) -> InkObject:
 
 		if _str == "L^": _str = "^"
 		if StaticNativeFunctionCall.call_exists_with_name(_str):
-			return NativeFunctionCall.call_with_name(_str)
+			return InkNativeFunctionCall.call_with_name(_str)
 
 		if _str == "->->":
 			return ControlCommand.pop_tunnel()
@@ -420,7 +422,7 @@ func jtoken_to_runtime_object(token) -> InkObject:
 			for name_to_val_key in list_content:
 				var item = InkListItem.new_with_full_name(name_to_val_key)
 				var val = list_content[name_to_val_key]
-				raw_list.set(item, val)
+				raw_list.set_item(item, val)
 
 			return ListValue.new_with(raw_list)
 

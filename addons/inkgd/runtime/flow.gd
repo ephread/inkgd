@@ -9,13 +9,12 @@
 # ############################################################################ #
 
 tool
-extends Reference
+extends InkBase
 
 # ############################################################################ #
 # Imports
 # ############################################################################ #
 
-var Utils = preload("res://addons/inkgd/runtime/extra/utils.gd")
 var CallStack = load("res://addons/inkgd/runtime/callstack.gd")
 
 # ############################################################################ #
@@ -145,7 +144,7 @@ var _Json = WeakRef.new()
 func get_static_json():
 	var InkRuntime = Engine.get_main_loop().root.get_node("__InkRuntime")
 
-	Utils.assert(InkRuntime != null,
+	Utils.__assert__(InkRuntime != null,
 				 str("Could not retrieve 'InkRuntime' singleton from the scene tree."))
 
 	_Json = weakref(InkRuntime.json)

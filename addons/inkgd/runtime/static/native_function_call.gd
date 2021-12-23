@@ -18,7 +18,7 @@ extends Reference
 const ValueType = preload("res://addons/inkgd/runtime/values/value_type.gd").ValueType
 
 static func NativeFunctionCall():
-	return load("res://addons/inkgd/runtime/native_function_call.gd")
+	return load("res://addons/inkgd/runtime/content/native_function_call.gd")
 
 # ############################################################################ #
 

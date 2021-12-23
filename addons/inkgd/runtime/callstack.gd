@@ -10,7 +10,7 @@
 # ############################################################################ #
 
 tool
-extends "res://addons/inkgd/runtime/ink_base.gd"
+extends InkBase
 
 class_name InkCallStack
 
@@ -18,19 +18,19 @@ class_name InkCallStack
 # Imports
 # ############################################################################ #
 
-var PushPopType = preload("res://addons/inkgd/runtime/push_pop.gd").PushPopType
-var Pointer = load("res://addons/inkgd/runtime/pointer.gd")
+var PushPopType = preload("res://addons/inkgd/runtime/enums/push_pop.gd").PushPopType
+var Pointer = load("res://addons/inkgd/runtime/structs/pointer.gd")
 
 var ListValue = load("res://addons/inkgd/runtime/values/list_value.gd")
 
 # ############################################################################ #
 
-class Element extends "res://addons/inkgd/runtime/ink_base.gd":
+class Element extends InkBase:
 	# ######################################################################## #
 	# Imports
 	# ######################################################################## #
 
-	var Pointer = load("res://addons/inkgd/runtime/pointer.gd")
+	var Pointer = load("res://addons/inkgd/runtime/structs/pointer.gd")
 
 	# ######################################################################## #
 
@@ -67,12 +67,12 @@ class Element extends "res://addons/inkgd/runtime/ink_base.gd":
 	func get_class():
 		return "CallStack.Element"
 
-class InkThread extends "res://addons/inkgd/runtime/ink_base.gd":
+class InkThread extends InkBase:
 	# ######################################################################## #
 	# Imports
 	# ######################################################################## #
 
-	var Pointer = load("res://addons/inkgd/runtime/pointer.gd")
+	var Pointer = load("res://addons/inkgd/runtime/structs/pointer.gd")
 	var InkPath = load("res://addons/inkgd/runtime/ink_path.gd")
 
 	# ######################################################################## #
@@ -208,7 +208,7 @@ class InkThread extends "res://addons/inkgd/runtime/ink_base.gd":
 	func get_static_json():
 		var InkRuntime = Engine.get_main_loop().root.get_node("__InkRuntime")
 
-		Utils.assert(InkRuntime != null,
+		Utils.__assert__(InkRuntime != null,
 					 str("Could not retrieve 'InkRuntime' singleton from the scene tree."))
 
 		_Json = weakref(InkRuntime.json)
@@ -242,7 +242,7 @@ func get_current_thread():
 	return self._threads.back()
 
 func set_current_thread(value):
-	Utils.assert(_threads.size() == 1,
+	Utils.__assert__(_threads.size() == 1,
 				 "Shouldn't be directly setting the current thread when we have a stack of them")
 	self._threads.clear()
 	self._threads.append(value)

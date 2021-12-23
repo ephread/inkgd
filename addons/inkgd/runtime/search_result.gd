@@ -13,15 +13,16 @@
 # ############################################################################ #
 
 tool
-extends "res://addons/inkgd/runtime/ink_base.gd"
+extends InkBase
+
+class_name InkSearchResult
 
 # ############################################################################ #
 # Self-reference
 # ############################################################################ #
 
-var SearchResult setget , get_SearchResult
-func get_SearchResult():
-	return load("res://addons/inkgd/runtime/search_result.gd")
+static func SearchResult() -> GDScript:
+	return load("res://addons/inkgd/runtime/search_result.gd") as GDScript
 
 # ############################################################################ #
 
@@ -40,15 +41,14 @@ func get_container():
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type):
+func is_class(type: String) -> bool:
 	return type == "SearchResult" || .is_class(type)
 
-func get_class():
+func get_class() -> String:
 	return "SearchResult"
 
-# () -> InkSearchResult
-func duplicate():
-	var search_result = self.SearchResult.new()
+func duplicate() -> InkSearchResult:
+	var search_result = SearchResult().new()
 	search_result.obj = obj
 	search_result.approximate = approximate
 

@@ -10,33 +10,42 @@
 # ############################################################################ #
 
 tool
+extends InkBase
+
+class_name InkStatePatch
 
 # ############################################################################ #
 # Imports
 # ############################################################################ #
 
-var StringSet = load("res://addons/inkgd/runtime/extra/string_set.gd")
-var TryGetResult = preload("res://addons/inkgd/runtime/extra/try_get_result.gd")
+var InkTryGetResult := preload("res://addons/inkgd/runtime/extra/try_get_result.gd") as GDScript
+var InkStringSet := preload("res://addons/inkgd/runtime/extra/string_set.gd") as GDScript
 
 # ############################################################################ #
 
-var globals setget , get_globals # Dictionary<String, InkObject>
-func get_globals():
+# Dictionary<String, InkObject>
+var globals: Dictionary setget , get_globals
+func get_globals() -> Dictionary:
 	return _globals
 
-var changed_variables setget , get_changed_variables # StringSet
-func get_changed_variables():
+# StringSet
+var changed_variables: InkStringSet setget , get_changed_variables
+func get_changed_variables() -> InkStringSet:
 	return _changed_variables
 
-var visit_counts setget , get_visit_counts # Dictionary<InkContainer, int>
-func get_visit_counts():
+# Dictionary<InkContainer, int>
+var visit_counts: Dictionary setget , get_visit_counts
+func get_visit_counts() -> Dictionary:
 	return _visit_counts
 
-var turn_indices setget , get_turn_indices # Dictionary<InkContainer, int>
-func get_turn_indices():
+# Dictionary<InkContainer, int>
+var turn_indices setget , get_turn_indices
+func get_turn_indices() -> Dictionary:
 	return _turn_indices
 
-func _init(to_copy):
+# ############################################################################ #
+
+func _init(to_copy: InkStatePatch):
 	if to_copy != null:
 		_globals = to_copy._globals.duplicate()
 		_changed_variables = to_copy._changed_variables.duplicate()
@@ -44,58 +53,54 @@ func _init(to_copy):
 		_turn_indices = to_copy._turn_indices.duplicate()
 	else:
 		_globals = {}
-		_changed_variables = StringSet.new()
+		_changed_variables = InkStringSet.new()
 		_visit_counts = {}
 		_turn_indices = {}
 
 # (String) -> { exists: bool, result: InkObject }
-func try_get_global(name):
+func try_get_global(name) -> InkTryGetResult:
 	if _globals.has(name):
-		return TryGetResult.new(true, _globals[name])
+		return InkTryGetResult.new(true, _globals[name])
 
-	return TryGetResult.new(false, null)
+	return InkTryGetResult.new(false, null)
 
-# (String, InkObject) -> void
-func set_global(name, value):
+func set_global(name: String, value: InkObject) -> void:
 	_globals[name] = value
 
-# (String) -> void
-func add_changed_variable(name):
+func add_changed_variable(name: String) -> void:
 	_changed_variables.append(name)
 
 # (InkContainer) -> { exists: bool, result: int }
-func try_get_visit_count(container):
+func try_get_visit_count(container) -> InkTryGetResult:
 	if _visit_counts.has(container):
-		return TryGetResult.new(true, _visit_counts[container])
+		return InkTryGetResult.new(true, _visit_counts[container])
 
-	return TryGetResult.new(false, 0)
+	return InkTryGetResult.new(false, 0)
 
-# (InkContainer, int) -> void
-func set_visit_count(container, index):
+func set_visit_count(container: InkContainer, index: int) -> void:
 	_visit_counts[container] = index
 
-# (InkContainer, int) -> void
-func set_turn_index(container, index):
+func set_turn_index(container: InkContainer, index: int) -> void:
 	_turn_indices[container] = index
 
 # (InkContainer) -> { exists: bool, result: int }
-func try_get_turn_index(container):
+func try_get_turn_index(container) -> InkTryGetResult:
 	if _turn_indices.has(container):
-		return TryGetResult.new(true, _turn_indices[container])
+		return InkTryGetResult.new(true, _turn_indices[container])
 
-	return TryGetResult.new(false, 0)
+	return InkTryGetResult.new(false, 0)
 
-var _globals = null
-var _changed_variables = StringSet.new()
-var _visit_counts = {}
-var _turn_indices = {}
+var _globals: Dictionary
+var _changed_variables: InkStringSet
+var _visit_counts: Dictionary
+var _turn_indices: Dictionary
 
 # ############################################################################ #
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type):
+func is_class(type: String) -> bool:
 	return type == "StatePatch" || .is_class(type)
 
-func get_class():
+func get_class() -> String:
 	return "StatePatch"

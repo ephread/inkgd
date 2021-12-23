@@ -14,6 +14,8 @@
 
 tool
 
+class_name InkStringWriter
+
 # ############################################################################ #
 
 var _internal_string: String = ""
