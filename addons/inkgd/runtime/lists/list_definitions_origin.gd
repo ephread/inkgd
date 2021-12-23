@@ -12,7 +12,7 @@
 tool
 extends "res://addons/inkgd/runtime/common/ink_object.gd"
 
-class_name InkListDefinitionOrigin
+class_name InkListDefinitionsOrigin
 
 # ############################################################################ #
 # Imports

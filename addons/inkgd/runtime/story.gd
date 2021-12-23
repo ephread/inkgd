@@ -13,6 +13,8 @@
 tool
 extends InkObject
 
+class_name InkStory
+
 const INK_VERSION_CURRENT = 20
 const INK_VERSION_MINIMUM_COMPATIBLE = 18
 

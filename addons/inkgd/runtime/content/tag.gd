@@ -10,6 +10,8 @@
 tool
 extends "res://addons/inkgd/runtime/common/ink_object.gd"
 
+class_name InkTag
+
 var text # String
 
 # (String) -> Tag

@@ -10,6 +10,8 @@
 tool
 extends Reference
 
+class_name InkStaticJSON
+
 # In the C# code this class has only static methods. In the GDScript, it will rather
 # be a unique object, added to the InkRuntime singleton.
 

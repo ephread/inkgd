@@ -11,7 +11,7 @@ extends Node
 # Imports
 # ############################################################################ #
 
-var ErrorType = preload("res://addons/inkgd/runtime/error.gd").ErrorType
+var ErrorType = preload("res://addons/inkgd/runtime/enums/error.gd").ErrorType
 
 var ChoiceContainer = load("res://examples/scenes/common/choice_container.tscn")
 var LineLabel = load("res://examples/scenes/common/label.tscn")

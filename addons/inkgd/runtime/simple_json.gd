@@ -10,6 +10,8 @@
 tool
 extends Reference
 
+class_name InkSimpleJSON
+
 const Utils = preload("res://addons/inkgd/runtime/extra/utils.gd")
 
 # (String) -> Dictionary<String, Variant>

@@ -18,7 +18,7 @@ class_name InkBase
 # Imports
 # ############################################################################ #
 
-var Utils = preload("res://addons/inkgd/runtime/extra/utils.gd")
+var Utils := preload("res://addons/inkgd/runtime/extra/utils.gd") as GDScript
 
 # ############################################################################ #
 

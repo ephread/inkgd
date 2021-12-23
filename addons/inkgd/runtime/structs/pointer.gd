@@ -22,27 +22,27 @@ class_name InkPointer
 # Imports
 # ############################################################################ #
 
-var InkPath = load("res://addons/inkgd/runtime/ink_path.gd")
+var InkPath := preload("res://addons/inkgd/runtime/ink_path.gd") as GDScript
 
 # ############################################################################ #
 
-# () -> InkContainer
+# InkContainer
 # Encapsulating container into a weak ref.
-var container setget set_container, get_container
-func set_container(value):
+var container: InkContainer setget set_container, get_container
+func set_container(value: InkContainer) -> void:
 	if value == null:
 		self._container = WeakRef.new()
 	else:
 		self._container = weakref(value)
-func get_container():
+func get_container() -> InkContainer:
 	return self._container.get_ref()
 
-var _container = WeakRef.new() # InkContainer
+var _container: WeakRef
 
-var index = 0 # int
+var index: int = 0 # int
 
 # (InkContainer, int) -> InkPointer
-func _init(container = null, index = 0):
+func _init(container: InkContainer = null, index: int = 0):
 	self.container = container
 	self.index = index
 
@@ -81,7 +81,7 @@ func to_string():
 	if self.container == null:
 		return "Ink Pointer (null)"
 
-	return "Ink Pointer -> " + self.container.path.to_string() + " -- index " + index
+	return "Ink Pointer -> %s -- index %d" % [self.container.path.to_string(), index]
 
 # (InkContainer) -> InkPointer
 static func start_of(container):

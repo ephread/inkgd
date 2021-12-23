@@ -18,7 +18,7 @@ var ErrorType = preload("res://addons/inkgd/runtime/enums/error.gd").ErrorType
 
 var InkRuntime = load("res://addons/inkgd/runtime.gd")
 var InkResource = load("res://addons/inkgd/editor/import_plugins/ink_resource.gd")
-var Story = load("res://addons/inkgd/runtime/story.gd")
+var InkStory = load("res://addons/inkgd/runtime/story.gd")
 
 
 # ############################################################################ #
@@ -525,7 +525,7 @@ func _on_choose_path_string(path, arguments):
 # ############################################################################ #
 
 func _create_story(json_story):
-	_story = Story.new(json_story)
+	_story = InkStory.new(json_story)
 
 
 func _async_create_story(json_story):

@@ -19,7 +19,7 @@ class_name InkCallStack
 # ############################################################################ #
 
 var PushPopType = preload("res://addons/inkgd/runtime/enums/push_pop.gd").PushPopType
-var Pointer = load("res://addons/inkgd/runtime/structs/pointer.gd")
+var Pointer = preload("res://addons/inkgd/runtime/structs/pointer.gd")
 
 var ListValue = load("res://addons/inkgd/runtime/values/list_value.gd")
 
@@ -331,7 +331,7 @@ func push(type, external_evaluation_stack_height = 0, output_stream_length_with_
 	self.callstack.append(element)
 
 # (PushPopType | null) -> void
-func can_pop_type(type = null): # MARK: Renamed Method
+func can_pop_type(type = null):
 	if !self.can_pop:
 		return false
 
@@ -349,7 +349,7 @@ func pop(type = null):
 		Utils.throw_exception("Mismatched push/pop in Callstack")
 
 # (String, int) -> InkObject
-func get_temporary_variable_with_name(name, context_index = -1):
+func get_temporary_variable_with_name(name, context_index = -1) -> InkObject:
 	if context_index == -1:
 		context_index = self.current_element_index + 1
 

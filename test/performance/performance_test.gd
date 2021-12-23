@@ -14,8 +14,8 @@ extends Node
 # Imports
 # ############################################################################ #
 
-var ErrorType = preload("res://addons/inkgd/runtime/error.gd").ErrorType
-var Profiler = load("res://examples/scenes/common/profiler.gd")
+var ErrorType = preload("res://addons/inkgd/runtime/enums/error.gd").ErrorType
+var Profiler = preload("res://examples/scenes/common/profiler.gd")
 
 
 # ############################################################################ #
