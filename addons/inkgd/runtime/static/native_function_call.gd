@@ -19,7 +19,7 @@ class_name InkStaticNativeFunctionCall
 
 const ValueType = preload("res://addons/inkgd/runtime/values/value_type.gd").ValueType
 
-static func NativeFunctionCall():
+static func InkNativeFunctionCall():
 	return load("res://addons/inkgd/runtime/content/native_function_call.gd")
 
 # ############################################################################ #
@@ -168,7 +168,7 @@ func add_op_to_native_func(name, args, val_type, op):
 	if native_functions.has(name):
 		native_func = native_functions[name]
 	else:
-		native_func = NativeFunctionCall().new_with_name_and_number_of_parameters(name, args)
+		native_func = InkNativeFunctionCall().new_with_name_and_number_of_parameters(name, args)
 		native_functions[name] = native_func
 
 	native_func.add_op_func_for_type(val_type, op)

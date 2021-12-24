@@ -20,8 +20,8 @@ class_name InkRuntimeNode
 # Imports
 # ############################################################################ #
 
-var StaticJson = load("res://addons/inkgd/runtime/static/json.gd")
-var StaticNativeFunctionCall = load("res://addons/inkgd/runtime/static/native_function_call.gd")
+var InkStaticJSON := load("res://addons/inkgd/runtime/static/json.gd") as GDScript
+var InkStaticNativeFunctionCall := load("res://addons/inkgd/runtime/static/native_function_call.gd") as GDScript
 
 # ############################################################################ #
 # Signals
@@ -46,20 +46,32 @@ var should_pause_execution_on_error: bool = true
 
 # ############################################################################ #
 
-var should_pause_execution_on_runtime_error setget set_speore, get_speore
-func get_speore():
-	printerr("'should_pause_execution_on_runtime_error' is deprecated, use 'should_pause_execution_on_exception' instead.")
+var should_pause_execution_on_runtime_error: bool setget set_speore, get_speore
+func get_speore() -> bool:
+	printerr(
+			"'should_pause_execution_on_runtime_error' is deprecated, " +
+			"use 'should_pause_execution_on_exception' instead."
+	)
 	return should_pause_execution_on_exception
-func set_speore(value):
-	printerr("'should_pause_execution_on_runtime_error' is deprecated, use 'should_pause_execution_on_exception' instead.")
+func set_speore(value: bool):
+	printerr(
+			"'should_pause_execution_on_runtime_error' is deprecated, " +
+			"use 'should_pause_execution_on_exception' instead."
+	)
 	should_pause_execution_on_exception = value
 
-var should_pause_execution_on_story_error setget set_speose, get_speose
-func get_speose():
-	printerr("'should_pause_execution_on_story_error' is deprecated, use 'should_pause_execution_on_error' instead.")
+var should_pause_execution_on_story_error: bool setget set_speose, get_speose
+func get_speose() -> bool:
+	printerr(
+		"'should_pause_execution_on_story_error' is deprecated, " +
+		"use 'should_pause_execution_on_error' instead."
+	)
 	return should_pause_execution_on_error
-func set_speose(value):
-	printerr("'should_pause_execution_on_story_error' is deprecated, use 'should_pause_execution_on_error' instead.")
+func set_speose(value: bool):
+	printerr(
+		"'should_pause_execution_on_story_error' is deprecated, " +
+		"use 'should_pause_execution_on_error' instead."
+	)
 	should_pause_execution_on_error = value
 
 # ############################################################################ #
@@ -70,8 +82,8 @@ func set_speose(value):
 # declared in Ink.
 var dont_save_default_values: bool = true
 
-var native_function_call = StaticNativeFunctionCall.new()
-var json = StaticJson.new(native_function_call)
+var native_function_call: InkStaticNativeFunctionCall = InkStaticNativeFunctionCall.new()
+var json: InkStaticJSON = InkStaticJSON.new(native_function_call)
 
 # ############################################################################ #
 # Internal Properties

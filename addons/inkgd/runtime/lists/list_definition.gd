@@ -10,7 +10,7 @@
 # ############################################################################ #
 
 tool
-extends "res://addons/inkgd/runtime/common/ink_object.gd"
+extends InkObject
 
 class_name InkListDefinition
 

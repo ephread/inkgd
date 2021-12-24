@@ -17,27 +17,33 @@ class_name InkChoice
 # Imports
 # ############################################################################ #
 
-var CallStack = load("res://addons/inkgd/runtime/callstack.gd")
+var CallStack := load("res://addons/inkgd/runtime/callstack.gd") as GDScript
 
 # ############################################################################ #
 
-var text # String
+var text: String
 
-# () -> String
-# (String) -> void
-var path_string_on_choice setget set_path_string_on_choice, get_path_string_on_choice
-func get_path_string_on_choice():
+var path_string_on_choice: String setget set_path_string_on_choice, get_path_string_on_choice
+func get_path_string_on_choice() -> String:
 	return target_path.to_string()
 
-func set_path_string_on_choice(value):
+func set_path_string_on_choice(value: String):
 	target_path = InkPath().new_with_components_string(value)
 
-var source_path = null # String
-var index = 0 # index
-var target_path = null # InkPath
-var thread_at_generation = null # CallStack.InkThread
-var original_thread_index = 0 # int
-var is_invisible_default = false # bool
+# String?
+var source_path = null
+
+var index: int = 0
+
+# InkPath?
+var target_path = null
+
+# CallStack.InkThread?
+var thread_at_generation = null
+
+var original_thread_index: int = 0
+
+var is_invisible_default: bool = false
 
 # ############################################################################ #
 # GDScript extra methods

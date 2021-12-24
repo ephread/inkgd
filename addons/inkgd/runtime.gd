@@ -15,8 +15,7 @@ static func init(root_node, should_pause_on_error = true):
 	if root_node.has_node("__InkRuntime"):
 		return root_node.get_node("__InkRuntime")
 
-	var InkRuntime = load("res://addons/inkgd/runtime/static/ink_runtime.gd")
-	var _ink_runtime = InkRuntime.new()
+	var _ink_runtime = load("res://addons/inkgd/runtime/static/ink_runtime.gd").new()
 
 	_ink_runtime.should_pause_execution_on_exception = should_pause_on_error
 	_ink_runtime.should_pause_execution_on_error = should_pause_on_error

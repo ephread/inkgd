@@ -15,59 +15,65 @@ extends InkBase
 class_name InkStoryState
 
 # ############################################################################ #
-# Self-reference
-# ############################################################################ #
-
-static func StoryState():
-	return load("res://addons/inkgd/runtime/story_state.gd")
-
-# ############################################################################ #
 # Imports
 # ############################################################################ #
 
 var PushPopType = preload("res://addons/inkgd/runtime/enums/push_pop.gd").PushPopType
-var Pointer = load("res://addons/inkgd/runtime/structs/pointer.gd")
-var CallStack = load("res://addons/inkgd/runtime/callstack.gd")
-var VariablesState = load("res://addons/inkgd/runtime/variables_state.gd")
-var InkPath = load("res://addons/inkgd/runtime/ink_path.gd")
-var ControlCommand = load("res://addons/inkgd/runtime/content/control_command.gd")
-var SimpleJson = load("res://addons/inkgd/runtime/simple_json.gd")
-var StatePatch = load("res://addons/inkgd/runtime/state_patch.gd")
-var Flow = load("res://addons/inkgd/runtime/flow.gd")
-
 var ValueType = preload("res://addons/inkgd/runtime/values/value_type.gd").ValueType
 
-var Value = load("res://addons/inkgd/runtime/values/value.gd")
-var StringValue = load("res://addons/inkgd/runtime/values/string_value.gd")
+var InkPointer = preload("res://addons/inkgd/runtime/structs/pointer.gd")
+var InkPath = preload("res://addons/inkgd/runtime/ink_path.gd")
 
 # ############################################################################ #
 
-const INK_SAVE_STATE_VERSION = 9
-const MIN_COMPATIBLE_LOAD_VERSION = 8
+var InkValue = load("res://addons/inkgd/runtime/values/value.gd")
+var InkStringValue = load("res://addons/inkgd/runtime/values/string_value.gd")
+
+var InkControlCommand = preload("res://addons/inkgd/runtime/content/control_command.gd")
+var InkSimpleJSON = preload("res://addons/inkgd/runtime/simple_json.gd")
+var InkStatePatch = preload("res://addons/inkgd/runtime/state_patch.gd")
+
+var InkCallStack = load("res://addons/inkgd/runtime/callstack.gd")
+var InkVariablesState = load("res://addons/inkgd/runtime/variables_state.gd")
+var InkFlow = load("res://addons/inkgd/runtime/flow.gd")
+
+# ############################################################################ #
+# Self-reference
+# ############################################################################ #
+
+static func InkStoryState() -> GDScript:
+	return load("res://addons/inkgd/runtime/story_state.gd") as GDScript
+
+# ############################################################################ #
+
+const INK_SAVE_STATE_VERSION: int = 9
+const MIN_COMPATIBLE_LOAD_VERSION: int = 8
+
+# ############################################################################ #
 
 signal on_did_load_state()
 
-# () -> String
-func to_json():
-	var writer = SimpleJson.Writer.new()
+# ############################################################################ #
+
+func to_json() -> String:
+	var writer: InkSimpleJSON.Writer = InkSimpleJSON.Writer.new()
 	write_json(writer)
 	return writer.to_string()
 
-# (String) -> void
-func load_json(json):
-	var jobject = SimpleJson.text_to_dictionary(json)
+func load_json(json: String) -> void:
+	var jobject: Dictionary = InkSimpleJSON.text_to_dictionary(json)
 	load_json_obj(jobject)
 	emit_signal("on_did_load_state")
 
-# (String) -> int
-func visit_count_at_path_string(path_string):
+func visit_count_at_path_string(path_string: String) -> int:
 	if self._patch != null:
-		var container = self.story.content_at_path(InkPath.new_with_components_string(path_string)).container
+		var path = InkPath.new_with_components_string(path_string)
+		var container: InkContainer = self.story.content_at_path(path).container
 		if container == null:
-			Utils.throw_exception(str("Content at path not found: ", path_string))
+			Utils.throw_exception("Content at path not found: %s" % path_string)
 			return 0
 
-		var visit_count = self._patch.try_get_visit_count(container)
+		var visit_count: InkTryGetResult = self._patch.try_get_visit_count(container)
 		if visit_count.exists:
 			return visit_count.result
 
@@ -76,117 +82,122 @@ func visit_count_at_path_string(path_string):
 
 	return 0
 
-# (InkContainer) -> int
-func visit_count_for_container(container):
+func visit_count_for_container(container: InkContainer) -> int:
 	if !container.visits_should_be_counted:
 		self.story.error(
-			str("Read count for target (", container.name, " - on ",
-				container.debugMetadata, ") unknown. The story may need to",
-				"be compiled with countAllVisits flag (-c).")
+				"Read count for target (%s - on %s) " % [container.name, container.debugMetadata] +
+				"unknown. The story may need to be compiled with countAllVisits flag (-c)."
 		)
 		return 0
 
-	var count = 0
+	var count: int = 0
 
 	if self._patch != null:
-		var visit_count = self._patch.try_get_visit_count(container)
+		var visit_count: InkTryGetResult = self._patch.try_get_visit_count(container)
 		if visit_count.exists:
 			return visit_count.result
 
-	var container_path_str = container.path.to_string()
+	var container_path_str: String = container.path.to_string()
 
 	if self._visit_counts.has(container_path_str):
 		count = self._visit_counts[container_path_str]
 
 	return count
 
-
-# (InkContainer) -> void
-func increment_visit_count_for_container(container):
+func increment_visit_count_for_container(container: InkContainer) -> void:
 	if self._patch != null:
-		var curr_count = visit_count_for_container(container)
+		var curr_count: int = visit_count_for_container(container)
 		curr_count += 1
 		self._patch.set_visit_count(container, curr_count)
 		return
 
-	var count = 0
-	var container_path_str = container.path.to_string()
+	var count: int = 0
+	var container_path_str: String = container.path.to_string()
 	if self._visit_counts.has(container_path_str):
 		count = self._visit_counts[container_path_str]
 	count += 1
 
 	self._visit_counts[container_path_str] = count
 
-# (InkContainer) -> void
-func record_turn_index_visit_to_container(container):
+func record_turn_index_visit_to_container(container: InkContainer) -> void:
 	if self._patch != null:
 		self._patch.set_turn_index(container, self.current_turn_index)
 		return
 
-	var container_path_str = container.path.to_string()
+	var container_path_str: String = container.path.to_string()
 
 	self._turn_indices[container_path_str] = self.current_turn_index
 
-# (InkContainer) -> ink
-func turns_since_for_container(container):
+# (InkContainer) -> int
+func turns_since_for_container(container: InkContainer) -> int:
 	if !container.turn_index_should_be_counted:
 		self.story.error(
-			str("TURNS_SINCE() for target (", container.name, " - on ",
-				container.debugMetadata, ") unknown. The story may need",
-				"to be compiled with countAllVisits flag (-c).")
-				)
-		return null
+				"TURNS_SINCE() for target (%s - on %s) " \
+				% [container.name, container.debugMetadata] +
+				"unknown. The story may need to be compiled with countAllVisits flag (-c)."
+		)
+		return 0
 
 	if self._patch != null:
-		var turn_index = self._patch.try_get_turn_index(container)
+		var turn_index: InkTryGetResult = self._patch.try_get_turn_index(container)
 		if turn_index.exists:
 			return self.current_turn_index - turn_index.result
 
-	var container_path_str = container.path.to_string()
+	var container_path_str: String = container.path.to_string()
 	if self._turn_indices.has(container_path_str):
 		return self.current_turn_index - self._turn_indices[container_path_str]
 	else:
 		return -1
 
-var callstack_depth setget , get_callstack_depth # int
-func get_callstack_depth():
+var callstack_depth: int setget , get_callstack_depth # int
+func get_callstack_depth() -> int:
 	return self.callstack.depth
 
-var output_stream setget , get_output_stream # Array<InkObject>
-func get_output_stream():
+var output_stream: Array setget , get_output_stream # Array<InkObject>
+func get_output_stream() -> Array:
 	return self._current_flow.output_stream
 
-var current_choices setget , get_current_choices # Array<Choice>
-func get_current_choices():
-	if self.can_continue: return []
+var current_choices: Array setget , get_current_choices # Array<Choice>
+func get_current_choices() -> Array:
+	if self.can_continue:
+		return []
 	return self._current_flow.current_choices
 
-var generated_choices setget , get_generated_choices # Array<Choice>
-func get_generated_choices():
+var generated_choices: Array setget , get_generated_choices # Array<Choice>
+func get_generated_choices() -> Array:
 	return self._current_flow.current_choices
 
-var current_errors = null # Array<String>
-var current_warnings = null # Array<String>
-var variables_state = null # VariableState
+# Array<String>
+var current_errors = null
 
-var callstack setget , get_callstack # CallStack
-func get_callstack():
+# Array<String>
+var current_warnings = null
+
+# InkVariablesState
+var variables_state
+
+var callstack: InkCallStack setget , get_callstack
+func get_callstack() -> InkCallStack:
 	return self._current_flow.callstack
 
-var evaluation_stack = null # Array<InkObject>
-var diverted_pointer = Pointer.null() # Pointer
+# Array<InkObject>
+var evaluation_stack: Array
 
-var current_turn_index = 0 # int
-var story_seed = 0 # int
-var previous_random = 0 # int
-var did_safe_exit = false # bool
+# Pointer
+var diverted_pointer: InkPointer = InkPointer.null()
+
+var current_turn_index: int = 0
+var story_seed: int = 0
+var previous_random: int = 0
+var did_safe_exit: bool = false
 
 var story setget , get_story
 func get_story():
 	return _story.get_ref()
 var _story = WeakRef.new()
 
-var current_path_string setget , get_current_path_string # String
+# String?
+var current_path_string setget , get_current_path_string
 func get_current_path_string():
 	var pointer = self.current_pointer
 	if pointer.is_null:
@@ -194,42 +205,42 @@ func get_current_path_string():
 	else:
 		return pointer.path.to_string()
 
-var current_pointer setget set_current_pointer, get_current_pointer # Pointer
-func get_current_pointer():
+var current_pointer: InkPointer setget set_current_pointer, get_current_pointer
+func get_current_pointer() -> InkPointer:
 	var pointer = self.callstack.current_element.current_pointer
 	return self.callstack.current_element.current_pointer.duplicate()
 
-func set_current_pointer(value):
+func set_current_pointer(value: InkPointer):
 	var current_element = self.callstack.current_element
 	current_element.current_pointer = value.duplicate()
 
-var previous_pointer setget set_previous_pointer, get_previous_pointer # Pointer
-func get_previous_pointer():
+var previous_pointer: InkPointer setget set_previous_pointer, get_previous_pointer
+func get_previous_pointer() -> InkPointer:
 	return self.callstack.current_thread.previous_pointer.duplicate()
 
-func set_previous_pointer(value):
+func set_previous_pointer(value: InkPointer):
 	var current_thread = self.callstack.current_thread
 	current_thread.previous_pointer = value.duplicate()
 
-var can_continue setget , get_can_continue # bool
-func get_can_continue():
+var can_continue: bool setget , get_can_continue
+func get_can_continue() -> bool:
 	return !self.current_pointer.is_null && !self.has_error
 
-var has_error setget , get_has_error # bool
-func get_has_error():
+var has_error: bool setget , get_has_error
+func get_has_error() -> bool:
 	return self.current_errors != null && self.current_errors.size() > 0
 
-var has_warning setget , get_has_warning # bool
-func get_has_warning():
+var has_warning: bool setget , get_has_warning
+func get_has_warning() -> bool:
 	return self.current_warnings != null && self.current_warnings.size() > 0
 
-var current_text setget , get_current_text # String
+var current_text: String setget , get_current_text
 func get_current_text():
 	if self._output_stream_text_dirty:
 		var _str = ""
 
 		for output_obj in self.output_stream:
-			var text_content = Utils.as_or_null(output_obj, "StringValue")
+			var text_content: InkStringValue = Utils.as_or_null(output_obj, "StringValue")
 			if text_content != null:
 				_str += text_content.value
 
@@ -239,20 +250,20 @@ func get_current_text():
 
 	return self._current_text
 
-var _current_text = null # String
+var _current_text: String = ""
 
 # (String) -> String
-func clean_output_whitespace(str_to_clean):
-	var _str = ""
+func clean_output_whitespace(str_to_clean: String) -> String:
+	var _str: String = ""
 
-	var current_whitespace_start = -1
-	var start_of_line = 0
+	var current_whitespace_start: int = -1
+	var start_of_line: int = 0
 
-	var i = 0
+	var i: int = 0
 	while(i < str_to_clean.length()):
-		var c = str_to_clean[i]
+		var c: String = str_to_clean[i]
 
-		var is_inline_whitespace = (c == " " || c == "\t")
+		var is_inline_whitespace: bool = (c == " " || c == "\t")
 
 		if is_inline_whitespace && current_whitespace_start == -1:
 			current_whitespace_start = i
@@ -273,10 +284,11 @@ func clean_output_whitespace(str_to_clean):
 
 	return _str
 
-var current_tags setget , get_current_tags # Array<String>
+# Array<String>
+var current_tags: Array setget , get_current_tags
 func get_current_tags():
 	if self._output_stream_tags_dirty:
-		self._current_tags = [] # Array<String>
+		self._current_tags = []
 
 		for output_obj in self.output_stream:
 			var tag = Utils.as_or_null(output_obj, "Tag")
@@ -287,34 +299,36 @@ func get_current_tags():
 
 	return self._current_tags
 
-var _current_tags # Array<String>
+# Array<String>
+var _current_tags: Array = []
 
-var current_flow_name setget , get_current_flow_name # String
-func get_current_flow_name():
+var current_flow_name: String setget , get_current_flow_name
+func get_current_flow_name() -> String:
 	return self._current_flow.name
 
-var in_expression_evaluation setget set_in_expression_evaluation, get_in_expression_evaluation # bool
-func get_in_expression_evaluation():
+var in_expression_evaluation: bool setget \
+		set_in_expression_evaluation, \
+		get_in_expression_evaluation
+func get_in_expression_evaluation() -> bool:
 	return self.callstack.current_element.in_expression_evaluation
-func set_in_expression_evaluation(value):
+func set_in_expression_evaluation(value: bool):
 	var current_element = self.callstack.current_element
 	current_element.in_expression_evaluation = value
 
-# (Story) -> StoryState
 func _init(story):
 	get_json()
 
 	self._story = weakref(story)
 
-	self._current_flow = Flow.new_with_name(DEFAULT_FLOW_NAME, story)
+	self._current_flow = InkFlow.new_with_name(DEFAULT_FLOW_NAME, story)
 	self.output_stream_dirty()
 
-	self.evaluation_stack = [] # Array<InkObject>
+	self.evaluation_stack = []
 
-	self.variables_state = VariablesState.new(self.callstack, self.story.list_definitions)
+	self.variables_state = InkVariablesState.new(self.callstack, self.story.list_definitions)
 
-	self._visit_counts = {} # Dictionary<String, int>
-	self._turn_indices = {} # Dictionary<String, int>
+	self._visit_counts = {}
+	self._turn_indices = {}
 	self.current_turn_index = -1
 
 	randomize()
@@ -326,7 +340,7 @@ func _init(story):
 # () -> void
 func go_to_start():
 	var current_element = self.callstack.current_element
-	current_element.current_pointer = Pointer.start_of(self.story.main_content_container)
+	current_element.current_pointer = InkPointer.start_of(self.story.main_content_container)
 
 # (String) -> void
 func switch_flow_internal(flow_name):
@@ -344,7 +358,7 @@ func switch_flow_internal(flow_name):
 	if self._named_flows.has(flow_name):
 		flow = self._named_flows[flow_name]
 	else:
-		flow = Flow.new_with_name(flow_name, self.story)
+		flow = InkFlow.new_with_name(flow_name, self.story)
 		self._named_flows[flow_name] = flow
 
 	self._current_flow = flow
@@ -376,12 +390,12 @@ func remove_flow_internal(flow_name):
 
 # () -> StoryState
 func copy_and_start_patching():
-	var copy = StoryState().new(self.story)
+	var copy = InkStoryState().new(self.story)
 
-	copy._patch = StatePatch.new(self._patch)
+	copy._patch = InkStatePatch.new(self._patch)
 
 	copy._current_flow.name = self._current_flow.name
-	copy._current_flow.callstack = CallStack.new(self._current_flow.callstack)
+	copy._current_flow.callstack = InkCallStack.new(self._current_flow.callstack)
 	copy._current_flow.current_choices += self._current_flow.current_choices
 	copy._current_flow.output_stream += self._current_flow.output_stream
 	copy.output_stream_dirty()
@@ -511,10 +525,10 @@ func load_json_obj(jobject):
 			var name = named_flow_obj_key
 			var flow_obj = flows_obj_dict[named_flow_obj_key]
 
-			var flow = Flow.new_with_name_and_jobject(name, self.story, flow_obj)
+			var flow = InkFlow.new_with_name_and_jobject(name, self.story, flow_obj)
 
 			if flows_obj_dict.size() == 1:
-				self._current_flow = Flow.new_with_name_and_jobject(name, self.story, flow_obj)
+				self._current_flow = InkFlow.new_with_name_and_jobject(name, self.story, flow_obj)
 			else:
 				self._named_flows[name] = flow
 
@@ -633,10 +647,10 @@ func try_splitting_head_tail_whitespace(single):
 
 	if head_first_newline_idx != -1:
 		if head_first_newline_idx > 0:
-			var leading_spaces = StringValue.new_with(_str.substr(0, head_first_newline_idx))
+			var leading_spaces = InkStringValue.new_with(_str.substr(0, head_first_newline_idx))
 			list_texts.append(leading_spaces)
 
-		list_texts.append(StringValue.new_with("\n"))
+		list_texts.append(InkStringValue.new_with("\n"))
 		inner_str_start = head_last_newline_idx + 1
 
 	if tail_last_newline_idx != -1:
@@ -644,13 +658,13 @@ func try_splitting_head_tail_whitespace(single):
 
 	if inner_str_end > inner_str_start:
 		var inner_str_text = _str.substr(inner_str_start, inner_str_end - inner_str_start)
-		list_texts.append(StringValue.new(inner_str_text))
+		list_texts.append(InkStringValue.new(inner_str_text))
 
 	if tail_last_newline_idx != -1 && tail_first_newline_idx > head_last_newline_idx:
-		list_texts.append(StringValue.new("\n"))
+		list_texts.append(InkStringValue.new("\n"))
 		if tail_last_newline_idx < _str.length() - 1:
 			var num_spaces = (_str.length() - tail_last_newline_idx) - 1
-			var trailing_spaces = StringValue.new(_str.substr(tail_last_newline_idx + 1, num_spaces))
+			var trailing_spaces = InkStringValue.new(_str.substr(tail_last_newline_idx + 1, num_spaces))
 			list_texts.append(trailing_spaces)
 
 	return list_texts
@@ -681,7 +695,7 @@ func push_to_output_stream_individual(obj):
 			if g:
 				glue_trim_index = i
 				break
-			elif c && c.command_type == ControlCommand.CommandType.BEGIN_STRING:
+			elif c && c.command_type == InkControlCommand.CommandType.BEGIN_STRING:
 				if i >= function_trim_index:
 					function_trim_index = -1
 
@@ -799,7 +813,7 @@ func get_in_string_evaluation():
 
 	while (i >= 0):
 		var cmd = Utils.as_or_null(self.output_stream[i], "ControlCommand")
-		if cmd && cmd.command_type == ControlCommand.CommandType.BEGIN_STRING:
+		if cmd && cmd.command_type == InkControlCommand.CommandType.BEGIN_STRING:
 			return true
 
 		i -= 1
@@ -852,8 +866,8 @@ func force_end():
 
 	self._current_flow.current_choices.clear()
 
-	self.current_pointer = Pointer.null()
-	self.previous_pointer = Pointer.null()
+	self.current_pointer = InkPointer.null()
+	self.previous_pointer = InkPointer.null()
 
 	self.did_safe_exit = true
 
@@ -909,7 +923,7 @@ func set_chosen_path(path, incrementing_turn_index):
 func start_function_evaluation_from_game(func_container, arguments):
 	self.callstack.push(PushPopType.FUNCTION_EVALUATION_FROM_GAME, self.evaluation_stack.size())
 	var current_element = self.callstack.current_element
-	current_element.current_pointer = Pointer.start_of(func_container)
+	current_element.current_pointer = InkPointer.start_of(func_container)
 
 	self.pass_arguments_to_evaluation_stack(arguments)
 
@@ -927,14 +941,14 @@ func pass_arguments_to_evaluation_stack(arguments):
 				))
 				return
 
-			push_evaluation_stack(Value.create(arguments[i]))
+			push_evaluation_stack(InkValue.create(arguments[i]))
 
 			i += 1
 
 # () -> bool
 func try_exit_function_evaluation_from_game():
 	if self.callstack.current_element.type == PushPopType.FUNCTION_EVALUATION_FROM_GAME:
-		self.current_pointer = Pointer.null()
+		self.current_pointer = InkPointer.null()
 		self.did_safe_exit = true
 		return true
 
@@ -988,11 +1002,14 @@ func output_stream_dirty():
 	self._output_stream_text_dirty = true
 	self._output_stream_tags_dirty = true
 
-var _visit_counts = null # Dictionary<string, Int>
-var _turn_indices = null # Dictionary<string, Int>
+# Dictionary<string, Int>
+var _visit_counts: Dictionary
 
-var _output_stream_text_dirty = true # bool
-var _output_stream_tags_dirty = true # bool
+# Dictionary<string, Int>
+var _turn_indices: Dictionary
+
+var _output_stream_text_dirty: bool = true # bool
+var _output_stream_tags_dirty: bool = true # bool
 
 var _patch # StatePatch
 

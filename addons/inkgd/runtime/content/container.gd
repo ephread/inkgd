@@ -17,23 +17,27 @@ class_name InkContainer
 # Imports
 # ############################################################################ #
 
-var InkSearchResult = load("res://addons/inkgd/runtime/search_result.gd")
+var InkSearchResult := load("res://addons/inkgd/runtime/search_result.gd") as GDScript
 
 # ############################################################################ #
 
-var name = null # String
+# String
+var name = null
 
-var content setget set_content, get_content # Array<InkObject>
-func get_content():
+# Array<InkObject>
+var content: Array setget set_content, get_content
+func get_content() -> Array:
 	return self._content
-func set_content(value):
+func set_content(value: Array):
 	add_content(value)
 
-var _content = null # Array<InkObject>
+# Array<InkObject>
+var _content: Array
 
-var named_content = null # Dictionary<string, INamedContent>
+# Dictionary<string, INamedContent>
+var named_content: Dictionary
 
-# Dictionary<string, InkObject>
+# Dictionary<string, InkObject>?
 var named_only_content setget set_named_only_content, get_named_only_content
 func get_named_only_content():
 	var named_only_content_dict = {} # Dictionary<string, InkObject>
@@ -64,9 +68,9 @@ func set_named_only_content(value):
 			add_to_named_content_only(named)
 
 
-var visits_should_be_counted = false # bool
-var turn_index_should_be_counted = false # bool
-var counting_at_start_only = false # bool
+var visits_should_be_counted: bool = false
+var turn_index_should_be_counted: bool = false
+var counting_at_start_only: bool = false
 
 enum CountFlags {
 	VISITS = 1,
@@ -74,8 +78,9 @@ enum CountFlags {
 	COUNT_START_ONLY = 4
 }
 
-var count_flags setget set_count_flags, get_count_flags # CountFlags
-func get_count_flags():
+# CountFlags
+var count_flags: int setget set_count_flags, get_count_flags
+func get_count_flags() -> int:
 	var flags = 0
 
 	if visits_should_be_counted:     flags |= CountFlags.VISITS
@@ -86,32 +91,30 @@ func get_count_flags():
 		flags = 0
 
 	return flags
-func set_count_flags(value):
+func set_count_flags(value: int):
 	var flag = value
 	if (flag & CountFlags.VISITS) > 0:           visits_should_be_counted = true
 	if (flag & CountFlags.TURNS) > 0:            turn_index_should_be_counted = true
 	if (flag & CountFlags.COUNT_START_ONLY) > 0: counting_at_start_only = true
 
-# () -> bool
-var has_valid_name setget , get_has_valid_name
-func get_has_valid_name():
+var has_valid_name: bool setget , get_has_valid_name
+func get_has_valid_name() -> bool:
 	return self.name != null && self.name.length() > 0
 
-# () -> InkPath
-var path_to_first_leaf_content setget , get_path_to_first_leaf_content
-func get_path_to_first_leaf_content():
+var path_to_first_leaf_content: InkPath setget , get_path_to_first_leaf_content
+func get_path_to_first_leaf_content() -> InkPath:
 	if self._path_to_first_leaf_content == null:
 		self._path_to_first_leaf_content = self.path.path_by_appending_path(self.internal_path_to_first_leaf_content)
 
 	return self._path_to_first_leaf_content
 
-var _path_to_first_leaf_content # Path
+# InkPath?
+var _path_to_first_leaf_content = null
 
-# () -> InkPath
-var internal_path_to_first_leaf_content setget , get_internal_path_to_first_leaf_content
-func get_internal_path_to_first_leaf_content():
-	var components = [] # Array<Path.Component>
-	var container = self
+var internal_path_to_first_leaf_content: InkPath setget , get_internal_path_to_first_leaf_content
+func get_internal_path_to_first_leaf_content() -> InkPath:
+	var components: Array = [] # Array<Path.Component>
+	var container: InkContainer = self
 	while container != null:
 		if container.content.size() > 0:
 			components.append(InkPath().Component.new(0))
@@ -120,17 +123,16 @@ func get_internal_path_to_first_leaf_content():
 	return InkPath().new_with_components(components)
 
 func _init():
-	self._content = [] # List<InkObject>
+	self._content = [] # Array<InkObject>
 	self.named_content = {} # Dictionary<string, INamedContent>
 
-# (InkObject) -> void
-func add_content(content_obj_or_content_list):
+func add_content(content_obj_or_content_list) -> void:
 	if Utils.is_ink_class(content_obj_or_content_list, "InkObject"):
 		var content_obj = content_obj_or_content_list
 		self.content.append(content_obj)
 
 		if content_obj.parent:
-			Utils.throw_exception("content is already in " + content_obj.parent)
+			Utils.throw_exception("content is already in %s" % content_obj.parent.to_string())
 			return
 
 		content_obj.parent = self
@@ -141,42 +143,38 @@ func add_content(content_obj_or_content_list):
 		for c in content_list:
 			add_content(c)
 
-# (InkObject, int) -> void
-func insert_content(content_obj, index):
+func insert_content(content_obj: InkObject, index: int) -> void:
 	self.content.insert(index, content_obj)
 
 	if content_obj.parent:
-		Utils.throw_exception("content is already in " + content_obj.parent)
+		Utils.throw_exception("content is already in %s" % content_obj.parent.to_string())
 		return
 
 	content_obj.parent = self
 
 	try_add_named_content(content_obj)
 
-# (InkObject) -> void
-func try_add_named_content(content_obj):
+func try_add_named_content(content_obj: InkObject) -> void:
 	var named_content_obj = Utils.as_INamedContent_or_null(content_obj)
 	if (named_content_obj != null && named_content_obj.has_valid_name):
 		add_to_named_content_only(named_content_obj)
 
 
 # (INamedContent) -> void
-func add_to_named_content_only(named_content_obj):
+func add_to_named_content_only(named_content_obj: InkObject) -> void:
 	Utils.__assert__(named_content_obj.is_class("InkObject"), "Can only add Runtime.Objects to a Runtime.Container")
 	var runtime_obj = named_content_obj
 	runtime_obj.parent = self
 
 	named_content[named_content_obj.name] = named_content_obj
 
-# (InkContainer) -> void
-func add_contents_of_container(other_container):
+func add_contents_of_container(other_container: InkContainer) -> void:
 	self.content = self.content + other_container.content
 	for obj in other_container.content:
 		obj.parent = self
 		try_add_named_content(obj)
 
-# (InkPath().Component) -> InkObject
-func content_with_path_component(component):
+func content_with_path_component(component: InkPath.Component) -> InkObject:
 	if component.is_index:
 		if component.index >= 0 && component.index < self.content.size():
 			return self.content[component.index]
@@ -192,25 +190,29 @@ func content_with_path_component(component):
 			return null
 
 # (InkPath, int, int) -> InkSearchResult
-func content_at_path(path, partial_path_start = 0, partial_path_length = -1):
+func content_at_path(
+		path: InkPath,
+		partial_path_start: int = 0,
+		partial_path_length: int = -1
+) -> InkSearchResult:
 	if partial_path_length == -1:
 		partial_path_length = path.length
 
-	var result = InkSearchResult.new()
+	var result: InkSearchResult = InkSearchResult.new()
 	result.approximate = false
 
-	var current_container = self # Container
-	var current_obj = self # InkObject
+	var current_container: InkContainer = self
+	var current_obj: InkObject = self
 
-	var i = partial_path_start
-	while (i < partial_path_length):
+	var i: int = partial_path_start
+	while i < partial_path_length:
 		var comp = path.get_component(i)
 
 		if current_container == null:
 			result.approximate = true
 			break
 
-		var found_obj = current_container.content_with_path_component(comp)
+		var found_obj: InkObject = current_container.content_with_path_component(comp)
 
 		if found_obj == null:
 			result.approximate = true
@@ -226,12 +228,16 @@ func content_at_path(path, partial_path_start = 0, partial_path_length = -1):
 	return result
 
 # (String, int, InkObject) -> string
-func build_string_of_hierarchy(existing_hierarchy, indentation, pointed_obj):
+func build_string_of_hierarchy(
+		existing_hierarchy: String,
+		indentation: int,
+		pointed_obj: InkObject
+) -> String:
 	existing_hierarchy = _append_indentation(existing_hierarchy, indentation)
 	existing_hierarchy += "["
 
 	if self.has_valid_name:
-		existing_hierarchy += str(" (", self.name, ") ")
+		existing_hierarchy += str(" (%s) " % self.name)
 
 	if self == pointed_obj:
 		existing_hierarchy += "  <---"
@@ -264,7 +270,7 @@ func build_string_of_hierarchy(existing_hierarchy, indentation, pointed_obj):
 		existing_hierarchy += "\n"
 		i += 1
 
-	var only_named = {} # Dictionary<String, INamedContent>
+	var only_named: Dictionary = {} # Dictionary<String, INamedContent>
 
 	for obj_key in self.named_content:
 		var value = self.named_content[obj_key]
@@ -291,10 +297,10 @@ func build_string_of_hierarchy(existing_hierarchy, indentation, pointed_obj):
 
 	return existing_hierarchy
 
-func build_full_string_of_hierarchy():
+func build_full_string_of_hierarchy() -> String:
 	return build_string_of_hierarchy("", 0, null)
 
-func _append_indentation(string, indentation):
+func _append_indentation(string: String, indentation: int) -> String:
 	var spaces_per_indent = 4
 	var i = 0
 	while(i < spaces_per_indent * indentation):
@@ -308,8 +314,8 @@ func _append_indentation(string, indentation):
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type):
+func is_class(type: String) -> bool:
 	return type == "InkContainer" || .is_class(type)
 
-func get_class():
+func get_class() -> String:
 	return "InkContainer"

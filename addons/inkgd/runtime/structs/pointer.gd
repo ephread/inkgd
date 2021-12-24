@@ -24,6 +24,9 @@ class_name InkPointer
 
 var InkPath := preload("res://addons/inkgd/runtime/ink_path.gd") as GDScript
 
+static func InkPointer() -> GDScript:
+	return load("res://addons/inkgd/runtime/structs/pointer.gd") as GDScript
+
 # ############################################################################ #
 
 # InkContainer
@@ -58,16 +61,17 @@ func resolve():
 # ############################################################################ #
 
 # () -> bool
-var is_null setget , get_is_null
-func get_is_null():
+var is_null: bool setget , get_is_null
+func get_is_null() -> bool:
 	return self.container == null
 
 # ############################################################################ #
 
 # () -> InkPath
-var path setget , get_path
-func get_path():
-	if self.is_null: return null
+var path: InkPath setget , get_path
+func get_path() -> InkPath:
+	if self.is_null:
+		return null
 
 	if index >= 0:
 		return self.container.path.path_by_appending_component(InkPath.Component.new(index))
@@ -76,36 +80,31 @@ func get_path():
 
  ############################################################################ #
 
-# () -> String
-func to_string():
+func to_string() -> String:
 	if self.container == null:
 		return "Ink Pointer (null)"
 
 	return "Ink Pointer -> %s -- index %d" % [self.container.path.to_string(), index]
 
 # (InkContainer) -> InkPointer
-static func start_of(container):
-	return Pointer().new(container, 0)
+static func start_of(container: InkContainer) -> InkPointer:
+	return InkPointer().new(container, 0)
 
 # ############################################################################ #
 
 # () -> InkPointer
 static func null():
-	return Pointer().new(null, -1)
+	return InkPointer().new(null, -1)
 
 # ############################################################################ #
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type):
+func is_class(type: String) -> bool:
 	return type == "Pointer" || .is_class(type)
 
-func get_class():
+func get_class() -> String:
 	return "Pointer"
 
-# () -> Pointer
-func duplicate():
-	return Pointer().new(self.container, index)
-
-static func Pointer():
-	return load("res://addons/inkgd/runtime/structs/pointer.gd")
+func duplicate() -> InkPointer:
+	return InkPointer().new(self.container, index)

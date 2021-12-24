@@ -18,36 +18,42 @@ class_name InkVariableAssignment
 # Self-reference
 # ############################################################################ #
 
-static func VariableAssignment():
-	return load("res://addons/inkgd/runtime/content/variable_assignment.gd")
+static func InkVariableAssignment() -> GDScript:
+	return load("res://addons/inkgd/runtime/content/variable_assignment.gd") as GDScript
 
 # ############################################################################ #
 
-var variable_name = null # String
-var is_new_declaration = false # bool
-var is_global = false # bool
+# String
+var variable_name = null
+var is_new_declaration: bool = false
+var is_global: bool = false
 
 func _init():
 	_init_with(null, false)
 
-func _init_with(variable_name, is_new_declaration):
+# (String?, bool) -> InkVariableAssignment
+func _init_with(variable_name, is_new_declaration: bool):
 	self.variable_name = variable_name
 	self.is_new_declaration = is_new_declaration
 
-func to_string():
+func to_string() -> String:
 	return "VarAssign to %s" % variable_name
 
 # ############################################################################ #
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type):
+func is_class(type: String) -> bool:
 	return type == "VariableAssignment" || .is_class(type)
 
-func get_class():
+func get_class() -> String:
 	return "VariableAssignment"
 
-static func new_with(variable_name, is_new_declaration):
-	var variable_assignment = VariableAssignment().new()
+# (String?, bool) -> InkVariableAssignment
+static func new_with(
+		variable_name: String,
+		is_new_declaration: bool
+) -> InkVariableAssignment:
+	var variable_assignment = InkVariableAssignment().new()
 	variable_assignment._init_with(variable_name, is_new_declaration)
 	return variable_assignment

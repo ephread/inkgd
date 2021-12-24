@@ -13,6 +13,12 @@ extends Reference
 class_name InkUtils
 
 # ############################################################################ #
+# Imports
+# ############################################################################ #
+
+const ValueType = preload("res://addons/inkgd/runtime/values/value_type.gd").ValueType
+
+# ############################################################################ #
 # Exceptions
 # ############################################################################ #
 
@@ -92,6 +98,20 @@ static func are_of_same_type(object1: Object, object2: Object) -> bool:
 		return object1.get_class() == object2.get_class()
 
 	return typeof(object1) == typeof(object2)
+
+static func value_type_name(value_type: int) -> String:
+	match value_type:
+		ValueType.BOOL: return "Boolean"
+
+		ValueType.INT: return "Int"
+		ValueType.FLOAT: return "Float"
+		ValueType.LIST: return "List"
+		ValueType.STRING: return "String"
+
+		ValueType.DIVERT_TARGET: return "Divert Target"
+		ValueType.VARIABLE_POINTER: return "Variable Pointer"
+
+		_: return "unknown"
 
 static func typename_of(variant) -> String:
 	match typeof(variant):
@@ -248,5 +268,5 @@ static func array_equal(a1: Array, a2: Array, use_equals = false) -> bool:
 
 # ############################################################################ #
 
-static func InkRuntime() -> InkRuntimeNode:
-	return Engine.get_main_loop().root.get_node("__InkRuntime") as InkRuntimeNode
+static func InkRuntime():
+	return Engine.get_main_loop().root.get_node("__InkRuntime")

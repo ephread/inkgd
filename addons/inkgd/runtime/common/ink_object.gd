@@ -74,8 +74,8 @@ func debug_line_number_of_path(path: InkPath):
 	return null
 
 # InkPath
-var path: Path setget , get_path
-func get_path() -> Path:
+var path: InkPath setget , get_path
+func get_path() -> InkPath:
 	if _path == null:
 		if self.parent == null:
 			_path = InkPath().new()

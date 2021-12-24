@@ -8,7 +8,7 @@
 # ############################################################################ #
 
 tool
-extends Reference
+extends InkBase
 
 class_name InkStaticJSON
 
@@ -20,35 +20,36 @@ class_name InkStaticJSON
 # ############################################################################ #
 
 var PushPopType = preload("res://addons/inkgd/runtime/enums/push_pop.gd").PushPopType
-var Utils = preload("res://addons/inkgd/runtime/extra/utils.gd")
-
 var InkListItem = preload("res://addons/inkgd/runtime/lists/structs/ink_list_item.gd")
 
 # ############################################################################ #
 
 var InkNativeFunctionCall = load("res://addons/inkgd/runtime/content/native_function_call.gd")
 
-var Value = load("res://addons/inkgd/runtime/values/value.gd")
-var StringValue = load("res://addons/inkgd/runtime/values/string_value.gd")
-var DivertTargetValue = load("res://addons/inkgd/runtime/values/divert_target_value.gd")
-var VariablePointerValue = load("res://addons/inkgd/runtime/values/variable_pointer_value.gd")
-var ListValue = load("res://addons/inkgd/runtime/values/list_value.gd")
+var InkValue = load("res://addons/inkgd/runtime/values/value.gd")
+var InkStringValue = load("res://addons/inkgd/runtime/values/string_value.gd")
+var InkDivertTargetValue = load("res://addons/inkgd/runtime/values/divert_target_value.gd")
+var InkVariablePointerValue = load("res://addons/inkgd/runtime/values/variable_pointer_value.gd")
+var InkListValue = load("res://addons/inkgd/runtime/values/list_value.gd")
 
-var Glue = load("res://addons/inkgd/runtime/content/glue.gd")
-var ControlCommand = load("res://addons/inkgd/runtime/content/control_command.gd")
-var Divert = load("res://addons/inkgd/runtime/content/divert.gd")
-var ChoicePoint = load("res://addons/inkgd/runtime/content/choices/choice_point.gd")
-var VariableReference = load("res://addons/inkgd/runtime/content/variable_reference.gd")
-var VariableAssignment = load("res://addons/inkgd/runtime/content/variable_assignment.gd")
-var Tag = load("res://addons/inkgd/runtime/content/tag.gd")
-var ListDefinition = load("res://addons/inkgd/runtime/lists/list_definition.gd")
-var ListDefinitionsOrigin = load("res://addons/inkgd/runtime/lists/list_definitions_origin.gd")
+var InkControlCommand = load("res://addons/inkgd/runtime/content/control_command.gd")
+var InkGlue = load("res://addons/inkgd/runtime/content/glue.gd")
+var InkVoid = load("res://addons/inkgd/runtime/content/void.gd")
+
+var InkPath = load("res://addons/inkgd/runtime/ink_path.gd")
+var InkDivert = load("res://addons/inkgd/runtime/content/divert.gd")
+var InkTag = load("res://addons/inkgd/runtime/content/tag.gd")
+
+var InkContainer = load("res://addons/inkgd/runtime/content/container.gd")
+var InkChoice = load("res://addons/inkgd/runtime/content/choices/choice.gd")
+var InkChoicePoint = load("res://addons/inkgd/runtime/content/choices/choice_point.gd")
 
 var InkList = load("res://addons/inkgd/runtime/lists/ink_list.gd")
-var Void = load("res://addons/inkgd/runtime/content/void.gd")
-var InkContainer = load("res://addons/inkgd/runtime/content/container.gd")
-var Choice = load("res://addons/inkgd/runtime/content/choices/choice.gd")
-var InkPath = load("res://addons/inkgd/runtime/ink_path.gd")
+var InkListDefinition = load("res://addons/inkgd/runtime/lists/list_definition.gd")
+var InkListDefinitionsOrigin = load("res://addons/inkgd/runtime/lists/list_definitions_origin.gd")
+
+var InkVariableReference = load("res://addons/inkgd/runtime/content/variable_reference.gd")
+var InkVariableAssignment = load("res://addons/inkgd/runtime/content/variable_assignment.gd")
 
 # ############################################################################ #
 
@@ -273,37 +274,37 @@ func jobject_to_int_dictionary(jobject: Dictionary) -> Dictionary:
 func jtoken_to_runtime_object(token) -> InkObject:
 
 	if token is int || token is float || token is bool:
-		return Value.create(token)
+		return InkValue.create(token)
 
 	if token is String:
 		var _str = token
 
 		var first_char = _str[0]
 		if first_char == "^":
-			return StringValue.new_with(_str.substr(1, _str.length() - 1))
+			return InkStringValue.new_with(_str.substr(1, _str.length() - 1))
 		elif first_char == "\n" && _str.length() == 1:
-			return StringValue.new_with("\n")
+			return InkStringValue.new_with("\n")
 
-		if _str == "<>": return Glue.new()
+		if _str == "<>": return InkGlue.new()
 
 		var i = 0
 		while (i < _control_command_names.size()):
 			var cmd_name = _control_command_names[i]
 			if _str == cmd_name:
-				return ControlCommand.new(i)
+				return InkControlCommand.new(i)
 			i += 1
 
 		if _str == "L^": _str = "^"
-		if StaticNativeFunctionCall.call_exists_with_name(_str):
+		if _static_native_function_call.call_exists_with_name(_str):
 			return InkNativeFunctionCall.call_with_name(_str)
 
 		if _str == "->->":
-			return ControlCommand.pop_tunnel()
+			return InkControlCommand.pop_tunnel()
 		elif _str == "~ret":
-			return ControlCommand.pop_function()
+			return InkControlCommand.pop_function()
 
 		if _str == "void":
-			return Void.new()
+			return InkVoid.new()
 
 	if token is Dictionary:
 		var obj = token
@@ -311,11 +312,13 @@ func jtoken_to_runtime_object(token) -> InkObject:
 
 		if obj.has("^->"):
 			prop_value = obj["^->"]
-			return DivertTargetValue.new_with(InkPath.new_with_components_string(str(prop_value)))
+			return InkDivertTargetValue.new_with(
+					InkPath.new_with_components_string(str(prop_value))
+			)
 
 		if obj.has("^var"):
 			prop_value = obj["^var"]
-			var var_ptr = VariablePointerValue.new_with_context(str(prop_value))
+			var var_ptr = InkVariablePointerValue.new_with_context(str(prop_value))
 			if (obj.has("ci")):
 				prop_value = obj["ci"]
 				var_ptr.context_index = int(prop_value)
@@ -347,7 +350,7 @@ func jtoken_to_runtime_object(token) -> InkObject:
 			div_push_type = PushPopType.FUNCTION
 
 		if is_divert:
-			var divert = Divert.new()
+			var divert = InkDivert.new()
 			divert.pushes_to_stack = pushes_to_stack
 			divert.stack_push_type = div_push_type
 			divert.is_external = external
@@ -372,7 +375,7 @@ func jtoken_to_runtime_object(token) -> InkObject:
 
 		if obj.has("*"):
 			prop_value = obj["*"]
-			var choice = ChoicePoint.new()
+			var choice = InkChoicePoint.new()
 			choice.path_string_on_choice = str(prop_value)
 
 			if obj.has("flg"):
@@ -383,10 +386,10 @@ func jtoken_to_runtime_object(token) -> InkObject:
 
 		if obj.has("VAR?"):
 			prop_value = obj["VAR?"]
-			return VariableReference.new(str(prop_value))
+			return InkVariableReference.new(str(prop_value))
 		elif obj.has("CNT?"):
 			prop_value = obj["CNT?"]
-			var read_count_var_ref = VariableReference.new()
+			var read_count_var_ref = InkVariableReference.new()
 			read_count_var_ref.path_string_for_count = str(prop_value)
 			return read_count_var_ref
 
@@ -404,13 +407,13 @@ func jtoken_to_runtime_object(token) -> InkObject:
 		if is_var_ass:
 			var var_name = str(prop_value)
 			var is_new_decl = !obj.has("re")
-			var var_ass = VariableAssignment.new_with(var_name, is_new_decl)
+			var var_ass = InkVariableAssignment.new_with(var_name, is_new_decl)
 			var_ass.is_global = is_global_var
 			return var_ass
 
 		if obj.has("#"):
 			prop_value = obj["#"]
-			return Tag.new(str(prop_value))
+			return InkTag.new(str(prop_value))
 
 		if obj.has("list"):
 			prop_value = obj["list"]
@@ -426,7 +429,7 @@ func jtoken_to_runtime_object(token) -> InkObject:
 				var val = list_content[name_to_val_key]
 				raw_list.set_item(item, val)
 
-			return ListValue.new_with(raw_list)
+			return InkListValue.new_with(raw_list)
 
 		if obj.has("originalChoicePath"):
 			return jobject_to_choice(obj)
@@ -505,7 +508,7 @@ func jarray_to_container(jarray: Array) -> InkContainer:
 
 # (Dictionary<String, Variant>) -> Choice
 func jobject_to_choice(jobj: Dictionary) -> InkChoice:
-	var choice = Choice.new()
+	var choice = InkChoice.new()
 	choice.text = str(jobj["text"])
 	choice.index = int(jobj["index"])
 	choice.source_path = str(jobj["originalChoicePath"])
@@ -590,13 +593,13 @@ func jtoken_to_list_definitions(obj):
 		for name_value_key in list_def_json:
 			items[name_value_key] = int(list_def_json[name_value_key])
 
-		var def = ListDefinition.new(name, items)
+		var def = InkListDefinition.new(name, items)
 		all_defs.append(def)
 
-	return ListDefinitionsOrigin.new(all_defs)
+	return InkListDefinitionsOrigin.new(all_defs)
 
 func _init(native_function_call):
-	StaticNativeFunctionCall = native_function_call
+	_static_native_function_call = native_function_call
 
 	_control_command_names = []
 
@@ -626,13 +629,15 @@ func _init(native_function_call):
 	_control_command_names.append("lrnd")      # LIST_RANDOM
 
 	var i = 0
-	while i < ControlCommand.CommandType.TOTAL_VALUES:
+	while i < InkControlCommand.CommandType.TOTAL_VALUES:
 		if _control_command_names[i] == null:
 			Utils.throw_exception("Control command not accounted for in serialisation")
 		i += 1
 
-var _control_command_names = null # Array<String>
+# Array<String>
+var _control_command_names = null
 
 # ############################################################################ #
 
-var StaticNativeFunctionCall = null # Eventually a pointer to InkRuntime.StaticJson
+# Eventually a pointer to InkRuntime.StaticJson
+var _static_native_function_call = null

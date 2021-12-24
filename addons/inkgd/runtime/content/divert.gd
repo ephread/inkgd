@@ -18,28 +18,29 @@ class_name InkDivert
 # Imports
 # ############################################################################ #
 
-var PushPopType = preload("res://addons/inkgd/runtime/enums/push_pop.gd").PushPopType
-var Pointer = load("res://addons/inkgd/runtime/structs/pointer.gd")
+const PushPopType = preload("res://addons/inkgd/runtime/enums/push_pop.gd").PushPopType
+var InkPointer := load("res://addons/inkgd/runtime/structs/pointer.gd") as GDScript
 
 # ############################################################################ #
 
-var target_path setget set_target_path, get_target_path # InkPath
-func get_target_path():
+var target_path: InkPath setget set_target_path, get_target_path
+func get_target_path() -> InkPath:
 	if self._target_path != null && self._target_path.is_relative:
-		var target_obj = self.target_pointer.resolve()
+		var target_obj: InkObject = self.target_pointer.resolve()
 		if target_obj:
 			self._target_path = target_obj.path
 
 	return self._target_path
 
-func set_target_path(value):
+func set_target_path(value: InkPath):
 	self._target_path = value
-	self._target_pointer = Pointer.null()
+	self._target_pointer = InkPointer.null()
 
-var _target_path = null # InkPath
+# InkPath
+var _target_path = null
 
-var target_pointer setget , get_target_pointer # InkPointer
-func get_target_pointer():
+var target_pointer: InkPointer setget , get_target_pointer # InkPointer
+func get_target_pointer() -> InkPointer:
 	if self._target_pointer.is_null:
 		var target_obj = resolve_path(self._target_path).obj
 
@@ -47,13 +48,14 @@ func get_target_pointer():
 			self._target_pointer.container = Utils.as_or_null(target_obj.parent, "InkContainer")
 			self._target_pointer.index = self._target_path.last_component.index
 		else:
-			self._target_pointer = Pointer.start_of(Utils.as_or_null(target_obj, "InkContainer"))
+			self._target_pointer = InkPointer.start_of(Utils.as_or_null(target_obj, "InkContainer"))
 
 	return self._target_pointer.duplicate()
 
-var _target_pointer = Pointer.null() # InkPointer
+var _target_pointer: InkPointer = InkPointer.null()
 
-var target_path_string setget set_target_path_string, get_target_path_string # String
+# String?
+var target_path_string setget set_target_path_string, get_target_path_string
 func get_target_path_string():
 	if self.target_path == null:
 		return null
@@ -66,20 +68,24 @@ func set_target_path_string(value):
 	else:
 		self.target_path = InkPath().new_with_components_string(value)
 
-var variable_divert_name = null # String
-var has_variable_target setget , get_has_variable_target # bool
-func get_has_variable_target(): return self.variable_divert_name != null
+# String
+var variable_divert_name = null
+var has_variable_target: bool setget , get_has_variable_target
+func get_has_variable_target() -> bool:
+	return self.variable_divert_name != null
 
-var pushes_to_stack = false # bool
-var stack_push_type = 0 # PushPopType
+var pushes_to_stack: bool = false
 
-var is_external = false # bool
-var external_args = 0 # int
+# PushPopType
+var stack_push_type: int = 0
 
-var is_conditional = false # bool
+var is_external: bool = false
+var external_args: int = 0
+
+var is_conditional: bool = false
 
 
-# (int) -> InkDivert
+# (int?) -> InkDivert
 func _init_with(stack_push_type = null):
 	self.pushes_to_stack = false
 
@@ -88,8 +94,8 @@ func _init_with(stack_push_type = null):
 		self.stack_push_type = stack_push_type
 
 # (InkBase) -> bool
-func equals(obj):
-	var other_divert = Utils.as_or_null(obj, "Divert")
+func equals(obj) -> bool:
+	var other_divert: InkDivert = Utils.as_or_null(obj, "Divert")
 	if other_divert:
 		if self.has_variable_target == other_divert.has_variable_target:
 			if self.has_variable_target:
@@ -99,15 +105,15 @@ func equals(obj):
 
 	return false
 
-func to_string():
+func to_string() -> String:
 	if self.has_variable_target:
-		return "Divert(variable: " + self.variable_divert_name + ")"
+		return "Divert(variable: %s)" % self.variable_divert_name
 	elif self.target_path == null:
 		return "Divert(null)"
 	else:
 		var _string = ""
 
-		var target_str = self.target_path.to_string()
+		var target_str: String = self.target_path.to_string()
 		var target_line_num = debug_line_number_of_path(self.target_path)
 		if target_line_num != null:
 			target_str = "line " + target_line_num
@@ -126,9 +132,7 @@ func to_string():
 		_string += " -> "
 		_string += self.target_path_string
 
-		_string += " ("
-		_string += target_str
-		_string += ")"
+		_string += " (%s)" % target_str
 
 		return _string
 
@@ -136,8 +140,8 @@ func to_string():
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type):
+func is_class(type: String) -> bool:
 	return type == "Divert" || .is_class(type)
 
-func get_class():
+func get_class() -> String:
 	return "Divert"

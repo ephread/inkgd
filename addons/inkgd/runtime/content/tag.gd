@@ -8,26 +8,24 @@
 # ############################################################################ #
 
 tool
-extends "res://addons/inkgd/runtime/common/ink_object.gd"
+extends InkObject
 
 class_name InkTag
 
-var text # String
+var text: String
 
-# (String) -> Tag
-func _init(tag_text):
+func _init(tag_text: String):
 	text = tag_text
 
-# () -> String
-func to_string():
+func to_string() -> String:
 	return '# ' + text
 
 # ############################################################################ #
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type):
+func is_class(type: String) -> bool:
 	return type == "Tag" || .is_class(type)
 
-func get_class():
+func get_class() -> String:
 	return "Tag"
