@@ -27,7 +27,8 @@ Released on 2021-12-20.
 - Added support for JSON files, treating them as resources.
 
 ### Fixed
-- Fixed a typo in *story_state.gd* (`Path` -> `InkPath`), thanks @cesarizu!
+- Fixed [#51] – Typo in *story_state.gd* (`Path` -> `InkPath`),
+  thanks [@cesarizu]!
 
 [#51]: https://github.com/ephread/inkgd/pull/51
 [@cesarizu]: https://github.com/cesarizu

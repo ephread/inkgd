@@ -97,8 +97,9 @@ hosted on [Read The Docs].
 
 ### Ink Stories
 
-- [_The Intercept_] is released under the MIT license, copyright inkle Ltd.
-  The sample project uses a slightly modified version.
+- [_The Intercept_] and [_Crime Scene_] are released under the MIT license,
+  copyright inkle Ltd. The sample project uses slightly modified versions of
+  these two stories.
 - [_LD41 Emoji_] is released under the MIT license, copyright Pat Scott.
 - [_Not a halloween game_] is released under the MIT license, copyright Samuel
   Sarette and Zachary Sarette.
