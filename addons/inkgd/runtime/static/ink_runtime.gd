@@ -36,13 +36,17 @@ signal exception_raised(message, stack_trace)
 # Properties
 # ############################################################################ #
 
+# Skips saving global values that remain equal to the initial values that were
+# declared in Ink.
+var dont_save_default_values: bool = false
+
 ## Uses `assert` instead of `push_error` to report critical errors, thus
 ## making them more explicit during development.
-var should_pause_execution_on_exception: bool = true
+var stop_execution_on_exception: bool = false
 
 ## Uses `assert` instead of `push_error` to report story errors, thus
 ## making them more explicit during development.
-var should_pause_execution_on_error: bool = true
+var stop_execution_on_error: bool = false
 
 # ############################################################################ #
 
@@ -50,37 +54,33 @@ var should_pause_execution_on_runtime_error: bool setget set_speore, get_speore
 func get_speore() -> bool:
 	printerr(
 			"'should_pause_execution_on_runtime_error' is deprecated, " +
-			"use 'should_pause_execution_on_exception' instead."
+			"use 'stop_execution_on_exception' instead."
 	)
-	return should_pause_execution_on_exception
+	return stop_execution_on_exception
 func set_speore(value: bool):
 	printerr(
 			"'should_pause_execution_on_runtime_error' is deprecated, " +
-			"use 'should_pause_execution_on_exception' instead."
+			"use 'stop_execution_on_exception' instead."
 	)
-	should_pause_execution_on_exception = value
+	stop_execution_on_exception = value
 
 var should_pause_execution_on_story_error: bool setget set_speose, get_speose
 func get_speose() -> bool:
 	printerr(
 		"'should_pause_execution_on_story_error' is deprecated, " +
-		"use 'should_pause_execution_on_error' instead."
+		"use 'stop_execution_on_error' instead."
 	)
-	return should_pause_execution_on_error
+	return stop_execution_on_error
 func set_speose(value: bool):
 	printerr(
 		"'should_pause_execution_on_story_error' is deprecated, " +
-		"use 'should_pause_execution_on_error' instead."
+		"use 'stop_execution_on_error' instead."
 	)
-	should_pause_execution_on_error = value
+	stop_execution_on_error = value
 
 # ############################################################################ #
-# Original Static Properties
+# "Static" Properties
 # ############################################################################ #
-
-# skips saving global values that remain equal to the initial values that were
-# declared in Ink.
-var dont_save_default_values: bool = true
 
 var native_function_call: InkStaticNativeFunctionCall = InkStaticNativeFunctionCall.new()
 var json: InkStaticJSON = InkStaticJSON.new(native_function_call)
@@ -111,7 +111,7 @@ func handle_exception(message: String) -> void:
 
 	_handle_generic_exception(
 			exception_message,
-			should_pause_execution_on_exception,
+			stop_execution_on_exception,
 			stack_trace
 	)
 
@@ -123,7 +123,7 @@ func handle_argument_exception(message: String) -> void:
 
 	_handle_generic_exception(
 			exception_message,
-			should_pause_execution_on_exception,
+			stop_execution_on_error,
 			stack_trace
 	)
 
@@ -136,7 +136,7 @@ func handle_story_exception(message: String, use_end_line_number: bool) -> void:
 	var exception_message = "STORY EXCEPTION: %s" % message
 	var stack_trace = _get_stack_trace()
 
-	_handle_generic_exception(exception_message, should_pause_execution_on_error, stack_trace)
+	_handle_generic_exception(exception_message, stop_execution_on_error, stack_trace)
 
 	if !record_story_exceptions:
 		emit_signal("exception_raised", exception_message, stack_trace)
@@ -151,16 +151,14 @@ func _handle_generic_exception(
 		stack_trace: PoolStringArray
 ) -> void:
 	if OS.is_debug_build():
-		if stack_trace.size() > 0:
-			printerr(message)
-			printerr("Stack trace:")
-			for line in stack_trace:
-				printerr(line)
-
 		if should_pause_execution:
 			assert(false, message)
 		elif Engine.editor_hint:
 			printerr(message)
+			if stack_trace.size() > 0:
+				printerr("Stack trace:")
+				for line in stack_trace:
+					printerr(line)
 		else:
 			push_error(message)
 

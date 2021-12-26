@@ -123,7 +123,7 @@ func start_profiling():
 	if async_we_cant ("Start Profiling"):
 		return
 
-	_profiler = Profiler.new()
+	_profiler = InkProfiler.new()
 	return _profiler
 
 # () -> void

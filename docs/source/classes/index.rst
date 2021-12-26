@@ -6,3 +6,4 @@
 
    class_inkplayer
    class_inkruntime
+   class_inkfunctionresult

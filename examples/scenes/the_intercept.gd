@@ -16,7 +16,7 @@ var ErrorType = preload("res://addons/inkgd/runtime/enums/error.gd").ErrorType
 var ChoiceContainer = load("res://examples/scenes/common/choice_container.tscn")
 var LineLabel = load("res://examples/scenes/common/label.tscn")
 
-var Profiler = load("res://examples/scenes/common/profiler.gd")
+var InkGDProfiler = load("res://examples/scenes/common/profiler.gd")
 
 # ############################################################################ #
 # Constants
@@ -30,7 +30,7 @@ const USE_SIGNALS = true
 # ############################################################################ #
 
 var _current_choice_container: ChoiceContainer
-var _profiler: Profiler = Profiler.new()
+var _profiler: InkGDProfiler = InkGDProfiler.new()
 
 
 # ############################################################################ #
@@ -87,6 +87,7 @@ func _loaded(successfully: bool):
 	print("Created The Intercept in %d ms." % _profiler.milliseconds_elaspsed)
 
 	_bind_externals()
+	_evaluate_function()
 	_continue_story()
 	_remove_loading_overlay()
 
@@ -167,6 +168,20 @@ func _bind_externals():
 	_ink_player.observe_variables(["forceful", "evasive"], self, "_observe_variables")
 	_ink_player.bind_external_function("should_show_debug_menu", self, "_should_show_debug_menu")
 
+
+func _evaluate_function():
+	## An example of how to evaluate functions.
+	var result = _ink_player.evaluate_function("test_function", [3, 4])
+	print(
+			"function 'test_function': [Text Output: '%s'] [Return Value: %s]" % \
+			[result.text_output.replace("\n", "\\n"), result.return_value]
+	)
+
+	var result_output = _ink_player.evaluate_function("test_function_output", [3, 4, 5])
+	print(
+			"function 'test_function_output': [Text Output: '%s'] [Return Value: %s]" % \
+			[result_output.text_output.replace("\n", "\\n"), result_output.return_value]
+	)
 
 func _remove_loading_overlay():
 	remove_child(_loading_animation_player)

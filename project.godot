@@ -129,6 +129,16 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/inkgd/runtime/flow.gd"
 }, {
+"base": "Reference",
+"class": "InkFunctionResult",
+"language": "GDScript",
+"path": "res://addons/inkgd/runtime/extra/function_result.gd"
+}, {
+"base": "Reference",
+"class": "InkGDProfiler",
+"language": "GDScript",
+"path": "res://examples/scenes/common/profiler.gd"
+}, {
 "base": "InkObject",
 "class": "InkGlue",
 "language": "GDScript",
@@ -154,12 +164,12 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/inkgd/runtime/lists/ink_list.gd"
 }, {
-"base": "InkBase",
+"base": "InkObject",
 "class": "InkListDefinition",
 "language": "GDScript",
 "path": "res://addons/inkgd/runtime/lists/list_definition.gd"
 }, {
-"base": "InkBase",
+"base": "InkObject",
 "class": "InkListDefinitionsOrigin",
 "language": "GDScript",
 "path": "res://addons/inkgd/runtime/lists/list_definitions_origin.gd"
@@ -304,7 +314,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/inkgd/runtime/extra/string_writer.gd"
 }, {
-"base": "InkBase",
+"base": "InkObject",
 "class": "InkTag",
 "language": "GDScript",
 "path": "res://addons/inkgd/runtime/content/tag.gd"
@@ -348,11 +358,6 @@ _global_script_classes=[ {
 "class": "InkVoid",
 "language": "GDScript",
 "path": "res://addons/inkgd/runtime/content/void.gd"
-}, {
-"base": "Reference",
-"class": "Profiler",
-"language": "GDScript",
-"path": "res://examples/scenes/common/profiler.gd"
 } ]
 _global_script_class_icons={
 "ChoiceContainer": "",
@@ -379,6 +384,8 @@ _global_script_class_icons={
 "InkExternalCommandExecuter": "",
 "InkFloatValue": "",
 "InkFlow": "",
+"InkFunctionResult": "",
+"InkGDProfiler": "",
 "InkGlue": "",
 "InkIntValue": "",
 "InkJsonImportPlugin": "",
@@ -422,8 +429,7 @@ _global_script_class_icons={
 "InkVariablePointerValue": "",
 "InkVariableReference": "",
 "InkVariablesState": "",
-"InkVoid": "",
-"Profiler": ""
+"InkVoid": ""
 }
 
 [application]

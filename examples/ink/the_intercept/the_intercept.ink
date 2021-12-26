@@ -71,6 +71,13 @@ EXTERNAL should_show_debug_menu(debug)
  === function raise(ref x)
  	~ x = x + 1
 
+ === function test_function(a, b)
+ 	~ return a + b
+
+ === function test_function_output(a, b, c)
+	\| The Intercept \|
+ 	~ return a + b + c
+
 /*--------------------------------------------------------------------------------
 
 	Start the story!

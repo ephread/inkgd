@@ -6,7 +6,7 @@
 
 extends Reference
 
-class_name Profiler
+class_name InkGDProfiler
 
 # ############################################################################ #
 # Properties

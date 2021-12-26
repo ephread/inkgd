@@ -19,6 +19,7 @@ var ErrorType = preload("res://addons/inkgd/runtime/enums/error.gd").ErrorType
 var InkRuntime = load("res://addons/inkgd/runtime.gd")
 var InkResource = load("res://addons/inkgd/editor/import_plugins/ink_resource.gd")
 var InkStory = load("res://addons/inkgd/runtime/story.gd")
+var InkFunctionResult = load("res://addons/inkgd/runtime/extra/function_result.gd")
 
 
 # ############################################################################ #
@@ -26,8 +27,9 @@ var InkStory = load("res://addons/inkgd/runtime/story.gd")
 # ############################################################################ #
 
 ## Emitted when the ink runtime encountered an exception. Exception are
-## usually not recoverable as they corrupt the state.
-signal exception_raised(message)
+## usually not recoverable as they corrupt the state. `stack_trace` is
+## an optional PoolStringArray containing a stack trace, for logging purposes.
+signal exception_raised(message, stack_trace)
 
 ## Emitted when the story encountered an error. These errors are usually
 ## recoverable.
@@ -52,7 +54,7 @@ signal choice_made(choice)
 signal function_evaluating(function_name, arguments)
 
 ## Emitted when an external function evaluated.
-signal function_evaluated(function_name, arguments, text_output, result)
+signal function_evaluated(function_name, arguments, function_result)
 
 ## Emitted when a valid path string was choosen.
 signal path_string_choosen(path, arguments)
@@ -66,31 +68,87 @@ signal ended()
 # ############################################################################ #
 
 ## The compiled Ink file (.json) to play.
-export(Resource) var ink_file
+export var ink_file: Resource
 
 ## When `true` the story will be created in a separate threads, to
 ## prevent the UI from freezing if the story is too big. Note that
 ## on platforms where threads aren't available, the value of this
 ## property is ignored.
-export(bool) var loads_in_background = true
-
-
-# ############################################################################ #
-# Properties
-# ############################################################################ #
+export var loads_in_background: bool = true
 
 ## `true` to allow external function fallbacks, `false` otherwise. If this
 ## property is `false` and the appropriate function hasn't been binded, the
 ## story will output an error.
-var allow_external_function_fallbacks: bool setget set_aeff, get_aeff
-func set_aeff(value):
+export var allow_external_function_fallbacks: bool setget set_aeff, get_aeff
+func set_aeff(value: bool):
 	if _story == null:
 		_push_null_story_error()
 		return
 
 	_story.allow_external_function_fallbacks = value
 func get_aeff() -> bool:
+	if _story == null:
+		_push_null_story_error()
+		return false
+
 	return _story.allow_external_function_fallbacks
+
+# skips saving global values that remain equal to the initial values that were
+# declared in Ink.
+export var do_not_save_default_values: bool setget set_dnsdv, get_dnsdv
+func set_dnsdv(value: bool):
+	var ink_runtime = _ink_runtime.get_ref()
+	if ink_runtime == null:
+		_push_null_runtime_error()
+		return false
+
+	ink_runtime.dont_save_default_values = value
+
+func get_dnsdv() -> bool:
+	var ink_runtime = _ink_runtime.get_ref()
+	if ink_runtime == null:
+		_push_null_runtime_error()
+		return false
+
+	return ink_runtime.dont_save_default_values
+
+## Uses `assert` instead of `push_error` to report critical errors, thus
+## making them more explicit during development.
+export var stop_execution_on_exception: bool setget set_seoex, get_seoex
+func set_seoex(value: bool):
+	var ink_runtime = _ink_runtime.get_ref()
+	if ink_runtime == null:
+		_push_null_runtime_error()
+		return
+
+	ink_runtime.stop_execution_on_exception = value
+
+func get_seoex() -> bool:
+	var ink_runtime = _ink_runtime.get_ref()
+	if ink_runtime == null:
+		_push_null_runtime_error()
+		return false
+
+	return ink_runtime.stop_execution_on_exception
+
+## Uses `assert` instead of `push_error` to report story errors, thus
+## making them more explicit during development.
+export var stop_execution_on_error: bool setget set_seoer, get_seoer
+func set_seoer(value: bool):
+	var ink_runtime = _ink_runtime.get_ref()
+	if ink_runtime == null:
+		_push_null_runtime_error()
+		return
+
+	ink_runtime.stop_execution_on_error = value
+
+func get_seoer() -> bool:
+	var ink_runtime = _ink_runtime.get_ref()
+	if ink_runtime == null:
+		_push_null_runtime_error()
+		return false
+
+	return ink_runtime.stop_execution_on_error
 
 
 # ############################################################################ #
@@ -169,50 +227,6 @@ func get_has_choices() -> bool:
 	return !self.current_choices.empty()
 
 # ############################################################################ #
-
-## Uses `assert` instead of `push_error` to report critical errors, thus
-## making them more explicit during development.
-var should_pause_execution_on_exception: bool setget set_speoex, get_speoex
-func get_speoex():
-	var ink_runtime = _ink_runtime.get_ref()
-	if ink_runtime == null:
-		return false
-	return ink_runtime.should_pause_execution_on_exception
-
-func set_speoex(value):
-	var ink_runtime = _ink_runtime.get_ref()
-	if ink_runtime != null:
-		ink_runtime.should_pause_execution_on_exception = value
-
-## Uses `assert` instead of `push_error` to report story errors, thus
-## making them more explicit during development.
-var should_pause_execution_on_error: bool setget set_speoer, get_speoer
-func get_speoer():
-	var ink_runtime = _ink_runtime.get_ref()
-	if ink_runtime == null:
-		return false
-	return ink_runtime.should_pause_execution_on_error
-
-func set_speoer(value):
-	var ink_runtime = _ink_runtime.get_ref()
-	if ink_runtime != null:
-		ink_runtime.should_pause_execution_on_error = value
-
-# skips saving global values that remain equal to the initial values that were
-# declared in Ink.
-var dont_save_default_values: bool setget set_dsdv, get_dsdv
-func get_dsdv():
-	var ink_runtime = _ink_runtime.get_ref()
-	if ink_runtime == null:
-		return false
-	return ink_runtime.dont_save_default_values
-
-func set_dsdv(value):
-	var ink_runtime = _ink_runtime.get_ref()
-	if ink_runtime != null:
-		ink_runtime.dont_save_default_values = value
-
-# ############################################################################ #
 # Private Properties
 # ############################################################################ #
 
@@ -241,15 +255,16 @@ func _exit_tree():
 
 ## Creates the story, based on the value of `ink_file`. The result of this
 ## method is reported through the 'story_loaded' signal.
-func create_story():
+func create_story() -> void:
 	if ink_file == null:
-		_push_error("'ink_file' is 'Nil', did Godot import the resource correctly?", ErrorType.ERROR)
+		_push_error("'ink_file' is null, did Godot import the resource correctly?", ErrorType.ERROR)
 		call_deferred("emit_signal", "loaded", false)
 		return
 
 	if !("json" in ink_file) || typeof(ink_file.json) != TYPE_STRING:
 		_push_error(
-				"'ink_file' doesn't have the appropriate resource type. Are you sure you imported a JSON file?",
+				"'ink_file' doesn't have the appropriate resource type." + \
+				"Are you sure you imported a JSON file?",
 				ErrorType.ERROR
 		)
 		call_deferred("emit_signal", "loaded", false)
@@ -266,10 +281,14 @@ func create_story():
 		_finalise_story_creation()
 
 
-## Destroys the current story. ALways call this method first if you want to
-## recreate the story.
-func reset():
-	_story = null
+## Reset the Story back to its initial state as it was when it was
+## first constructed.
+func reset() -> void:
+	if _story == null:
+		_push_null_story_error()
+		return
+
+	_story.reset_state()
 
 
 # ############################################################################ #
@@ -278,6 +297,10 @@ func reset():
 
 ## Continues the story.
 func continue_story() -> String:
+	if _story == null:
+		_push_null_story_error()
+		return ""
+
 	var text: String = ""
 	if self.can_continue:
 		_story.continue()
@@ -294,7 +317,11 @@ func continue_story() -> String:
 
 ## Chooses a choice. If the story is not currently expected choices or
 ## the index is out of bounds, this method does nothing.
-func choose_choice_index(index: int):
+func choose_choice_index(index: int) -> void:
+	if _story == null:
+		_push_null_story_error()
+		return
+
 	if index >= 0 && index < self.current_choices.size():
 		_story.choose_choice_index(index);
 
@@ -302,32 +329,36 @@ func choose_choice_index(index: int):
 ## Moves the story to the specified knot/stitch/gather. This method
 ## will throw an error through the 'exception' signal if the path string
 ## does not match any known path.
-func choose_path_string(path_string: String):
+func choose_path_string(path_string: String) -> void:
 	if _story == null:
+		_push_null_story_error()
 		return
 
 	_story.choose_path_string(path_string)
 
 
 ## Switches the flow, creating a new flow if it doesn't exist.
-func switch_flow(flow_name: String):
+func switch_flow(flow_name: String) -> void:
 	if _story == null:
+		_push_null_story_error()
 		return
 
 	_story.switch_flow(flow_name)
 
 
 ## Switches the the default flow.
-func switch_to_default_flow():
+func switch_to_default_flow() -> void:
 	if _story == null:
+		_push_null_story_error()
 		return
 
 	_story.switch_to_default_flow()
 
 
 ## Remove the given flow.
-func remove_flow(flow_name: String):
+func remove_flow(flow_name: String) -> void:
 	if _story == null:
+		_push_null_story_error()
 		return
 
 	_story.remove_flow(flow_name)
@@ -340,6 +371,7 @@ func remove_flow(flow_name: String):
 ## Returns the tags declared at the given path.
 func tags_for_content_at_path(path: String) -> Array:
 	if _story == null:
+		_push_null_story_error()
 		return []
 
 	return _story.tags_for_content_at_path(path)
@@ -351,6 +383,10 @@ func tags_for_content_at_path(path: String) -> Array:
 
 ## Returns the visit count of the given path.
 func visit_count_at_path_string(path: String) -> int:
+	if _story == null:
+		_push_null_story_error()
+		return 0
+
 	return _story.visit_count_at_path_string(path)
 
 
@@ -360,16 +396,28 @@ func visit_count_at_path_string(path: String) -> int:
 
 ## Gets the current state as a JSON string. It can then be saved somewhere.
 func get_state() -> String:
+	if _story == null:
+		_push_null_story_error()
+		return ""
+
 	return _story.state.to_json()
 
 
 ## Sets the state from a JSON string.
 func set_state(state: String):
+	if _story == null:
+		_push_null_story_error()
+		return
+
 	_story.state.load_json(state)
 
 
 ## Saves the current state to the given path.
 func save_state_to_path(path: String):
+	if _story == null:
+		_push_null_story_error()
+		return
+
 	if !path.begins_with("res://") && !path.begins_with("user://"):
 		path = "user://%s" % path
 
@@ -381,12 +429,20 @@ func save_state_to_path(path: String):
 
 ## Saves the current state to the file.
 func save_state_to_file(file: File):
+	if _story == null:
+		_push_null_story_error()
+		return
+
 	if file.is_open():
 		file.store_string(get_state())
 
 
 ## Loads the state from the given path.
 func load_state_from_path(path: String):
+	if _story == null:
+		_push_null_story_error()
+		return
+
 	if !path.begins_with("res://") && !path.begins_with("user://"):
 		path = "user://%s" % path
 
@@ -398,6 +454,10 @@ func load_state_from_path(path: String):
 
 ## Loads the state from the given file.
 func load_state_from_file(file: File):
+	if _story == null:
+		_push_null_story_error()
+		return
+
 	if !file.is_open():
 		return
 
@@ -412,11 +472,19 @@ func load_state_from_file(file: File):
 
 ## Returns the value of variable named 'name' or 'null' if it doesn't exist.
 func get_variable(name: String):
+	if _story == null:
+		_push_null_story_error()
+		return null
+
 	return _story.variables_state.get(name)
 
 
 ## Sets the value of variable named 'name'.
 func set_variable(name: String, value):
+	if _story == null:
+		_push_null_story_error()
+		return
+
 	_story.variables_state.set(name, value)
 
 
@@ -426,28 +494,48 @@ func set_variable(name: String, value):
 
 ## Registers an observer for the given variables.
 func observe_variables(variable_names: Array, object: Object, method_name: String):
+	if _story == null:
+		_push_null_story_error()
+		return
+
 	_story.observe_variables(variable_names, object, method_name)
 
 
 ## Registers an observer for the given variable.
 func observe_variable(variable_name: String, object: Object, method_name: String):
+	if _story == null:
+		_push_null_story_error()
+		return
+
 	_story.observe_variable(variable_name, object, method_name)
 
 
 ## Removes an observer for the given variable name. This method is highly
 ## specific and will only remove one observer.
 func remove_variable_observer(object: Object, method_name: String, specific_variable_name: String):
+	if _story == null:
+		_push_null_story_error()
+		return
+
 	_story.remove_variable_observer(object, method_name, specific_variable_name)
 
 
 ## Removes all observers registered with the couple object/method_name,
 ## regardless of which variable they observed.
 func remove_variable_observer_for_all_variable(object: Object, method_name: String):
+	if _story == null:
+		_push_null_story_error()
+		return
+
 	_story.remove_variable_observer(object, method_name)
 
 
 ## Removes all observers observing the given variable.
 func remove_all_variable_observers(specific_variable_name: String):
+	if _story == null:
+		_push_null_story_error()
+		return
+
 	_story.remove_variable_observer(specific_variable_name)
 
 
@@ -456,12 +544,25 @@ func remove_all_variable_observers(specific_variable_name: String):
 # ############################################################################ #
 
 ## Binds an external function.
-func bind_external_function(func_name: String, object: Object, method_name: String, lookahead_safe = false):
+func bind_external_function(
+		func_name: String,
+		object: Object,
+		method_name: String,
+		lookahead_safe = false
+):
+	if _story == null:
+		_push_null_story_error()
+		return
+
 	_story.bind_external_function(func_name, object, method_name, lookahead_safe)
 
 
 ## Unbinds an external function.
 func unbind_external_function(func_name: String):
+	if _story == null:
+		_push_null_story_error()
+		return
+
 	_story.unbind_external_function(func_name)
 
 
@@ -471,26 +572,21 @@ func unbind_external_function(func_name: String):
 
 ## Evaluate a given ink function, returning its return value (but not
 ## its output).
-func evaluate_function(function_name: String, arguments = []):
-	return _story.evaluate_function(function_name, arguments, false)
+func evaluate_function(function_name: String, arguments = []) -> InkFunctionResult:
+	if _story == null:
+		_push_null_story_error()
+		return null
 
-
-## Evaluate a given ink function, returning both its return value and
-## text output in a dictionary of the form:
-##
-## ```
-## { "result": "<return_value>", "output": "<text_output>" }
-## ```
-func evaluate_function_and_get_output(function_name: String, arguments = []) -> Dictionary:
-	return _story.evaluate_function(function_name, arguments, true)
+	var result = _story.evaluate_function(function_name, arguments, true)
+	return InkFunctionResult.new(result["output"], result["result"])
 
 
 # ############################################################################ #
 # Private Methods | Signal Forwarding
 # ############################################################################ #
 
-func _exception_raised(message):
-	emit_signal("exception_raised", message)
+func _exception_raised(message, stack_trace):
+	emit_signal("exception_raised", message, stack_trace)
 
 
 func _on_error(message, type):
@@ -505,15 +601,16 @@ func _on_did_continue():
 
 
 func _on_make_choice(choice):
-	emit_signal("choice_made", choice)
+	emit_signal("choice_made", choice.text)
 
 
 func _on_evaluate_function(function_name, arguments):
 	emit_signal("function_evaluating", function_name, arguments)
 
 
-func _on_complete_evaluate_function(function_name, arguments, text_output, result):
-	emit_signal("function_evaluated", function_name, arguments, text_output, result)
+func _on_complete_evaluate_function(function_name, arguments, text_output, return_value):
+	var function_result = InkFunctionResult.new(text_output, return_value)
+	emit_signal("function_evaluated", function_name, arguments, function_result)
 
 
 func _on_choose_path_string(path, arguments):
@@ -550,7 +647,7 @@ func _finalise_story_creation():
 
 	var ink_runtime = _ink_runtime.get_ref()
 	if ink_runtime == null:
-		_push_error("InkRuntime not found, did you remove it from the tree?", ErrorType.ERROR)
+		_push_null_runtime_error()
 		return
 
 	emit_signal("loaded", true)
@@ -578,12 +675,22 @@ func _current_platform_supports_threads():
 	return OS.get_name() != "HTML5"
 
 
+func _push_null_runtime_error():
+	_push_error(
+			"InkRuntime could not found, did you remove it from the tree?",
+			ErrorType.ERROR
+	)
+
+
 func _push_null_story_error():
 	_push_error("The story is 'Nil', was it loaded properly?", ErrorType.ERROR)
 
 
 func _push_null_state_error(variable: String):
-	var message = "'%s' is 'Nil', the internal state is corrupted or missing, this is an unrecoverable error."
+	var message = (
+			"'%s' is 'Nil', the internal state is corrupted or missing, " +
+			"this is an unrecoverable error."
+	)
 	_push_error(message % variable, ErrorType.ERROR)
 
 

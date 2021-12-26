@@ -67,7 +67,7 @@ func _exit_tree():
 	_remove_autoloads()
 	_remove_templates()
 
-	remove_custom_type("InkNode")
+	remove_custom_type("InkPlayer")
 
 func build():
 	if _configuration.compilation_mode == InkConfiguration.BuildMode.DURING_BUILD:

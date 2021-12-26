@@ -15,14 +15,14 @@ extends Node
 # ############################################################################ #
 
 var ErrorType = preload("res://addons/inkgd/runtime/enums/error.gd").ErrorType
-var Profiler = preload("res://examples/scenes/common/profiler.gd")
+var InkGDProfiler = preload("res://examples/scenes/common/profiler.gd")
 
 
 # ############################################################################ #
 # Private Properties
 # ############################################################################ #
 
-var _profiler: Profiler = Profiler.new()
+var _profiler: InkGDProfiler = InkGDProfiler.new()
 var _current_story_index: int = -1
 
 var _creation_results: PoolStringArray = ["Created stories:"]

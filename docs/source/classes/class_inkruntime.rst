@@ -11,20 +11,23 @@ InkRuntime
 Description
 -----------
 
-A node encapsulating static properties of the runtime and managing
+A node encapsulating the static properties of the runtime and managing
 exceptions.
+
+Exceptions don't exists in GDScript, but they are *emulated* by the runtime
+and reported through :ref:`exception_raised<class_inkruntime_exception_raised>`.
 
 
 Properties
 ----------
 
-+-------+--------------------------------------------------------------------------------------------------+----------+
-| bool_ | :ref:`should_pause_execution_on_exception<class_inkruntime_should_pause_execution_on_exception>` | ``true`` |
-+-------+--------------------------------------------------------------------------------------------------+----------+
-| bool_ | :ref:`should_pause_execution_on_error<class_inkruntime_should_pause_execution_on_error>`         | ``true`` |
-+-------+--------------------------------------------------------------------------------------------------+----------+
-| bool_ | :ref:`dont_save_default_values<class_inkruntime_dont_save_default_values>`                       | ``true`` |
-+-------+--------------------------------------------------------------------------------------------------+----------+
++-------+----------------------------------------------------------------------------------+-----------+
+| bool_ | :ref:`do_not_save_default_values<class_inkruntime_do_not_save_default_values>`   | ``false`` |
++-------+----------------------------------------------------------------------------------+-----------+
+| bool_ | :ref:`stop_execution_on_exception<class_inkruntime_stop_execution_on_exception>` | ``false`` |
++-------+----------------------------------------------------------------------------------+-----------+
+| bool_ | :ref:`stop_execution_on_error<class_inkruntime_stop_execution_on_error>`         | ``false`` |
++-------+----------------------------------------------------------------------------------+-----------+
 
 
 Signals
@@ -42,43 +45,55 @@ or a bug in the runtime.
 Property Descriptions
 ---------------------
 
-.. _class_inkruntime_should_pause_execution_on_exception:
+.. _class_inkruntime_do_not_save_default_values:
 
-- bool_ **should_pause_execution_on_exception**
+- bool_ **do_not_save_default_values**
 
-+-----------+----------+
-| *Default* | ``true`` |
-+-----------+----------+
++-----------+-----------------------+
+| *Default* | ``true``              |
++-----------+-----------------------+
+| *Setter*  | set_dnsdv(value)      |
++-----------+-----------------------+
+| *Getter*  | get_dnsdv()           |
++-----------+-----------------------+
+
+When set to ``true``, *inkgd* skips saving global values that remain
+equal to the initial values that were declared in ink. This property matches
+the static property declared in `VariablesState.cs`_.
+
+----
+
+.. _class_inkruntime_stop_execution_on_exception:
+
+- bool_ **stop_execution_on_exception**
+
++-----------+-----------------------+
+| *Default* | ``true``              |
++-----------+-----------------------+
+| *Setter*  | set_speoex(value)     |
++-----------+-----------------------+
+| *Getter*  | get_speoex()          |
++-----------+-----------------------+
 
 When set to ``true``, *inkgd* uses ``assert()`` instead of ``push_error`` to
 report exceptions, thus making them more explicit during development.
 
 ----
 
-.. _class_inkruntime_should_pause_execution_on_error:
+.. _class_inkruntime_stop_execution_on_error:
 
-- bool_ **should_pause_execution_on_error**
+- bool_ **stop_execution_on_error**
 
-+-----------+----------+
-| *Default* | ``true`` |
-+-----------+----------+
++-----------+-----------------------+
+| *Default* | ``true``              |
++-----------+-----------------------+
+| *Setter*  | set_speoer(value)     |
++-----------+-----------------------+
+| *Getter*  | get_speoer()          |
++-----------+-----------------------+
 
 When set to ``true``, *inkgd* uses ``assert()`` instead of ``push_error`` to
 report errors, thus making them more explicit during development.
-
-----
-
-.. _class_inkruntime_dont_save_default_values:
-
-- bool_ **dont_save_default_values**
-
-+-----------+----------+
-| *Default* | ``true`` |
-+-----------+----------+
-
-When set to ``true``, *inkgd* skips saving global values that remain
-equal to the initial values that were declared in ink. This property matches
-the static property declared in `VariablesState.cs`_.
 
 .. Those links are duplicated.
 .. TODO: Use sphinx.ext.extlinks?
