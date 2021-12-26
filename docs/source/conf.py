@@ -20,8 +20,8 @@ project = 'inkgd'
 copyright = '2021, Frédéric Maquin'
 author = 'Frédéric Maquin'
 
-# The full version, including alpha/beta/rc tags
-release = '0.4.0'
+version = '0.4.1'
+release = '0.4.1'
 
 
 # -- General configuration ---------------------------------------------------

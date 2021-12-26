@@ -1,6 +1,18 @@
 # Change Log
 Important changes to _inkgd_ will be documented in this file.
 
+## [0.4.1](https://github.com/ephread/inkgd/releases/tag/0.4.1)
+Released on 2021-12-26.
+
+### Fixed
+- Fixed an issue preventing custom nodes from being unregistered upon
+  deactivation of the plugin.
+
+### Changed
+- Improved the naming of InkRuntime's properties.
+- Improved error reporting.
+- Improved InkPlayer's API by introducing a new type, InkFunctionResult.
+
 ## [0.4.0](https://github.com/ephread/inkgd/releases/tag/0.4.0)
 Released on 2021-12-20.
 
@@ -13,6 +25,12 @@ Released on 2021-12-20.
 - Added a preview tab in the editor panel.
 - Added support for multiple stories.
 - Added support for JSON files, treating them as resources.
+
+### Fixed
+- Fixed a typo in *story_state.gd* (`Path` -> `InkPath`), thanks @cesarizu!
+
+[#51]: https://github.com/ephread/inkgd/pull/51
+[@cesarizu]: https://github.com/cesarizu
 
 ## [0.3.0](https://github.com/ephread/inkgd/releases/tag/0.3.0)
 Released on 2021-11-27.

@@ -1,5 +1,5 @@
-*inkgd* Docs – 0.4.0
-====================
+*inkgd* Docs – |release|
+========================
 
 .. image:: img/inkgd.png
     :align: center

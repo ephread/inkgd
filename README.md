@@ -66,7 +66,7 @@ If you want to contribute, be sure to take a look at [the contributing guide].
 hosted on [Read The Docs].
 
 [Asset Library]: http://godotengine.org/asset-library/asset/349
-[Read The Docs]: https://inkgd.readthedocs.io/en/latest/
+[Read The Docs]: https://inkgd.readthedocs.io/en/stable/
 
 ## Editor Plugin
 
@@ -81,7 +81,7 @@ hosted on [Read The Docs].
 |      0.2.2      |       0.9.0       |   3.2 – 3.2.3   |
 |      0.2.3      |       0.9.0       |    3.2 – 3.4    |
 |      0.3.0      |       1.0.0       |    3.2 – 3.4    |
-|      0.4.0      |       1.0.0       |    3.3 – 3.4    |
+|  0.4.0 – 0.4.1  |       1.0.0       |    3.3 – 3.4    |
 
 ## Acknowledgement
 
