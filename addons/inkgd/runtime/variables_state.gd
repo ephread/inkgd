@@ -358,7 +358,7 @@ var _json: InkStaticJSON setget , get_json
 func get_json():
 	return self._ink_runtime.json
 
-var _ink_runtime: InkRuntimeNode setget , get_ink_runtime
+var _ink_runtime setget , get_ink_runtime
 func get_ink_runtime():
 	return _weak_ink_runtime.get_ref()
 var _weak_ink_runtime: WeakRef

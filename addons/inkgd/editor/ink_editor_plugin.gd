@@ -7,7 +7,9 @@
 tool
 extends EditorPlugin
 
-class_name InkEditorPlugin
+# Hiding this type to prevent registration of "private" nodes.
+# See https://github.com/godotengine/godot-proposals/issues/1047
+# class_name InkEditorPlugin
 
 # ############################################################################ #
 # Imports
@@ -30,7 +32,7 @@ var InkBottomPanel = preload("res://addons/inkgd/editor/panel/ink_bottom_panel.t
 
 var _editor_interface: InkEditorInterface = null
 var _configuration: InkConfiguration = null
-var _panel: InkBottomPanel = null
+var _panel = null
 
 var _ink_source_import_plugin: InkSourceImportPlugin = null
 var _ink_json_import_plugin: InkJsonImportPlugin = null

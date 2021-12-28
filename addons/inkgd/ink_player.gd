@@ -31,16 +31,16 @@ var InkFunctionResult = load("res://addons/inkgd/runtime/extra/function_result.g
 ## an optional PoolStringArray containing a stack trace, for logging purposes.
 signal exception_raised(message, stack_trace)
 
-## Emitted when the story encountered an error. These errors are usually
+## Emitted when the _story encountered an error. These errors are usually
 ## recoverable.
 signal error_encountered(message, type)
 
 ## Emitted with `true` when the runtime had loaded the JSON file and created
-## the story. If an error was encountered, `successfully` will be `false` and
+## the _story. If an error was encountered, `successfully` will be `false` and
 ## and error will appear Godot's output.
 signal loaded(successfully)
 
-## Emitted with the text and tags of the current line when the story
+## Emitted with the text and tags of the current line when the _story
 ## successfully continued.
 signal continued(text, tags)
 
@@ -57,9 +57,9 @@ signal function_evaluating(function_name, arguments)
 signal function_evaluated(function_name, arguments, function_result)
 
 ## Emitted when a valid path string was choosen.
-signal path_string_choosen(path, arguments)
+signal path_choosen(path, arguments)
 
-## Emitted when the story ended.
+## Emitted when the _story ended.
 signal ended()
 
 
@@ -70,15 +70,15 @@ signal ended()
 ## The compiled Ink file (.json) to play.
 export var ink_file: Resource
 
-## When `true` the story will be created in a separate threads, to
-## prevent the UI from freezing if the story is too big. Note that
+## When `true` the _story will be created in a separate threads, to
+## prevent the UI from freezing if the _story is too big. Note that
 ## on platforms where threads aren't available, the value of this
 ## property is ignored.
 export var loads_in_background: bool = true
 
 ## `true` to allow external function fallbacks, `false` otherwise. If this
 ## property is `false` and the appropriate function hasn't been binded, the
-## story will output an error.
+## _story will output an error.
 export var allow_external_function_fallbacks: bool setget set_aeff, get_aeff
 func set_aeff(value: bool):
 	if _story == null:
@@ -103,7 +103,6 @@ func set_dnsdv(value: bool):
 		return false
 
 	ink_runtime.dont_save_default_values = value
-
 func get_dnsdv() -> bool:
 	var ink_runtime = _ink_runtime.get_ref()
 	if ink_runtime == null:
@@ -123,6 +122,10 @@ func set_seoex(value: bool):
 
 	ink_runtime.stop_execution_on_exception = value
 
+# ############################################################################ #
+# Properties
+# ############################################################################ #
+
 func get_seoex() -> bool:
 	var ink_runtime = _ink_runtime.get_ref()
 	if ink_runtime == null:
@@ -131,7 +134,7 @@ func get_seoex() -> bool:
 
 	return ink_runtime.stop_execution_on_exception
 
-## Uses `assert` instead of `push_error` to report story errors, thus
+## Uses `assert` instead of `push_error` to report _story errors, thus
 ## making them more explicit during development.
 export var stop_execution_on_error: bool setget set_seoer, get_seoer
 func set_seoer(value: bool):
@@ -155,7 +158,7 @@ func get_seoer() -> bool:
 # Read-only Properties
 # ############################################################################ #
 
-## `true` if the story can continue (i. e. is not expecting a choice to be
+## `true` if the _story can continue (i. e. is not expecting a choice to be
 ## choosen and hasn't reached the end).
 var can_continue: bool setget , get_can_continue
 func get_can_continue() -> bool:
@@ -212,7 +215,7 @@ func get_current_tags() -> Array:
 	return _story.current_tags
 
 
-## The global tags for the story. Empty if none have been declared.
+## The global tags for the _story. Empty if none have been declared.
 var global_tags: Array setget , get_global_tags
 func get_global_tags() -> Array:
 	if _story == null:
@@ -221,22 +224,25 @@ func get_global_tags() -> Array:
 
 	return _story.global_tags
 
-## `true` if the story currently has choices, `false` otherwise.
+## `true` if the _story currently has choices, `false` otherwise.
 var has_choices: bool setget , get_has_choices
 func get_has_choices() -> bool:
 	return !self.current_choices.empty()
+
+## The name of the current flow.
+var current_flow_name: String setget , get_current_flow_name
+func get_current_flow_name() -> String:
+	return _story.state.current_flow_name
 
 # ############################################################################ #
 # Private Properties
 # ############################################################################ #
 
 var _ink_runtime: WeakRef = WeakRef.new()
-var _story = null
+var _story: InkStory = null
 var _thread: Thread
 var _manages_runtime: bool = false
 
-var _observed_variables: Array = []
-var _bound_functions: Array = []
 
 # ############################################################################ #
 # Overrides
@@ -245,15 +251,15 @@ var _bound_functions: Array = []
 func _ready():
 	call_deferred("_add_runtime")
 
-
 func _exit_tree():
 	call_deferred("_remove_runtime")
+
 
 # ############################################################################ #
 # Methods
 # ############################################################################ #
 
-## Creates the story, based on the value of `ink_file`. The result of this
+## Creates the _story, based on the value of `ink_file`. The result of this
 ## method is reported through the 'story_loaded' signal.
 func create_story() -> void:
 	if ink_file == null:
@@ -295,7 +301,7 @@ func reset() -> void:
 # Methods | Story Flow
 # ############################################################################ #
 
-## Continues the story.
+## Continues the _story.
 func continue_story() -> String:
 	if _story == null:
 		_push_null_story_error()
@@ -315,7 +321,7 @@ func continue_story() -> String:
 	return text
 
 
-## Chooses a choice. If the story is not currently expected choices or
+## Chooses a choice. If the _story is not currently expected choices or
 ## the index is out of bounds, this method does nothing.
 func choose_choice_index(index: int) -> void:
 	if _story == null:
@@ -326,15 +332,15 @@ func choose_choice_index(index: int) -> void:
 		_story.choose_choice_index(index);
 
 
-## Moves the story to the specified knot/stitch/gather. This method
+## Moves the _story to the specified knot/stitch/gather. This method
 ## will throw an error through the 'exception' signal if the path string
 ## does not match any known path.
-func choose_path_string(path_string: String) -> void:
+func choose_path(path: String) -> void:
 	if _story == null:
 		_push_null_story_error()
 		return
 
-	_story.choose_path_string(path_string)
+	_story.choose_path_string(path)
 
 
 ## Switches the flow, creating a new flow if it doesn't exist.
@@ -382,12 +388,12 @@ func tags_for_content_at_path(path: String) -> Array:
 # ############################################################################ #
 
 ## Returns the visit count of the given path.
-func visit_count_at_path_string(path: String) -> int:
+func visit_count_at_path(path: String) -> int:
 	if _story == null:
 		_push_null_story_error()
 		return 0
 
-	return _story.visit_count_at_path_string(path)
+	return _story.visit_count_at_path(path)
 
 
 # ############################################################################ #
@@ -580,17 +586,18 @@ func evaluate_function(function_name: String, arguments = []) -> InkFunctionResu
 	var result = _story.evaluate_function(function_name, arguments, true)
 	return InkFunctionResult.new(result["output"], result["result"])
 
-
 # ############################################################################ #
-# Methods | Ink List
+# Methods | Ink List Creation
 # ############################################################################ #
 
-func new_ink_list_with_origin(origin_list_name: String):
-	if _story == null:
-		_push_null_story_error()
-		return null
+## Creates a new empty InkList that's intended to hold items from a particular
+## origin list definition.
+func create_ink_list_with_origin(single_origin_list_name: String) -> InkList:
+	return InkList.new_with_origin(single_origin_list_name, _story)
 
-	return InkList.new_with_origin(origin_list_name, _story)
+## Creates a new InkList from the name of a preexisting item.
+func create_ink_list_from_item_name(item_name: String) -> InkList:
+	return InkList.from_string(item_name, _story)
 
 
 # ############################################################################ #
@@ -626,7 +633,7 @@ func _on_complete_evaluate_function(function_name, arguments, text_output, retur
 
 
 func _on_choose_path_string(path, arguments):
-	emit_signal("path_string_choosen", path, arguments)
+	emit_signal("path_choosen", path, arguments)
 
 
 # ############################################################################ #
@@ -695,7 +702,7 @@ func _push_null_runtime_error():
 
 
 func _push_null_story_error():
-	_push_error("The story is 'Nil', was it loaded properly?", ErrorType.ERROR)
+	_push_error("The _story is 'Nil', was it loaded properly?", ErrorType.ERROR)
 
 
 func _push_null_state_error(variable: String):

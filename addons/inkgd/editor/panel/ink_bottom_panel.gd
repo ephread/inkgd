@@ -9,7 +9,9 @@
 tool
 extends Control
 
-class_name InkBottomPanel
+# Hiding this type to prevent registration of "private" nodes.
+# See https://github.com/godotengine/godot-proposals/issues/1047
+# class_name InkBottomPanel
 
 # ############################################################################ #
 # Imports
@@ -39,9 +41,9 @@ var _progress_texture: AnimatedTexture
 onready var _tab_container: TabContainer = $TabContainer
 onready var _beta_button: LinkButton = $MarginContainer/LinkButton
 
-onready var _story_panel: InkStoryPanel = InkStoryPanelScene.instance()
-onready var _preview_panel: InkPreviewPanel = InkPreviewPanelScene.instance()
-onready var _configuration_panel: InkConfigurationPanel = InkConfigurationPanelScene.instance()
+onready var _story_panel = InkStoryPanelScene.instance()
+onready var _preview_panel = InkPreviewPanelScene.instance()
+onready var _configuration_panel = InkConfigurationPanelScene.instance()
 
 # ############################################################################ #
 # Overrides

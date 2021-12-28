@@ -1,6 +1,17 @@
 # Change Log
 Important changes to _inkgd_ will be documented in this file.
 
+## [0.4.2]
+Released on 202X-XX-XX.
+
+### Changed
+- Changed InkPlayer's API.
+- Improved example project by adding a navigation hub.
+
+### Added
+- Added ability to create an InkList from InkPlayer.
+- Added new tests.
+
 ## [0.4.1](https://github.com/ephread/inkgd/releases/tag/0.4.1)
 Released on 2021-12-26.
 
@@ -25,6 +36,9 @@ Released on 2021-12-20.
 - Added a preview tab in the editor panel.
 - Added support for multiple stories.
 - Added support for JSON files, treating them as resources.
+- Added a new documentation hosted on ReadTheDocs, thanks [@videlanicolas]!
+
+[@videlanicolas]: https://github.com/videlanicolas
 
 ### Fixed
 - Fixed [#51] – Typo in *story_state.gd* (`Path` -> `InkPath`),

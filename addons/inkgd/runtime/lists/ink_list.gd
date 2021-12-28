@@ -17,13 +17,16 @@ class_name InkList
 # Imports
 # ############################################################################ #
 
-var InkListItem = preload("res://addons/inkgd/runtime/lists/structs/ink_list_item.gd")
-var InkKeyValuePair = preload("res://addons/inkgd/runtime/extra/key_value_pair.gd")
+var InkListItem := preload("res://addons/inkgd/runtime/lists/structs/ink_list_item.gd") as GDScript
+var InkKeyValuePair := preload("res://addons/inkgd/runtime/extra/key_value_pair.gd") as GDScript
+
+static func InkList() -> GDScript:
+	return load("res://addons/inkgd/runtime/lists/ink_list.gd") as GDScript
+
+static func Utils() -> GDScript:
+	return load("res://addons/inkgd/runtime/extra/utils.gd") as GDScript
 
 # ############################################################################ #
-
-func _init():
-	pass
 
 # (InkList) -> InkList
 func _init_with_ink_list(other_list: InkList):
@@ -446,9 +449,3 @@ func is_class(type: String) -> bool:
 
 func get_class() -> String:
 	return "InkList"
-
-static func InkList() -> GDScript:
-	return load("res://addons/inkgd/runtime/lists/ink_list.gd") as GDScript
-
-static func Utils() -> GDScript:
-	return load("res://addons/inkgd/runtime/extra/utils.gd") as GDScript

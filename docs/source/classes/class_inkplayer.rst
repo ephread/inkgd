@@ -135,6 +135,10 @@ Functions
 +---------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | :ref:`InkFunctionResult<class_inkfunctionresult>` | :ref:`evaluate_function<class_inkplayer_evaluate_function>` **(** String_ function_name, Array_ arguments **)**                                                      |
 +---------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`InkList<class_inklist>`                     | :ref:`create_ink_list_with_origin<class_inkplayer_create_ink_list_with_origin>` **(** String_ origin_list_name **)**                                                 |
++---------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`InkList<class_inklist>`                     | :ref:`create_ink_list_from_item_name<class_inkplayer_create_ink_list_from_item_name>` **(** String_ item_name, **)**                                                 |
++---------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 Signals
 -------
@@ -147,15 +151,6 @@ Emitted when the Ink runtime encountered an exception. Exception are
 usually not recoverable as they corrupt the state. ``stack_trace`` is
 optional and contains each line of the stack trace leading to the
 exception for logging purposes.
-
-----
-
-.. _class_inkplayer_story_error:
-
-- **story_error (** String_ message, int_ type **)**
-
-Emitted when the story encountered an error. These errors are usually
-recoverable.
 
 ----
 
@@ -318,6 +313,22 @@ report exceptions, thus making them more explicit during development.
 
 When set to ``true``, *inkgd* uses ``assert()`` instead of ``push_error`` to
 report errors, thus making them more explicit during development.
+
+----
+
+.. _class_inkplayer_story:
+
+- bool_ **story**
+
++-----------+-----------------------+
+| *Default* | ``null``              |
++-----------+-----------------------+
+| *Getter*  | get_can_story()       |
++-----------+-----------------------+
+
+The underlying story, exposed for convenience. For instance, you may want
+to create a new InkList, which in certain acses needs a reference to the
+story to be constructed.
 
 ----
 
@@ -619,6 +630,22 @@ Unbinds an external function.
 - :ref:`InkFunctionResult<class_inkfunctionresult>` **evaluate_function (** String_ function_name, Array_ arguments **)**
 
 Evaluate a given Ink function, returning both its return value and its text output.
+
+----
+
+.. _class_inkplayer_create_ink_list_with_origin:
+
+- :ref:`InkList<class_inklist>` **create_ink_list_with_origin (** String_ origin_list_name, **)**
+
+Creates a new empty InkList that's intended to hold items from a particular origin list definition.
+
+----
+
+.. _class_inkplayer_create_ink_list_from_item_name:
+
+- :ref:`InkList<class_inklist>` **create_ink_list_from_item_name (** String_ item_name, **)**
+
+Creates a new InkList from the name of a preexisting item.
 
 ----
 

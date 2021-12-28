@@ -9,7 +9,9 @@
 tool
 extends Node
 
-class_name InkRuntime
+# Hiding this type to prevent registration of "private" nodes.
+# See https://github.com/godotengine/godot-proposals/issues/1047
+# class_name InkRuntime
 
 static func init(root_node, stop_on_error = true):
 	if root_node.has_node("__InkRuntime"):

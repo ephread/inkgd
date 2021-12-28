@@ -8,7 +8,10 @@ tool
 extends WindowDialog
 
 # A custom dialog showing a message and, optionally, a command output.
-class_name InkRichDialog
+
+# Hiding this type to prevent registration of "private" nodes.
+# See https://github.com/godotengine/godot-proposals/issues/1047
+# class_name InkRichDialog
 
 # ############################################################################ #
 # Nodes
@@ -47,7 +50,7 @@ func get_output_text() -> String:
 
 func _ready():
 	AcceptButton.connect("pressed", self, "_accept_button_pressed")
-	
+
 	var font = _get_source_font()
 	if font != null:
 		OutputLabel.add_font_override("font", font)
@@ -82,5 +85,5 @@ func _retrieve_base_theme():
 			parent = older_parent
 		else:
 			break
-	
+
 	return parent.theme

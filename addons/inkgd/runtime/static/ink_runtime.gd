@@ -12,7 +12,9 @@
 tool
 extends Node
 
-class_name InkRuntimeNode
+# Hiding this type to prevent registration of "private" nodes.
+# See https://github.com/godotengine/godot-proposals/issues/1047
+# class_name InkRuntimeNode
 
 # Expected to be added to the SceneTree as a singleton object.
 
