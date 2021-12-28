@@ -60,7 +60,7 @@ jobs:
           mv ink-engine-runtime.dll inkgd/ink-engine-runtime.dll
 
       - name: Run tests
-        run: ./godot -d -s --path "$PWD/inkgd" "$PWD/addons/gut/gut_cmdln.gd"
+        run: ./godot -d -s --path "inkgd" "addons/gut/gut_cmdln.gd"
 
       - name: Run tests (Mono)
-        run: ./godot_mono/godot_mono -d -s --path "$PWD/inkgd" "$PWD/addons/gut/gut_cmdln.gd"
+        run: ./godot_mono/godot_mono -d -s --path "inkgd" "addons/gut/gut_cmdln.gd"
