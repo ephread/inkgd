@@ -120,7 +120,7 @@ func _compilation_mode_changed(compilation_mode: int):
 	for child in _story_configuration_container.get_children():
 		child.show_watched_folder(show_folder)
 
-func _source_file_button_pressed(node: InkStoryConfiguration):
+func _source_file_button_pressed(node):
 	_reset_file_dialog()
 
 	_file_dialog_selection = FileDialogSelection.SOURCE_FILE
@@ -132,7 +132,7 @@ func _source_file_button_pressed(node: InkStoryConfiguration):
 	_file_dialog.popup_centered(Vector2(1280, 800) * editor_interface.scale)
 
 
-func _target_file_button_pressed(node: InkStoryConfiguration):
+func _target_file_button_pressed(node):
 	_reset_file_dialog()
 
 	_file_dialog_selection = FileDialogSelection.TARGET_FILE
@@ -143,7 +143,7 @@ func _target_file_button_pressed(node: InkStoryConfiguration):
 	_file_dialog.add_filter("*.json;Compiled Ink story")
 	_file_dialog.popup_centered(Vector2(1280, 800) * editor_interface.scale)
 
-func _watched_folder_button_pressed(node: InkStoryConfiguration):
+func _watched_folder_button_pressed(node):
 	_reset_file_dialog()
 
 	_file_dialog_selection = FileDialogSelection.WATCHED_FOLDER
@@ -181,7 +181,11 @@ func _remove_button_pressed(node):
 	else:
 		var i = 0
 		for child in _story_configuration_container.get_children():
-			if child is InkStoryConfiguration:
+			# Not using "is InkStoryConfiguration", because it requires a type
+			# declaration. Node Types register in the editor and we don't want
+			# that. This is a bit hacky, but until the proposal is accepted,
+			# it prevents cluttering the "Create new node" list.
+			if "story_label" in child:
 				child.story_label.text = "Story %d" % (i + 1)
 			i += 1
 
@@ -310,7 +314,11 @@ func _persist_configuration():
 	if _empty_state_container.get_parent() == null:
 		configuration.stories.clear()
 		for node in _story_configuration_container.get_children():
-			if !(node is InkStoryConfiguration):
+			# Not using "is InkStoryConfiguration", because it requires a type
+			# declaration. Node Types register in the editor and we don't want
+			# that. This is a bit hacky, but until the proposal is accepted,
+			# it prevents cluttering the "Create new node" list.
+			if !("story_label" in node):
 				continue
 
 			configuration.append_new_story_configuration(
@@ -331,7 +339,7 @@ func _load_story_configurations():
 		node.watched_folder_line_edit.text = configuration.get_watched_folder_path(story_configuration)
 
 
-func _add_new_story_configuration() -> InkStoryConfiguration:
+func _add_new_story_configuration():
 	var story_configuration = InkStoryConfigurationScene.instance()
 
 	story_configuration.editor_interface = editor_interface
@@ -405,11 +413,11 @@ func _reimport_compiled_stories():
 	editor_interface.scan_file_system()
 
 
-func _get_story_configuration_index(node: InkStoryConfiguration) -> int:
+func _get_story_configuration_index(node) -> int:
 	return _story_configuration_container.get_children().find(node)
 
 
-func _get_story_configuration_at_index(index: int) -> InkStoryConfiguration:
+func _get_story_configuration_at_index(index: int):
 	if index >= 0 && _story_configuration_container.get_child_count():
 		return _story_configuration_container.get_children()[index]
 

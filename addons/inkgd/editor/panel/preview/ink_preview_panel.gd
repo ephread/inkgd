@@ -120,7 +120,7 @@ func _start_button_pressed():
 	print("Previewing %s" % file_path)
 	_clear_content()
 
-	_ink_player.reset()
+	_ink_player.destroy()
 	_ink_player.ink_file = load(file_path)
 
 	_start_button.icon = progress_texture
@@ -134,7 +134,7 @@ func _stop_button_pressed():
 	_stop_button.visible = false
 	_choice_area_container.visible = false
 
-	_ink_player.reset()
+	_ink_player.destroy()
 
 	_clear_choices()
 	_clear_content()

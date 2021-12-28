@@ -98,4 +98,4 @@ func end():
 	_loading_animation_player.queue_free()
 	_loading_animation_player = null
 
-	_ink_player.reset()
+	_ink_player.destroy()

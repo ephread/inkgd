@@ -297,6 +297,10 @@ func reset() -> void:
 	_story.reset_state()
 
 
+## Destroys the current story.
+func destroy() -> void:
+	_story = null
+
 # ############################################################################ #
 # Methods | Story Flow
 # ############################################################################ #
