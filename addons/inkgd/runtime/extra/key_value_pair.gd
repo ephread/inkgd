@@ -34,6 +34,9 @@ func _init_with_key_value(key, value):
 	self.key = key
 	self.value = value
 
+func _to_string():
+	return ("[KeyValuePair (%s, %s)]" % [key, value])
+
 # ############################################################################ #
 
 static func new_with_key_value(key, value) -> InkKeyValuePair:

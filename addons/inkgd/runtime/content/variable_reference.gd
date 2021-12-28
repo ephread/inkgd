@@ -49,7 +49,7 @@ func _init(name = null):
 
 # ############################################################################ #
 
-func to_string() -> String:
+func _to_string() -> String:
 	if name != null:
 		return "var(%s)" % name
 	else:

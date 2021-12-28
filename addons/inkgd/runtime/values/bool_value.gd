@@ -41,7 +41,7 @@ func cast(new_type):
 	Utils.throw_story_exception(bad_cast_exception_message(new_type))
 	return null
 
-func to_string():
+func _to_string() -> String:
 	return "true" if value else "false"
 
 # ######################################################################## #

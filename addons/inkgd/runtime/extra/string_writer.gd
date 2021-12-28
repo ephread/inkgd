@@ -30,5 +30,5 @@ func _init():
 func write(s: String) -> void:
 	_internal_string += str(s)
 
-func to_string() -> String:
+func _to_string() -> String:
 	return _internal_string

@@ -22,5 +22,5 @@ func is_class(type: String) -> bool:
 func get_class() -> String:
 	return "Void"
 
-func to_string() -> String:
+func _to_string() -> String:
 	return "Void"

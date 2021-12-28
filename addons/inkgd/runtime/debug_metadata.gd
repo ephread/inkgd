@@ -56,7 +56,7 @@ func merge(dm):
 	return new_debug_metadata
 
 # () -> String
-func to_string():
+func _to_string() -> String:
 	if file_name != null:
 		return str("line ", start_line_number, " of ", file_name)
 	else:

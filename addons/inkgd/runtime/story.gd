@@ -183,7 +183,7 @@ func _init(json_string):
 func to_json():
 	var writer: InkSimpleJSON.Writer = InkSimpleJSON.Writer.new()
 	to_json_with_writer(writer)
-	return writer.to_string()
+	return writer._to_string()
 
 func write_root_property(writer):
 	self.Json.write_runtime_container(writer, self._main_content_container)
@@ -520,11 +520,11 @@ func pointer_at_path(path):
 		p.index = -1
 
 	if result.obj == null || result.obj == self.main_content_container && path_length_to_use > 0:
-		error(str("Failed to find content at path '", path.to_string(),
+		error(str("Failed to find content at path '", path._to_string(),
 				  "', and no approximation of it was possible."))
 	elif result.approximate:
 		warning(str("Failed to find content at path '", path,
-					"', so it was approximated to: '", result.obj.path.to_string(), "'."))
+					"', so it was approximated to: '", result.obj.path._to_string(), "'."))
 
 	return p
 
@@ -709,7 +709,7 @@ func process_choice(choice_point):
 
 	var choice = InkChoice.new()
 	choice.target_path = choice_point.path_on_choice
-	choice.source_path = choice_point.path.to_string()
+	choice.source_path = choice_point.path._to_string()
 	choice.is_invisible_default = choice_point.is_invisible_default
 	choice.thread_at_generation = self.state.callstack.fork_thread()
 
@@ -725,7 +725,7 @@ func is_truthy(obj):
 
 		if Utils.is_ink_class(obj, "DivertTargetValue"):
 			var div_target = val
-			error(str("Shouldn't use a divert target (to ", div_target.target_path.to_string(),
+			error(str("Shouldn't use a divert target (to ", div_target.target_path._to_string(),
 					  ") as a conditional value. Did you intend a function call 'likeThis()'",
 					  " or a read count check 'likeThis'? (no arrows)"))
 			return false
@@ -791,7 +791,7 @@ func perform_logic_and_flow_control(content_obj):
 				error("Divert target doesn't exist: " + current_divert.debug_metadata.source_name)
 				return false
 			else:
-				error("Divert resolution failed: " + current_divert.to_string())
+				error("Divert resolution failed: " + current_divert._to_string())
 				return false
 
 		return true
@@ -813,7 +813,7 @@ func perform_logic_and_flow_control(content_obj):
 					var output = self.state.pop_evaluation_stack()
 
 					if !Utils.as_or_null(output, "Void"):
-						var text = InkStringValue.new_with(output.to_string())
+						var text = InkStringValue.new_with(output._to_string())
 						self.state.push_to_output_stream(text)
 
 			InkControlCommand.CommandType.NO_OP:
@@ -890,7 +890,7 @@ func perform_logic_and_flow_control(content_obj):
 
 				var _str = ""
 				for c in content_stack_for_string:
-					_str += c.to_string()
+					_str += c._to_string()
 
 				self.state.in_expression_evaluation = true
 				self.state.push_evaluation_stack(InkStringValue.new_with(_str))
@@ -927,8 +927,8 @@ func perform_logic_and_flow_control(content_obj):
 					else:
 						either_count = 0
 
-					warning(str("Failed to find container for ", eval_command.to_string(),
-								" lookup at ", divert_target.target_path.to_string()))
+					warning(str("Failed to find container for ", eval_command._to_string(),
+								" lookup at ", divert_target.target_path._to_string()))
 
 				self.state.push_evaluation_stack(InkIntValue.new_with(either_count))
 
@@ -1074,7 +1074,7 @@ func perform_logic_and_flow_control(content_obj):
 				self.state.push_evaluation_stack(InkListValue.new_with(new_list))
 
 			_:
-				error("unhandled ControlCommand: " + eval_command.to_string())
+				error("unhandled ControlCommand: " + eval_command._to_string())
 				return false
 
 		return true
@@ -1132,7 +1132,7 @@ func choose_path_string(path, reset_callstack = true, arguments = null):
 			var func_detail = ""
 			var container = self.state.callstack.current_element.current_pointer.container
 			if container != null:
-				func_detail = "(" + container.path.to_string() + ") "
+				func_detail = "(" + container.path._to_string() + ") "
 
 			Utils.throw_story_exception(str(
 				"Story was running a function ", func_detail,
@@ -1617,7 +1617,7 @@ func next_sequence_shuffle_index():
 	var loop_index = seq_count / num_elements
 	var iteration_index = seq_count % num_elements
 
-	var seq_path_str = seq_container.path.to_string()
+	var seq_path_str = seq_container.path._to_string()
 	var sequence_hash = 0
 	for c in seq_path_str:
 		sequence_hash += int(c)
@@ -1664,7 +1664,7 @@ func add_error(message, is_warning = false, use_end_line_number = false):
 		var line_num = dm.end_line_number if use_end_line_number else dm.start_line_number
 		message = "RUNTIME %s: '%s' line %s: %s" % [error_type_str, dm.file_name, line_num, message]
 	elif !self.state.current_pointer.is_null:
-		message = "RUNTIME %s: (%s): %s" % [error_type_str, self.state.current_pointer.path.to_string(), message]
+		message = "RUNTIME %s: (%s): %s" % [error_type_str, self.state.current_pointer.path._to_string(), message]
 	else:
 		message = "RUNTIME " + error_type_str + ": " + message
 

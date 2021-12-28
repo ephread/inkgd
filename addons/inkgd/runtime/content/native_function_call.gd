@@ -271,7 +271,7 @@ func add_op_func_for_type(val_type: int, op: String) -> void:
 
 	_operation_funcs[val_type] = op
 
-func to_string() -> String:
+func _to_string() -> String:
 	return "Native '%s'" % self.name
 
 # NativeFunctionCall

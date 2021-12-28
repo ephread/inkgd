@@ -132,7 +132,7 @@ func add_content(content_obj_or_content_list) -> void:
 		self.content.append(content_obj)
 
 		if content_obj.parent:
-			Utils.throw_exception("content is already in %s" % content_obj.parent.to_string())
+			Utils.throw_exception("content is already in %s" % content_obj.parent._to_string())
 			return
 
 		content_obj.parent = self
@@ -147,7 +147,7 @@ func insert_content(content_obj: InkObject, index: int) -> void:
 	self.content.insert(index, content_obj)
 
 	if content_obj.parent:
-		Utils.throw_exception("content is already in %s" % content_obj.parent.to_string())
+		Utils.throw_exception("content is already in %s" % content_obj.parent._to_string())
 		return
 
 	content_obj.parent = self
@@ -256,10 +256,10 @@ func build_string_of_hierarchy(
 			existing_hierarchy = _append_indentation(existing_hierarchy, indentation)
 			if Utils.is_ink_class(obj, "StringValue"):
 				existing_hierarchy += "\""
-				existing_hierarchy += obj.to_string().replace("\n", "\\n")
+				existing_hierarchy += obj._to_string().replace("\n", "\\n")
 				existing_hierarchy += "\""
 			else:
-				existing_hierarchy += obj.to_string()
+				existing_hierarchy += obj._to_string()
 
 		if i != self.content.size() - 1:
 			existing_hierarchy += ","

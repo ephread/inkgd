@@ -42,7 +42,7 @@ func cast(new_type):
 		if max_item.key.is_null:
 			return StringValue().new_with("")
 		else:
-			return StringValue().new_with(max_item.key.to_string())
+			return StringValue().new_with(max_item.key._to_string())
 
 	if new_type == self.value_type:
 		return self

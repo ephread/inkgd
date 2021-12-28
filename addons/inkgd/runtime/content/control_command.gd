@@ -137,7 +137,7 @@ static func list_random() -> InkControlCommand:
 	return ControlCommand().new(CommandType.LIST_RANDOM)
 
 # () -> String
-func to_string():
+func _to_string() -> String:
 	var command_name: String = ""
 	match self.command_type:
 		CommandType.NOT_SET:                command_name = "NOT_SET"

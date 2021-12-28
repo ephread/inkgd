@@ -25,8 +25,6 @@ var Utils := preload("res://addons/inkgd/runtime/extra/utils.gd") as GDScript
 func equals(ink_base) -> bool:
 	return false
 
-func to_string() -> String:
-	return str(self)
 
 # ############################################################################ #
 # GDScript extra methods

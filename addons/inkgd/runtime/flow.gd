@@ -113,7 +113,7 @@ func _anonymous_write_property_current_choices(w):
 func equals(ink_base) -> bool:
 	return false
 
-func to_string() -> String:
+func _to_string() -> String:
 	return str(self)
 
 # ############################################################################ #

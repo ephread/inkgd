@@ -87,9 +87,9 @@ func set_flags(value: int):
 func _init(once_only: bool = true):
 	self.once_only = once_only
 
-func to_string() -> String:
+func _to_string() -> String:
 	var target_line_num = debug_line_number_of_path(self.path_on_choice)
-	var target_string = self.path_on_choice.to_string()
+	var target_string = self.path_on_choice._to_string()
 
 	if target_line_num != null:
 		target_string = " line %d(%s)" % [target_line_num, target_string]

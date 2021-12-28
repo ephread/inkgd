@@ -4,7 +4,7 @@
     ~ return a + b
 
 === function test_function_output(a, b, c)
-    The values are {a}, {b} and {c}.
+    \| Crime Scene \|
     ~ return a + b + c
 
 //

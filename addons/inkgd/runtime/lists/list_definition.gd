@@ -99,3 +99,6 @@ func is_class(type: String) -> bool:
 
 func get_class() -> String:
 	return "InkListDefinition"
+
+func _to_string() -> String:
+	return "[InkListDefinition \"%s\"]" % get_name()

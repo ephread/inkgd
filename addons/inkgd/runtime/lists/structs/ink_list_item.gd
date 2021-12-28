@@ -64,7 +64,7 @@ func get_full_name():
 # ############################################################################ #
 
 # () -> String
-func to_string() -> String:
+func _to_string() -> String:
 	return self.full_name
 
 # (InkObject) -> bool

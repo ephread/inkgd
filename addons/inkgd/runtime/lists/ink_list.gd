@@ -75,7 +75,7 @@ func add_item(item: InkListItem) -> void:
 			else:
 				Utils.throw_exception(
 						"Could not add the item '%s' to this list because it doesn't exist in the" +
-						"original list definition in ink." % item.to_string()
+						"original list definition in ink." % item._to_string()
 				)
 				return
 
@@ -331,7 +331,7 @@ func get_ordered_items():
 	ordered.sort_custom(KeyValueInkListItemSorter, "sort")
 	return ordered
 
-func to_string() -> String:
+func _to_string() -> String:
 	var ordered: Array = self.ordered_items
 
 	var description: String = ""

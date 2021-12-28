@@ -36,7 +36,7 @@ func _init_with(variable_name, is_new_declaration: bool):
 	self.variable_name = variable_name
 	self.is_new_declaration = is_new_declaration
 
-func to_string() -> String:
+func _to_string() -> String:
 	return "VarAssign to %s" % variable_name
 
 # ############################################################################ #

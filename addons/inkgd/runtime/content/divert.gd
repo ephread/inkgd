@@ -105,7 +105,7 @@ func equals(obj) -> bool:
 
 	return false
 
-func to_string() -> String:
+func _to_string() -> String:
 	if self.has_variable_target:
 		return "Divert(variable: %s)" % self.variable_divert_name
 	elif self.target_path == null:
@@ -113,7 +113,7 @@ func to_string() -> String:
 	else:
 		var _string = ""
 
-		var target_str: String = self.target_path.to_string()
+		var target_str: String = self.target_path._to_string()
 		var target_line_num = debug_line_number_of_path(self.target_path)
 		if target_line_num != null:
 			target_str = "line " + target_line_num

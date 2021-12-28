@@ -435,7 +435,7 @@ _global_script_class_icons={
 [application]
 
 config/name="inkgd"
-run/main_scene="res://examples/scenes/the_intercept.tscn"
+run/main_scene="res://examples/scenes/main.tscn"
 boot_splash/image="res://examples/images/transparent.png"
 boot_splash/fullsize=false
 boot_splash/bg_color=Color( 0.929412, 0.898039, 0.854902, 1 )

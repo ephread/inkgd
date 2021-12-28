@@ -117,7 +117,7 @@ class InkThread extends InkBase:
 					story_context.warning(
 						"When loading state, exact internal story location couldn't be found: '" +
 						current_container_path_str + "', so it was approximated to '" +
-						pointer.container.path.to_string() +
+						pointer.container.path._to_string() +
 						"' to recover. Has the story changed since this save data was created?"
 					)
 
@@ -177,7 +177,7 @@ class InkThread extends InkBase:
 		writer.write_property("threadIndex", self.thread_index)
 
 		if !self.previous_pointer.is_null:
-			writer.write_property("previousContentObject", self.previous_pointer.resolve().path.to_string())
+			writer.write_property("previousContentObject", self.previous_pointer.resolve().path._to_string())
 
 		writer.write_object_end()
 
@@ -420,7 +420,7 @@ func get_callstack_trace():
 			var pointer = thread.callstack[i].current_pointer
 			if !pointer.is_null:
 				sb += "<SOMEWHERE IN "
-				sb += pointer.container.path.to_string()
+				sb += pointer.container.path._to_string()
 				sb += "\n>"
 
 			i += 1

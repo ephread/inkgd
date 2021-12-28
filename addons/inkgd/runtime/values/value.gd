@@ -110,11 +110,11 @@ func bad_cast_exception_message(target_class) -> String:
 	return "Can't cast " + self.value_object + " from " + self.value_type + " to " + target_class
 
 # () -> String
-func to_string() -> String:
+func _to_string() -> String:
 	if value is int || value is float || value is String:
 		return str(value)
 	else:
-		return value.to_string()
+		return value._to_string()
 
 # ############################################################################ #
 # GDScript extra methods

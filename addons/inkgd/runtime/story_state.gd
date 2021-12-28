@@ -58,7 +58,7 @@ signal on_did_load_state()
 func to_json() -> String:
 	var writer: InkSimpleJSON.Writer = InkSimpleJSON.Writer.new()
 	write_json(writer)
-	return writer.to_string()
+	return writer._to_string()
 
 func load_json(json: String) -> void:
 	var jobject: Dictionary = InkSimpleJSON.text_to_dictionary(json)
@@ -97,7 +97,7 @@ func visit_count_for_container(container: InkContainer) -> int:
 		if visit_count.exists:
 			return visit_count.result
 
-	var container_path_str: String = container.path.to_string()
+	var container_path_str: String = container.path._to_string()
 
 	if self._visit_counts.has(container_path_str):
 		count = self._visit_counts[container_path_str]
@@ -112,7 +112,7 @@ func increment_visit_count_for_container(container: InkContainer) -> void:
 		return
 
 	var count: int = 0
-	var container_path_str: String = container.path.to_string()
+	var container_path_str: String = container.path._to_string()
 	if self._visit_counts.has(container_path_str):
 		count = self._visit_counts[container_path_str]
 	count += 1
@@ -124,7 +124,7 @@ func record_turn_index_visit_to_container(container: InkContainer) -> void:
 		self._patch.set_turn_index(container, self.current_turn_index)
 		return
 
-	var container_path_str: String = container.path.to_string()
+	var container_path_str: String = container.path._to_string()
 
 	self._turn_indices[container_path_str] = self.current_turn_index
 
@@ -143,7 +143,7 @@ func turns_since_for_container(container: InkContainer) -> int:
 		if turn_index.exists:
 			return self.current_turn_index - turn_index.result
 
-	var container_path_str: String = container.path.to_string()
+	var container_path_str: String = container.path._to_string()
 	if self._turn_indices.has(container_path_str):
 		return self.current_turn_index - self._turn_indices[container_path_str]
 	else:
@@ -203,7 +203,7 @@ func get_current_path_string():
 	if pointer.is_null:
 		return null
 	else:
-		return pointer.path.to_string()
+		return pointer.path._to_string()
 
 var current_pointer: InkPointer setget set_current_pointer, get_current_pointer
 func get_current_pointer() -> InkPointer:
@@ -459,7 +459,7 @@ func apply_any_patch():
 # (InkContainer, Int, Bool) -> void
 func apply_count_changes(container, new_count, is_visit):
 	var counts = self._visit_counts if is_visit else  self._turn_indices
-	counts[container.path.to_string()] = new_count
+	counts[container.path._to_string()] = new_count
 
 # (SimpleJson.Writer) -> void
 func write_json(writer):
@@ -554,7 +554,7 @@ func load_json_obj(jobject):
 
 	if jobject.has("currentDivertTarget"):
 		var current_divert_target_path = jobject["currentDivertTarget"]
-		var divert_path = InkPath.new_with_components_string(current_divert_target_path.to_string())
+		var divert_path = InkPath.new_with_components_string(current_divert_target_path._to_string())
 		self.diverted_pointer = self.story.pointer_at_path(divert_path)
 
 	self._visit_counts = self.Json.jobject_to_int_dictionary(jobject["visitCounts"])
@@ -980,7 +980,7 @@ func complete_function_evaluation_from_game():
 		var return_val = Utils.as_or_null(returned_obj, "Value")
 
 		if return_val.value_type == ValueType.DIVERT_TARGET:
-			return return_val.value_object.to_string()
+			return return_val.value_object._to_string()
 
 		return return_val.value_object
 

@@ -25,7 +25,7 @@ var text: String
 
 var path_string_on_choice: String setget set_path_string_on_choice, get_path_string_on_choice
 func get_path_string_on_choice() -> String:
-	return target_path.to_string()
+	return target_path._to_string()
 
 func set_path_string_on_choice(value: String):
 	target_path = InkPath().new_with_components_string(value)

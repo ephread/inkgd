@@ -103,7 +103,7 @@ class InkBaseObject extends InkBase:
 	func _init(new_value):
 		self.value = new_value
 
-	func to_string():
+	func _to_string() -> String:
 		return str(value)
 
 	func is_class(type):

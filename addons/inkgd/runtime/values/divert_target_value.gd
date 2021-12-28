@@ -39,8 +39,8 @@ func cast(new_type):
 	Utils.throw_story_exception(bad_cast_exception_message(new_type))
 	return null
 
-func to_string():
-	return "DivertTargetValue(" + self.target_path.to_string() + ")"
+func _to_string() -> String:
+	return "DivertTargetValue(" + self.target_path._to_string() + ")"
 
 # ######################################################################## #
 # GDScript extra methods

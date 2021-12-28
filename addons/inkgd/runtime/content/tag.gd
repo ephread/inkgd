@@ -17,7 +17,7 @@ var text: String
 func _init(tag_text: String):
 	text = tag_text
 
-func to_string() -> String:
+func _to_string() -> String:
 	return '# ' + text
 
 # ############################################################################ #

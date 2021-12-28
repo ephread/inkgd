@@ -582,6 +582,18 @@ func evaluate_function(function_name: String, arguments = []) -> InkFunctionResu
 
 
 # ############################################################################ #
+# Methods | Ink List
+# ############################################################################ #
+
+func new_ink_list_with_origin(origin_list_name: String):
+	if _story == null:
+		_push_null_story_error()
+		return null
+
+	return InkList.new_with_origin(origin_list_name, _story)
+
+
+# ############################################################################ #
 # Private Methods | Signal Forwarding
 # ############################################################################ #
 

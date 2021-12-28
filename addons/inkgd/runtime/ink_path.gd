@@ -50,7 +50,7 @@ class Component extends InkBase:
 		return Component.new(parent_id)
 
 	# () -> String
-	func to_string():
+	func _to_string() -> String:
 		if self.is_index:
 			return str(index)
 		else:
@@ -210,7 +210,7 @@ func set_components_string(value):
 
 var _components_string # String
 
-func to_string():
+func _to_string() -> String:
 	return self.components_string
 
 # (Component) -> bool

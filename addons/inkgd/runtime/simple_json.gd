@@ -565,8 +565,8 @@ class Writer extends InkBase:
 			assert(condition)
 
 	# () -> String
-	func to_string() -> String:
-		return _writer.to_string()
+	func _to_string() -> String:
+		return _writer._to_string()
 
 	var _state_stack: Array = [] # Array<StateElement>
 	var _writer: InkStringWriter

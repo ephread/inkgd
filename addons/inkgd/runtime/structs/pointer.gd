@@ -80,11 +80,11 @@ func get_path() -> InkPath:
 
  ############################################################################ #
 
-func to_string() -> String:
+func _to_string() -> String:
 	if self.container == null:
 		return "Ink Pointer (null)"
 
-	return "Ink Pointer -> %s -- index %d" % [self.container.path.to_string(), index]
+	return "Ink Pointer -> %s -- index %d" % [self.container.path._to_string(), index]
 
 # (InkContainer) -> InkPointer
 static func start_of(container: InkContainer) -> InkPointer:
