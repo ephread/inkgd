@@ -49,8 +49,10 @@ func test_ink_list_simple_roundtrip() -> void:
 	_ink_player.create_story()
 	yield(_ink_player, "loaded")
 
-	assert_not_null(_ink_player)
-	if _ink_player == null:
+	var successfully = yield(_ink_player, "loaded")
+
+	assert_true(successfully)
+	if !successfully:
 		return
 
 	_test_simple_list_validity()
@@ -70,10 +72,11 @@ func test_ink_path_simple_roundtrip() -> void:
 	_ink_player.ink_file = load_resource("ink_list_roundtrip")
 	_ink_player.loads_in_background = true
 	_ink_player.create_story()
-	yield(_ink_player, "loaded")
 
-	assert_not_null(_ink_player)
-	if _ink_player == null:
+	var successfully = yield(_ink_player, "loaded")
+
+	assert_true(successfully)
+	if !successfully:
 		return
 
 	_test_ink_path_validity()
