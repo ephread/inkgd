@@ -193,7 +193,8 @@ func _register_custom_settings():
 	var property_info = {
 		"name": "inkgd/do_not_use_mono_runtime",
 		"type": TYPE_BOOL,
-		"hint_string": "Enable this setting to force the use of the GDScript runtime in Godot Mono."
+		"hint_string": "Enable this setting to always use the GDScript runtime.",
+		"default": false
 	}
 
 	ProjectSettings.add_property_info(property_info)

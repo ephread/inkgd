@@ -5,6 +5,7 @@ on:
     branches:
     - main
     - github-actions
+    - mono
   pull_request:
     branches:
     - main
@@ -19,7 +20,7 @@ jobs:
         destination:
           - "3.2.3"
           - "3.3.4"
-          - "3.4"
+          - "3.4.2"
 
     steps:
       - name: Check out the repository
@@ -41,5 +42,17 @@ jobs:
           mv Godot_v${VERSION}-stable_linux_headless.64 godot
           chmod +x godot
 
+      - name: Install Godot Mono
+        env:
+          VERSION: ${{ matrix.destination }}
+        run: |
+          wget -q https://downloads.tuxfamily.org/godotengine/${VERSION}/mono/Godot_v${VERSION}-stable_mono_linux_headless.64.zip
+          unzip Godot_v${VERSION}-stable_mono_linux_headless.64.zip
+          mv Godot_v${VERSION}-stable_linux_headless.64 godot_mono
+          chmod +x godot_mono
+
       - name: Run tests
         run: ./godot -d -s --path $PWD addons/gut/gut_cmdln.gd
+
+      - name: Run tests (Mono)
+        run: ./godot_mono -d -s --path $PWD addons/gut/gut_cmdln.gd
