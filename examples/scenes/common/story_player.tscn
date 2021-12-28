@@ -1,11 +1,9 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://examples/scenes/common/story_player.gd" type="Script" id=1]
 [ext_resource path="res://examples/fonts/Poppins-Medium.ttf" type="DynamicFontData" id=2]
-[ext_resource path="res://addons/inkgd/ink_player.gd" type="Script" id=3]
 [ext_resource path="res://examples/images/spinner.png" type="Texture" id=4]
 [ext_resource path="res://examples/images/transparent.png" type="Texture" id=5]
-[ext_resource path="res://examples/ink/the_intercept/the_intercept.ink.json" type="Resource" id=6]
 
 [sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 0, 0, 0, 1 )
@@ -64,10 +62,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 bind_externals = true
-
-[node name="InkPlayer" type="Node" parent="."]
-script = ExtResource( 3 )
-ink_file = ExtResource( 6 )
 
 [node name="ColorRect" type="ColorRect" parent="."]
 anchor_right = 1.0

@@ -55,12 +55,22 @@ func _enter_tree():
 	_add_autoloads()
 	_add_templates()
 
-	add_custom_type(
-			"InkPlayer",
-			"Node",
-			preload("res://addons/inkgd/ink_player.gd"),
-			preload("res://addons/inkgd/editor/icons/ink_player.svg")
-	)
+	if _can_run_mono():
+		#_validate_csproj()
+		_register_custom_settings()
+		add_custom_type(
+				"InkPlayer",
+				"Node",
+				load("res://addons/inkgd/mono_support/InkPlayer.cs"),
+				preload("res://addons/inkgd/editor/icons/ink_player.svg")
+		)
+	else:
+		add_custom_type(
+				"InkPlayer",
+				"Node",
+				load("res://addons/inkgd/ink_player.gd"),
+				preload("res://addons/inkgd/editor/icons/ink_player.svg")
+		)
 
 func _exit_tree():
 	_remove_bottom_panel()
@@ -175,3 +185,36 @@ func _get_plugin_templates_names() -> Array:
 		temp = dir.get_next()
 
 	return plugin_template_names
+
+func _register_custom_settings():
+	if !ProjectSettings.has_setting("inkgd/do_not_use_mono_runtime"):
+		ProjectSettings.set_setting("inkgd/do_not_use_mono_runtime", false)
+
+	var property_info = {
+		"name": "inkgd/do_not_use_mono_runtime",
+		"type": TYPE_BOOL,
+		"hint_string": "Enable this setting to force the use of the GDScript runtime in Godot Mono."
+	}
+
+	ProjectSettings.add_property_info(property_info)
+
+func _validate_csproj():
+	var project_name = ProjectSettings.get_setting("application/config/name")
+	if project_name.empty():
+		print("[inkgd] [WARNING] The project is missing a name.")
+		return
+
+	var csproj_path = "res://%s.csproj" % project_name
+	if !File.new().file_exists(csproj_path):
+		print("[inkgd] [WARNING] The C# project (%s.csproj) doesn't exist." % project_name)
+		return
+
+	var parser = XMLParser.new()
+	if parser.open(csproj_path) != OK:
+		print("[inkgd] [WARNING] The C# project (%s.csproj) could not be opened." % project_name)
+		return
+
+	# Validate and make sure the csproj contains ink.
+
+func _can_run_mono():
+	return type_exists("_GodotSharp")

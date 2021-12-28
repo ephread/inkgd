@@ -23,3 +23,7 @@ ipsuminious*.import
 
 # python
 __pycache__
+
+# mono
+.mono
+*.dll

@@ -1,6 +1,5 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://addons/inkgd/ink_player.gd" type="Script" id=1]
 [ext_resource path="res://addons/inkgd/editor/panel/preview/ink_preview_panel.gd" type="Script" id=2]
 
 [sub_resource type="Image" id=3]
@@ -167,7 +166,3 @@ __meta__ = {
 margin_top = 25.0
 margin_right = 300.0
 margin_bottom = 25.0
-
-[node name="InkPlayer" type="Node" parent="."]
-script = ExtResource( 1 )
-loads_in_thread = true

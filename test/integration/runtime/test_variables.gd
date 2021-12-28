@@ -144,7 +144,7 @@ func _temp_not_found_had_warning():
 		_temp_not_found_error_count == 1
 	)
 
-func _exception_raised(message):
+func _exception_raised(message, stack_trace):
 	_exception_raised_count += 1
 	printerr(message)
 

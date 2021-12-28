@@ -117,7 +117,7 @@ func handle_exception(message: String) -> void:
 			stack_trace
 	)
 
-	emit_signal("exception_raised", exception_message)
+	emit_signal("exception_raised", exception_message, stack_trace)
 
 func handle_argument_exception(message: String) -> void:
 	var exception_message = "ARGUMENT EXCEPTION: %s" % message

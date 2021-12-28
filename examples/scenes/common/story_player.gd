@@ -11,13 +11,14 @@ extends Node
 # Imports
 # ############################################################################ #
 
-var ErrorType = preload("res://addons/inkgd/runtime/enums/error.gd").ErrorType
+var ErrorType := preload("res://addons/inkgd/runtime/enums/error.gd").ErrorType
+var InkPlayerFactory := preload("res://addons/inkgd/ink_player_factory.gd") as GDScript
+var InkList := preload("res://addons/inkgd/runtime/lists/ink_list.gd") as GDScript
 
-var ChoiceContainer = load("res://examples/scenes/common/choice_container.tscn")
-var LineLabel = load("res://examples/scenes/common/label.tscn")
+var ChoiceContainer := load("res://examples/scenes/common/choice_container.tscn") as PackedScene
+var LineLabel := load("res://examples/scenes/common/label.tscn") as PackedScene
 
-var InkGDProfiler = load("res://examples/scenes/common/profiler.gd")
-var InkList = preload("res://addons/inkgd/runtime/lists/ink_list.gd")
+var InkGDProfiler := load("res://examples/scenes/common/profiler.gd") as GDScript
 
 
 # ############################################################################ #
@@ -47,6 +48,13 @@ export var bind_externals: bool = false
 var _current_choice_container: ChoiceContainer
 var _profiler: InkGDProfiler = InkGDProfiler.new()
 
+# InkPlayer is created through the factory so that it returns the appropriate
+# node depending on whether the project is using Mono or not.
+#
+# In your project you can also add it in the scene and use the inspector
+# to set the variables.
+var _ink_player = InkPlayerFactory.create()
+
 
 # ############################################################################ #
 # Node
@@ -55,14 +63,16 @@ var _profiler: InkGDProfiler = InkGDProfiler.new()
 onready var _story_margin_container = $StoryMarginContainer
 onready var _story_vbox_container = $StoryMarginContainer/StoryScrollContainer/StoryVBoxContainer
 onready var _loading_animation_player = $LoadingAnimationPlayer
-onready var _ink_player = $InkPlayer
 onready var _title_label = $LoadingAnimationPlayer/CenterContainer/VBoxContainer/TitleLabel
+
 
 # ############################################################################ #
 # Lifecycle
 # ############################################################################ #
 
 func _ready():
+	add_child(_ink_player)
+
 	# Again, if you're just trying to figure out how to use
 	# inkgd, you can ignore this call.
 	_override_story()
@@ -147,13 +157,17 @@ func _choice_selected(index):
 	_story_vbox_container.remove_child(_current_choice_container)
 	_current_choice_container.queue_free()
 
+	print(index)
 	_ink_player.choose_choice_index(index)
 	_continue_story()
 
-func _exception_raised(message):
+
+func _exception_raised(message, stack_trace):
 	# This method gives a chance to react to a story-breaking exception.
 	printerr(message)
-	pass
+	for line in stack_trace:
+		printerr(line)
+
 
 func _error_encountered(message, type):
 	match type:
@@ -163,6 +177,7 @@ func _error_encountered(message, type):
 			print(message)
 		ErrorType.AUTHOR:
 			print(message)
+
 
 # ############################################################################ #
 # Private Methods
@@ -215,6 +230,7 @@ func _evaluate_functions():
 			"function 'test_function_output': [Text Output: '%s'] [Return Value: %s]" % \
 			[result_output.text_output.replace("\n", "\\n"), result_output.return_value]
 	)
+
 
 func _remove_loading_overlay():
 	remove_child(_loading_animation_player)
