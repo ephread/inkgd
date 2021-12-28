@@ -49,6 +49,10 @@ func test_ink_list_simple_roundtrip() -> void:
 	_ink_player.create_story()
 	yield(_ink_player, "loaded")
 
+	assert_not_null(_ink_player)
+	if _ink_player == null:
+		return
+
 	_test_simple_list_validity()
 
 	var newTastyBreads = InkList.new_with_ink_list(_ink_player.get_variable("tastyBreads"))
@@ -67,6 +71,10 @@ func test_ink_path_simple_roundtrip() -> void:
 	_ink_player.loads_in_background = true
 	_ink_player.create_story()
 	yield(_ink_player, "loaded")
+
+	assert_not_null(_ink_player)
+	if _ink_player == null:
+		return
 
 	_test_ink_path_validity()
 
