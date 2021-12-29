@@ -78,7 +78,7 @@ jobs:
 
       - name: "(Mono) Compile C# solution"
         run: |
-          ./godot_mono/godot_mono --editor --quit --path "inkgd"
+          ./godot_mono/godot_mono --quit --path "inkgd"
           cd inkgd
           msbuild inkgd.sln /restore /t:Build /p:Configuration=Debug
           cd ..
