@@ -18,8 +18,8 @@ jobs:
     strategy:
       matrix:
         destination:
-          # - "3.2.3"
-          # - "3.3.4"
+          - "3.2.3"
+          - "3.3.4"
           - "3.4.2"
 
     steps:
