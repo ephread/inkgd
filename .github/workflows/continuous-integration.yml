@@ -54,8 +54,8 @@ jobs:
       # … missing assets.
       - name: "(Vanilla) Reimport Assets"
         run: |
-          ./godot --path "inkgd" --export-pack "HTML5" dummy.pck --no-window
-          ./godot --path "inkgd" --export-pack "HTML5" dummy.pck --no-window
+          ./godot --path "inkgd" --export-pack "HTML5" dummy.pck
+          ./godot --path "inkgd" --export-pack "HTML5" dummy.pck
 
       - name: "(Vanilla) Run tests"
         run: |
@@ -82,11 +82,6 @@ jobs:
           cd inkgd
           msbuild /p:Configuration=Tools
           cd ..
-
-      # This step exports a dummy PCK to force reimportation.
-      - name: "(Mono) Reimport Assets"
-        run: |
-          ./godot_mono/godot_mono --path "inkgd" --export-pack "HTML5" dummy.pck --no-window
 
       - name: "(Mono) Run tests (Mono)"
         run: |
