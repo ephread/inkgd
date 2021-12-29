@@ -18,8 +18,7 @@ jobs:
     strategy:
       matrix:
         destination:
-          # - "3.2.3"
-          # - "3.3.4"
+          - "3.3.4"
           - "3.4.2"
 
     steps:
@@ -52,9 +51,8 @@ jobs:
       # The export is done twice, because it won't import all the required
       # assets at first, since inkgd won't run properly at first due to…
       # … missing assets.
-      - name: "(Vanilla) Reimport Assets"
+      - name: "(Shared) Reimport Assets"
         run: |
-          find inkgd -type f
           ./godot --path "inkgd" --export-pack "HTML5" dummy.pck
           ./godot --path "inkgd" --export-pack "HTML5" dummy.pck
 
@@ -81,7 +79,7 @@ jobs:
       - name: "(Mono) Compile C# solution"
         run: |
           cd inkgd
-          msbuild /p:Configuration=Tools
+          msbuild /p:Configuration=Debug
           cd ..
 
       - name: "(Mono) Run tests (Mono)"
