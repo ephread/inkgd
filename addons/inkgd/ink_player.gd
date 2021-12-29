@@ -278,7 +278,7 @@ func create_story() -> int:
 		_thread = Thread.new()
 		var error = _thread.start(self, "_async_create_story", ink_file.json)
 		if error != OK:
-			printerr("Could not start the thread: error code %d", error)
+			printerr("[inkgd] [ERROR] Could not start the thread: error code %d", error)
 			call_deferred("emit_signal", "loaded", false)
 			return error
 		else:

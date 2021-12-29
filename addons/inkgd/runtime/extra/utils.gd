@@ -207,11 +207,11 @@ static func join(joiner: String, array: Array) -> String:
 
 static func get_range(array: Array, index: int, count: int) -> Array:
 	if !(index >= 0 && index < array.size()):
-		printerr("get_range: index (" + str(index) + ") is out of bounds.")
+		printerr("get_range: index (%d) is out of bounds." % index)
 		return array.duplicate()
 
 	if index + count > array.size():
-		printerr("get_range: [index (" + str(index) + ") + count (" + str(count) + ")] is out of bounds.")
+		printerr("get_range: [index (%d) + count (%d)] is out of bounds." % [index, count])
 		return array.duplicate()
 
 	var new_array = []
@@ -226,11 +226,11 @@ static func get_range(array: Array, index: int, count: int) -> Array:
 
 static func remove_range(array: Array, index: int, count: int) -> void:
 	if !(index >= 0 && index < array.size()):
-		printerr("get_range: index (" + str(index) + ") is out of bounds.")
+		printerr("get_range: index (%d) is out of bounds." % index)
 		return
 
 	if index + count > array.size():
-		printerr("get_range: [index (" + str(index) + ") + count (" + str(count) + ")] is out of bounds.")
+		printerr("get_range: [index (%d) + count (%d)] is out of bounds." % [index, count])
 		return
 
 	var i = index

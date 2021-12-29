@@ -14,9 +14,18 @@ class_name InkPlayerFactory
 # Methods
 # ############################################################################ #
 
-static func create() -> InkPlayer:
+static func create():
 	if _should_use_mono() && !ProjectSettings.get_setting("inkgd/do_not_use_mono_runtime"):
-		return load("res://addons/inkgd/mono_support/InkPlayer.cs").new()
+		var InkPlayer = load("res://addons/inkgd/mono/InkPlayer.cs")
+		if InkPlayer.can_instance():
+			return InkPlayer.new()
+		else:
+			printerr(
+					"[inkgd] [ERROR] InkPlayer can't be instantiated. Try to rebuild the C# " +
+					"solution then disable and reenable InkGD in " +
+					"Project > Project setting… > Plugins."
+			)
+			return null
 	else:
 		return load("res://addons/inkgd/ink_player.gd").new()
 

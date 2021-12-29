@@ -185,7 +185,7 @@ func _persist_inklecate():
 
 	var err = _compiler_config_file.save(COMPILER_CONFIG)
 	if err != OK:
-		printerr("Could not save: " + COMPILER_CONFIG)
+		printerr("[inkgd] [ERROR] Could not save: %s" % COMPILER_CONFIG)
 
 ## Stores the content of the story configuration to the disk.
 func _persist_ink():
@@ -202,4 +202,4 @@ func _persist_ink():
 
 	var err = _ink_config_file.save(INK_CONFIG)
 	if err != OK:
-		printerr("Could not save: " + INK_CONFIG)
+		printerr("[inkgd] [ERROR] Could not save: %s" % INK_CONFIG)

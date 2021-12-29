@@ -91,7 +91,7 @@ func _ready():
 	# own, probably to add them to its tree. In that case, they won't have
 	# their dependencies injected, so we're not doing anything.
 	if editor_interface == null || configuration == null || progress_texture == null:
-		print("Ink Preview Tab: dependencies not met, ignoring.")
+		print("[inkgd] [INFO] Ink Preview Tab: dependencies not met, ignoring.")
 		return
 
 	add_child(_ink_player)
@@ -126,7 +126,7 @@ func _start_button_pressed():
 	if file_path == null:
 		return
 
-	print("Previewing %s" % file_path)
+	print("[inkgd] [INFO] Previewing %s" % file_path)
 	_clear_content()
 
 	_ink_player.destroy()

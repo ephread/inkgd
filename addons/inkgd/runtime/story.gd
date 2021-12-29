@@ -148,34 +148,45 @@ func _init(json_string):
 
 	var version_obj = root_object["inkVersion"]
 	if version_obj == null:
-		Utils.throw_exception(str("ink version number not found. ",
-								  "Are you sure it's a valid .ink.json file?"))
+		Utils.throw_exception(
+				"ink version number not found. " +
+				"Are you sure it's a valid .ink.json file?"
+		)
 		return
 
 	var format_from_file = int(version_obj)
 	if format_from_file > INK_VERSION_CURRENT:
-		Utils.throw_exception(str("Version of ink used to build story was newer ",
-								  "than the current version of the engine"))
+		Utils.throw_exception(
+				"Version of ink used to build story was newer " +
+				"than the current version of the engine"
+		)
 		return
 	elif format_from_file < INK_VERSION_MINIMUM_COMPATIBLE:
-		Utils.throw_exception(str("Version of ink used to build story is too old ",
-								  "to be loaded by this version of the engine"))
+		Utils.throw_exception(
+				"Version of ink used to build story is too old " +
+				"to be loaded by this version of the engine"
+		)
 		return
 	elif format_from_file != INK_VERSION_CURRENT:
-		print(str("WARNING: Version of ink used to build story doesn't match ",
-				  "current version of engine. Non-critical, but recommend synchronising."))
+		print(
+				"[Ink] [WARNING] Version of ink used to build story doesn't match " +
+				"current version of engine. Non-critical, but recommend synchronising."
+		)
 
 	var root_token = root_object["root"]
 	if root_token == null:
-		Utils.throw_exception(str("Root node for ink not found. Are you sure it's a valid ",
-								  ".ink.json file?"))
+		Utils.throw_exception(
+				"Root node for ink not found. Are you sure it's a valid .ink.json file?"
+		)
 		return
 
 	if root_object.has("listDefs"):
 		self._list_definitions = self.Json.jtoken_to_list_definitions(root_object["listDefs"])
 
-	self._main_content_container = Utils.as_or_null(self.Json.jtoken_to_runtime_object(root_token),
-													"InkContainer")
+	self._main_content_container = Utils.as_or_null(
+			self.Json.jtoken_to_runtime_object(root_token),
+			"InkContainer"
+	)
 
 	self.reset_state()
 

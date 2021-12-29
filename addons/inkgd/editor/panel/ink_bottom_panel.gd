@@ -55,7 +55,7 @@ func _ready():
 	# own, probably to add them to its tree. In that case, they won't have
 	# their dependencies injected, so we're not doing anything.
 	if editor_interface == null || configuration == null:
-		print("Ink Bottom Panel: dependencies not met, ignoring.")
+		print("[inkgd] [INFO] Ink Bottom Panel: dependencies not met, ignoring.")
 		return
 
 	_progress_texture = _create_progress_texture()

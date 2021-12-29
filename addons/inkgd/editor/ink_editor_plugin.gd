@@ -26,6 +26,7 @@ var InkSourceImportPlugin = preload("res://addons/inkgd/editor/import_plugins/in
 
 var InkBottomPanel = preload("res://addons/inkgd/editor/panel/ink_bottom_panel.tscn")
 
+
 # ############################################################################ #
 # Private Properties
 # ############################################################################ #
@@ -38,6 +39,7 @@ var _ink_source_import_plugin: InkSourceImportPlugin = null
 var _ink_json_import_plugin: InkJsonImportPlugin = null
 
 var _tool_button: ToolButton = null
+
 
 # ############################################################################ #
 # Overrides
@@ -57,13 +59,13 @@ func _enter_tree():
 
 	# Note: assets are not preloaded to prevent the script from failing
 	# its interpretation phase if the resources have never been imported before.
-	if _can_run_mono():
-		#_validate_csproj()
+	if _should_use_mono() && _validate_csproj():
+		print("[inkgd] [INFO] Using Mono Runtime.")
 		_register_custom_settings()
 		add_custom_type(
 				"InkPlayer",
 				"Node",
-				load("res://addons/inkgd/mono_support/InkPlayer.cs"),
+				load("res://addons/inkgd/mono/InkPlayer.cs"),
 				load("res://addons/inkgd/editor/icons/ink_player.svg")
 		)
 	else:
@@ -74,6 +76,7 @@ func _enter_tree():
 				load("res://addons/inkgd/editor/icons/ink_player.svg")
 		)
 
+
 func _exit_tree():
 	_remove_bottom_panel()
 	_remove_import_plugin()
@@ -82,6 +85,7 @@ func _exit_tree():
 	_remove_templates()
 
 	remove_custom_type("InkPlayer")
+
 
 func build():
 	if _configuration.compilation_mode == InkConfiguration.BuildMode.DURING_BUILD:
@@ -113,6 +117,7 @@ func build():
 	else:
 		return true
 
+
 # ############################################################################ #
 # Private Helpers
 # ############################################################################ #
@@ -123,11 +128,13 @@ func _add_import_plugin():
 	add_import_plugin(_ink_source_import_plugin)
 	add_import_plugin(_ink_json_import_plugin)
 
+
 func _remove_import_plugin():
 	remove_import_plugin(_ink_source_import_plugin)
 	remove_import_plugin(_ink_json_import_plugin)
 	_ink_source_import_plugin = null
 	_ink_json_import_plugin = null
+
 
 func _add_bottom_panel():
 	_panel = InkBottomPanel.instance()
@@ -136,17 +143,21 @@ func _add_bottom_panel():
 
 	_tool_button = add_control_to_bottom_panel(_panel, "Ink")
 
+
 func _remove_bottom_panel():
 	remove_control_from_bottom_panel(_panel)
 	_panel.queue_free()
+
 
 ## Registers the Ink runtime node as an autoloaded singleton.
 func _add_autoloads():
 	add_autoload_singleton("__InkRuntime", "res://addons/inkgd/runtime/static/ink_runtime.gd")
 
+
 ## Unregisters the Ink runtime node from autoloaded singletons.
 func _remove_autoloads():
 	remove_autoload_singleton("__InkRuntime")
+
 
 ## Registers the script templates provided by the plugin.
 func _add_templates():
@@ -162,6 +173,7 @@ func _add_templates():
 		var template_file_path = template_dir_path + "/" + name
 		dir.copy("res://addons/inkgd/editor/templates/" + name, template_file_path)
 
+
 ## Unregisters the script templates provided by the plugin.
 func _remove_templates():
 	var dir = Directory.new()
@@ -172,6 +184,7 @@ func _remove_templates():
 		var template_file_path = template_dir_path + "/" + name
 		if dir.file_exists(template_file_path):
 			dir.remove(template_file_path)
+
 
 ## Get all the script templates provided by the plugin.
 func _get_plugin_templates_names() -> Array:
@@ -188,6 +201,7 @@ func _get_plugin_templates_names() -> Array:
 
 	return plugin_template_names
 
+
 func _register_custom_settings():
 	if !ProjectSettings.has_setting("inkgd/do_not_use_mono_runtime"):
 		ProjectSettings.set_setting("inkgd/do_not_use_mono_runtime", false)
@@ -201,23 +215,56 @@ func _register_custom_settings():
 
 	ProjectSettings.add_property_info(property_info)
 
-func _validate_csproj():
+
+func _validate_csproj() -> bool:
 	var project_name = ProjectSettings.get_setting("application/config/name")
 	if project_name.empty():
-		print("[inkgd] [WARNING] The project is missing a name.")
-		return
+		printerr("[inkgd] [ERROR] The project is missing a name.")
+		return false
 
 	var csproj_path = "res://%s.csproj" % project_name
-	if !File.new().file_exists(csproj_path):
-		print("[inkgd] [WARNING] The C# project (%s.csproj) doesn't exist." % project_name)
-		return
+	var file = File.new()
+	if !file.file_exists(csproj_path):
+		printerr("[inkgd] [ERROR] The C# project (%s.csproj) doesn't exist." % project_name)
+		return false
 
-	var parser = XMLParser.new()
-	if parser.open(csproj_path) != OK:
-		print("[inkgd] [WARNING] The C# project (%s.csproj) could not be opened." % project_name)
-		return
+	var error = file.open(csproj_path, File.READ)
+	if error != OK:
+		printerr(
+				"[inkgd] [ERROR] The C# project (%s.csproj) could not be opened. (Code %d)" % \
+				[project_name, error]
+		)
+		return false
 
-	# Validate and make sure the csproj contains ink.
+	var content = file.get_as_text()
+	file.close()
+
+	var InkCsProjValidator = load("res://addons/inkgd/mono/InkCsProjValidator.cs");
+	if !InkCsProjValidator.can_instance():
+		printerr(
+				"[inkgd] [ERROR] The C# solution hasn't been built yet. Build it first " +
+				"then disable and reenable InkGD in Project > Project setting… > Plugins."
+		)
+		return false
+
+	var validator = InkCsProjValidator.new()
+	if !validator.is_valid(content):
+		print(
+				"[inkgd] [INFO] The Ink Runtime reference seems to be missing " +
+				"from '%s.csproj'. If you encounter further errors, please refer to " % project_name +
+				"[TO BE ADDED] for more information on how to add the assembly reference."
+		)
+		# Returning true regardless, in case of a false negative.
+
+	return true
+
+func _should_use_mono():
+	var do_not_use_mono = ProjectSettings.get_setting("inkgd/do_not_use_mono_runtime")
+	if do_not_use_mono == null:
+		do_not_use_mono = false
+
+	return _can_run_mono() && !do_not_use_mono
+
 
 func _can_run_mono():
 	return type_exists("_GodotSharp")

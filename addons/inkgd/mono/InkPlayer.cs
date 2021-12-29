@@ -204,7 +204,7 @@ public class InkPlayer : Node
 			var error = thread.Start(this, "AsyncCreateStory", (string)ink_file.Get("json"));
 			if (error != Error.Ok)
 			{
-				GD.PrintErr($"Could not start the thread: error code {error}.");
+				GD.PrintErr($"[inkgd] [ERROR] Could not start the thread: error code {error}.");
 				EmitSignal("loaded", false);
 			}
 		}

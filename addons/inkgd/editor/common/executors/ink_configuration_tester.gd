@@ -73,7 +73,7 @@ func test_availability():
 ## If `configuration.use_thread` is set to `false`, this method will return
 ## an instance of `InkExecutionResult`, otherwise, it will return `null`.
 func _test_availability(config: InkExecutionConfiguration):
-	print("Executing test command…")
+	print("[inkgd] [INFO] Executing test command…")
 	var return_code = 0
 	var output = []
 
@@ -82,14 +82,14 @@ func _test_availability(config: InkExecutionConfiguration):
 	if config.use_mono:
 		var args = [config.inklecate_path]
 		return_code = OS.execute(config.mono_path, args, true, output, true)
-		
+
 	else:
 		return_code = OS.execute(config.inklecate_path, [], true, output, true)
 
 	var end_time = OS.get_ticks_msec()
-	
-	print("Command executed in %dms." % (end_time - start_time))
-	
+
+	print("[inkgd] [INFO] Command executed in %dms." % (end_time - start_time))
+
 	var string_output = PoolStringArray(output)
 	if _configuration.use_threads:
 		call_deferred("_handle_test_result", config, return_code, string_output)
@@ -121,12 +121,12 @@ func _process_test_result(
 
 	if success:
 		if !output_text.empty():
-			print("inklecate was found and executed:")
+			print("[inkgd] [INFO] inklecate was found and executed:")
 			print(output_text)
 		else:
-			print("inklecate was found and executed.")
+			print("[inkgd] [INFO] inklecate was found and executed.")
 	else:
-		printerr("Something went wrong while testing inklecate's setup.")
+		printerr("[inkgd] [WARNING] Something went wrong while testing inklecate's setup.")
 		printerr(output_text)
 
 	return InkExecutionResult.new(

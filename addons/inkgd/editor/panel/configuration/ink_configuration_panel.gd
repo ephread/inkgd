@@ -84,7 +84,7 @@ func _ready():
 	# own, probably to add them to its tree. In that case, they won't have
 	# their dependencies injected, so we're not doing anything.
 	if editor_interface == null || configuration == null:
-		print("Ink Configuration Tab: dependencies not met, ignoring.")
+		print("[inkgd] [INFO] Ink Configuration Tab: dependencies not met, ignoring.")
 		return
 
 	_set_button_icons()
@@ -175,7 +175,7 @@ func _on_file_selected(path: String):
 			_update_save_and_cleanup(configuration.inklecate_path, _executable_line_edit)
 
 		_:
-			printerr("Unknown FileDialogSelection, failed to save FileDialog file.")
+			printerr("[inkgd] [ERROR] Unknown FileDialogSelection, failed to save FileDialog file.")
 
 	_file_dialog_selection = FileDialogSelection.UNKNOWN
 
