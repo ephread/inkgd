@@ -19,22 +19,22 @@ jobs:
       matrix:
         destination:
           - "3.2.3"
-          - "3.3.4"
-          - "3.4.2"
+          # - "3.3.4"
+          # - "3.4.2"
 
     steps:
-      - name: [SHARED] Check out the repository
+      - name: "[SHARED] Check out the repository"
         uses: actions/checkout@v2
         with:
           submodules: 'recursive'
           path: 'inkgd'
 
-      - name: [SHARED] Install test dependencies
+      - name: "[SHARED] Install test dependencies"
         run: |
           sudo apt-get update
           sudo apt-get -y install wget zip unzip
 
-      - name: [VANILLA] Install Godot
+      - name: "[VANILLA] Install Godot"
         env:
           VERSION: ${{ matrix.destination }}
         run: |
@@ -44,15 +44,15 @@ jobs:
           chmod +x godot
 
       # This step exports a dummy PCK to force reimportation.
-      - name: [VANILLA] Reimport Assets
+      - name: "[VANILLA] Reimport Assets"
         run: |
           ./godot --path "inkgd" --export-pack "HTML5" dummy.pck --no-window
 
-      - name: [VANILLA] Run tests
+      - name: "[VANILLA] Run tests"
         run: |
           ./godot -d -s --path "inkgd" "addons/gut/gut_cmdln.gd"
 
-      - name: [MONO] Install Godot
+      - name: "[MONO] Install Godot"
         env:
           VERSION: ${{ matrix.destination }}
         run: |
@@ -62,23 +62,23 @@ jobs:
           mv godot_mono/Godot_v${VERSION}-stable_mono_linux_headless.64 godot_mono/godot_mono
           chmod +x godot_mono/godot_mono
 
-      - name: [MONO] Install Ink Runtime
+      - name: "[MONO] Install Ink Runtime"
         run: |
           wget -q https://github.com/inkle/ink/releases/download/v1.0.0/inklecate_windows.zip
           unzip inklecate_windows.zip
           mv ink-engine-runtime.dll inkgd/ink-engine-runtime.dll
 
-      - name: [MONO] Compile C# solution
+      - name: "[MONO] Compile C# solution"
         run: |
           cd inkgd
           msbuild /p:Configuration=Tools
           cd ..
 
       # This step exports a dummy PCK to force reimportation.
-      - name: [MONO] Reimport Assets
+      - name: "[MONO] Reimport Assets"
         run: |
           ./godot_mono/godot_mono --path "inkgd" --export-pack "HTML5" dummy.pck --no-window
 
-      - name: [MONO] Run tests (Mono)
+      - name: "[MONO] Run tests (Mono)"
         run: |
           ./godot_mono/godot_mono -d -s --path "inkgd" "addons/gut/gut_cmdln.gd"
