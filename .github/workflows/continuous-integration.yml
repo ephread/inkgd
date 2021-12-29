@@ -54,6 +54,7 @@ jobs:
       # … missing assets.
       - name: "(Vanilla) Reimport Assets"
         run: |
+          find inkgd -type f
           ./godot --path "inkgd" --export-pack "HTML5" dummy.pck
           ./godot --path "inkgd" --export-pack "HTML5" dummy.pck
 
