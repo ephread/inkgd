@@ -80,7 +80,7 @@ jobs:
         run: |
           cd inkgd
           msbuild -t:restore
-          msbuild -p:Configuration=Debug
+          msbuild
           cd ..
 
       - name: "(Mono) Run tests (Mono)"
