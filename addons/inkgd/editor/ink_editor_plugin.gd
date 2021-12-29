@@ -55,6 +55,8 @@ func _enter_tree():
 	_add_autoloads()
 	_add_templates()
 
+	# Note: assets are not preloaded to prevent the script from failing
+	# its interpretation phase if the resources have never been imported before.
 	if _can_run_mono():
 		#_validate_csproj()
 		_register_custom_settings()
@@ -62,14 +64,14 @@ func _enter_tree():
 				"InkPlayer",
 				"Node",
 				load("res://addons/inkgd/mono_support/InkPlayer.cs"),
-				preload("res://addons/inkgd/editor/icons/ink_player.svg")
+				load("res://addons/inkgd/editor/icons/ink_player.svg")
 		)
 	else:
 		add_custom_type(
 				"InkPlayer",
 				"Node",
 				load("res://addons/inkgd/ink_player.gd"),
-				preload("res://addons/inkgd/editor/icons/ink_player.svg")
+				load("res://addons/inkgd/editor/icons/ink_player.svg")
 		)
 
 func _exit_tree():

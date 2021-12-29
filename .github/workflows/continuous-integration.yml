@@ -48,8 +48,13 @@ jobs:
           chmod +x godot
 
       # This step exports a dummy PCK to force reimportation.
+      #
+      # The export is done twice, because it won't import all the required
+      # assets at first, since inkgd won't run properly at first due to…
+      # … missing assets.
       - name: "(Vanilla) Reimport Assets"
         run: |
+          ./godot --path "inkgd" --export-pack "HTML5" dummy.pck --no-window
           ./godot --path "inkgd" --export-pack "HTML5" dummy.pck --no-window
 
       - name: "(Vanilla) Run tests"
