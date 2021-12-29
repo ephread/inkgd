@@ -46,6 +46,36 @@ var _tool_button: ToolButton = null
 # ############################################################################ #
 
 func _enter_tree():
+	var ink_player_icon = load("res://addons/inkgd/editor/icons/ink_player.svg")
+	if ink_player_icon == null:
+		printerr(
+			"[inkgd] [ERROR] The plugin could not be initialized because the required assets " +
+			"haven't been imported by Godot yet. This can happen when cloning a fresh project or " +
+			"after deleting the '.import' folder. Disabling and reenabling InkGD in " +
+			"Project > Project setting… > Plugins or reloading the project should fix the problem."
+		)
+		return
+
+	# Note: assets are not preloaded to prevent the script from failing
+	# its interpretation phase if the resources have never been imported before.
+	if _should_use_mono() && _validate_csproj():
+		print("[inkgd] [INFO] Using the Mono runtime.")
+		_register_custom_settings()
+		add_custom_type(
+				"InkPlayer",
+				"Node",
+				load("res://addons/inkgd/mono/InkPlayer.cs"),
+				ink_player_icon
+		)
+	else:
+		print("[inkgd] [INFO] Using the GDScript runtime.")
+		add_custom_type(
+				"InkPlayer",
+				"Node",
+				load("res://addons/inkgd/ink_player.gd"),
+				ink_player_icon
+		)
+
 	_editor_interface = InkEditorInterface.new(get_editor_interface())
 
 	_configuration = InkConfiguration.new()
@@ -57,27 +87,12 @@ func _enter_tree():
 	_add_autoloads()
 	_add_templates()
 
-	# Note: assets are not preloaded to prevent the script from failing
-	# its interpretation phase if the resources have never been imported before.
-	if _should_use_mono() && _validate_csproj():
-		print("[inkgd] [INFO] Using Mono Runtime.")
-		_register_custom_settings()
-		add_custom_type(
-				"InkPlayer",
-				"Node",
-				load("res://addons/inkgd/mono/InkPlayer.cs"),
-				load("res://addons/inkgd/editor/icons/ink_player.svg")
-		)
-	else:
-		add_custom_type(
-				"InkPlayer",
-				"Node",
-				load("res://addons/inkgd/ink_player.gd"),
-				load("res://addons/inkgd/editor/icons/ink_player.svg")
-		)
-
 
 func _exit_tree():
+	# The plugin hasn't been intialised properly, nothing to do.
+	if _panel == null:
+		return
+
 	_remove_bottom_panel()
 	_remove_import_plugin()
 
@@ -225,14 +240,21 @@ func _validate_csproj() -> bool:
 	var csproj_path = "res://%s.csproj" % project_name
 	var file = File.new()
 	if !file.file_exists(csproj_path):
-		printerr("[inkgd] [ERROR] The C# project (%s.csproj) doesn't exist." % project_name)
+		printerr(
+				("[inkgd] [ERROR] The C# project (%s.csproj) doesn't exist. " % project_name) +
+				"You can create a new C# project through " +
+				"Project > Tools > C# > Create C# Solution. Alternatively, you can also set " +
+				"Project Settings > General > Inkgd > Do Not Use Mono Runtime to 'Yes' " +
+				"if you do not wish to use the C# version of Ink. "
+		)
+
 		return false
 
 	var error = file.open(csproj_path, File.READ)
 	if error != OK:
 		printerr(
-				"[inkgd] [ERROR] The C# project (%s.csproj) could not be opened. (Code %d)" % \
-				[project_name, error]
+				"[inkgd] [ERROR] The C# project (%s.csproj) exists but it could not be opened." +
+				"(Code %d)" % [project_name, error]
 		)
 		return false
 
@@ -243,7 +265,7 @@ func _validate_csproj() -> bool:
 	if !InkCsProjValidator.can_instance():
 		printerr(
 				"[inkgd] [ERROR] The C# solution hasn't been built yet. Build it first " +
-				"then disable and reenable InkGD in Project > Project setting… > Plugins."
+				"then reload the project."
 		)
 		return false
 
@@ -257,6 +279,7 @@ func _validate_csproj() -> bool:
 		# Returning true regardless, in case of a false negative.
 
 	return true
+
 
 func _should_use_mono():
 	var do_not_use_mono = ProjectSettings.get_setting("inkgd/do_not_use_mono_runtime")
