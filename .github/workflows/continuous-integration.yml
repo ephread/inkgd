@@ -79,6 +79,7 @@ jobs:
       - name: "(Mono) Compile C# solution"
         run: |
           cd inkgd
+          nuget locals all -list
           nuget restore inkgd.sln
           msbuild
           cd ..
