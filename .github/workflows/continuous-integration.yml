@@ -18,9 +18,9 @@ jobs:
     strategy:
       matrix:
         destination:
-          - "3.2.3"
+          # - "3.2.3"
           # - "3.3.4"
-          # - "3.4.2"
+          - "3.4.2"
 
     steps:
       - name: "(Shared) Check out the repository"
