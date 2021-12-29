@@ -260,11 +260,11 @@ func _exit_tree():
 
 ## Creates the _story, based on the value of `ink_file`. The result of this
 ## method is reported through the 'story_loaded' signal.
-func create_story() -> void:
+func create_story() -> int:
 	if ink_file == null:
 		_push_error("'ink_file' is null, did Godot import the resource correctly?")
 		call_deferred("emit_signal", "loaded", false)
-		return
+		return ERR_CANT_CREATE
 
 	if !("json" in ink_file) || typeof(ink_file.json) != TYPE_STRING:
 		_push_error(
@@ -272,17 +272,21 @@ func create_story() -> void:
 				"Are you sure you imported a JSON file?"
 		)
 		call_deferred("emit_signal", "loaded", false)
-		return
+		return ERR_CANT_CREATE
 
 	if loads_in_background && _current_platform_supports_threads():
 		_thread = Thread.new()
 		var error = _thread.start(self, "_async_create_story", ink_file.json)
 		if error != OK:
 			printerr("Could not start the thread: error code %d", error)
-			emit_signal("loaded", false)
+			call_deferred("emit_signal", "loaded", false)
+			return error
+		else:
+			return OK
 	else:
 		_create_story(ink_file.json)
 		_finalise_story_creation()
+		return OK
 
 
 ## Reset the Story back to its initial state as it was when it was

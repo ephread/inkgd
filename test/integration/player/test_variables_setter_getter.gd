@@ -38,7 +38,6 @@ func before_all():
 	.before_all()
 	get_tree().root.add_child(_ink_player)
 
-
 # ############################################################################ #
 # Methods
 # ############################################################################ #
@@ -47,11 +46,10 @@ func test_ink_list_simple_roundtrip() -> void:
 	_ink_player.ink_file = load_resource("ink_list_roundtrip")
 	_ink_player.loads_in_background = true
 	_ink_player.create_story()
-	yield(_ink_player, "loaded")
 
 	var successfully = yield(_ink_player, "loaded")
 
-	assert_true(successfully)
+	assert_true(successfully, "The story did not load correctly.")
 	if !successfully:
 		return
 
@@ -75,7 +73,7 @@ func test_ink_path_simple_roundtrip() -> void:
 
 	var successfully = yield(_ink_player, "loaded")
 
-	assert_true(successfully)
+	assert_true(successfully, "The story did not load correctly.")
 	if !successfully:
 		return
 
