@@ -79,7 +79,8 @@ jobs:
       - name: "(Mono) Compile C# solution"
         run: |
           cd inkgd
-          msbuild /p:Configuration=Debug
+          msbuild -t:restore
+          msbuild -p:Configuration=Debug
           cd ..
 
       - name: "(Mono) Run tests (Mono)"
