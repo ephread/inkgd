@@ -47,14 +47,14 @@ __meta__ = {
 
 [node name="Label" type="Label" parent="ScrollContainer/StoriesVBoxContainer/HBoxContainer"]
 margin_top = 4.0
-margin_right = 1816.0
+margin_right = 1718.0
 margin_bottom = 18.0
 size_flags_horizontal = 3
 text = "Managed Stories"
 
 [node name="AddNewStoryButton" type="Button" parent="ScrollContainer/StoriesVBoxContainer/HBoxContainer"]
-margin_left = 1820.0
-margin_right = 1920.0
+margin_left = 1722.0
+margin_right = 1822.0
 margin_bottom = 22.0
 mouse_filter = 1
 custom_constants/hseparation = 8
@@ -65,15 +65,13 @@ __meta__ = {
 }
 
 [node name="VSeparator" type="VSeparator" parent="ScrollContainer/StoriesVBoxContainer/HBoxContainer"]
-visible = false
-margin_left = 1818.0
-margin_right = 1822.0
+margin_left = 1826.0
+margin_right = 1830.0
 margin_bottom = 22.0
 
 [node name="BuildAllButton" type="Button" parent="ScrollContainer/StoriesVBoxContainer/HBoxContainer"]
-visible = false
-margin_left = 1826.0
-margin_right = 1912.0
+margin_left = 1834.0
+margin_right = 1920.0
 margin_bottom = 22.0
 mouse_filter = 1
 custom_constants/hseparation = 10

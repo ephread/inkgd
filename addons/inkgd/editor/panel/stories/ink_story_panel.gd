@@ -21,8 +21,15 @@ var InkCompilationConfiguration = load("res://addons/inkgd/editor/common/executo
 var InkCompiler = load("res://addons/inkgd/editor/common/executors/ink_compiler.gd")
 
 var InkRichDialog = load("res://addons/inkgd/editor/panel/common/ink_rich_dialog.tscn")
+var InkProgressDialog = load("res://addons/inkgd/editor/panel/common/ink_progress_dialog.tscn")
 var InkStoryConfigurationScene = load("res://addons/inkgd/editor/panel/stories/ink_story_configuration.tscn")
 var EmptyStateContainerScene = load("res://addons/inkgd/editor/panel/stories/empty_state_container.tscn")
+
+# ############################################################################ #
+# Signals
+# ############################################################################ #
+
+signal _compiled()
 
 # ############################################################################ #
 # Enums
@@ -35,6 +42,7 @@ enum FileDialogSelection {
 	WATCHED_FOLDER
 }
 
+
 # ############################################################################ #
 # Properties
 # ############################################################################ #
@@ -42,6 +50,7 @@ enum FileDialogSelection {
 var editor_interface: InkEditorInterface
 var configuration: InkConfiguration
 var progress_texture: AnimatedTexture
+
 
 # ############################################################################ #
 # Private Properties
@@ -66,6 +75,8 @@ var _file_dialog_selection_story_index = -1
 
 var _current_story_node = null
 
+var _progress_dialog = null
+
 # ############################################################################ #
 # Nodes
 # ############################################################################ #
@@ -77,6 +88,7 @@ onready var _add_new_story_button = find_node("AddNewStoryButton")
 
 onready var _story_configuration_container = find_node("StoryConfigurationVBoxContainer")
 onready var _scroll_container = find_node("ScrollContainer")
+
 
 # ############################################################################ #
 # Overrides
@@ -106,6 +118,7 @@ func _ready():
 	_connect_signals()
 
 	_compilation_mode_changed(configuration.compilation_mode)
+
 
 # ############################################################################ #
 # Signal Receivers
@@ -203,6 +216,30 @@ func _build_button_pressed(node):
 	_compile_story(story_configuration, node)
 
 
+func _compile_all_stories():
+	_disable_all_buttons(true)
+	var number_of_stories = configuration.stories.size()
+	var current_story_index = 0
+
+	_progress_dialog = InkProgressDialog.instance()
+	add_child(_progress_dialog)
+	_progress_dialog.popup_centered(Vector2(500, 85) * editor_interface.scale)
+
+	for story_configuration in configuration.stories:
+		var source_file_path: String = configuration.get_source_file_path(story_configuration)
+		_progress_dialog.current_step_name = source_file_path.get_file()
+
+		_compile_story(story_configuration)
+		yield(self, "_compiled")
+
+		_progress_dialog.progress = float(100 * (current_story_index + 1) / number_of_stories)
+		current_story_index += 1
+
+	remove_child(_progress_dialog)
+	_progress_dialog.queue_free()
+	_progress_dialog = null
+	_disable_all_buttons(false)
+
 func _compile_story(story_configuration, node = null):
 	var source_file_path = configuration.get_source_file_path(story_configuration)
 	var target_file_path = configuration.get_target_file_path(story_configuration)
@@ -211,7 +248,7 @@ func _compile_story(story_configuration, node = null):
 		_current_story_node = node
 
 		node.build_button.icon = progress_texture
-		node.build_button.disabled = true
+		_disable_all_buttons(true)
 
 	var compiler_configuration = InkCompilationConfiguration.new(
 			configuration,
@@ -223,13 +260,54 @@ func _compile_story(story_configuration, node = null):
 	var compiler = InkCompiler.new(compiler_configuration)
 
 	_compilers[compiler.identifier] = compiler
-	compiler.connect("story_compiled", self, "_handle_compilation_result")
+	compiler.connect("story_compiled", self, "_handle_compilation")
 	compiler.compile_story()
 
 
-func _compile_all_stories():
-	# TODO: implement.
-	pass
+func _handle_compilation(result):
+	if _current_story_node != null:
+		var button = _current_story_node.build_button
+		button.icon = null
+		_disable_all_buttons(false)
+		_current_story_node = null
+
+	if result.user_triggered:
+		if result.success:
+			if result.output && !result.output.empty():
+				var dialog = InkRichDialog.instance()
+				add_child(dialog)
+
+				dialog.window_title = "Success!"
+				dialog.message_text = "The story was successfully compiled."
+				dialog.output_text = result.output
+
+				dialog.popup_centered(Vector2(700, 400) * editor_interface.scale)
+			else:
+				var dialog = AcceptDialog.new()
+				add_child(dialog)
+
+				dialog.window_title = "Success!"
+				dialog.dialog_text = "The story was successfully compiled."
+
+				dialog.popup_centered()
+
+			_reimport_compiled_stories()
+		else:
+			var dialog = InkRichDialog.instance()
+			add_child(dialog)
+
+			dialog.window_title = "Error"
+			dialog.message_text = "The story could not be compiled. See inklecate's output below."
+			dialog.output_text = result.output
+
+			dialog.popup_centered(Vector2(700, 400) * editor_interface.scale)
+	else:
+		_reimport_compiled_stories()
+
+	if _compilers.has(result.identifier):
+		_compilers.erase(result.identifier)
+
+	emit_signal("_compiled")
 
 
 func _on_file_selected(path: String):
@@ -365,50 +443,6 @@ func _add_new_story_configuration():
 	return story_configuration
 
 
-func _handle_compilation_result(result):
-	if _current_story_node != null:
-		var button = _current_story_node.build_button
-		button.icon = null
-		button.disabled = false
-		_current_story_node = null
-
-	if result.user_triggered:
-		if result.success:
-			if result.output && !result.output.empty():
-				var dialog = InkRichDialog.instance()
-				add_child(dialog)
-
-				dialog.window_title = "Success!"
-				dialog.message_text = "The story was successfully compiled."
-				dialog.output_text = result.output
-
-				dialog.popup_centered(Vector2(700, 400) * editor_interface.scale)
-			else:
-				var dialog = AcceptDialog.new()
-				add_child(dialog)
-
-				dialog.window_title = "Success!"
-				dialog.dialog_text = "The story was successfully compiled."
-
-				dialog.popup_centered()
-
-			_reimport_compiled_stories()
-		else:
-			var dialog = InkRichDialog.instance()
-			add_child(dialog)
-
-			dialog.window_title = "Error"
-			dialog.message_text = "The story could not be compiled. See inklecate's output below."
-			dialog.output_text = result.output
-
-			dialog.popup_centered(Vector2(700, 400) * editor_interface.scale)
-	else:
-		_reimport_compiled_stories()
-
-	if _compilers.has(result.identifier):
-		_compilers.erase(result.identifier)
-
-
 func _reimport_compiled_stories():
 	editor_interface.scan_file_system()
 
@@ -423,7 +457,9 @@ func _get_story_configuration_at_index(index: int):
 
 	return null
 
+
 func _recompile_if_necessary(resources: PoolStringArray):
+	# Making sure the resources have been imported before recompiling.
 	yield(get_tree().create_timer(0.5), "timeout")
 
 	for story_configuration in configuration.stories:
@@ -436,6 +472,14 @@ func _recompile_if_necessary(resources: PoolStringArray):
 			if resource.begins_with(watched_folder_path):
 				_compile_story(story_configuration)
 				break
+
+
+func _disable_all_buttons(disable: bool):
+	_add_new_story_button.disabled = disable
+	_build_all_button.disabled = disable
+	for child in _story_configuration_container.get_children():
+		child.disable_all_buttons(disable)
+
 
 func _connect_signals():
 	_build_all_button.connect("pressed", self, "_build_all_button_pressed")

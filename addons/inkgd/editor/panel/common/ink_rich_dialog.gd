@@ -17,10 +17,10 @@ extends WindowDialog
 # Nodes
 # ############################################################################ #
 
-onready var MessageLabel = $MarginContainer/VBoxContainer/MessageLabel
-onready var AcceptButton = $MarginContainer/VBoxContainer/AcceptButton
-onready var OutputPanel = $MarginContainer/VBoxContainer/OutputPanel
-onready var OutputLabel = find_node("OutputLabel")
+onready var _message_label = $MarginContainer/VBoxContainer/MessageLabel
+onready var _accept_button = $MarginContainer/VBoxContainer/AcceptButton
+onready var _output_panel = $MarginContainer/VBoxContainer/OutputPanel
+onready var _output_label = find_node("OutputLabel")
 
 # ############################################################################ #
 # Properties
@@ -29,9 +29,9 @@ onready var OutputLabel = find_node("OutputLabel")
 ## The message displayed in the dialog.
 var message_text: String setget set_message_text, get_message_text
 func set_message_text(text: String):
-	MessageLabel.text = text
+	_message_label.text = text
 func get_message_text() -> String:
-	return MessageLabel.text
+	return _message_label.text
 
 ## An output, often the result of a command, than can optionally be displayed
 ## in the dialog.
@@ -39,21 +39,21 @@ func get_message_text() -> String:
 ## Setting this property to null hides the corresponding panel in the dialog.
 var output_text: String setget set_output_text, get_output_text
 func set_output_text(text: String):
-	OutputLabel.text = text
-	OutputPanel.visible = !(text == null || text.length() == 0)
+	_output_label.text = text
+	_output_label.visible = !(text == null || text.length() == 0)
 func get_output_text() -> String:
-	return OutputLabel.text
+	return _output_label.text
 
 # ############################################################################ #
 # Overriden Methods
 # ############################################################################ #
 
 func _ready():
-	AcceptButton.connect("pressed", self, "_accept_button_pressed")
+	_accept_button.connect("pressed", self, "_accept_button_pressed")
 
 	var font = _get_source_font()
 	if font != null:
-		OutputLabel.add_font_override("font", font)
+		_output_panel.add_font_override("font", font)
 
 # ############################################################################ #
 # Signal Receivers

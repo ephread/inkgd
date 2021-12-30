@@ -126,7 +126,7 @@ func _process_test_result(
 		else:
 			print("[inkgd] [INFO] inklecate was found and executed.")
 	else:
-		printerr("[inkgd] [WARNING] Something went wrong while testing inklecate's setup.")
+		printerr("[inkgd] [ERROR] Something went wrong while testing inklecate's setup.")
 		printerr(output_text)
 
 	return InkExecutionResult.new(

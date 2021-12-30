@@ -48,7 +48,7 @@ func _init(configuration: InkCompilationConfiguration):
 ## Compile the story, based on the compilation configuration provided
 ## by this object. If `configuration.use_thread` is set to `false`,
 ## this method will return `true` if the compilation succeeded and `false`
-## otherwise. If `configuration.use_thread` is set to `false`, this method
+## otherwise. If `configuration.use_thread` is set to `true`, this method
 ## always returns `true`.
 func compile_story() -> bool:
 	if _configuration.use_threads:
@@ -63,7 +63,7 @@ func compile_story() -> bool:
 				""
 			)
 
-			emit_signal("story_compiled", result)
+			call_deferred("emit_signal", "story_compiled", result)
 
 		return true
 	else:
@@ -135,7 +135,7 @@ func _process_compilation_result(
 		if output_text.length() > 0:
 			print(output_text)
 	else:
-		printerr("[inkgd] [WARNING] Could not compile %s." % config.source_file_path)
+		printerr("[inkgd] [ERROR] Could not compile %s." % config.source_file_path)
 		printerr(output_text)
 
 	return InkExecutionResult.new(

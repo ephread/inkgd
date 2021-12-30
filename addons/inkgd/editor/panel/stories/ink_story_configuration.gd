@@ -112,6 +112,11 @@ func show_watched_folder(show: bool):
 	watched_folder_label.visible = show
 	watched_folder_container.visible = show
 
+func disable_all_buttons(disable: bool):
+	remove_button.disabled = disable
+	build_button.disabled = disable
+
+
 # ############################################################################ #
 # Private Methods
 # ############################################################################ #
