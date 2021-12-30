@@ -79,7 +79,7 @@ func compile_story() -> bool:
 ## If `configuration.use_thread` is set to `false`, this method always
 ## returns `true`.
 func _compile_story(config: InkCompilationConfiguration) -> bool:
-	print("Executing compilation command…")
+	print("[inkgd] [INFO] Executing compilation command…")
 	var return_code = 0
 	var output = []
 
@@ -94,7 +94,7 @@ func _compile_story(config: InkCompilationConfiguration) -> bool:
 
 	var end_time = OS.get_ticks_msec()
 
-	print("Command executed in %dms." % (end_time - start_time))
+	print("[inkgd] [INFO] Command executed in %dms." % (end_time - start_time))
 
 	var string_output = PoolStringArray(output)
 	if _configuration.use_threads:
@@ -131,11 +131,11 @@ func _process_compilation_result(
 	var output_text: String = output.join("\n").replace(BOM, "").strip_edges()
 
 	if success:
-		print("[" + config.source_file_path + "] was successfully compiled.")
+		print("[inkgd] [INFO] %s was successfully compiled." % config.source_file_path)
 		if output_text.length() > 0:
 			print(output_text)
 	else:
-		printerr("Could not compile [" + config.source_file_path + "].")
+		printerr("[inkgd] [WARNING] Could not compile %s." % config.source_file_path)
 		printerr(output_text)
 
 	return InkExecutionResult.new(

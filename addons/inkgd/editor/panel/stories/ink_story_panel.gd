@@ -88,7 +88,7 @@ func _ready():
 	# own, probably to add them to its tree. In that case, they won't have
 	# their dependencies injected, so we're not doing anything.
 	if editor_interface == null || configuration == null || progress_texture == null:
-		print("Ink Stories Tab: dependencies not met, ignoring.")
+		print("[inkgd] [INFO] Ink Stories Tab: dependencies not met, ignoring.")
 		return
 
 	configuration.connect("compilation_mode_changed", self, "_compilation_mode_changed")
@@ -197,7 +197,7 @@ func _build_button_pressed(node):
 	var story_configuration = configuration.get_story_configuration_at_index(index)
 
 	if story_configuration == null:
-		printerr("No configurations found for Story %d" % (index + 1))
+		printerr("[inkgd] [ERROR] No configurations found for Story %d" % (index + 1))
 		return
 
 	_compile_story(story_configuration, node)
@@ -284,7 +284,7 @@ func _on_file_selected(path: String):
 			_persist_configuration()
 
 		_:
-			printerr("Unknown FileDialogSelection, failed to save FileDialog file.")
+			printerr("[inkgd] [ERROR] Unknown FileDialogSelection, failed to save FileDialog file.")
 
 	_file_dialog_selection = FileDialogSelection.UNKNOWN
 

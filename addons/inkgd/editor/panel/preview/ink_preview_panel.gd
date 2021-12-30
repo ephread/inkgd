@@ -13,6 +13,12 @@ extends Control
 # class_name InkPreviewPanel
 
 # ############################################################################ #
+# Imports
+# ############################################################################ #
+
+var InkPlayerFactory := preload("res://addons/inkgd/ink_player_factory.gd") as GDScript
+
+# ############################################################################ #
 # Enums
 # ############################################################################ #
 
@@ -49,6 +55,8 @@ var _available_stories: Array = []
 
 var _file_dialog = EditorFileDialog.new()
 
+var _ink_player = InkPlayerFactory.create()
+
 # ############################################################################ #
 # On Ready | Private Properties
 # ############################################################################ #
@@ -59,7 +67,6 @@ onready var _play_icon = get_icon("Play", "EditorIcons")
 # On Ready | Private Nodes
 # ############################################################################
 
-onready var _ink_player = $InkPlayer
 onready var _command_strip = find_node("CommandStripHBoxContainer")
 
 onready var _pick_story_button = _command_strip.get_node("PickStoryOptionButton")
@@ -84,8 +91,10 @@ func _ready():
 	# own, probably to add them to its tree. In that case, they won't have
 	# their dependencies injected, so we're not doing anything.
 	if editor_interface == null || configuration == null || progress_texture == null:
-		print("Ink Preview Tab: dependencies not met, ignoring.")
+		print("[inkgd] [INFO] Ink Preview Tab: dependencies not met, ignoring.")
 		return
+
+	add_child(_ink_player)
 
 	_connect_signals()
 	_apply_configuration()
@@ -117,7 +126,7 @@ func _start_button_pressed():
 	if file_path == null:
 		return
 
-	print("Previewing %s" % file_path)
+	print("[inkgd] [INFO] Previewing %s" % file_path)
 	_clear_content()
 
 	_ink_player.destroy()

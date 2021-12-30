@@ -16,6 +16,8 @@ extends "res://test/integration/runtime/test_base.gd"
 # Imports
 # ############################################################################ #
 
+var InkPlayerFactory := preload("res://addons/inkgd/ink_player_factory.gd") as GDScript
+
 var InkPlayer := load("res://addons/inkgd/ink_player.gd") as GDScript
 var InkList := load("res://addons/inkgd/runtime/lists/ink_list.gd") as GDScript
 var InkPath := load("res://addons/inkgd/runtime/ink_path.gd") as GDScript
@@ -25,7 +27,7 @@ var InkPath := load("res://addons/inkgd/runtime/ink_path.gd") as GDScript
 # Private Properties
 # ############################################################################ #
 
-var _ink_player: InkPlayer
+var _ink_player = InkPlayerFactory.create()
 
 
 # ############################################################################ #
@@ -34,9 +36,7 @@ var _ink_player: InkPlayer
 
 func before_all():
 	.before_all()
-	_ink_player = InkPlayer.new()
 	get_tree().root.add_child(_ink_player)
-
 
 # ############################################################################ #
 # Methods
@@ -46,7 +46,12 @@ func test_ink_list_simple_roundtrip() -> void:
 	_ink_player.ink_file = load_resource("ink_list_roundtrip")
 	_ink_player.loads_in_background = true
 	_ink_player.create_story()
-	yield(_ink_player, "loaded")
+
+	var successfully = yield(_ink_player, "loaded")
+
+	assert_true(successfully, "The story did not load correctly.")
+	if !successfully:
+		return
 
 	_test_simple_list_validity()
 
@@ -65,7 +70,12 @@ func test_ink_path_simple_roundtrip() -> void:
 	_ink_player.ink_file = load_resource("ink_list_roundtrip")
 	_ink_player.loads_in_background = true
 	_ink_player.create_story()
-	yield(_ink_player, "loaded")
+
+	var successfully = yield(_ink_player, "loaded")
+
+	assert_true(successfully, "The story did not load correctly.")
+	if !successfully:
+		return
 
 	_test_ink_path_validity()
 

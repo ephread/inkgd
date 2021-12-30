@@ -21,7 +21,11 @@
 /project.godot             export-ignore
 /PULL_REQUEST_TEMPLATE.md  export-ignore
 /README.md                 export-ignore
+/.gut_editor_config.json   export-ignore
+/inkgd.csproj              export-ignore
+/inkgd.sln                 export-ignore
 
 /examples                  export-ignore
 /test                      export-ignore
 /docs                      export-ignore
+/icons                     export-ignore

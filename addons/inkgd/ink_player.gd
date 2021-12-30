@@ -121,11 +121,6 @@ func set_seoex(value: bool):
 		return
 
 	ink_runtime.stop_execution_on_exception = value
-
-# ############################################################################ #
-# Properties
-# ############################################################################ #
-
 func get_seoex() -> bool:
 	var ink_runtime = _ink_runtime.get_ref()
 	if ink_runtime == null:
@@ -232,6 +227,10 @@ func get_has_choices() -> bool:
 ## The name of the current flow.
 var current_flow_name: String setget , get_current_flow_name
 func get_current_flow_name() -> String:
+	if _story == null:
+		_push_null_story_error()
+		return ""
+
 	return _story.state.current_flow_name
 
 # ############################################################################ #
@@ -261,30 +260,33 @@ func _exit_tree():
 
 ## Creates the _story, based on the value of `ink_file`. The result of this
 ## method is reported through the 'story_loaded' signal.
-func create_story() -> void:
+func create_story() -> int:
 	if ink_file == null:
-		_push_error("'ink_file' is null, did Godot import the resource correctly?", ErrorType.ERROR)
+		_push_error("'ink_file' is null, did Godot import the resource correctly?")
 		call_deferred("emit_signal", "loaded", false)
-		return
+		return ERR_CANT_CREATE
 
 	if !("json" in ink_file) || typeof(ink_file.json) != TYPE_STRING:
 		_push_error(
 				"'ink_file' doesn't have the appropriate resource type." + \
-				"Are you sure you imported a JSON file?",
-				ErrorType.ERROR
+				"Are you sure you imported a JSON file?"
 		)
 		call_deferred("emit_signal", "loaded", false)
-		return
+		return ERR_CANT_CREATE
 
 	if loads_in_background && _current_platform_supports_threads():
 		_thread = Thread.new()
 		var error = _thread.start(self, "_async_create_story", ink_file.json)
 		if error != OK:
-			printerr("Could not start the thread: error code %d", error)
-			emit_signal("loaded", true)
+			printerr("[inkgd] [ERROR] Could not start the thread: error code %d", error)
+			call_deferred("emit_signal", "loaded", false)
+			return error
+		else:
+			return OK
 	else:
 		_create_story(ink_file.json)
 		_finalise_story_creation()
+		return OK
 
 
 ## Reset the Story back to its initial state as it was when it was
@@ -614,7 +616,7 @@ func _exception_raised(message, stack_trace):
 
 func _on_error(message, type):
 	if get_signal_connection_list("error_encountered").size() == 0:
-		_push_error(message, type)
+		_push_story_error(message, type)
 	else:
 		emit_signal("error_encountered", message, type)
 
@@ -700,31 +702,49 @@ func _current_platform_supports_threads():
 
 func _push_null_runtime_error():
 	_push_error(
-			"InkRuntime could not found, did you remove it from the tree?",
-			ErrorType.ERROR
+			"InkRuntime could not found, did you remove it from the tree?"
 	)
 
 
 func _push_null_story_error():
-	_push_error("The _story is 'Nil', was it loaded properly?", ErrorType.ERROR)
+	_push_error("The _story is 'null', was it loaded properly?")
 
 
 func _push_null_state_error(variable: String):
 	var message = (
-			"'%s' is 'Nil', the internal state is corrupted or missing, " +
+			"'%s' is 'null', the internal state is corrupted or missing, " +
 			"this is an unrecoverable error."
 	)
-	_push_error(message % variable, ErrorType.ERROR)
+	_push_error(message % variable)
 
 
-func _push_error(message: String, type: int):
+func _push_story_error(message: String, type: int):
 	if Engine.editor_hint:
 		match type:
-			ErrorType.ERROR: printerr(message)
-			ErrorType.WARNING: print(message)
-			ErrorType.AUTHOR: print(message)
+			ErrorType.ERROR:
+				printerr(message)
+			ErrorType.WARNING, ErrorType.AUTHOR:
+				print(message)
 	else:
 		match type:
-			ErrorType.ERROR: push_error(message)
-			ErrorType.WARNING: push_warning(message)
-			ErrorType.AUTHOR: push_warning(message)
+			ErrorType.ERROR:
+				push_error(message)
+			ErrorType.WARNING, ErrorType.AUTHOR:
+				push_warning(message)
+
+func _push_error(message: String):
+	if Engine.editor_hint:
+		printerr(message)
+
+		var i = 1
+		for stack_element in get_stack():
+			if i <= 2:
+				i += 1
+				continue
+
+			printerr(
+				"    ", (i - 2), " - ", stack_element["source"], ":",
+				stack_element["line"], " - at function: ", stack_element["function"]
+			)
+	else:
+		push_error(message)

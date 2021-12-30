@@ -14,14 +14,16 @@ extends Node
 # Imports
 # ############################################################################ #
 
-var ErrorType = preload("res://addons/inkgd/runtime/enums/error.gd").ErrorType
-var InkGDProfiler = preload("res://examples/scenes/common/profiler.gd")
+var ErrorType := preload("res://addons/inkgd/runtime/enums/error.gd").ErrorType
+var InkPlayerFactory := preload("res://addons/inkgd/ink_player_factory.gd") as GDScript
+var InkGDProfiler := preload("res://examples/scenes/common/profiler.gd") as GDScript
 
 
 # ############################################################################ #
 # Private Properties
 # ############################################################################ #
 
+var _ink_player = InkPlayerFactory.create()
 var _profiler: InkGDProfiler = InkGDProfiler.new()
 var _current_story_index: int = -1
 
@@ -40,7 +42,6 @@ var _stories: Array = [
 onready var _created_label = $MarginContainer/CenterContainer/Label
 onready var _loading_label = $LoadingAnimationPlayer/CenterContainer/VBoxContainer/Label
 onready var _loading_animation_player = $LoadingAnimationPlayer
-onready var _ink_player = $InkPlayer
 
 
 # ############################################################################ #
@@ -48,10 +49,12 @@ onready var _ink_player = $InkPlayer
 # ############################################################################ #
 
 func _ready():
+	add_child(_ink_player)
+
 	_ink_player.connect("loaded", self, "_loaded")
 	_current_story_index = 0
 
-	create_story()
+	_create_story()
 
 
 # ############################################################################ #
@@ -74,12 +77,15 @@ func _loaded(successfully: bool):
 	_current_story_index += 1
 
 	if _current_story_index < _stories.size():
-		create_story()
+		_create_story()
 	else:
-		end()
+		_end()
 
+# ############################################################################ #
+# Private Methods
+# ############################################################################ #
 
-func create_story():
+func _create_story():
 	if _current_story_index < 0 || _current_story_index >= _stories.size():
 		return
 
@@ -90,7 +96,7 @@ func create_story():
 	_ink_player.ink_file = load(_stories[_current_story_index])
 	_ink_player.create_story()
 
-func end():
+func _end():
 	_created_label.text = _creation_results.join("\n")
 	_created_label.show()
 

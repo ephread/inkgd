@@ -105,6 +105,7 @@ hosted on [Read The Docs].
   Sarette and Zachary Sarette.
 
 [_The Intercept_]: https://github.com/inkle/ink-library/tree/master/Stories/The%20Intercept
+[_Crime Scene_]: https://github.com/inkle/ink/blob/master/Documentation/WritingWithInk.md#7-long-example-crime-scene
 [_LD41 Emoji_]: https://github.com/inkle/ink-library/tree/master/Stories/LD41%20Emoji
 [_Not a halloween game_]: https://github.com/lunarcloud/not-a-halloween-game
 

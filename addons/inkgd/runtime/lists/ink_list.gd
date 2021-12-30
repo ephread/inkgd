@@ -28,6 +28,12 @@ static func Utils() -> GDScript:
 
 # ############################################################################ #
 
+# (Dictionary<InkItem, int>, Array<String>, Array<InkListDefinition>)
+func _init_from_csharp(items: Dictionary, origin_names: Array, origins: Array):
+	_dictionary = items
+	_origin_names = origin_names
+	self.origins = origins
+
 # (InkList) -> InkList
 func _init_with_ink_list(other_list: InkList):
 	_dictionary = other_list._dictionary.duplicate()
