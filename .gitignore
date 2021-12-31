@@ -7,6 +7,7 @@ export_presets.cfg
 # inkgd ignores
 .inkgd_compiler.cfg
 inkgd-issue-*
+inkgd-example-*.zip
 
 # template ignores
 script_templates
