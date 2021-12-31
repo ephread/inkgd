@@ -5,8 +5,8 @@
 
   <ItemGroup>
     <Reference Include="Ink">
-      <HintPath>$(ProjectDir)/ink-engine-runtime.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>$(ProjectDir)/addons/inkgd/mono/assemblies/ink-engine-runtime.dll</HintPath>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
 </Project>
