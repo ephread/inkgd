@@ -838,11 +838,17 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 		match eval_command.command_type:
 
 			InkControlCommand.CommandType.EVAL_START:
-				self.__assert__(self.state.in_expression_evaluation == false, "Already in expression evaluation?")
+				self.__assert__(
+						self.state.in_expression_evaluation == false,
+						"Already in expression evaluation?"
+				)
 				self.state.in_expression_evaluation = true
 
 			InkControlCommand.CommandType.EVAL_END:
-				self.__assert__(self.state.in_expression_evaluation == true, "Not in expression evaluation mode")
+				self.__assert__(
+						self.state.in_expression_evaluation == true,
+						"Not in expression evaluation mode"
+				)
 				self.state.in_expression_evaluation = false
 
 			InkControlCommand.CommandType.EVAL_OUTPUT:
@@ -873,8 +879,10 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 					var popped = self.state.pop_evaluation_stack()
 					override_tunnel_return_target = Utils.as_or_null(popped, "DivertTargetValue")
 					if override_tunnel_return_target == null:
-						self.__assert__(Utils.is_ink_class(popped, "Void"),
-									"Expected void if ->-> doesn't override target")
+						self.__assert__(
+								Utils.is_ink_class(popped, "Void"),
+								"Expected void if ->-> doesn't override target"
+						)
 
 				if self.state.try_exit_function_evaluation_from_game():
 					pass
@@ -899,8 +907,10 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 			InkControlCommand.CommandType.BEGIN_STRING:
 				self.state.push_to_output_stream(eval_command)
 
-				self.__assert__(self.state.in_expression_evaluation == true,
-							"Expected to be in an expression when evaluating a string")
+				self.__assert__(
+						self.state.in_expression_evaluation == true,
+						"Expected to be in an expression when evaluating a string"
+				)
 				self.state.in_expression_evaluation = false
 
 			InkControlCommand.CommandType.END_STRING:
@@ -1206,7 +1216,10 @@ func choose_path(p, incrementing_turn_index = true):
 # (int) -> void
 func choose_choice_index(choice_idx):
 	var choices = self.current_choices
-	self.__assert__(choice_idx >= 0 && choice_idx < choices.size(), "choice out of range")
+	self.__assert__(
+			choice_idx >= 0 && choice_idx < choices.size(),
+			"choice out of range"
+	)
 
 	var choice_to_choose = choices[choice_idx]
 	emit_signal("on_make_choice", choice_to_choose)
@@ -1313,9 +1326,12 @@ func call_external_function(func_name: String, number_of_arguments: int) -> void
 	if _func_def == null:
 		if allow_external_function_fallbacks:
 			fallback_function_container = self.knot_container_with_name(func_name)
-			self.__assert__(fallback_function_container != null,
-						str("Trying to call EXTERNAL function '", func_name,
-							"' which has not been bound, and fallback ink function could not be found."))
+			self.__assert__(
+				fallback_function_container != null,
+				"Trying to call EXTERNAL function '%s' " % func_name +
+				"which has not been bound, and fallback ink function" +
+				"could not be found."
+			)
 
 			self.state.callstack.push(
 				PushPopType.FUNCTION,
@@ -1328,7 +1344,7 @@ func call_external_function(func_name: String, number_of_arguments: int) -> void
 		else:
 			self.__assert__(
 				false,
-				"Trying to call EXTERNAL function '%s'" % func_name,
+				"Trying to call EXTERNAL function '%s' " % func_name +
 				"which has not been bound (and ink fallbacks disabled)."
 			)
 
@@ -1348,9 +1364,11 @@ func call_external_function(func_name: String, number_of_arguments: int) -> void
 	var return_obj = null
 	if func_result != null:
 		return_obj = InkValue.create(func_result)
-		self.__assert__(return_obj != null,
-					str("Could not create ink value from returned object of type ",
-						typeof(func_result)))
+		self.__assert__(
+			return_obj != null,
+			"Could not create ink value from returned object of type %s" % \
+			Utils.typename_of(typeof(func_result))
+		)
 	else:
 		return_obj = InkVoid.new()
 
@@ -1367,8 +1385,10 @@ func bind_external_function_general(
 	if async_we_cant("bind an external function"):
 		return
 
-	self.__assert__(!_externals.has(func_name),
-				str("Function '", func_name, "' has already been bound."))
+	self.__assert__(
+			!_externals.has(func_name),
+			"Function '%s' has already been bound." % func_name
+	)
 	_externals[func_name] = ExternalFunctionDef.new(object, method, lookahead_safe)
 
 
@@ -1382,7 +1402,10 @@ func bind_external_function(
 	method_name: String,
 	lookahead_safe: bool = false
 ) -> void:
-	self.__assert__(object != null || method_name != null, "Can't bind a null function")
+	self.__assert__(
+			object != null || method_name != null,
+			"Can't bind a null function"
+	)
 
 	bind_external_function_general(func_name, object, method_name, lookahead_safe)
 
@@ -1391,7 +1414,10 @@ func unbind_external_function(func_name: String) -> void:
 	if async_we_cant("unbind an external a function"):
 		return
 
-	self.__assert__(_externals.has(func_name), str("Function '", func_name, "' has not been bound."))
+	self.__assert__(
+			_externals.has(func_name),
+			"Function '%s' has not been bound." % func_name
+	)
 	_externals.erase(func_name)
 
 
@@ -1754,7 +1780,10 @@ func __assert__(condition: bool, message = null, format_params = null) -> void:
 		if format_params != null && format_params.size() > 0:
 			message = message % format_params
 
-		Utils.throw_exception("%s %s" % [message, str(self.current_debug_metadata)])
+		if self.current_debug_metadata != null:
+			Utils.throw_exception("%s %s" % [message, str(self.current_debug_metadata)])
+		else:
+			Utils.throw_exception(message)
 
 
 var current_debug_metadata: InkDebugMetadata setget , get_current_debug_metadata

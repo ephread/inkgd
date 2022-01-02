@@ -13,7 +13,7 @@ var InkPlayer = load("res://addons/inkgd/ink_player.gd")
 # ############################################################################ #
 
 # Alternatively, it could also be retrieved from the tree.
-# onready var ink_player = $InkPlayer
+# onready var _ink_player = $InkPlayer
 onready var _ink_player = InkPlayer.new()
 
 # ############################################################################ #
@@ -22,6 +22,7 @@ onready var _ink_player = InkPlayer.new()
 
 func _ready():
 %TS%# Replace the example path with the path to your story.
+%TS%# Remove this line if you set 'ink_file' in the inspector.
 %TS%_ink_player.ink_file = load("res://path/to/file.ink.json")
 
 %TS%# It's recommended to load the story in the background. On platforms that

@@ -4,8 +4,7 @@
 # See LICENSE in the project root for license information.
 # ############################################################################ #
 
-tool
-extends "res://addons/inkgd/editor/common/executors/ink_executor.gd"
+extends InkExternalCommandExecutor
 
 class_name InkCompiler
 

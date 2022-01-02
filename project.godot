@@ -44,12 +44,12 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/inkgd/runtime/content/choices/choice_point.gd"
 }, {
-"base": "Reference",
+"base": "InkExecutionConfiguration",
 "class": "InkCompilationConfiguration",
 "language": "GDScript",
 "path": "res://addons/inkgd/editor/common/executors/structures/ink_compilation_configuration.gd"
 }, {
-"base": "Reference",
+"base": "InkExternalCommandExecutor",
 "class": "InkCompiler",
 "language": "GDScript",
 "path": "res://addons/inkgd/editor/common/executors/ink_compiler.gd"
@@ -59,7 +59,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/inkgd/editor/common/ink_configuration.gd"
 }, {
-"base": "Reference",
+"base": "InkExternalCommandExecutor",
 "class": "InkConfigurationTester",
 "language": "GDScript",
 "path": "res://addons/inkgd/editor/common/executors/ink_configuration_tester.gd"
@@ -105,9 +105,9 @@ _global_script_classes=[ {
 "path": "res://addons/inkgd/editor/common/executors/structures/ink_execution_result.gd"
 }, {
 "base": "Reference",
-"class": "InkExternalCommandExecuter",
+"class": "InkExternalCommandExecutor",
 "language": "GDScript",
-"path": "res://addons/inkgd/editor/common/executors/ink_executor.gd"
+"path": "res://addons/inkgd/editor/common/executors/ink_external_command_executor.gd"
 }, {
 "base": "InkValue",
 "class": "InkFloatValue",
@@ -344,7 +344,7 @@ _global_script_class_icons={
 "InkEditorInterface": "",
 "InkExecutionConfiguration": "",
 "InkExecutionResult": "",
-"InkExternalCommandExecuter": "",
+"InkExternalCommandExecutor": "",
 "InkFloatValue": "",
 "InkFlow": "",
 "InkFunctionResult": "",

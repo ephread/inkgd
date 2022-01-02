@@ -4,7 +4,6 @@
 # See LICENSE in the project root for license information.
 # ############################################################################ #
 
-tool
 extends Reference
 
 ## A test result, containing information about whether the test

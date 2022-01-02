@@ -4,7 +4,6 @@
 # See LICENSE in the project root for license information.
 # ############################################################################ #
 
-tool
 extends Reference
 
 class_name InkEditorInterface
@@ -48,7 +47,7 @@ func _init(editor_interface: EditorInterface):
 	_editor_filesystem = _editor_interface.get_resource_filesystem()
 
 	scale = _editor_interface.get_editor_scale()
-	
+
 	_editor_filesystem.connect("resources_reimported", self, "_resources_reimported")
 
 # ############################################################################ #
@@ -79,9 +78,9 @@ func get_custom_header_color() -> Color:
 
 func _resources_reimported(resources):
 	var ink_resources := PoolStringArray()
-	
+
 	for resource in resources:
 		if resource.get_extension() == "ink":
 			ink_resources.append(resource)
-	
+
 	emit_signal("ink_ressources_reimported", ink_resources)

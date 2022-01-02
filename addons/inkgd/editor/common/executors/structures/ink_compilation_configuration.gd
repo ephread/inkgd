@@ -4,8 +4,7 @@
 # See LICENSE in the project root for license information.
 # ############################################################################ #
 
-tool
-extends "res://addons/inkgd/editor/common/executors/structures/ink_execution_configuration.gd"
+extends InkExecutionConfiguration
 
 ## Contains all the configuration settings necessary to perform a compilation.
 class_name InkCompilationConfiguration

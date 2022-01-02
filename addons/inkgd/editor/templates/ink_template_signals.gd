@@ -8,12 +8,13 @@ extends %BASE%
 
 var InkPlayer = load("res://addons/inkgd/ink_player.gd")
 
+
 # ############################################################################ #
 # Public Nodes
 # ############################################################################ #
 
 # Alternatively, it could also be retrieved from the tree.
-# onready var ink_player = $InkPlayer
+# onready var _ink_player = $InkPlayer
 onready var _ink_player = InkPlayer.new()
 
 # ############################################################################ #
@@ -22,6 +23,7 @@ onready var _ink_player = InkPlayer.new()
 
 func _ready():
 %TS%# Replace the example path with the path to your story.
+%TS%# Remove this line if you set 'ink_file' in the inspector.
 %TS%_ink_player.ink_file = load("res://path/to/file.ink.json")
 
 %TS%# It's recommended to load the story in the background. On platforms that
@@ -48,17 +50,21 @@ func _story_loaded(successfully: bool):
 %TS%# _observe_variables()
 %TS%# _bind_externals()
 
+%TS%# Here, the story is started immediately, but it could be started
+%TS%# at a later time.
+%TS%_ink_player.continue_story()
+
+
+func _continued(text, tags):
+%TS%print(text)
+%TS%# Here you could yield for an hypothetical signal, before continuing.
+%TS%# yield(self, "event")
 %TS%_ink_player.continue_story()
 
 
 # ############################################################################ #
 # Private Methods
 # ############################################################################ #
-
-func _continued(text, tags):
-%TS%print(text)
-%TS%_ink_player.continue_story()
-
 
 func _prompt_choices(choices):
 %TS%if !choices.empty():
@@ -75,7 +81,7 @@ func _ended():
 
 func _select_choice(index):
 %TS%_ink_player.choose_choice_index(index)
-%TS%_continue_story()
+%TS%_ink_player.continue_story()
 
 
 # Uncomment to bind an external function.

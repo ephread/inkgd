@@ -75,10 +75,20 @@ export var ink_file: Resource
 ## property is ignored.
 export var loads_in_background: bool = true
 
+
+# ############################################################################ #
+# Properties
+# ############################################################################ #
+
+# These properties aren't exported because they depend on the runtime or the
+# story to be set. The runtime insn't always available upon instantiation,
+# and the story is only available after calling 'create_story' so rather than
+# losing the values and confusing everybody, those properties are code-only.
+
 ## `true` to allow external function fallbacks, `false` otherwise. If this
 ## property is `false` and the appropriate function hasn't been binded, the
 ## _story will output an error.
-export var allow_external_function_fallbacks: bool setget set_aeff, get_aeff
+var allow_external_function_fallbacks: bool setget set_aeff, get_aeff
 func set_aeff(value: bool):
 	if _story == null:
 		_push_null_story_error()
@@ -94,7 +104,7 @@ func get_aeff() -> bool:
 
 # skips saving global values that remain equal to the initial values that were
 # declared in Ink.
-export var do_not_save_default_values: bool setget set_dnsdv, get_dnsdv
+var do_not_save_default_values: bool setget set_dnsdv, get_dnsdv
 func set_dnsdv(value: bool):
 	var ink_runtime = _ink_runtime.get_ref()
 	if ink_runtime == null:
@@ -112,7 +122,7 @@ func get_dnsdv() -> bool:
 
 ## Uses `assert` instead of `push_error` to report critical errors, thus
 ## making them more explicit during development.
-export var stop_execution_on_exception: bool setget set_seoex, get_seoex
+var stop_execution_on_exception: bool setget set_seoex, get_seoex
 func set_seoex(value: bool):
 	var ink_runtime = _ink_runtime.get_ref()
 	if ink_runtime == null:
@@ -130,7 +140,7 @@ func get_seoex() -> bool:
 
 ## Uses `assert` instead of `push_error` to report _story errors, thus
 ## making them more explicit during development.
-export var stop_execution_on_error: bool setget set_seoer, get_seoer
+var stop_execution_on_error: bool setget set_seoer, get_seoer
 func set_seoer(value: bool):
 	var ink_runtime = _ink_runtime.get_ref()
 	if ink_runtime == null:
@@ -668,6 +678,7 @@ func _finalise_story_creation():
 	var ink_runtime = _ink_runtime.get_ref()
 	if ink_runtime == null:
 		_push_null_runtime_error()
+		emit_signal("loaded", false)
 		return
 
 	emit_signal("loaded", true)

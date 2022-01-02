@@ -4,10 +4,9 @@
 # See LICENSE in the project root for license information.
 # ############################################################################ #
 
-tool
 extends Reference
 
-class_name InkExternalCommandExecuter
+class_name InkExternalCommandExecutor
 
 # ############################################################################ #
 # Properties

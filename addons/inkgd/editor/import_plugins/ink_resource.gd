@@ -4,7 +4,6 @@
 # See LICENSE in the project root for license information.
 # ############################################################################ #
 
-tool
 extends Resource
 
 # A very simple resource to store the content of a json file, as a string.

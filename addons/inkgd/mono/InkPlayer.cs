@@ -34,24 +34,37 @@ public class InkPlayer : Node
 
 	[Export]
 	public bool loads_in_background = false;
+	#endregion
 
-	[Export]
+	#region Properties
+	// These properties aren't exported because they depend on the runtime or
+	// the story to be set. The runtime insn't always available upon
+	// instantiation, and the story is only available after calling
+	// 'create_story' so rather than losing the values and confusing everybody,
+	// those properties are code-only.
 	public bool allow_external_function_fallbacks
 	{
-		// Since exports are accessed during load, this property doesn't
-		// push errors if the story is null to prevent confusing line
-		// in the output tab. It just fails silently if the story
-		// isn't set.
-		get { return story?.allowExternalFunctionFallbacks ?? false; }
-		set {
-			if (story != null)
+		get {
+			if (story == null)
 			{
-				story.allowExternalFunctionFallbacks = value;
+				PushNullStoryError();
+				return false;
 			}
+
+			return story.allowExternalFunctionFallbacks;
+		}
+
+		set {
+			if (story == null)
+			{
+				PushNullStoryError();
+				return;
+			}
+
+			story.allowExternalFunctionFallbacks = value;
 		}
 	}
 
-	[Export]
 	public bool dont_save_default_values
 	{
 		get { return Ink.Runtime.VariablesState.dontSaveDefaultValues; }
@@ -59,10 +72,8 @@ public class InkPlayer : Node
 		set { Ink.Runtime.VariablesState.dontSaveDefaultValues = value; }
 	}
 
-	[Export]
 	public bool stop_execution_on_exception = false;
 
-	[Export]
 	public bool stop_execution_on_error = false;
 	#endregion
 

@@ -43,11 +43,11 @@ var dont_save_default_values: bool = false
 
 ## Uses `assert` instead of `push_error` to report critical errors, thus
 ## making them more explicit during development.
-var stop_execution_on_exception: bool = false
+var stop_execution_on_exception: bool = true
 
 ## Uses `assert` instead of `push_error` to report story errors, thus
 ## making them more explicit during development.
-var stop_execution_on_error: bool = false
+var stop_execution_on_error: bool = true
 
 # ############################################################################ #
 
