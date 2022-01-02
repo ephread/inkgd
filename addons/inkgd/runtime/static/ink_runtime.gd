@@ -9,7 +9,6 @@
 # inkgd is licensed under the terms of the MIT license.
 # ############################################################################ #
 
-tool
 extends Node
 
 # Hiding this type to prevent registration of "private" nodes.

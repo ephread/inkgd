@@ -7,7 +7,6 @@
 # inkgd is licensed under the terms of the MIT license.
 # ############################################################################ #
 
-tool
 
 enum PushPopType {
 	TUNNEL,

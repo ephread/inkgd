@@ -12,7 +12,6 @@
 # !! VALUE TYPE
 # ############################################################################ #
 
-tool
 extends InkBase
 
 class_name InkSearchResult

@@ -12,7 +12,6 @@
 # It has none of the optimisations of original class and merely wraps
 # a plain old string.
 
-tool
 
 class_name InkStringWriter
 

@@ -9,7 +9,6 @@
 # inkgd is licensed under the terms of the MIT license.
 # ############################################################################ #
 
-tool
 extends InkBase
 
 class_name InkPath

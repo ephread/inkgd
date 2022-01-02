@@ -12,7 +12,6 @@
 # Less accurate than the original implemntation, but good enough for
 # the use-case.
 
-tool
 
 class_name InkStopWatch
 

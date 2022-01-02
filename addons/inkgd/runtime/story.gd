@@ -10,7 +10,6 @@
 # inkgd is licensed under the terms of the MIT license.
 # ############################################################################ #
 
-tool
 extends InkObject
 
 class_name InkStory

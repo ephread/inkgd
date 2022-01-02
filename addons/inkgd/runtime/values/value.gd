@@ -9,7 +9,6 @@
 # inkgd is licensed under the terms of the MIT license.
 # ############################################################################ #
 
-tool
 extends InkObject
 
 # This is a merge of the original Value class and its Value<T> subclass.

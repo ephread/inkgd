@@ -13,7 +13,6 @@
 
 # This simple set is designed to hold Strings only.
 
-tool
 extends Reference
 
 class_name InkStringSet

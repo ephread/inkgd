@@ -5,7 +5,6 @@
 # See LICENSE in the project root for license information.
 # ############################################################################ #
 
-tool
 extends Node
 
 class_name InkPlayer
@@ -677,8 +676,10 @@ func _finalise_story_creation():
 func _add_runtime():
 	# The InkRuntime is normaly an auto-loaded singleton,
 	# but if it's not present, it's added here.
-	var runtime = get_tree().root.get_node("__InkRuntime")
-	if runtime == null:
+	var runtime: Node
+	if get_tree().root.has_node("__InkRuntime"):
+		runtime = get_tree().root.get_node("__InkRuntime")
+	else:
 		_manages_runtime = true
 		runtime = InkRuntime.init(get_tree().root)
 

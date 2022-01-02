@@ -13,7 +13,6 @@
 # !! VALUE TYPE
 # ############################################################################ #
 
-tool
 extends InkObject
 
 class_name InkListItem
