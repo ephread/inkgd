@@ -28,6 +28,12 @@ var InkConfiguration = load("res://addons/inkgd/editor/common/ink_configuration.
 var InkCompilationConfiguration = load("res://addons/inkgd/editor/common/executors/structures/ink_compilation_configuration.gd")
 var InkCompiler = load("res://addons/inkgd/editor/common/executors/ink_compiler.gd")
 
+# ############################################################################ #
+# Constant
+# ############################################################################ #
+
+const DO_NOT_USE_MONO_RUNTIME_SETTING = "inkgd/do_not_use_mono_runtime"
+
 
 # ############################################################################ #
 # Private Properties
@@ -220,11 +226,11 @@ func _get_plugin_templates_names() -> Array:
 
 
 func _register_custom_settings():
-	if !ProjectSettings.has_setting("inkgd/do_not_use_mono_runtime"):
-		ProjectSettings.set_setting("inkgd/do_not_use_mono_runtime", false)
+	if !ProjectSettings.has_setting(DO_NOT_USE_MONO_RUNTIME_SETTING):
+		ProjectSettings.set_setting(DO_NOT_USE_MONO_RUNTIME_SETTING, false)
 
 	var property_info = {
-		"name": "inkgd/do_not_use_mono_runtime",
+		"name": DO_NOT_USE_MONO_RUNTIME_SETTING,
 		"type": TYPE_BOOL,
 		"hint_string": "Enable this setting to always use the GDScript runtime.",
 		"default": false
@@ -244,11 +250,14 @@ func _validate_csproj() -> bool:
 
 
 func _should_use_mono():
-	var do_not_use_mono = ProjectSettings.get_setting("inkgd/do_not_use_mono_runtime")
-	if do_not_use_mono == null:
-		do_not_use_mono = false
+	if ProjectSettings.has_setting(DO_NOT_USE_MONO_RUNTIME_SETTING):
+		var do_not_use_mono = ProjectSettings.get_setting(DO_NOT_USE_MONO_RUNTIME_SETTING)
+		if do_not_use_mono == null:
+			do_not_use_mono = false
 
-	return _can_run_mono() && !do_not_use_mono
+		return _can_run_mono() && !do_not_use_mono
+	else:
+		return _can_run_mono()
 
 
 func _can_run_mono():
