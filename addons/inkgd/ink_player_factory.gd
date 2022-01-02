@@ -21,8 +21,11 @@ static func create():
 			return InkPlayer.new()
 		else:
 			printerr(
-					"[inkgd] [ERROR] InkPlayer can't be instantiated. Was ink-runtime-engine.dll added to the " +
-					"project? If this is the case, try to rebuild the C# solution then reload the project."
+					"[inkgd] [ERROR] InkPlayer can't be instantiated. Make sure that a suitable " +
+					"copy of 'ink-runtime-engine.dll' can be found in project and double check " +
+					"that the .csproj file contains a <Reference> item pointing to it. " +
+					"If everything is configured correctly, you may need to rebuild " +
+					"the C# solution. Please refer to [TO BE ADDED] for additional help."
 			)
 			print("[inkgd] [INFO] Falling back to the GDScript runtime.")
 

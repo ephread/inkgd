@@ -15,16 +15,18 @@ extends EditorPlugin
 # Imports
 # ############################################################################ #
 
+var InkJsonImportPlugin = preload("res://addons/inkgd/editor/import_plugins/ink_json_import_plugin.gd")
+var InkSourceImportPlugin = preload("res://addons/inkgd/editor/import_plugins/ink_source_import_plugin.gd")
+
+var InkBottomPanel = preload("res://addons/inkgd/editor/panel/ink_bottom_panel.tscn")
+
+var InkCSharpValidator = preload("res://addons/inkgd/editor/common/ink_csharp_validator.gd")
+
 var InkEditorInterface = load("res://addons/inkgd/editor/common/ink_editor_interface.gd")
 var InkConfiguration = load("res://addons/inkgd/editor/common/ink_configuration.gd")
 
 var InkCompilationConfiguration = load("res://addons/inkgd/editor/common/executors/structures/ink_compilation_configuration.gd")
 var InkCompiler = load("res://addons/inkgd/editor/common/executors/ink_compiler.gd")
-
-var InkJsonImportPlugin = preload("res://addons/inkgd/editor/import_plugins/ink_json_import_plugin.gd")
-var InkSourceImportPlugin = preload("res://addons/inkgd/editor/import_plugins/ink_source_import_plugin.gd")
-
-var InkBottomPanel = preload("res://addons/inkgd/editor/panel/ink_bottom_panel.tscn")
 
 
 # ############################################################################ #
@@ -237,48 +239,8 @@ func _validate_csproj() -> bool:
 		printerr("[inkgd] [ERROR] The project is missing a name.")
 		return false
 
-	var csproj_path = "res://%s.csproj" % project_name
-	var file = File.new()
-	if !file.file_exists(csproj_path):
-		printerr(
-				("[inkgd] [ERROR] The C# project (%s.csproj) doesn't exist. " % project_name) +
-				"You can create a new C# project through " +
-				"Project > Tools > C# > Create C# Solution. Alternatively, you can also set " +
-				"Project Settings > General > Inkgd > Do Not Use Mono Runtime to 'Yes' " +
-				"if you do not wish to use the C# version of Ink. "
-		)
-
-		return false
-
-	var error = file.open(csproj_path, File.READ)
-	if error != OK:
-		printerr(
-				"[inkgd] [ERROR] The C# project (%s.csproj) exists but it could not be opened." +
-				"(Code %d)" % [project_name, error]
-		)
-		return false
-
-	var content = file.get_as_text()
-	file.close()
-
-	var InkCsProjValidator = load("res://addons/inkgd/mono/InkCsProjValidator.cs");
-	if !InkCsProjValidator.can_instance():
-		printerr(
-				"[inkgd] [ERROR] The C# solution hasn't been built yet. Build it first " +
-				"then reload the project."
-		)
-		return false
-
-	var validator = InkCsProjValidator.new()
-	if !validator.is_valid(content):
-		print(
-				"[inkgd] [INFO] The Ink Runtime reference seems to be missing " +
-				"from '%s.csproj'. If you encounter further errors, please refer to " % project_name +
-				"[TO BE ADDED] for more information on how to add the assembly reference."
-		)
-		# Returning true regardless, in case of a false negative.
-
-	return true
+	var validator = InkCSharpValidator.new()
+	return validator.validate_csharp_project_files(project_name)
 
 
 func _should_use_mono():

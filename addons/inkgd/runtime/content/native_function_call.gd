@@ -126,10 +126,10 @@ func call_coerced(parameters_of_single_type: Array) -> InkValue:
 
 			return InkValue.create(result_val)
 	else:
-		Utils.throw_exception(str(
-			"Unexpected number of parameters to NativeFunctionCall: ",
-			parameters_of_single_type.size()
-		))
+		Utils.throw_exception(
+				"Unexpected number of parameters to NativeFunctionCall: %d" % \
+				parameters_of_single_type.size()
+		)
 		return null
 
 # (Array<InkObject>) -> Value
@@ -158,10 +158,12 @@ func call_binary_list_operation(parameters: Array) -> InkValue:
 	if v1.value_type == ValueType.LIST && v2.value_type == ValueType.LIST:
 		return call_coerced([v1, v2])
 
-	Utils.throw_exception(str(
-		"Can not call use '", self.name,
-		"' operation on ", v1.value_type + " and " + v2.value_type
-	))
+	var v1_type_name = Utils.value_type_name(v1.value_type)
+	var v2_type_name = Utils.value_type_name(v2.value_type)
+	Utils.throw_exception(
+			"Can not call use '%s' operation on %s and %s" % \
+			[self.name, v1_type_name, v2_type_name]
+	)
 
 	return null
 

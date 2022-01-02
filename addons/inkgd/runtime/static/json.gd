@@ -441,7 +441,7 @@ func jtoken_to_runtime_object(token) -> InkObject:
 	if token == null:
 		return null
 
-	Utils.throw_exception("Failed to convert token to runtime object: " + str(token))
+	Utils.throw_exception("Failed to convert token to runtime object: %s" % str(token))
 	return null
 
 # (self.Json.Writer, InkContainer, Bool) -> void

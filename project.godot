@@ -24,6 +24,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/inkgd/runtime/values/bool_value.gd"
 }, {
+"base": "Reference",
+"class": "InkCSharpValidator",
+"language": "GDScript",
+"path": "res://addons/inkgd/editor/common/ink_csharp_validator.gd"
+}, {
 "base": "InkBase",
 "class": "InkCallStack",
 "language": "GDScript",
@@ -323,6 +328,7 @@ _global_script_class_icons={
 "ChoiceContainer": "",
 "InkBase": "",
 "InkBoolValue": "",
+"InkCSharpValidator": "",
 "InkCallStack": "",
 "InkChoice": "",
 "InkChoicePoint": "",

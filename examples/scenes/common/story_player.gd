@@ -157,7 +157,6 @@ func _choice_selected(index):
 	_story_vbox_container.remove_child(_current_choice_container)
 	_current_choice_container.queue_free()
 
-	print(index)
 	_ink_player.choose_choice_index(index)
 	_continue_story()
 

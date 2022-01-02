@@ -315,6 +315,7 @@ func set_in_expression_evaluation(value: bool):
 	var current_element = self.callstack.current_element
 	current_element.in_expression_evaluation = value
 
+# (InkStory) -> InkStoryState
 func _init(story):
 	get_json()
 
@@ -337,13 +338,13 @@ func _init(story):
 
 	self.go_to_start()
 
-# () -> void
-func go_to_start():
+
+func go_to_start() -> void:
 	var current_element = self.callstack.current_element
 	current_element.current_pointer = InkPointer.start_of(self.story.main_content_container)
 
-# (String) -> void
-func switch_flow_internal(flow_name):
+
+func switch_flow_internal(flow_name: String) -> void:
 	if flow_name == null:
 		Utils.throw_exception("Must pass a non-null string to Story.SwitchFlow")
 
@@ -366,15 +367,15 @@ func switch_flow_internal(flow_name):
 
 	self.output_stream_dirty()
 
-# () -> void
-func switch_to_default_flow_internal():
+
+func switch_to_default_flow_internal() -> void:
 	if self._named_flows == null:
 		return
 
 	self.switch_flow_internal(DEFAULT_FLOW_NAME)
 
-# () -> void
-func remove_flow_internal(flow_name):
+
+func remove_flow_internal(flow_name: String) -> void:
 	if flow_name == null:
 		Utils.throw_exception("Must pass a non-null string to Story.DestroyFlow")
 		return
@@ -388,7 +389,7 @@ func remove_flow_internal(flow_name):
 
 	self._named_flows.erase(flow_name)
 
-# () -> StoryState
+# () -> InkStoryState
 func copy_and_start_patching():
 	var copy = InkStoryState().new(self.story)
 
@@ -436,13 +437,13 @@ func copy_and_start_patching():
 
 	return copy
 
-# () -> void
-func restore_after_patch():
+
+func restore_after_patch() -> void:
 	self.variables_state.callstack = self.callstack
 	self.variables_state.patch = self._patch
 
-# () -> void
-func apply_any_patch():
+
+func apply_any_patch() -> void:
 	if self._patch == null:
 		return
 
@@ -456,13 +457,13 @@ func apply_any_patch():
 
 	self._patch = null
 
-# (InkContainer, Int, Bool) -> void
-func apply_count_changes(container, new_count, is_visit):
+
+func apply_count_changes(container: InkContainer, new_count: int, is_visit: bool) -> void:
 	var counts = self._visit_counts if is_visit else  self._turn_indices
 	counts[container.path._to_string()] = new_count
 
-# (SimpleJson.Writer) -> void
-func write_json(writer):
+
+func write_json(writer: InkSimpleJSON.Writer) -> void:
 	writer.write_object_start()
 
 	writer.write_property_start("flows")
@@ -496,7 +497,8 @@ func write_json(writer):
 	writer.write_property("inkFormatVersion", self.story.INK_VERSION_CURRENT)
 	writer.write_object_end()
 
-func load_json_obj(jobject):
+
+func load_json_obj(jobject: Dictionary) -> void:
 	var jsave_version = null # Variant
 	if !jobject.has("inkSaveVersion"):
 		Utils.throw_exception("ink save format incorrect, can't load.")
@@ -504,11 +506,11 @@ func load_json_obj(jobject):
 	else:
 		jsave_version = int(jobject["inkSaveVersion"])
 		if jsave_version < MIN_COMPATIBLE_LOAD_VERSION:
-			Utils.throw_exception(str(
-				"Ink save format isn't compatible with the current version (saw '",
-				jsave_version, "', but minimum is ", MIN_COMPATIBLE_LOAD_VERSION,
-				"), so can't load."
-			))
+			Utils.throw_exception(
+					"Ink save format isn't compatible with the current version (saw " +
+					"'%d', but minimum is %d " % [jsave_version, MIN_COMPATIBLE_LOAD_VERSION] +
+					"), so can't load."
+			)
 			return
 
 	if jobject.has("flows"):
@@ -568,19 +570,21 @@ func load_json_obj(jobject):
 	else:
 		self.previous_random = 0
 
+
 # () -> void
-func reset_errors():
+func reset_errors() -> void:
 	self.current_errors = null
 	self.current_warnings = null
 
-# (Array<InkObject>) -> void
-func reset_output(objs = null):
+
+# (Array<InkObject>?) -> void
+func reset_output(objs = null) -> void:
 	self.output_stream.clear()
 	if objs != null: self.output_stream += objs
 	self.output_stream_dirty()
 
-# (InkObject) -> void
-func push_to_output_stream(obj):
+
+func push_to_output_stream(obj: InkObject) -> void:
 	var text = Utils.as_or_null(obj, "StringValue")
 	if text:
 		var list_text = self.try_splitting_head_tail_whitespace(text)
@@ -594,13 +598,13 @@ func push_to_output_stream(obj):
 	self.push_to_output_stream_individual(obj)
 	self.output_stream_dirty()
 
-# (int) -> void
-func pop_from_output_stream(count):
+
+func pop_from_output_stream(count: int) -> void:
 	Utils.remove_range(self.output_stream, self.output_stream.size() - count, count)
 	self.output_stream_dirty()
 
-# (StringValue) -> StringValue
-func try_splitting_head_tail_whitespace(single):
+
+func try_splitting_head_tail_whitespace(single: InkStringValue) -> InkStringValue:
 	var _str = single.value
 
 	var head_first_newline_idx = -1
@@ -669,8 +673,8 @@ func try_splitting_head_tail_whitespace(single):
 
 	return list_texts
 
-# (InkObject) -> void
-func push_to_output_stream_individual(obj):
+
+func push_to_output_stream_individual(obj: InkObject) -> void:
 	var glue = Utils.as_or_null(obj, "Glue")
 	var text = Utils.as_or_null(obj, "StringValue")
 
@@ -738,8 +742,8 @@ func push_to_output_stream_individual(obj):
 		self.output_stream.append(obj)
 		self.output_stream_dirty()
 
-# () -> void
-func trim_newlines_from_output_stream():
+
+func trim_newlines_from_output_stream() -> void:
 	var remove_whitespace_from = -1 # int
 
 	var i = self.output_stream.size() - 1
@@ -766,8 +770,8 @@ func trim_newlines_from_output_stream():
 
 	self.output_stream_dirty()
 
-# () -> void
-func remove_existing_glue():
+
+func remove_existing_glue() -> void:
 	var i = self.output_stream.size() - 1
 	while (i >= 0):
 		var c = self.output_stream[i]
@@ -780,8 +784,9 @@ func remove_existing_glue():
 
 	self.output_stream_dirty()
 
-var output_stream_ends_in_newline setget , get_output_stream_ends_in_newline # bool
-func get_output_stream_ends_in_newline():
+
+var output_stream_ends_in_newline: bool setget , get_output_stream_ends_in_newline
+func get_output_stream_ends_in_newline() -> bool:
 	if self.output_stream.size() > 0:
 		var i = self.output_stream.size() - 1
 		while (i >= 0):
@@ -799,16 +804,18 @@ func get_output_stream_ends_in_newline():
 
 	return false
 
-var output_stream_contains_content setget , get_output_stream_contains_content # bool
-func get_output_stream_contains_content():
+
+var output_stream_contains_content: bool setget , get_output_stream_contains_content
+func get_output_stream_contains_content() -> bool:
 	for content in self.output_stream:
 		if Utils.is_ink_class(content, "StringValue"):
 			return true
 
 	return false
 
-var in_string_evaluation setget , get_in_string_evaluation # bool
-func get_in_string_evaluation():
+
+var in_string_evaluation: bool setget , get_in_string_evaluation
+func get_in_string_evaluation() -> bool:
 	var i = self.output_stream.size() - 1
 
 	while (i >= 0):
@@ -820,8 +827,9 @@ func get_in_string_evaluation():
 
 	return false
 
+
 # (InkObject) -> void
-func push_evaluation_stack(obj):
+func push_evaluation_stack(obj: InkObject) -> void:
 	var list_value = Utils.as_or_null(obj, "ListValue")
 	if list_value:
 		var raw_list = list_value.value
@@ -837,12 +845,14 @@ func push_evaluation_stack(obj):
 
 	self.evaluation_stack.append(obj)
 
+
 # () -> InkObject
-func peek_evaluation_stack():
+func peek_evaluation_stack() -> InkObject:
 	return self.evaluation_stack.back()
 
-# (int) -> Array<InkObject>
-func pop_evaluation_stack(number_of_objects = -1) -> Array:
+
+# (int) -> InkObject | Array<InkObject>
+func pop_evaluation_stack(number_of_objects: int = -1):
 	if number_of_objects == -1:
 		return self.evaluation_stack.pop_back()
 
@@ -860,8 +870,9 @@ func pop_evaluation_stack(number_of_objects = -1) -> Array:
 	)
 	return popped
 
+
 # () -> void
-func force_end():
+func force_end() -> void:
 	self.callstack.reset()
 
 	self._current_flow.current_choices.clear()
@@ -871,8 +882,8 @@ func force_end():
 
 	self.did_safe_exit = true
 
-# () -> void
-func trim_whitespace_from_function_end():
+
+func trim_whitespace_from_function_end() -> void:
 	assert(self.callstack.current_element.type == PushPopType.FUNCTION)
 
 	var function_start_point = self.callstack.current_element.function_start_in_ouput_stream
@@ -898,15 +909,17 @@ func trim_whitespace_from_function_end():
 
 		i -= 1
 
-# (PushPopType) -> void
-func pop_callstack(pop_type = null):
+
+# (PushPopType?) -> void
+func pop_callstack(pop_type = null) -> void:
 	if (self.callstack.current_element.type == PushPopType.FUNCTION):
 		self.trim_whitespace_from_function_end()
 
 	self.callstack.pop(pop_type)
 
+
 # (InkPath, bool) -> void
-func set_chosen_path(path, incrementing_turn_index):
+func set_chosen_path(path: InkPath, incrementing_turn_index: bool) -> void:
 	self._current_flow.current_choices.clear()
 
 	var new_pointer = self.story.pointer_at_path(path)
@@ -919,34 +932,37 @@ func set_chosen_path(path, incrementing_turn_index):
 	if incrementing_turn_index:
 		self.current_turn_index += 1
 
-# (InkContainer, [InkObject]) -> void
-func start_function_evaluation_from_game(func_container, arguments):
+
+# (InkContainer, Array<InkObject>?) -> void
+func start_function_evaluation_from_game(func_container: InkContainer, arguments) -> void:
 	self.callstack.push(PushPopType.FUNCTION_EVALUATION_FROM_GAME, self.evaluation_stack.size())
 	var current_element = self.callstack.current_element
 	current_element.current_pointer = InkPointer.start_of(func_container)
 
 	self.pass_arguments_to_evaluation_stack(arguments)
 
-# ([InkObject]) -> void
-func pass_arguments_to_evaluation_stack(arguments):
+
+# (Array<InkObject>?) -> void
+func pass_arguments_to_evaluation_stack(arguments) -> void:
 	if arguments != null:
 		var i = 0
 		while (i < arguments.size()):
 			if !(arguments[i] is int || arguments[i] is float || arguments[i] is String || ((arguments[i] is Object) && arguments[i].is_class("InkList"))):
-				Utils.throw_argument_exception(str(
-					"ink arguments when calling EvaluateFunction / ",
-					"ChoosePathStringWithParameters must be int, ",
-					"float, string or InkList. Argument was ",
-					"null" if arguments[i] == null else Utils.typename_of(arguments[i])
-				))
+				Utils.throw_argument_exception(
+						"ink arguments when calling EvaluateFunction / " +
+						"ChoosePathStringWithParameters must be int, " +
+						"float, string or InkList. Argument was " +
+						"null" if arguments[i] == null else Utils.typename_of(arguments[i])
+				)
 				return
 
 			push_evaluation_stack(InkValue.create(arguments[i]))
 
 			i += 1
 
+
 # () -> bool
-func try_exit_function_evaluation_from_game():
+func try_exit_function_evaluation_from_game() -> bool:
 	if self.callstack.current_element.type == PushPopType.FUNCTION_EVALUATION_FROM_GAME:
 		self.current_pointer = InkPointer.null()
 		self.did_safe_exit = true
@@ -954,13 +970,14 @@ func try_exit_function_evaluation_from_game():
 
 	return false
 
+
 # () -> Variant
 func complete_function_evaluation_from_game():
 	if self.callstack.current_element.type != PushPopType.FUNCTION_EVALUATION_FROM_GAME:
-		Utils.throw_exception(str(
-			"Expected external function evaluation to be complete. Stack trace: ",
-			self.callstack_trace
-		))
+		Utils.throw_exception(
+				"Expected external function evaluation to be complete. Stack trace: %s" % \
+				self.callstack_trace
+		)
 		return null
 
 	var original_evaluation_stack_height = self.callstack.current_element.evaluation_stack_height_when_pushed
@@ -986,8 +1003,8 @@ func complete_function_evaluation_from_game():
 
 	return null
 
-# (string, bool) -> void
-func add_error(message, is_warning):
+
+func add_error(message: String, is_warning: bool) -> void:
 	if !is_warning:
 		if self.current_errors == null:
 			self.current_errors = [] # Array<string>
@@ -997,10 +1014,12 @@ func add_error(message, is_warning):
 			self.current_warnings = [] # Array<string>
 		self.current_warnings.append(message)
 
-# () -> void
-func output_stream_dirty():
+
+func output_stream_dirty() -> void:
 	self._output_stream_text_dirty = true
 	self._output_stream_tags_dirty = true
+
+# ############################################################################ #
 
 # Dictionary<string, Int>
 var _visit_counts: Dictionary
@@ -1011,49 +1030,54 @@ var _turn_indices: Dictionary
 var _output_stream_text_dirty: bool = true # bool
 var _output_stream_tags_dirty: bool = true # bool
 
-var _patch # StatePatch
+var _patch # StatePatch?
 
-var _current_flow = null # Flow
-var _named_flows = null # Dictionary<String, Flow>
-const DEFAULT_FLOW_NAME = "DEFAULT_FLOW" # String
+var _current_flow = null # Flow?
+var _named_flows = null # Dictionary<String, Flow>?
+const DEFAULT_FLOW_NAME: String = "DEFAULT_FLOW" # String
+
+
+# C# Actions & Delegates ##################################################### #
+
+func _anonymous_write_property_eval_stack(writer) -> void:
+	self.Json.write_list_runtime_objs(writer, self.evaluation_stack)
+
+func _anonymous_write_property_visit_counts(writer) -> void:
+	self.Json.write_int_dictionary(writer, self._visit_counts)
+
+func _anonymous_write_property_turn_indices(writer) -> void:
+	self.Json.write_int_dictionary(writer, self._turn_indices)
+
 
 # ############################################################################ #
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type):
+func is_class(type: String) -> bool:
 	return type == "StoryState" || .is_class(type)
 
-func get_class():
+func get_class() -> String:
 	return "StoryState"
 
-# C# Actions & Delegates ##################################################### #
-
-func _anonymous_write_property_eval_stack(writer):
-	self.Json.write_list_runtime_objs(writer, self.evaluation_stack)
-
-func _anonymous_write_property_visit_counts(writer):
-	self.Json.write_int_dictionary(writer, self._visit_counts)
-
-func _anonymous_write_property_turn_indices(writer):
-	self.Json.write_int_dictionary(writer, self._turn_indices)
 
 # ############################################################################ #
 
 var Json setget , get_Json
 func get_Json():
 	return _Json.get_ref()
-var _Json = WeakRef.new()
+var _Json: WeakRef = WeakRef.new()
 
 func get_json():
 	var InkRuntime = Engine.get_main_loop().root.get_node("__InkRuntime")
 
-	Utils.__assert__(InkRuntime != null,
-				 str("Could not retrieve 'InkRuntime' singleton from the scene tree."))
+	Utils.__assert__(
+			InkRuntime != null,
+			str("Could not retrieve 'InkRuntime' singleton from the scene tree.")
+	)
 
 	_Json = weakref(InkRuntime.json)
 
 # ############################################################################ #
 
-func _get_runtime():
+func _get_runtime() -> Node:
 	return Engine.get_main_loop().root.get_node("__InkRuntime")

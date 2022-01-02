@@ -15,8 +15,8 @@ extends InkObject
 
 class_name InkStory
 
-const INK_VERSION_CURRENT = 20
-const INK_VERSION_MINIMUM_COMPATIBLE = 18
+const INK_VERSION_CURRENT := 20
+const INK_VERSION_MINIMUM_COMPATIBLE := 18
 
 # ############################################################################ #
 # Imports
@@ -118,20 +118,21 @@ signal on_complete_evaluate_function(function_name, arguments, text_output, resu
 
 signal on_choose_path_string(path, arguments)
 
-# () -> Profiler
-func start_profiling():
+
+func start_profiling() -> InkProfiler:
 	if async_we_cant ("Start Profiling"):
-		return
+		return null
 
 	_profiler = InkProfiler.new()
 	return _profiler
 
-# () -> void
-func end_profiling():
+
+func end_profiling() -> void:
 	_profiler = null
 
+
 # (InkContainer, Array<ListDefinition>) -> void
-func _init_with(content_container, lists = null):
+func _init_with(content_container: InkContainer, lists = null):
 	_initialize_runtime()
 	self._main_content_container = content_container
 
@@ -140,8 +141,8 @@ func _init_with(content_container, lists = null):
 
 	self._externals = {} # Dictionary<String, ExternalFunctionDef>
 
-# (String) -> Story
-func _init(json_string):
+
+func _init(json_string: String):
 	_init_with(null)
 
 	var root_object = InkSimpleJSON.text_to_dictionary(json_string)
@@ -190,17 +191,19 @@ func _init(json_string):
 
 	self.reset_state()
 
+
 # () -> String
-func to_json():
+func to_json() -> String:
 	var writer: InkSimpleJSON.Writer = InkSimpleJSON.Writer.new()
 	to_json_with_writer(writer)
 	return writer._to_string()
 
-func write_root_property(writer):
+
+func write_root_property(writer: InkSimpleJSON.Writer) -> void:
 	self.Json.write_runtime_container(writer, self._main_content_container)
 
-# (self.Json.Writer) -> String
-func to_json_with_writer(writer):
+
+func to_json_with_writer(writer: InkSimpleJSON.Writer) -> void:
 	writer.write_object_start()
 
 	writer.write_property("inkVersion", INK_VERSION_CURRENT)
@@ -228,8 +231,9 @@ func to_json_with_writer(writer):
 
 	writer.write_object_end()
 
+
 # () -> void
-func reset_state():
+func reset_state() -> void:
 	if async_we_cant ("ResetState"):
 		return
 
@@ -238,19 +242,22 @@ func reset_state():
 
 	self.reset_globals()
 
-# () -> void
-func reset_errors():
-	self._state.reset_errors()
 
 # () -> void
-func reset_callstack():
+func reset_errors() -> void:
+	self._state.reset_errors()
+
+
+# () -> void
+func reset_callstack() -> void:
 	if async_we_cant("ResetCallstack"):
 		return
 
 	self._state.force_end()
 
+
 # () -> void
-func reset_globals():
+func reset_globals() -> void:
 	if (self._main_content_container.named_content.has("global decl")):
 		var original_pointer = self.state.current_pointer.duplicate()
 
@@ -262,7 +269,8 @@ func reset_globals():
 
 	self.state.variables_state.snapshot_default_globals()
 
-func switch_flow(flow_name):
+
+func switch_flow(flow_name) -> void:
 	if async_we_cant("SwitchFlow"):
 		return
 
@@ -271,34 +279,38 @@ func switch_flow(flow_name):
 
 	self.state.switch_flow_internal(flow_name)
 
-func remove_flow(flow_name):
+
+func remove_flow(flow_name) -> void:
 	self.state.remove_flow_internal(flow_name)
 
-func switch_to_default_flow():
+
+func switch_to_default_flow() -> void:
 	self.state.switch_to_default_flow_internal()
 
-# () -> String
-func continue():
+
+func continue() -> String:
 	self.continue_async(0)
 	return self.current_text
 
-var can_continue setget , get_continue # bool
-func get_continue():
+
+var can_continue: bool setget , get_continue
+func get_continue() -> bool:
 	return self.state.can_continue
 
-var async_continue_complete setget , get_async_continue_complete # bool
-func get_async_continue_complete():
+
+var async_continue_complete: bool setget , get_async_continue_complete
+func get_async_continue_complete() -> bool:
 	return !self._async_continue_active
 
-# (float) -> void
-func continue_async(millisecs_limit_async):
+
+func continue_async(millisecs_limit_async: float):
 	if !self._has_validated_externals:
 		self.validate_external_bindings()
 
 	continue_internal(millisecs_limit_async)
 
-# (float) -> void
-func continue_internal(millisecs_limit_async = 0):
+
+func continue_internal(millisecs_limit_async: float = 0) -> void:
 	if _profiler != null:
 		_profiler.pre_continue()
 
@@ -413,8 +425,8 @@ func continue_internal(millisecs_limit_async = 0):
 			# If you get this exception, please connect an error handler to the appropriate signal: "on_error".
 			Utils.throw_story_exception(exception)
 
-# ()
-func continue_single_step():
+
+func continue_single_step() -> bool:
 	if _profiler != null:
 		_profiler.pre_step()
 
@@ -458,14 +470,21 @@ func continue_single_step():
 
 	return false
 
+
 enum OutputStateChange {
 	NO_CHANGE,
 	EXTENDED_BEYOND_NEWLINE,
 	NEWLINE_REMOVED
 }
 
+
 # (String, String, int, int) -> OutputStateChange
-func calculate_newline_output_state_change(prev_text, curr_text, prev_tag_count, curr_tag_count):
+func calculate_newline_output_state_change(
+	prev_text: String,
+	curr_text: String,
+	prev_tag_count: int,
+	curr_tag_count: int
+) -> int:
 	var newline_still_exists = curr_text.length() >= prev_text.length() && curr_text[prev_text.length() - 1] == "\n"
 	if (prev_tag_count == curr_tag_count && prev_text.length() == curr_text.length() && newline_still_exists):
 		return OutputStateChange.NO_CHANGE
@@ -487,10 +506,10 @@ func calculate_newline_output_state_change(prev_text, curr_text, prev_tag_count,
 
 	return OutputStateChange.NO_CHANGE
 
-# () -> String
-func continue_maximally():
+
+func continue_maximally() -> String:
 	if async_we_cant("ContinueMaximally"):
-		return null
+		return ""
 
 	var _str = ""
 
@@ -499,19 +518,19 @@ func continue_maximally():
 
 	return _str
 
-# (InkPath) -> SearchResult
-func content_at_path(path):
+
+func content_at_path(path: InkPath) -> InkSearchResult:
 	return self.main_content_container.content_at_path(path)
 
-# (String) -> InkContainer
-func knot_container_with_name(name):
+
+func knot_container_with_name(name: String) -> InkContainer:
 	if self.main_content_container.named_content.has(name):
 		return Utils.as_or_null(self.main_content_container.named_content[name], "InkContainer")
 
 	return null
 
-# (InkPath) -> Result<Pointer>
-func pointer_at_path(path):
+
+func pointer_at_path(path: InkPath) -> InkPointer:
 	if (path.length == 0):
 		return InkPointer.null()
 
@@ -531,21 +550,25 @@ func pointer_at_path(path):
 		p.index = -1
 
 	if result.obj == null || result.obj == self.main_content_container && path_length_to_use > 0:
-		error(str("Failed to find content at path '", path._to_string(),
-				  "', and no approximation of it was possible."))
+		error(
+			"Failed to find content at path '%s', " % path._to_string() +
+			"and no approximation of it was possible."
+		)
 	elif result.approximate:
-		warning(str("Failed to find content at path '", path,
-					"', so it was approximated to: '", result.obj.path._to_string(), "'."))
+		warning(
+			"Failed to find content at path '%s', " %  path +
+			"so it was approximated to: '%s'." % result.obj.path._to_string()
+		)
 
 	return p
 
-# () -> StoryState
-func state_snapshot():
+
+func state_snapshot() -> void:
 	self._state_snapshot_at_last_newline = self._state
 	self._state = self._state.copy_and_start_patching()
 
-# (StoryState) -> void
-func restore_state_snapshot():
+
+func restore_state_snapshot() -> void:
 	self._state_snapshot_at_last_newline.restore_after_patch()
 
 	self._state = self._state_snapshot_at_last_newline
@@ -554,21 +577,24 @@ func restore_state_snapshot():
 	if !self._async_saving:
 		self._state.apply_any_patch()
 
-# () -> void
-func discard_snapshot():
+
+func discard_snapshot() -> void:
 	if !self._async_saving:
 		self._state.apply_any_patch()
 
 	self._state_snapshot_at_last_newline = null
 
-# () -> void
-func copy_state_for_background_thread_save():
+
+func copy_state_for_background_thread_save() -> InkStoryState:
 	if async_we_cant("start saving on a background thread"):
-		return
+		return null
 
 	if self._async_saving:
-		Utils.throw_exception("Story is already in background saving mode, can't call CopyStateForBackgroundThreadSave again!")
-		return
+		Utils.throw_exception(
+				"Story is already in background saving mode, " +
+				"can't call CopyStateForBackgroundThreadSave again!"
+		)
+		return null
 
 	var state_to_save = self._state
 	self._state = self._state.copy_and_start_patching()
@@ -576,15 +602,15 @@ func copy_state_for_background_thread_save():
 
 	return state_to_save
 
-# () -> void
-func background_save_complete():
+
+func background_save_complete() -> void:
 	if self._state_snapshot_at_last_newline == null:
 		_state.apply_any_patch()
 
 	self._async_saving = false
 
-# () -> void
-func step():
+
+func step() -> void:
 	var should_add_to_stream = true
 
 	var pointer = self.state.current_pointer.duplicate()
@@ -644,8 +670,8 @@ func step():
 	if control_cmd && control_cmd.command_type == InkControlCommand.CommandType.START_THREAD:
 		self.state.callstack.push_thread()
 
-# (InkContainer, bool) -> void
-func visit_container(container, at_start):
+
+func visit_container(container: InkContainer, at_start: bool) -> void:
 	if !container.counting_at_start_only || at_start:
 		if container.visits_should_be_counted:
 			self.state.increment_visit_count_for_container(container)
@@ -653,8 +679,9 @@ func visit_container(container, at_start):
 		if container.turn_index_should_be_counted:
 			self.state.record_turn_index_visit_to_container(container)
 
+
 var _prev_containers = [] # Array<Container>
-func visit_changed_containers_due_to_divert():
+func visit_changed_containers_due_to_divert() -> void:
 	var previous_pointer = self.state.previous_pointer.duplicate()
 	var pointer = self.state.current_pointer.duplicate()
 
@@ -690,8 +717,8 @@ func visit_changed_containers_due_to_divert():
 		current_child_of_container = current_container_ancestor
 		current_container_ancestor = Utils.as_or_null(current_container_ancestor.parent, "InkContainer")
 
-# (ChoicePoint) -> Choice
-func process_choice(choice_point):
+
+func process_choice(choice_point: InkChoicePoint) -> InkChoice:
 	var show_choice = true
 
 	if choice_point.has_condition:
@@ -728,8 +755,8 @@ func process_choice(choice_point):
 
 	return choice
 
-# (InkObject) -> bool
-func is_truthy(obj):
+
+func is_truthy(obj: InkObject) -> bool:
 	var truthy = false
 	if Utils.is_ink_class(obj, "Value"):
 		var val = obj
@@ -745,8 +772,8 @@ func is_truthy(obj):
 
 	return truthy
 
-# (InkObject) -> bool
-func perform_logic_and_flow_control(content_obj):
+
+func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 	if (content_obj == null):
 		return false
 
@@ -1013,7 +1040,9 @@ func perform_logic_and_flow_control(content_obj):
 				var list_name_val = Utils.as_or_null(self.state.pop_evaluation_stack(), "StringValue")
 
 				if int_val == null:
-					Utils.throw_story_exception("Passed non-integer when creating a list element from a numerical value.")
+					Utils.throw_story_exception(
+							"Passed non-integer when creating a list element from a numerical value."
+					)
 					return false
 
 				var generated_list_value = null # ListValue
@@ -1027,8 +1056,8 @@ func perform_logic_and_flow_control(content_obj):
 								int_val.value
 						)
 				else:
-					Utils.throw_story_exception("Failed to find LIST called " + list_name_val.value)
-					return null
+					Utils.throw_story_exception("Failed to find LIST called %s" % list_name_val.value)
+					return false
 
 				if generated_list_value == null:
 					generated_list_value = InkListValue.new()
@@ -1145,32 +1174,35 @@ func choose_path_string(path, reset_callstack = true, arguments = null):
 			if container != null:
 				func_detail = "(" + container.path._to_string() + ") "
 
-			Utils.throw_story_exception(str(
-				"Story was running a function ", func_detail,
-				"when you called ChoosePathString(", path,
-				") - this is almost certainly not not what you want! Full stack trace: \n",
-				self.state.callstack.callstack_trace
-			))
+			Utils.throw_story_exception(
+					"Story was running a function %s" % func_detail,
+					"when you called ChoosePathString(%s) " % path,
+					"- this is almost certainly not not what you want! Full stack trace: \n" +
+					self.state.callstack.callstack_trace
+			)
 
 			return
 
 	self.state.pass_arguments_to_evaluation_stack(arguments)
 	self.choose_path(InkPath().new_with_components_string(path))
 
+
 func async_we_cant(activity_str):
 	if self._async_continue_active:
-		Utils.throw_story_exception(str(
-			"Can't ", activity_str, ". Story is in the middle of a ContinueAsync().",
-			"Make more ContinueAsync() calls or a single Continue() call beforehand."
-		))
+		Utils.throw_story_exception(
+				"Can't %s. Story is in the middle of a ContinueAsync(). " % activity_str +
+				"Make more ContinueAsync() calls or a single Continue() call beforehand."
+		)
 
 	return _async_continue_active
+
 
 # (InkPath, bool)
 func choose_path(p, incrementing_turn_index = true):
 	self.state.set_chosen_path(p, incrementing_turn_index)
 
 	self.visit_changed_containers_due_to_divert()
+
 
 # (int) -> void
 func choose_choice_index(choice_idx):
@@ -1184,12 +1216,18 @@ func choose_choice_index(choice_idx):
 
 	choose_path(choice_to_choose.target_path)
 
+
 # (String) -> bool
-func has_function(function_name):
+func has_function(function_name: String) -> bool:
 	return knot_container_with_name(function_name) != null
 
-# (String, Array<Variant<) -> Variant
-func evaluate_function(function_name, arguments = null, return_text_output = false):
+
+# (String, Array<Variant>, bool) -> Variant
+func evaluate_function(
+	function_name: String,
+	arguments = null,
+	return_text_output: bool = false
+):
 	# Like inkjs, evaluate_function behaves differently than the C# version.
 	# In C#, you can pass a (second) parameter `out textOutput` to get the
 	# text outputted by the function. Instead, we maintain the regular signature,
@@ -1201,15 +1239,15 @@ func evaluate_function(function_name, arguments = null, return_text_output = fal
 		return
 
 	if function_name == null:
-		Utils.throw_story_exception ("Function is null")
+		Utils.throw_story_exception("Function is null")
 		return null
 	elif function_name == "" || Utils.trim(function_name) == "":
-		Utils.throw_story_exception ("Function is empty or white space.")
+		Utils.throw_story_exception("Function is empty or white space.")
 		return null
 
 	var func_container = knot_container_with_name(function_name)
 	if func_container == null:
-		Utils.throw_story_exception ("Function doesn't exist: '" + function_name + "'")
+		Utils.throw_story_exception("Function doesn't exist: '%s'" % function_name)
 		return null
 
 	var output_stream_before = self.state.output_stream.duplicate() # Array<InkObject>
@@ -1233,8 +1271,9 @@ func evaluate_function(function_name, arguments = null, return_text_output = fal
 	else:
 		return result
 
+
 # (InkContainer) -> InkObject
-func evaluate_expression(expr_container):
+func evaluate_expression(expr_container: InkContainer) -> InkObject:
 	var start_callstack_height = self.state.callstack.elements.size()
 
 	self.state.callstack.push(PushPopType.TUNNEL)
@@ -1260,8 +1299,9 @@ func evaluate_expression(expr_container):
 
 var allow_external_function_fallbacks = false # bool
 
+
 # (String, int) -> void
-func call_external_function(func_name, number_of_arguments):
+func call_external_function(func_name: String, number_of_arguments: int) -> void:
 	var _func_def = null # ExternalFunctionDef
 	var fallback_function_container = null # InkContainer
 
@@ -1317,8 +1357,14 @@ func call_external_function(func_name, number_of_arguments):
 
 	self.state.push_evaluation_stack(return_obj)
 
-# (String, ExternalFunctionDef) -> void
-func bind_external_function_general(func_name, object, method, lookahead_safe = true):
+
+# (String, Variant, ExternalFunctionDef, bool) -> void
+func bind_external_function_general(
+	func_name: String,
+	object,
+	method: String,
+	lookahead_safe: bool = true
+) -> void:
 	if async_we_cant("bind an external function"):
 		return
 
@@ -1326,24 +1372,32 @@ func bind_external_function_general(func_name, object, method, lookahead_safe = 
 				str("Function '", func_name, "' has already been bound."))
 	_externals[func_name] = ExternalFunctionDef.new(object, method, lookahead_safe)
 
+
 # try_coerce not needed.
 
-# (String, Variant, String) -> void
-func bind_external_function(func_name, object, method_name, lookahead_safe = false):
+
+# (String, Variant, String, bool) -> void
+func bind_external_function(
+	func_name: String,
+	object,
+	method_name: String,
+	lookahead_safe: bool = false
+) -> void:
 	self.__assert__(object != null || method_name != null, "Can't bind a null function")
 
 	bind_external_function_general(func_name, object, method_name, lookahead_safe)
 
-# (String) -> void
-func unbind_external_function(func_name):
+
+func unbind_external_function(func_name: String) -> void:
 	if async_we_cant("unbind an external a function"):
 		return
 
 	self.__assert__(_externals.has(func_name), str("Function '", func_name, "' has not been bound."))
 	_externals.erase(func_name)
 
-func validate_external_bindings():
-	var missing_externals = InkStringSet.new()
+
+func validate_external_bindings() -> void:
+	var missing_externals: InkStringSet = InkStringSet.new()
 
 	validate_external_bindings_with(_main_content_container, missing_externals)
 	_has_validated_externals = true
@@ -1351,16 +1405,16 @@ func validate_external_bindings():
 	if missing_externals.size() == 0:
 		_has_validated_externals = true
 	else:
-		var message = "ERROR: Missing function binding for external%s: '%s' %s" % [
+		var message: String = "ERROR: Missing function binding for external %s: '%s' %s" % [
 			"s" if missing_externals.size() > 1 else "",
 			Utils.join("', '", missing_externals.to_array()),
 			", and no fallback ink function found." if allow_external_function_fallbacks else " (ink fallbacks disabled)"
 		]
 
 		error(message)
-		return false
 
-func validate_external_bindings_with(o, missing_externals):
+
+func validate_external_bindings_with(o: InkContainer, missing_externals: InkStringSet) -> void:
 	var container = Utils.as_or_null(o, "InkContainer")
 	if container:
 		for inner_content in o.content:
@@ -1387,8 +1441,9 @@ func validate_external_bindings_with(o, missing_externals):
 			else:
 				missing_externals.append(name)
 
+
 # (String, Object, String) -> void
-func observe_variable(variable_name, object, method_name):
+func observe_variable(variable_name: String, object, method_name: String) -> void:
 	if async_we_cant("observe a new variable"):
 		return
 
@@ -1396,8 +1451,10 @@ func observe_variable(variable_name, object, method_name):
 		_variable_observers = {}
 
 	if !self.state.variables_state.global_variable_exists_with_name(variable_name):
-		Utils.throw_exception(str("Cannot observe variable '", variable_name,
-								  "' because it wasn't declared in the ink story."))
+		Utils.throw_exception(
+				"Cannot observe variable '%s'" % variable_name +
+				"because it wasn't declared in the ink story."
+		)
 		return
 
 	if _variable_observers.has(variable_name):
@@ -1408,10 +1465,12 @@ func observe_variable(variable_name, object, method_name):
 
 		_variable_observers[variable_name] = new_observer
 
+
 # (Array<String>, Object, String) -> void
-func observe_variables(variable_names, object, method_name):
+func observe_variables(variable_names: Array, object, method_name: String) -> void:
 	for var_name in variable_names:
 		observe_variable(var_name, object, method_name)
+
 
 # (Object, String, String) -> void
 # TODO: Rewrite this poor documentation and improve method beyond what
@@ -1462,8 +1521,8 @@ func remove_variable_observer(object = null, method_name = null, specific_variab
 		for key in keys_to_remove:
 			_variable_observers.erase(key)
 
-# (String, InkObject) -> void
-func variable_state_did_change_event(variable_name, new_value_obj):
+
+func variable_state_did_change_event(variable_name: String, new_value_obj: InkObject) -> void:
 	if _variable_observers == null:
 		return
 
@@ -1483,12 +1542,12 @@ var global_tags setget , get_global_tags # Array<String>
 func get_global_tags():
 	return self.tags_at_start_of_flow_container_with_path_string("")
 
-# (String) -> Array<String>
-func tags_for_content_at_path(path):
+# (String) -> Array<String>?
+func tags_for_content_at_path(path: String):
 	return self.tags_at_start_of_flow_container_with_path_string(path)
 
-# (String) -> Array<String>
-func tags_at_start_of_flow_container_with_path_string(path_string):
+# (String) -> Array<String>?
+func tags_at_start_of_flow_container_with_path_string(path_string: String):
 	var path = InkPath().new_with_components_string(path_string)
 
 	var flow_container = content_at_path(path).container
@@ -1508,18 +1567,18 @@ func tags_at_start_of_flow_container_with_path_string(path_string):
 
 	return tags
 
-# () -> String
-func build_string_of_container():
+
+func build_string_of_container() -> String:
 	# TODO: Implement
 	return ""
 
-# (Container) -> String
-func build_string_of_container_with(container):
+
+func build_string_of_container_with(container: InkContainer) -> String:
 	# TODO: Implement
 	return ""
 
-# () -> void
-func next_content():
+
+func next_content() -> void:
 
 	self.state.previous_pointer = self.state.current_pointer.duplicate()
 
@@ -1556,8 +1615,8 @@ func next_content():
 		if did_pop && !self.state.current_pointer.is_null:
 			self.next_content()
 
-# () -> bool
-func increment_content_pointer():
+
+func increment_content_pointer() -> bool:
 	var successful_increment = true
 
 	var pointer = self.state.callstack.current_element.current_pointer.duplicate()
@@ -1588,8 +1647,8 @@ func increment_content_pointer():
 
 	return successful_increment
 
-# () -> bool
-func try_follow_default_invisible_choice():
+
+func try_follow_default_invisible_choice() -> bool:
 	var all_choices = _state.current_choices
 
 	var invisible_choices = []
@@ -1612,8 +1671,8 @@ func try_follow_default_invisible_choice():
 
 	return true
 
-# () -> int
-func next_sequence_shuffle_index():
+
+func next_sequence_shuffle_index() -> int:
 	var num_elements_int_val = Utils.as_or_null(self.state.pop_evaluation_stack(), "IntValue")
 	if num_elements_int_val == null:
 		error("expected number of elements in sequence for shuffle index")
@@ -1653,20 +1712,22 @@ func next_sequence_shuffle_index():
 
 		i += 1
 
-
 	Utils.throw_exception("Should never reach here")
 	return -1
 
+
 # (String, bool) -> void
-func error(message, use_end_line_number = false):
+func error(message: String, use_end_line_number: bool = false) -> void:
 	Utils.throw_story_exception(message, use_end_line_number)
 
+
 # (String) -> void
-func warning(message):
+func warning(message: String) -> void:
 	add_error(message, true)
 
+
 # (String, bool, bool) -> void
-func add_error(message, is_warning = false, use_end_line_number = false):
+func add_error(message: String, is_warning: bool = false, use_end_line_number: bool = false) -> void:
 	var dm = self.current_debug_metadata
 
 	var error_type_str = "WARNING" if is_warning else "ERROR"
@@ -1684,8 +1745,9 @@ func add_error(message, is_warning = false, use_end_line_number = false):
 	if !is_warning:
 		self.state.force_end()
 
-# (bool, message, Array<Variant>) -> void
-func __assert__(condition, message = null, format_params = null):
+
+# (bool, String?, Array<Variant>?) -> void
+func __assert__(condition: bool, message = null, format_params = null) -> void:
 	if condition == false:
 		if message == null:
 			message = "Story assert"
@@ -1693,10 +1755,11 @@ func __assert__(condition, message = null, format_params = null):
 		if format_params != null && format_params.size() > 0:
 			message = message % format_params
 
-		Utils.throw_exception(message + " " + str(self.current_debug_metadata))
+		Utils.throw_exception("%s %s" % [message, str(self.current_debug_metadata)])
 
-var current_debug_metadata setget , get_current_debug_metadata # DebugMetadata
-func get_current_debug_metadata():
+
+var current_debug_metadata: InkDebugMetadata setget , get_current_debug_metadata
+func get_current_debug_metadata() -> InkDebugMetadata:
 	var dm # DebugMetadata
 
 	var pointer = self.state.current_pointer
@@ -1726,52 +1789,66 @@ func get_current_debug_metadata():
 
 	return null
 
-var current_line_number setget , get_current_line_number # int
-func get_current_line_number():
+
+var current_line_number: int setget , get_current_line_number
+func get_current_line_number() -> int:
 	var dm = self.current_debug_metadata
 	if dm != null:
 		return dm.start_line_number
 
 	return 0
 
-var main_content_container setget , get_main_content_container # Container
+
+# InkContainer?
+var main_content_container setget , get_main_content_container
 func get_main_content_container():
 	if _temporary_evaluation_container:
 		return _temporary_evaluation_container
 	else:
 		return _main_content_container
 
-var _main_content_container = null # InkContainer
-var _list_definitions = null # ListDefinitionsOrigin
 
-var _externals = null # Dictionary<String, ExternalFunctionDef>
-var _variable_observers = null # Dictionary<String, VariableObserver>
+# InkContainer?
+var _main_content_container = null
+# ListDefinitionsOrigin?
+var _list_definitions = null
 
-var _has_validated_externals = false # bool
+# Dictionary<String, ExternalFunctionDef>?
+var _externals = null
+# Dictionary<String, VariableObserver>?
+var _variable_observers = null
 
-var _temporary_evaluation_container = null # InkContainer
+var _has_validated_externals: bool = false
 
-var _state = null # StoryState
+# InkContainer?
+var _temporary_evaluation_container = null
 
-var _async_continue_active = false # bool
-var _state_snapshot_at_last_newline = null # StoryState
-var _saw_lookahead_unsafe_function_after_newline = false # bool
+# StoryState?
+var _state = null
 
-var _recursive_continue_count = 0 # int
+var _async_continue_active: bool = false
+# StoryState?
+var _state_snapshot_at_last_newline = null
+var _saw_lookahead_unsafe_function_after_newline: bool = false # bool
 
-var _async_saving = false # bool
+var _recursive_continue_count: int = 0
 
-var _profiler = null # Profiler
+var _async_saving: bool = false
+
+# Profiler?
+var _profiler = null
 
 # ############################################################################ #
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type):
+func is_class(type: String) -> bool:
 	return type == "Story" || .is_class(type)
 
-func get_class():
+
+func get_class() -> String:
 	return "Story"
+
 
 func connect_exception(target: Object, method: String, binds = [], flags = 0) -> int:
 	var runtime = _get_runtime()
@@ -1783,10 +1860,12 @@ func connect_exception(target: Object, method: String, binds = [], flags = 0) ->
 
 	return runtime.connect("exception_raised", target, method, binds, flags)
 
-func _enable_story_exception_recording(enable: bool):
+
+func _enable_story_exception_recording(enable: bool) -> void:
 	var runtime = _get_runtime()
 	if runtime != null:
 		runtime.record_story_exceptions = enable
+
 
 func _get_and_clear_recorded_story_exceptions() -> Array:
 	var runtime = _get_runtime()
@@ -1798,6 +1877,7 @@ func _get_and_clear_recorded_story_exceptions() -> Array:
 
 	return exceptions
 
+
 # ############################################################################ #
 
 var Json setget , get_Json
@@ -1808,35 +1888,49 @@ var _Json = WeakRef.new()
 var _error_raised_during_step = []
 
 func _initialize_runtime():
-	var InkRuntime = _get_runtime()
+	var ink_runtime = _get_runtime()
 
-	Utils.__assert__(InkRuntime != null,
-				 str("Could not retrieve 'InkRuntime' singleton from the scene tree."))
+	Utils.__assert__(
+		ink_runtime != null,
+		str("Could not retrieve 'InkRuntime' singleton from the scene tree.")
+	)
 
-	_Json = weakref(InkRuntime.json)
+	_Json = weakref(ink_runtime.json)
 
 func _get_runtime():
 	return Engine.get_main_loop().root.get_node("__InkRuntime")
 
+
+# ############################################################################ #
+
 class VariableObserver extends Reference:
-	var variable_name # String
+	var variable_name: String
 
 	signal variable_changed(variable_name, new_value)
 
-	func _init(variable_name):
+	func _init(variable_name: String):
 		self.variable_name = variable_name
 
-class ExternalFunctionDef extends Reference:
-	var object # WeakRef<Reference>
-	var method # String
-	var lookahead_safe # bool
 
-	func _init(object, method, lookahead_safe):
+class ExternalFunctionDef extends InkBase:
+	var object: Object
+	var method: String
+	var lookahead_safe: bool
+
+	func _init(object: Object, method: String, lookahead_safe: bool):
+		# If object is not a reference, you're responsible to ensure it's
+		# still allocated.
 		self.object = weakref(object)
 		self.method = method
 		self.lookahead_safe = lookahead_safe
 
-	func execute(params):
+	# (Array<Variant>) -> Variant
+	func execute(params: Array):
 		var object_ref = object.get_ref()
-		if object_ref:
+		if object_ref != null:
 			return object_ref.callv(method, params)
+		else:
+			Utils.throw_exception(
+					"Object binded to %s has been deallocated, cannot execute." % method
+			)
+			return null

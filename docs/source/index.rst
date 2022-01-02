@@ -22,8 +22,20 @@ If you prefer a more hands-on approach, feel free to tinker with the
 .. note::
 
    *inkgd* has a .gitattributes file which makes sure that only ``addons/inkgd``
-   is added to the Github archive. The only way to get the example folder and
-   the project file is to clone the project.
+   is added to the Github archive, so it can't be downloaded through Github's
+   automatic archiving system. Instead, the example can be downloaded
+   here_.
+
+.. The evrsion is hardcoded for now. The inability to nest markup in reST is
+.. really annoying. Hopefully MyST can solve some of those issues.
+.. _here: https://github.com/ephread/inkgd/releases/download/0.4.1/inkgd-example-0.4.1.zip
+
+While looking for an implementation of Ink in Godot, you may have come across
+godot-ink_. *inkgd* and *godot-ink* have different philosophies and purposes. If
+you are not certain which one you should use, :page: offers a breakdown of their
+differences.
+
+.. _godot-ink: https://github.com/paulloz/godot-ink
 
 .. .......................................................................... ..
 
@@ -31,6 +43,7 @@ If you prefer a more hands-on approach, feel free to tinker with the
    :maxdepth: 1
    :caption: Getting started
 
+   getting_started/choosing_between_inkgd_and_godot_ink
    getting_started/introduction
    getting_started/installation
    getting_started/configuration
@@ -44,7 +57,7 @@ If you prefer a more hands-on approach, feel free to tinker with the
    advanced/differences_between_api
    advanced/error_management
    advanced/performance
-   advanced/migrating_to_godot_ink
+   advanced/migrating_to_godot_mono
 
 .. toctree::
    :maxdepth: 2

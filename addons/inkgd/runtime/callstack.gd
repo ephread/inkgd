@@ -108,17 +108,17 @@ class InkThread extends InkBase:
 
 				if thread_pointer_result.obj == null:
 					Utils.throw_exception(
-						"When loading state, internal story location couldn't be found: " +
-						current_container_path_str +
-						". Has the story changed since this save data was created?"
+							"When loading state, internal story location " +
+							"couldn't be found: '%s'. " % current_container_path_str +
+							"Has the story changed since this save data was created?"
 					)
 					return
 				elif thread_pointer_result.approximate:
 					story_context.warning(
-						"When loading state, exact internal story location couldn't be found: '" +
-						current_container_path_str + "', so it was approximated to '" +
-						pointer.container.path._to_string() +
-						"' to recover. Has the story changed since this save data was created?"
+							"When loading state, exact internal story location " +
+							"couldn't be found: '%s', so it was" % current_container_path_str +
+							"approximated to '%s' " + pointer.container.path._to_string() +
+							"to recover. Has the story changed since this save data was created?"
 					)
 
 			var in_expression_evaluation = bool(jelement_obj["exp"])
@@ -371,7 +371,7 @@ func set_temporary_variable(name, value, declare_new, context_index = -1):
 	var context_element = self.callstack[context_index - 1]
 
 	if !declare_new && !context_element.temporary_variables.has(name):
-		Utils.throw_exception("Could not find temporary variable to set: " + name)
+		Utils.throw_exception("Could not find temporary variable to set: %s" % name)
 		return
 
 	if context_element.temporary_variables.has(name):

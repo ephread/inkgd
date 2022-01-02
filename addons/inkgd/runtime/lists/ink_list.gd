@@ -65,7 +65,7 @@ static func from_string(my_list_item: String, origin_story) -> InkList:
 		return InkList().new_with_ink_list(list_value.value)
 	else:
 		Utils().throw_exception(
-				"Could not find the InkListItem from the string '%s' to create an InkList because" +
+				"Could not find the InkListItem from the string '%s' to create an InkList because " +
 				"it doesn't exist in the original list definition in ink." % my_list_item
 		)
 		return null
@@ -83,14 +83,14 @@ func add_item(item: InkListItem) -> void:
 				return
 			else:
 				Utils.throw_exception(
-						"Could not add the item '%s' to this list because it doesn't exist in the" +
+						"Could not add the item '%s' to this list because it doesn't exist in the " +
 						"original list definition in ink." % item._to_string()
 				)
 				return
 
 	Utils.throw_exception(
-			"Failed to add item to list because the item was from a new list definition that" +
-			"wasn't previously known to this list. Only items from previously known lists can" +
+			"Failed to add item to list because the item was from a new list definition that " +
+			"wasn't previously known to this list. Only items from previously known lists can " +
 			"be used, so that the int value can be found."
 	)
 
@@ -101,7 +101,7 @@ func add_item_by_string(item_name: String) -> void:
 		if origin.contains_item_with_name(item_name):
 			if found_list_def != null:
 				Utils.throw_exception(
-						"Could not add the item " + item_name + " to this list because it could" +
+						"Could not add the item " + item_name + " to this list because it could " +
 						"come from either " + origin.name + " or " + found_list_def.name
 				)
 				return
@@ -110,7 +110,7 @@ func add_item_by_string(item_name: String) -> void:
 
 	if found_list_def == null:
 		Utils.throw_exception(
-				"Could not add the item " + item_name + " to this list because it isn't known" +
+				"Could not add the item " + item_name + " to this list because it isn't known " +
 				"to any list definitions previously associated with this list."
 		)
 		return

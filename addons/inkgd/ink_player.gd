@@ -171,9 +171,6 @@ func get_current_text() -> String:
 		_push_null_story_error()
 		return ""
 
-	if _story.current_text == null:
-		_push_null_state_error("current_choices")
-		return ""
 
 	return _story.current_text
 
@@ -183,10 +180,6 @@ var current_choices: Array setget , get_current_choices
 func get_current_choices() -> Array:
 	if _story == null:
 		_push_null_story_error()
-		return []
-
-	if _story.current_choices == null:
-		_push_null_state_error("current_choices")
 		return []
 
 	var text_choices = []
@@ -204,7 +197,6 @@ func get_current_tags() -> Array:
 		return []
 
 	if _story.current_tags == null:
-		_push_null_state_error("current_tags")
 		return []
 
 	return _story.current_tags
@@ -215,6 +207,9 @@ var global_tags: Array setget , get_global_tags
 func get_global_tags() -> Array:
 	if _story == null:
 		_push_null_story_error()
+		return []
+
+	if _story.global_tags == null:
 		return []
 
 	return _story.global_tags
@@ -448,6 +443,7 @@ func save_state_to_file(file: File):
 	if file.is_open():
 		file.store_string(get_state())
 
+# TODO: Add save and load in background
 
 ## Loads the state from the given path.
 func load_state_from_path(path: String):
@@ -708,14 +704,6 @@ func _push_null_runtime_error():
 
 func _push_null_story_error():
 	_push_error("The _story is 'null', was it loaded properly?")
-
-
-func _push_null_state_error(variable: String):
-	var message = (
-			"'%s' is 'null', the internal state is corrupted or missing, " +
-			"this is an unrecoverable error."
-	)
-	_push_error(message % variable)
 
 
 func _push_story_error(message: String, type: int):

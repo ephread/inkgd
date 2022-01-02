@@ -383,7 +383,7 @@ public class InkPlayer : Node
 		}
 	}
 
-	public int visit_count_at_path_string(string path)
+	public int visit_count_at_path(string path)
 	{
 		if (story == null)
 		{

@@ -15,17 +15,18 @@ class_name InkDebugMetadata
 
 # ############################################################################ #
 
-var start_line_number = 0 # int
-var end_line_number = 0 # int
-var start_character_number = 0 # int
-var end_character_number = 0 # int
-var file_name = null # String
-var source_name = null # String
+var start_line_number: int = 0
+var end_line_number: int = 0
+var start_character_number: int = 0
+var end_character_number: int = 0
+# String?
+var file_name = null
+# String?
+var source_name = null
 
 # ############################################################################ #
 
-# (DebugMetadata) -> void
-func merge(dm):
+func merge(dm: InkDebugMetadata) -> InkDebugMetadata:
 	var new_debug_metadata = DebugMetadata().new()
 
 	new_debug_metadata.file_name = self.file_name
@@ -66,10 +67,10 @@ func _to_string() -> String:
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type):
+func is_class(type: String) -> bool:
 	return type == "DebugMetadata" || .is_class(type)
 
-func get_class():
+func get_class() -> String:
 	return "DebugMetadata"
 
 static func DebugMetadata():
