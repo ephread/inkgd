@@ -2,7 +2,7 @@
 Important changes to _inkgd_ will be documented in this file.
 
 ## [0.4.2]
-Released on 202X-XX-XX.
+Released on 2022-01-XX.
 
 ### Changed
 - Changed InkPlayer's API.
@@ -11,6 +11,9 @@ Released on 202X-XX-XX.
 ### Added
 - Added ability to create an InkList from InkPlayer.
 - Added new tests.
+- Added support for Godot Mono, turning inkgd into a thin wrapper over the
+  original C# implementation. The feature is experimental and not yet
+  documented, it will be documented in 0.5.0.
 
 ## [0.4.1](https://github.com/ephread/inkgd/releases/tag/0.4.1)
 Released on 2021-12-26.
