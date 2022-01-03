@@ -207,19 +207,19 @@ func get_current_path_string():
 var current_pointer: InkPointer setget set_current_pointer, get_current_pointer
 func get_current_pointer() -> InkPointer:
 	var pointer = self.callstack.current_element.current_pointer
-	return self.callstack.current_element.current_pointer.duplicate()
+	return self.callstack.current_element.current_pointer
 
 func set_current_pointer(value: InkPointer):
 	var current_element = self.callstack.current_element
-	current_element.current_pointer = value.duplicate()
+	current_element.current_pointer = value
 
 var previous_pointer: InkPointer setget set_previous_pointer, get_previous_pointer
 func get_previous_pointer() -> InkPointer:
-	return self.callstack.current_thread.previous_pointer.duplicate()
+	return self.callstack.current_thread.previous_pointer
 
 func set_previous_pointer(value: InkPointer):
 	var current_thread = self.callstack.current_thread
-	current_thread.previous_pointer = value.duplicate()
+	current_thread.previous_pointer = value
 
 var can_continue: bool setget , get_can_continue
 func get_can_continue() -> bool:
@@ -422,9 +422,9 @@ func copy_and_start_patching():
 	copy.evaluation_stack += self.evaluation_stack
 
 	if !diverted_pointer.is_null:
-		copy.diverted_pointer = self.diverted_pointer.duplicate()
+		copy.diverted_pointer = self.diverted_pointer
 
-	copy.previous_pointer = self.previous_pointer.duplicate()
+	copy.previous_pointer = self.previous_pointer
 
 	copy._visit_counts = self._visit_counts
 	copy._turn_indices = self._turn_indices
@@ -924,7 +924,7 @@ func set_chosen_path(path: InkPath, incrementing_turn_index: bool) -> void:
 	var new_pointer = self.story.pointer_at_path(path)
 
 	if !new_pointer.is_null && new_pointer.index == -1:
-		new_pointer.index = 0
+		new_pointer = InkPointer.new(new_pointer.container, 0)
 
 	self.current_pointer = new_pointer
 

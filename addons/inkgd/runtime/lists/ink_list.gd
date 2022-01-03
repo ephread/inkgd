@@ -165,6 +165,7 @@ func set_initial_origin_names(initial_origin_names) -> void:
 	else:
 		_origin_names = initial_origin_names.duplicate()
 
+# TODO: Make inspectable
 var max_item: InkKeyValuePair setget , get_max_item # InkKeyValuePair<InkListItem, int>
 func get_max_item() -> InkKeyValuePair:
 	var _max_item: InkKeyValuePair = InkKeyValuePair.new_with_key_value(InkListItem.null(), 0)
@@ -174,6 +175,7 @@ func get_max_item() -> InkKeyValuePair:
 
 	return _max_item
 
+# TODO: Make inspectable
 var min_item: InkKeyValuePair setget , get_min_item # InkKeyValuePair<InkListItem, int>
 func get_min_item() -> InkKeyValuePair:
 	var _min_item: InkKeyValuePair = InkKeyValuePair.new_with_key_value(InkListItem.null(), 0)
@@ -183,6 +185,7 @@ func get_min_item() -> InkKeyValuePair:
 
 	return _min_item
 
+# TODO: Make inspectable
 var inverse: InkList setget , get_inverse
 func get_inverse() -> InkList:
 	var list: InkList = InkList().new()
@@ -194,6 +197,7 @@ func get_inverse() -> InkList:
 
 	return list
 
+# TODO: Make inspectable
 var all: InkList setget , get_all
 func get_all() -> InkList:
 	var list: InkList = InkList().new()
@@ -204,12 +208,14 @@ func get_all() -> InkList:
 
 	return list
 
+# TODO: Make inspectable
 func union(other_list: InkList) -> InkList:
 	var union: InkList = InkList().new_with_ink_list(self)
 	for key in other_list._dictionary:
 		union._dictionary[key] = other_list._dictionary[key]
 	return union
 
+# TODO: Make inspectable
 func intersection(other_list: InkList) -> InkList:
 	var intersection: InkList = InkList().new()
 	for key in other_list._dictionary:
@@ -217,6 +223,7 @@ func intersection(other_list: InkList) -> InkList:
 			intersection._dictionary[key] = other_list._dictionary[key]
 	return intersection
 
+# TODO: Make inspectable
 func without(list_to_remove: InkList) -> InkList:
 	var result = InkList().new_with_ink_list(self)
 	for key in list_to_remove._dictionary:

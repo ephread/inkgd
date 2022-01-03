@@ -44,12 +44,14 @@ func get_target_pointer() -> InkPointer:
 		var target_obj = resolve_path(self._target_path).obj
 
 		if self._target_path.last_component.is_index:
-			self._target_pointer.container = Utils.as_or_null(target_obj.parent, "InkContainer")
-			self._target_pointer.index = self._target_path.last_component.index
+			self._target_pointer = InkPointer.new(
+				Utils.as_or_null(target_obj.parent, "InkContainer"),
+				self._target_path.last_component.index
+			)
 		else:
 			self._target_pointer = InkPointer.start_of(Utils.as_or_null(target_obj, "InkContainer"))
 
-	return self._target_pointer.duplicate()
+	return self._target_pointer
 
 var _target_pointer: InkPointer = InkPointer.null()
 

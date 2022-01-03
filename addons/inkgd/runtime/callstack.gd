@@ -43,7 +43,7 @@ class Element extends InkBase:
 
 	# (PushPopType, Pointer, bool) -> InkElement
 	func _init(type, pointer, in_expression_evaluation = false):
-		self.current_pointer = pointer.duplicate()
+		self.current_pointer = pointer
 		self.in_expression_evaluation = in_expression_evaluation
 		self.temporary_variables = {}
 		self.type = type
@@ -102,8 +102,7 @@ class InkThread extends InkBase:
 				current_container_path_str = str(current_container_path_str_token)
 
 				var thread_pointer_result = story_context.content_at_path(InkPath.new_with_components_string(current_container_path_str))
-				pointer.container = thread_pointer_result.container
-				pointer.index = int(jelement_obj["idx"])
+				pointer = Pointer.new(thread_pointer_result.container, int(jelement_obj["idx"]))
 
 				if thread_pointer_result.obj == null:
 					Utils.throw_exception(
@@ -144,7 +143,7 @@ class InkThread extends InkBase:
 		copy.thread_index = self.thread_index
 		for e in callstack:
 			copy.callstack.append(e.copy())
-		copy.previous_pointer = self.previous_pointer.duplicate()
+		copy.previous_pointer = self.previous_pointer
 		return copy
 
 	# (SimpleJson.Writer) -> void

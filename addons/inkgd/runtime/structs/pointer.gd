@@ -13,6 +13,10 @@
 # !! VALUE TYPE
 # ############################################################################ #
 
+# Pointers are passed around a lot, to prevent duplicating them all the time
+# and confusing the inspector when the debugger is attached, they are
+# immutable rather than being duplicated.
+
 extends InkBase
 
 class_name InkPointer
@@ -32,30 +36,35 @@ static func InkPointer() -> GDScript:
 # Encapsulating container into a weak ref.
 var container: InkContainer setget set_container, get_container
 func set_container(value: InkContainer) -> void:
-	if value == null:
-		self._container = WeakRef.new()
-	else:
-		self._container = weakref(value)
+	assert(false, "Pointer is immutable, cannot set container.")
 func get_container() -> InkContainer:
 	return self._container.get_ref()
+var _container: WeakRef = WeakRef.new()
 
-var _container: WeakRef
-
-var index: int = 0 # int
+var index: int setget set_index, get_index
+func set_index(value: int):
+	assert(false, "Pointer is immutable, cannot set index.")
+func get_index() -> int:
+	return _index
+var _index: int = 0 # int
 
 # (InkContainer, int) -> InkPointer
 func _init(container: InkContainer = null, index: int = 0):
-	self.container = container
-	self.index = index
+	if container == null:
+		self._container = WeakRef.new()
+	else:
+		self._container = weakref(container)
+
+	self._index = index
 
 # () -> InkContainer
 func resolve():
-	if index < 0: return self.container
+	if self.index < 0: return self.container
 	if self.container == null: return null
 	if self.container.content.size() == 0: return self.container
-	if index >= self.container.content.size(): return null
+	if self.index >= self.container.content.size(): return null
 
-	return self.container.content[index]
+	return self.container.content[self.index]
 
 # ############################################################################ #
 
@@ -66,14 +75,17 @@ func get_is_null() -> bool:
 
 # ############################################################################ #
 
+# TODO: Make inspectable
 # () -> InkPath
 var path: InkPath setget , get_path
 func get_path() -> InkPath:
 	if self.is_null:
 		return null
 
-	if index >= 0:
-		return self.container.path.path_by_appending_component(InkPath.Component.new(index))
+	if self.index >= 0:
+		return self.container.path.path_by_appending_component(
+				InkPath.Component.new(self.index)
+		)
 	else:
 		return self.container.path
 
@@ -83,7 +95,7 @@ func _to_string() -> String:
 	if self.container == null:
 		return "Ink Pointer (null)"
 
-	return "Ink Pointer -> %s -- index %d" % [self.container.path._to_string(), index]
+	return "Ink Pointer -> %s -- index %d" % [self.container.path._to_string(), self.index]
 
 # (InkContainer) -> InkPointer
 static func start_of(container: InkContainer) -> InkPointer:
@@ -106,4 +118,4 @@ func get_class() -> String:
 	return "Pointer"
 
 func duplicate() -> InkPointer:
-	return InkPointer().new(self.container, index)
+	return InkPointer().new(self.container, self.index)

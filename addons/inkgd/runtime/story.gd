@@ -258,7 +258,7 @@ func reset_callstack() -> void:
 # () -> void
 func reset_globals() -> void:
 	if (self._main_content_container.named_content.has("global decl")):
-		var original_pointer = self.state.current_pointer.duplicate()
+		var original_pointer = self.state.current_pointer
 
 		self.choose_path(InkPath().new_with_components_string("global decl"), false)
 
@@ -541,12 +541,10 @@ func pointer_at_path(path: InkPath) -> InkPointer:
 	if (path.last_component.is_index):
 		path_length_to_use = path.length - 1
 		result = self.main_content_container.content_at_path(path, 0, path_length_to_use)
-		p.container = result.container
-		p.index = path.last_component.index
+		p = InkPointer.new(result.container, path.last_component.index)
 	else:
 		result = self.main_content_container.content_at_path(path)
-		p.container = result.container
-		p.index = -1
+		p = InkPointer.new(result.container, -1)
 
 	if result.obj == null || result.obj == self.main_content_container && path_length_to_use > 0:
 		error(
@@ -612,7 +610,7 @@ func background_save_complete() -> void:
 func step() -> void:
 	var should_add_to_stream = true
 
-	var pointer = self.state.current_pointer.duplicate()
+	var pointer = self.state.current_pointer
 	if pointer.is_null:
 		return
 
@@ -626,7 +624,7 @@ func step() -> void:
 		pointer = InkPointer.start_of(container_to_enter)
 		container_to_enter = Utils.as_or_null(pointer.resolve(), "InkContainer")
 
-	self.state.current_pointer = pointer.duplicate()
+	self.state.current_pointer = pointer
 
 	if _profiler != null:
 		_profiler.step(state.callstack)
@@ -681,8 +679,8 @@ func visit_container(container: InkContainer, at_start: bool) -> void:
 
 var _prev_containers = [] # Array<Container>
 func visit_changed_containers_due_to_divert() -> void:
-	var previous_pointer = self.state.previous_pointer.duplicate()
-	var pointer = self.state.current_pointer.duplicate()
+	var previous_pointer = self.state.previous_pointer
+	var pointer = self.state.current_pointer
 
 	if pointer.is_null || pointer.index == -1:
 		return
@@ -814,7 +812,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 			call_external_function(current_divert.target_path_string, current_divert.external_args)
 			return true
 		else:
-			self.state.diverted_pointer = current_divert.target_pointer.duplicate()
+			self.state.diverted_pointer = current_divert.target_pointer
 
 		if current_divert.pushes_to_stack:
 			self.state.callstack.push(
@@ -824,7 +822,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 			)
 
 		if self.state.diverted_pointer.is_null && !current_divert.is_external:
-			if current_divert && current_divert.debug_metadata.source_name != null:
+			if current_divert && current_divert.debug_metadata != null && current_divert.debug_metadata.source_name != null:
 				error("Divert target doesn't exist: " + current_divert.debug_metadata.source_name)
 				return false
 			else:
@@ -1605,11 +1603,11 @@ func build_string_of_container_with(container: InkContainer) -> String:
 
 func next_content() -> void:
 
-	self.state.previous_pointer = self.state.current_pointer.duplicate()
+	self.state.previous_pointer = self.state.current_pointer
 
 	if !self.state.diverted_pointer.is_null:
 
-		self.state.current_pointer = self.state.diverted_pointer.duplicate()
+		self.state.current_pointer = self.state.diverted_pointer
 		self.state.diverted_pointer = InkPointer.null()
 
 		self.visit_changed_containers_due_to_divert()
@@ -1644,8 +1642,8 @@ func next_content() -> void:
 func increment_content_pointer() -> bool:
 	var successful_increment = true
 
-	var pointer = self.state.callstack.current_element.current_pointer.duplicate()
-	pointer.index += 1
+	var pointer = self.state.callstack.current_element.current_pointer
+	pointer = InkPointer.new(pointer.container, pointer.index + 1)
 
 	while pointer.index >= pointer.container.content.size():
 
@@ -1659,16 +1657,14 @@ func increment_content_pointer() -> bool:
 		if index_in_ancestor == -1:
 			break
 
-		pointer = InkPointer.new(next_ancestor, index_in_ancestor)
-
-		pointer.index += 1
+		pointer = InkPointer.new(next_ancestor, index_in_ancestor + 1)
 
 		successful_increment = true
 
 	if !successful_increment: pointer = InkPointer.null()
 
 	var current_element = self.state.callstack.current_element
-	current_element.current_pointer = pointer.duplicate()
+	current_element.current_pointer = pointer
 
 	return successful_increment
 

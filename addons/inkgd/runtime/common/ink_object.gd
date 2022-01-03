@@ -72,6 +72,7 @@ func debug_line_number_of_path(path: InkPath):
 
 	return null
 
+# TODO: Make inspectable
 # InkPath
 var path: InkPath setget , get_path
 func get_path() -> InkPath:

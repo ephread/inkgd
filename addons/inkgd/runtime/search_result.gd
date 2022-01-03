@@ -12,6 +12,9 @@
 # !! VALUE TYPE
 # ############################################################################ #
 
+# Search results are never duplicated / passed around so they don't need to
+# be either immutable or have a 'duplicate' method.
+
 extends InkBase
 
 class_name InkSearchResult
@@ -45,10 +48,3 @@ func is_class(type: String) -> bool:
 
 func get_class() -> String:
 	return "SearchResult"
-
-func duplicate() -> InkSearchResult:
-	var search_result = SearchResult().new()
-	search_result.obj = obj
-	search_result.approximate = approximate
-
-	return search_result

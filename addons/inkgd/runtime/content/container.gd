@@ -110,6 +110,7 @@ func get_path_to_first_leaf_content() -> InkPath:
 # InkPath?
 var _path_to_first_leaf_content = null
 
+# TODO: Make inspectable
 var internal_path_to_first_leaf_content: InkPath setget , get_internal_path_to_first_leaf_content
 func get_internal_path_to_first_leaf_content() -> InkPath:
 	var components: Array = [] # Array<Path.Component>

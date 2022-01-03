@@ -13,6 +13,8 @@
 # !! VALUE TYPE
 # ############################################################################ #
 
+# This element is only used during JSON parsing and is never duplicated / passed
+# around so it doesn't need to be either immutable or have a 'duplicate' method.
 
 class_name InkStateElement
 

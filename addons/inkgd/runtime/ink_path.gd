@@ -93,6 +93,7 @@ func get_head():
 	else:
 		return null
 
+# TODO: Make inspectable
 var tail setget , get_tail # InkPath
 func get_tail():
 	if _components.size() >= 2:

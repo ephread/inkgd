@@ -26,21 +26,32 @@ static func InkListItem():
 
 # ############################################################################ #
 
-var origin_name = null # String
-var item_name = null # String
+# Originally these were simple variables, but they are turned into properties to
+# make the object "immutable". That way it can be passed around without being
+# duplicated.
+
+var origin_name setget , get_origin_name
+func get_origin_name():
+	return _origin_name
+var _origin_name = null # String
+
+var item_name setget , get_item_name
+func get_item_name():
+	return _item_name
+var _item_name = null # String
 
 # ############################################################################ #
 
 # (string, string) -> InkListItem
 func _init_with_origin_name(origin_name, item_name):
-	self.origin_name = origin_name
-	self.item_name = item_name
+	self._origin_name = origin_name
+	self._item_name = item_name
 
 # (string) -> InkListItem
 func _init_with_full_name(full_name):
 	var name_parts = full_name.split(".")
-	self.origin_name = name_parts[0]
-	self.item_name = name_parts[1]
+	self._origin_name = name_parts[0]
+	self._item_name = name_parts[1]
 
 static func null() -> InkListItem:
 	return InkListItem().new_with_origin_name(null, null)
@@ -107,16 +118,13 @@ func get_class() -> String:
 # struct, as well as offering a serialization mechanism to use `InkListItem`
 # as keys in dictionaries.
 
-# Create a shallow copy of the InkListItem (use it when assigning to mimic
-# a value-type).
-func duplicate() -> InkListItem:
-	return InkListItem().init_with_origin_name(origin_name, item_name)
-
 # Returns a `SerializedInkListItem` representing the current
 # instance. The result is intended to be used as a key inside a Map.
 func serialized() -> String:
 	# We are simply using a JSON representation as a value-typed key.
-	var json_print = JSON.print({"originName": origin_name, "itemName": item_name})
+	var json_print = JSON.print(
+			{ "originName": self.origin_name, "itemName": self.item_name }
+	)
 	return json_print
 
 # Reconstructs a `InkListItem` from the given SerializedInkListItem.
