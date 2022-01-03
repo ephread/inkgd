@@ -1,12 +1,13 @@
 # Change Log
 Important changes to _inkgd_ will be documented in this file.
 
-## [0.4.2]
-Released on 2022-01-XX.
+## [0.4.2](https://github.com/ephread/inkgd/releases/tag/0.4.2)
+Released on 2022-01-03.
 
 ### Changed
 - Changed InkPlayer's API.
 - Improved example project by adding a navigation hub.
+- Made InkPointer immutable rather than duplicating all the time.
 
 ### Added
 - Added ability to create an InkList from InkPlayer.
