@@ -136,8 +136,17 @@ func _compilation_mode_changed(compilation_mode: int):
 func _source_file_button_pressed(node):
 	_reset_file_dialog()
 
+	var index = _get_story_configuration_index(node)
+
 	_file_dialog_selection = FileDialogSelection.SOURCE_FILE
-	_file_dialog_selection_story_index = _get_story_configuration_index(node)
+	_file_dialog_selection_story_index = index
+
+	var story_configuration = _get_story_configuration_at_index(index)
+	var path = story_configuration.source_file_line_edit.text
+
+	_file_dialog.current_path = path
+	_file_dialog.current_dir = path.get_base_dir()
+	_file_dialog.current_file = path.get_file()
 
 	_file_dialog.set_mode(FileDialog.MODE_OPEN_FILE)
 	_file_dialog.set_access(FileDialog.ACCESS_FILESYSTEM)
@@ -148,8 +157,17 @@ func _source_file_button_pressed(node):
 func _target_file_button_pressed(node):
 	_reset_file_dialog()
 
+	var index = _get_story_configuration_index(node)
+
 	_file_dialog_selection = FileDialogSelection.TARGET_FILE
-	_file_dialog_selection_story_index = _get_story_configuration_index(node)
+	_file_dialog_selection_story_index = index
+
+	var story_configuration = _get_story_configuration_at_index(index)
+	var path = story_configuration.target_file_line_edit.text
+
+	_file_dialog.current_path = path
+	_file_dialog.current_dir = path.get_base_dir()
+	_file_dialog.current_file = path.get_file()
 
 	_file_dialog.set_mode(FileDialog.MODE_SAVE_FILE)
 	_file_dialog.set_access(FileDialog.ACCESS_FILESYSTEM)
@@ -159,8 +177,17 @@ func _target_file_button_pressed(node):
 func _watched_folder_button_pressed(node):
 	_reset_file_dialog()
 
+	var index = _get_story_configuration_index(node)
+
 	_file_dialog_selection = FileDialogSelection.WATCHED_FOLDER
-	_file_dialog_selection_story_index = _get_story_configuration_index(node)
+	_file_dialog_selection_story_index = index
+
+	var story_configuration = _get_story_configuration_at_index(index)
+	var path = story_configuration.watched_folder_line_edit.text
+
+	_file_dialog.current_path = path
+	_file_dialog.current_dir = path.get_base_dir()
+	_file_dialog.current_file = path.get_file()
 
 	_file_dialog.set_mode(FileDialog.MODE_OPEN_DIR)
 	_file_dialog.set_access(FileDialog.ACCESS_FILESYSTEM)
@@ -343,7 +370,7 @@ func _on_file_selected(path: String):
 				return
 
 			var localized_path = ProjectSettings.localize_path(path)
-			var line_edit = story_configuration.source_file_line_edit
+			var line_edit = story_configuration.target_file_line_edit
 
 			line_edit.text = localized_path
 			line_edit.update()
@@ -382,6 +409,8 @@ func _scrollbar_changed():
 # ############################################################################ #
 
 func _reset_file_dialog():
+	_file_dialog.current_path = "res://"
+	_file_dialog.current_dir = "res://"
 	_file_dialog.current_file = ""
 	_file_dialog.clear_filters()
 
