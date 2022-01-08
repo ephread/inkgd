@@ -1,6 +1,13 @@
 # Change Log
 Important changes to _inkgd_ will be documented in this file.
 
+## [0.4.3](https://github.com/ephread/inkgd/releases/tag/0.4.3)
+Released on 2022-01-08.
+
+### Fixed
+- Broken file dialog in configuration panel.
+- Broken progress dialog when the editor is run at <200% scales.
+
 ## [0.4.2](https://github.com/ephread/inkgd/releases/tag/0.4.2)
 Released on 2022-01-03.
 
