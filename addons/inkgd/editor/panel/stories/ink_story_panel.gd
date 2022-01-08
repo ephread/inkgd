@@ -250,7 +250,9 @@ func _compile_all_stories():
 
 	_progress_dialog = InkProgressDialog.instance()
 	add_child(_progress_dialog)
-	_progress_dialog.popup_centered(Vector2(500, 85) * editor_interface.scale)
+
+	_progress_dialog.update_layout(editor_interface.scale)
+	_progress_dialog.popup_centered(Vector2(600, 100) * editor_interface.scale)
 
 	for story_configuration in configuration.stories:
 		var source_file_path: String = configuration.get_source_file_path(story_configuration)
@@ -307,6 +309,7 @@ func _handle_compilation(result):
 				dialog.window_title = "Success!"
 				dialog.message_text = "The story was successfully compiled."
 				dialog.output_text = result.output
+				dialog.update_layout(editor_interface.scale)
 
 				dialog.popup_centered(Vector2(700, 400) * editor_interface.scale)
 			else:
@@ -315,6 +318,7 @@ func _handle_compilation(result):
 
 				dialog.window_title = "Success!"
 				dialog.dialog_text = "The story was successfully compiled."
+				dialog.update_layout(editor_interface.scale)
 
 				dialog.popup_centered()
 
@@ -326,6 +330,7 @@ func _handle_compilation(result):
 			dialog.window_title = "Error"
 			dialog.message_text = "The story could not be compiled. See inklecate's output below."
 			dialog.output_text = result.output
+			dialog.update_layout(editor_interface.scale)
 
 			dialog.popup_centered(Vector2(700, 400) * editor_interface.scale)
 	else:

@@ -17,6 +17,8 @@ extends WindowDialog
 # Nodes
 # ############################################################################ #
 
+onready var _margin_container = $MarginContainer
+onready var _vbox_container = $MarginContainer/VBoxContainer
 onready var _message_label = $MarginContainer/VBoxContainer/MessageLabel
 onready var _accept_button = $MarginContainer/VBoxContainer/AcceptButton
 onready var _output_panel = $MarginContainer/VBoxContainer/OutputPanel
@@ -54,6 +56,18 @@ func _ready():
 	var font = _get_source_font()
 	if font != null:
 		_output_panel.add_font_override("font", font)
+
+# ############################################################################ #
+# Methods
+# ############################################################################ #
+
+func update_layout(scale: float) -> void:
+	_margin_container.add_constant_override("margin_right", 10 * scale)
+	_margin_container.add_constant_override("margin_top", 10 * scale)
+	_margin_container.add_constant_override("margin_left", 10 * scale)
+	_margin_container.add_constant_override("margin_bottom", 10 * scale)
+	_vbox_container.add_constant_override("separation", 10 * scale)
+
 
 # ############################################################################ #
 # Signal Receivers

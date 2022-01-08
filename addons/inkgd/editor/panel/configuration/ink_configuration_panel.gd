@@ -157,6 +157,7 @@ func _test_button_pressed():
 
 		dialog.window_title = "Success"
 		dialog.dialog_text = "The configuration seems to be valid!"
+		dialog.update_layout(editor_interface.scale)
 
 		dialog.popup_centered()
 	else:

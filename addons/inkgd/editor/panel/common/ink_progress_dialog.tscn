@@ -33,7 +33,7 @@ margin_left = 10.0
 margin_top = 10.0
 margin_right = 490.0
 margin_bottom = 75.0
-custom_constants/separation = 10
+custom_constants/separation = 5
 alignment = 1
 __meta__ = {
 "_edit_use_anchors_": false
