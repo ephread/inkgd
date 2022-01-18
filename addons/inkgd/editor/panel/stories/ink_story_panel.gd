@@ -318,7 +318,6 @@ func _handle_compilation(result):
 
 				dialog.window_title = "Success!"
 				dialog.dialog_text = "The story was successfully compiled."
-				dialog.update_layout(editor_interface.scale)
 
 				dialog.popup_centered()
 

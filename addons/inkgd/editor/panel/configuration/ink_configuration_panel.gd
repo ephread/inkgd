@@ -157,7 +157,6 @@ func _test_button_pressed():
 
 		dialog.window_title = "Success"
 		dialog.dialog_text = "The configuration seems to be valid!"
-		dialog.update_layout(editor_interface.scale)
 
 		dialog.popup_centered()
 	else:
@@ -168,6 +167,7 @@ func _test_button_pressed():
 		dialog.window_title = "Error"
 		dialog.message_text = "Something went wrong while testing inklecate's setup. Please see the output below."
 		dialog.output_text = result.output
+		dialog.update_layout(editor_interface.scale)
 
 		dialog.popup_centered(Vector2(700, 400) * editor_interface.scale)
 

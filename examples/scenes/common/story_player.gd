@@ -51,7 +51,7 @@ var _profiler: InkGDProfiler = InkGDProfiler.new()
 # InkPlayer is created through the factory so that it returns the appropriate
 # node depending on whether the project is using Mono or not.
 #
-# In your project you can also add it in the scene and use the inspector
+# In your project you can also add it in the scene tree and use the inspector
 # to set the variables.
 var _ink_player = InkPlayerFactory.create()
 
