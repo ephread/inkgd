@@ -16,6 +16,9 @@ It's also possible to add ``res://addons/inkgd/runtime/static/ink_runtime.gd``
 to the AutoLoad list manually if it doesn't appear in the list or was previously
 removed.
 
+.. warning::
+  The singleton must be named "__InkRuntime".
+
 .. image:: img/introduction/auto_load_file_button.png
     :align: center
     :alt: The AutoLoad tab in the project settings.
