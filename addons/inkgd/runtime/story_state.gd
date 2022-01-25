@@ -837,7 +837,7 @@ func push_evaluation_stack(obj: InkObject) -> void:
 			raw_list.origins.clear()
 
 			for n in raw_list.origin_names:
-				var def = self.story.list_definitions.try_list_get_definition(n)
+				var def: InkTryGetResult = self.story.list_definitions.try_list_get_definition(n)
 
 				if raw_list.origins.find(def.result) < 0:
 					raw_list.origins.append(def.result)

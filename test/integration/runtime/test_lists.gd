@@ -61,6 +61,18 @@ func test_more_list_operations():
 
 	assert_eq(story.continue_maximally(), "1\nl\nn\nl, m\nn\n")
 
+func test_manual_item_addition():
+	var story = Story.new(load_file("list_save_load"))
+
+	var list: InkList = story.variables_state.get("l2")
+
+	assert_eq(str(list), "x")
+
+	var ink_list_item = InkListItem.new_with_origin_name("l2", "z")
+	list.add_item(ink_list_item)
+
+	assert_eq(str(list), "x, z")
+
 # ############################################################################ #
 
 func _prefix():

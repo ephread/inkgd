@@ -1054,9 +1054,9 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 
 				var generated_list_value = null # ListValue
 
-				var found_list_def = self.list_definitions.try_list_get_definition(list_name_val.value)
+				var found_list_def: InkTryGetResult = self.list_definitions.try_list_get_definition(list_name_val.value)
 				if found_list_def.exists:
-					var found_item = found_list_def.result.try_get_item_with_value(int_val.value)
+					var found_item: InkTryGetResult = found_list_def.result.try_get_item_with_value(int_val.value)
 					if found_item.exists:
 						generated_list_value = InkListValue.new_with_single_item(
 								found_item.result,

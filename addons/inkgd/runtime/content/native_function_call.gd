@@ -193,7 +193,7 @@ func call_list_increment_operation(list_int_params: Array) -> InkValue:
 				break
 
 		if item_origin != null:
-			var incremented_item = item_origin.try_get_item_with_value(target_int)
+			var incremented_item: InkTryGetResult = item_origin.try_get_item_with_value(target_int)
 			if incremented_item.exists:
 				result_raw_list.set_item(incremented_item.result, target_int)
 
@@ -223,7 +223,7 @@ func coerce_values_to_single_type(parameters_in: Array):
 				var int_val = int(val.value_object)
 				var list = special_case_list.value.origin_of_max_item
 
-				var item = list.try_get_item_with_value(int_val)
+				var item: InkTryGetResult = list.try_get_item_with_value(int_val)
 				if item.exists:
 					var casted_value = InkListValue.new_with_single_item(item.result, int_val)
 					parameters_out.append(casted_value)

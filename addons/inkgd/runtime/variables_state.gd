@@ -64,7 +64,7 @@ func set_callstack(value: InkCallStack):
 # (String) -> Variant
 func get(variable_name: String):
 	if self.patch != null:
-		var global = patch.try_get_global(variable_name)
+		var global: InkTryGetResult = patch.try_get_global(variable_name)
 		if global.exists:
 			return global.result.value_object
 
@@ -278,7 +278,7 @@ func set_global(variable_name: String, value: InkObject) -> void:
 	# Slightly different structure from upstream, since we can't use
 	# try_get_global in the conditional.
 	if patch != null:
-		var patch_value = patch.try_get_global(variable_name)
+		var patch_value: InkTryGetResult = patch.try_get_global(variable_name)
 		if patch_value.exists:
 			old_value = patch_value.result
 

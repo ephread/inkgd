@@ -76,7 +76,7 @@ func add_item(item: InkListItem) -> void:
 
 	for origin in origins:
 		if origin.name == item.origin_name:
-			var int_val: Dictionary = origin.try_get_value_for_item(item)
+			var int_val: InkTryGetResult = origin.try_get_value_for_item(item)
 			if int_val.exists:
 				set_item(item, int_val.result)
 				return
@@ -114,7 +114,7 @@ func add_item_by_string(item_name: String) -> void:
 		)
 		return
 
-	var item: InkListItem = InkListItem.new_with_origin_name(found_list_def.name, item_name)
+	var item = InkListItem.new_with_origin_name(found_list_def.name, item_name)
 	var item_val: int = found_list_def.value_for_item(item)
 	set_item(item, item_val)
 
@@ -132,7 +132,7 @@ func get_origin_of_max_item() -> InkListDefinition:
 	if origins == null:
 		return null
 
-	var max_origin_name: String = self.max_item.key.origin_name
+	var max_origin_name = self.max_item.key.origin_name
 	for origin in origins:
 		if origin.name == max_origin_name:
 			return origin
