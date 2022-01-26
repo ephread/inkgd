@@ -1,6 +1,14 @@
 # Change Log
 Important changes to _inkgd_ will be documented in this file.
 
+## [0.4.4](https://github.com/ephread/inkgd/releases/tag/0.4.4)
+Released on 2022-01-26.
+
+### Fixed
+- Fixed numerous typos and minor issues in the editor plugin.
+- Fixed incorrect runtime paths in documentation.
+- Fixed incorrect type annotation causing crashes.
+
 ## [0.4.3](https://github.com/ephread/inkgd/releases/tag/0.4.3)
 Released on 2022-01-08.
 
