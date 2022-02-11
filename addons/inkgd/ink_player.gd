@@ -237,6 +237,15 @@ func get_current_flow_name() -> String:
 
 	return _story.state.current_flow_name
 
+## The current story path
+var current_path: String setget , get_current_path
+func get_current_path() -> String:
+	if _story == null:
+		_push_null_story_error()
+		return ""
+	
+	return _story.state.current_path_string
+
 # ############################################################################ #
 # Private Properties
 # ############################################################################ #
