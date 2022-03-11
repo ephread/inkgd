@@ -43,6 +43,10 @@ signal loaded(successfully)
 ## successfully continued.
 signal continued(text, tags)
 
+## Emitted when using `continue_async`, if the time spent evaluating the ink
+## exceeded the alloted time.
+signal interrupted()
+
 ## Emitted when the player should pick a choice.
 signal prompt_choices(choices)
 
@@ -173,6 +177,18 @@ func get_can_continue() -> bool:
 	return _story.can_continue
 
 
+## If `continue_async` was called (with milliseconds limit > 0) then this
+## property will return false if the ink evaluation isn't yet finished, and
+## you need to call it again in order for the continue to fully complete.
+var async_continue_complete: bool setget , get_async_continue_complete
+func get_async_continue_complete() -> bool:
+	if _story == null:
+		_push_null_story_error()
+		return false
+
+	return _story.async_continue_complete
+
+
 ## The content of the current line.
 var current_text: String setget , get_current_text
 func get_current_text() -> String:
@@ -223,10 +239,12 @@ func get_global_tags() -> Array:
 
 	return _story.global_tags
 
+
 ## `true` if the _story currently has choices, `false` otherwise.
 var has_choices: bool setget , get_has_choices
 func get_has_choices() -> bool:
 	return !self.current_choices.empty()
+
 
 ## The name of the current flow.
 var current_flow_name: String setget , get_current_flow_name
@@ -237,14 +255,20 @@ func get_current_flow_name() -> String:
 
 	return _story.state.current_flow_name
 
-## The current story path
+
+## The current story path.
 var current_path: String setget , get_current_path
 func get_current_path() -> String:
 	if _story == null:
 		_push_null_story_error()
 		return ""
-	
-	return _story.state.current_path_string
+
+	var path = _story.state.current_path_string
+	if path == null:
+		return ""
+	else:
+		return path
+
 
 # ############################################################################ #
 # Private Properties
@@ -320,7 +344,7 @@ func destroy() -> void:
 # Methods | Story Flow
 # ############################################################################ #
 
-## Continues the _story.
+## Continues the story.
 func continue_story() -> String:
 	if _story == null:
 		_push_null_story_error()
@@ -339,6 +363,58 @@ func continue_story() -> String:
 
 	return text
 
+## An "asynchronous" version of `continue_story` that only partially evaluates
+## the ink, with a budget of a certain time limit. It will exit ink evaluation
+## early if the evaluation isn't complete within the time limit, with the
+## `async_continue_complete` property being false. This is useful if the
+## evaluation takes a long time, and you want to distribute it over multiple
+## game frames for smoother animation. If you pass a limit of zero, then it will
+## fully evaluate the ink in the same way as calling continue_story.
+##
+## To get notified when the evaluation is exited early, you can connect to the
+## `interrupted` signal.
+func continue_story_async(millisecs_limit_async: float) -> String:
+	if _story == null:
+		_push_null_story_error()
+		return ""
+
+	var text: String = ""
+	if self.can_continue:
+		_story.continue_async(millisecs_limit_async)
+
+		if !self.async_continue_complete:
+			return emit_signal("interrupted")
+
+		text = self.current_text
+
+	elif self.has_choices:
+		emit_signal("prompt_choices", self.current_choices)
+	else:
+		emit_signal("ended")
+
+	return text
+
+## Continue the story until the next choice point or until it runs out of
+## content. This is as opposed to `continue` which only evaluates one line
+## of output at a time. It returns the resulting text evaluated by the ink
+## engine, concatenated together.
+func continue_story_maximally() -> String:
+	if _story == null:
+		_push_null_story_error()
+		return ""
+
+	var text: String = ""
+	if self.can_continue:
+		_story.continue_maximally()
+
+		text = self.current_text
+
+	elif self.has_choices:
+		emit_signal("prompt_choices", self.current_choices)
+	else:
+		emit_signal("ended")
+
+	return text
 
 ## Chooses a choice. If the _story is not currently expected choices or
 ## the index is out of bounds, this method does nothing.
@@ -428,8 +504,32 @@ func get_state() -> String:
 	return _story.state.to_json()
 
 
+## If you have a large story, and saving state to JSON takes too long for your
+## framerate, you can temporarily freeze a copy of the state for saving on
+## a separate thread. Internally, the engine maintains a "diff patch".
+## When you've finished saving your state, call `background_save_complete`
+## and that diff patch will be applied, allowing the story to continue
+## in its usual mode.
+func copy_state_for_background_thread_save() -> String:
+	if _story == null:
+		_push_null_story_error()
+		return ""
+
+	return _story.copy_state_for_background_thread_save().to_json()
+
+
+## See `copy_state_for_background_thread_save`. This method releases the
+## "frozen" save state, applying its patch that it was using internally.
+func background_save_complete() -> void:
+	if _story == null:
+		_push_null_story_error()
+		return ""
+
+	_story.background_save_complete()
+
+
 ## Sets the state from a JSON string.
-func set_state(state: String):
+func set_state(state: String) -> void:
 	if _story == null:
 		_push_null_story_error()
 		return
@@ -538,7 +638,7 @@ func observe_variable(variable_name: String, object: Object, method_name: String
 
 ## Removes an observer for the given variable name. This method is highly
 ## specific and will only remove one observer.
-func remove_variable_observer(object: Object, method_name: String, specific_variable_name: String):
+func remove_variable_observer(object: Object, method_name: String, specific_variable_name: String) -> void:
 	if _story == null:
 		_push_null_story_error()
 		return
@@ -548,7 +648,7 @@ func remove_variable_observer(object: Object, method_name: String, specific_vari
 
 ## Removes all observers registered with the couple object/method_name,
 ## regardless of which variable they observed.
-func remove_variable_observer_for_all_variable(object: Object, method_name: String):
+func remove_variable_observer_for_all_variable(object: Object, method_name: String) -> void:
 	if _story == null:
 		_push_null_story_error()
 		return
@@ -557,7 +657,7 @@ func remove_variable_observer_for_all_variable(object: Object, method_name: Stri
 
 
 ## Removes all observers observing the given variable.
-func remove_all_variable_observers(specific_variable_name: String):
+func remove_all_variable_observers(specific_variable_name: String) -> void:
 	if _story == null:
 		_push_null_story_error()
 		return
@@ -575,7 +675,7 @@ func bind_external_function(
 		object: Object,
 		method_name: String,
 		lookahead_safe = false
-):
+) -> void:
 	if _story == null:
 		_push_null_story_error()
 		return
@@ -584,7 +684,7 @@ func bind_external_function(
 
 
 ## Unbinds an external function.
-func unbind_external_function(func_name: String):
+func unbind_external_function(func_name: String) -> void:
 	if _story == null:
 		_push_null_story_error()
 		return
@@ -595,6 +695,9 @@ func unbind_external_function(func_name: String):
 # ############################################################################ #
 # Methods | Functions
 # ############################################################################ #
+
+func has_function(function_name: String) -> bool:
+	return _story.has_function(function_name)
 
 ## Evaluate a given ink function, returning its return value (but not
 ## its output).
@@ -624,35 +727,35 @@ func create_ink_list_from_item_name(item_name: String) -> InkList:
 # Private Methods | Signal Forwarding
 # ############################################################################ #
 
-func _exception_raised(message, stack_trace):
+func _exception_raised(message, stack_trace) -> void:
 	emit_signal("exception_raised", message, stack_trace)
 
 
-func _on_error(message, type):
+func _on_error(message, type) -> void:
 	if get_signal_connection_list("error_encountered").size() == 0:
 		_push_story_error(message, type)
 	else:
 		emit_signal("error_encountered", message, type)
 
 
-func _on_did_continue():
+func _on_did_continue() -> void:
 	emit_signal("continued", self.current_text, self.current_tags)
 
 
-func _on_make_choice(choice):
+func _on_make_choice(choice) -> void:
 	emit_signal("choice_made", choice.text)
 
 
-func _on_evaluate_function(function_name, arguments):
+func _on_evaluate_function(function_name, arguments) -> void:
 	emit_signal("function_evaluating", function_name, arguments)
 
 
-func _on_complete_evaluate_function(function_name, arguments, text_output, return_value):
+func _on_complete_evaluate_function(function_name, arguments, text_output, return_value) -> void:
 	var function_result = InkFunctionResult.new(text_output, return_value)
 	emit_signal("function_evaluated", function_name, arguments, function_result)
 
 
-func _on_choose_path_string(path, arguments):
+func _on_choose_path_string(path, arguments) -> void:
 	emit_signal("path_choosen", path, arguments)
 
 
@@ -660,23 +763,23 @@ func _on_choose_path_string(path, arguments):
 # Private Methods
 # ############################################################################ #
 
-func _create_story(json_story):
+func _create_story(json_story) -> void:
 	_story = InkStory.new(json_story)
 
 
-func _async_create_story(json_story):
+func _async_create_story(json_story) -> void:
 	_create_story(json_story)
 	call_deferred("_async_creation_completed")
 
 
-func _async_creation_completed():
+func _async_creation_completed() -> void:
 	_thread.wait_to_finish()
 	_thread = null
 
 	_finalise_story_creation()
 
 
-func _finalise_story_creation():
+func _finalise_story_creation() -> void:
 	_story.connect("on_error", self, "_on_error")
 	_story.connect("on_did_continue", self, "_on_did_continue")
 	_story.connect("on_make_choice", self, "_on_make_choice")
@@ -693,7 +796,7 @@ func _finalise_story_creation():
 	emit_signal("loaded", true)
 
 
-func _add_runtime():
+func _add_runtime() -> void:
 	# The InkRuntime is normaly an auto-loaded singleton,
 	# but if it's not present, it's added here.
 	var runtime: Node
@@ -708,26 +811,26 @@ func _add_runtime():
 	_ink_runtime = weakref(runtime)
 
 
-func _remove_runtime():
+func _remove_runtime() -> void:
 	if _manages_runtime:
 		InkRuntime.deinit(get_tree().root)
 
 
-func _current_platform_supports_threads():
+func _current_platform_supports_threads() -> void:
 	return OS.get_name() != "HTML5"
 
 
-func _push_null_runtime_error():
+func _push_null_runtime_error() -> void:
 	_push_error(
 			"InkRuntime could not found, did you remove it from the tree?"
 	)
 
 
-func _push_null_story_error():
+func _push_null_story_error() -> void:
 	_push_error("The _story is 'null', was it loaded properly?")
 
 
-func _push_story_error(message: String, type: int):
+func _push_story_error(message: String, type: int) -> void:
 	if Engine.editor_hint:
 		match type:
 			ErrorType.ERROR:

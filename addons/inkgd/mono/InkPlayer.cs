@@ -20,6 +20,7 @@ public class InkPlayer : Node
 	[Signal] public delegate void error_encountered(string message, int type);
 	[Signal] public delegate void loaded(bool successfully);
 	[Signal] public delegate void continued(string text, string[] tags);
+	[Signal] public delegate void interrupted();
 	[Signal] public delegate void prompt_choices(string[] choices);
 	[Signal] public delegate void choice_made(string choice);
 	[Signal] public delegate void function_evaluating(string[] function_name, object[] arguments);
@@ -88,6 +89,19 @@ public class InkPlayer : Node
 			}
 
 			return story.canContinue;
+		}
+	}
+
+	public bool async_continue_complete
+	{
+		get {
+			if (story == null)
+			{
+				PushNullStoryError();
+				return false;
+			}
+
+			return story.asyncContinueComplete;
 		}
 	}
 
@@ -180,6 +194,19 @@ public class InkPlayer : Node
 			return story.state.currentFlowName;
 		}
 	}
+
+	public string current_path
+	{
+		get {
+			if (story == null)
+			{
+				PushNullStoryError();
+				return "";
+			}
+
+			return story.state.currentPathString;
+		}
+	}
 	#endregion
 
 	#region Private Properties
@@ -266,6 +293,82 @@ public class InkPlayer : Node
 			if (can_continue)
 			{
 				story.Continue();
+				text = current_text;
+			}
+			else if (has_choices)
+			{
+				EmitSignal("prompt_choices",  new object[] { current_choices });
+			}
+			else
+			{
+				EmitSignal("ended");
+			}
+
+			return text;
+		}
+		catch (Exception e)
+		{
+			HandleException(e);
+			return text;
+		}
+	}
+
+	public string continue_story_async(float millisecs_limit_async)
+	{
+		if (story == null)
+		{
+			PushNullStoryError();
+			return "";
+		}
+
+		var text = "";
+
+		try
+		{
+			if (can_continue)
+			{
+				story.ContinueAsync(millisecs_limit_async);
+
+				if (!async_continue_complete) {
+					EmitSignal("interrupted");
+					return "";
+				}
+
+				text = current_text;
+			}
+			else if (has_choices)
+			{
+				EmitSignal("prompt_choices", new object[] { current_choices });
+			}
+			else
+			{
+				EmitSignal("ended");
+			}
+
+			return text;
+		}
+		catch (Exception e)
+		{
+			HandleException(e);
+			return text;
+		}
+	}
+
+	public string continue_story_maximally()
+	{
+		if (story == null)
+		{
+			PushNullStoryError();
+			return "";
+		}
+
+		var text = "";
+
+		try
+		{
+			if (can_continue)
+			{
+				story.ContinueMaximally();
 				text = current_text;
 			}
 			else if (has_choices)
@@ -432,6 +535,28 @@ public class InkPlayer : Node
 			HandleException(e);
 			return "";
 		}
+	}
+
+	public string copy_state_for_background_thread_save()
+	{
+		if (story == null)
+		{
+			PushNullStoryError();
+			return "";
+		}
+
+		return story.CopyStateForBackgroundThreadSave().ToJson();
+	}
+
+	public void background_save_complete()
+	{
+		if (story == null)
+		{
+			PushNullStoryError();
+			return "";
+		}
+
+		return story.BackgroundSaveComplete();
 	}
 
 	public void set_state(string state)

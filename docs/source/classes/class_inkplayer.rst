@@ -43,20 +43,25 @@ Read/Write Properties
 Read Only Properties
 ********************
 
-+------------+---------------------------------------------------------------------------------------------+-----------+
-| bool_      | :ref:`can_continue<class_inkplayer_can_continue>`                                           | ``false`` |
-+------------+---------------------------------------------------------------------------------------------+-----------+
-| String_    | :ref:`current_text<class_inkplayer_current_text>`                                           |  ``""``   |
-+------------+---------------------------------------------------------------------------------------------+-----------+
-| Array_     | :ref:`current_choices<class_inkplayer_current_choices>`                                     |  ``[]``   |
-+------------+---------------------------------------------------------------------------------------------+-----------+
-| Array_     | :ref:`current_tags<class_inkplayer_current_tags>`                                           |  ``[]``   |
-+------------+---------------------------------------------------------------------------------------------+-----------+
-| Array_     | :ref:`global_tags<class_inkplayer_global_tags>`                                             |  ``[]``   |
-+------------+---------------------------------------------------------------------------------------------+-----------+
-| bool_      | :ref:`has_choices<class_inkplayer_has_choices>`                                             | ``false`` |
-+------------+---------------------------------------------------------------------------------------------+-----------+
-
++------------+---------------------------------------------------------------------------------------------+--------------------+
+| bool_      | :ref:`can_continue<class_inkplayer_can_continue>`                                           | ``false``          |
++------------+---------------------------------------------------------------------------------------------+--------------------+
+| bool_      | :ref:`async_continue_complete<class_inkplayer_async_continue_complete>`                     | ``false``          |
++------------+---------------------------------------------------------------------------------------------+--------------------+
+| String_    | :ref:`current_text<class_inkplayer_current_text>`                                           |  ``""``            |
++------------+---------------------------------------------------------------------------------------------+--------------------+
+| Array_     | :ref:`current_choices<class_inkplayer_current_choices>`                                     |  ``[]``            |
++------------+---------------------------------------------------------------------------------------------+--------------------+
+| Array_     | :ref:`current_tags<class_inkplayer_current_tags>`                                           |  ``[]``            |
++------------+---------------------------------------------------------------------------------------------+--------------------+
+| Array_     | :ref:`global_tags<class_inkplayer_global_tags>`                                             |  ``[]``            |
++------------+---------------------------------------------------------------------------------------------+--------------------+
+| bool_      | :ref:`has_choices<class_inkplayer_has_choices>`                                             | ``false``          |
++------------+---------------------------------------------------------------------------------------------+--------------------+
+| bool_      | :ref:`current_flow_name<class_inkplayer_current_flow_name>`                                 | ``"DEFAULT_FLOW"`` |
++------------+---------------------------------------------------------------------------------------------+--------------------+
+| bool_      | :ref:`current_current_path<class_inkplayer_current_current_path>`                           | ``""``             |
++------------+---------------------------------------------------------------------------------------------+--------------------+
 
 Methods
 -------
@@ -79,6 +84,10 @@ Story Flow
 +---------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | String_                                           | :ref:`continue_story<class_inkplayer_continue_story>`  **(** **)**                                                                                                   |
 +---------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| String_                                           | :ref:`continue_story_async<class_inkplayer_continue_story_async>`  **(** float_ millisecs_limit_async **)**                                                          |
++---------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| String_                                           | :ref:`continue_story_maximally<class_inkplayer_continue_story_maximally>`  **(** **)**                                                                               |
++---------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | void                                              | :ref:`choose_choice_index<class_inkplayer_choose_choice_index>`  **(** int_ index **)**                                                                              |
 +---------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | void                                              | :ref:`choose_path_string<class_inkplayer_choose_path_string>`  **(** String_ path_string **)**                                                                       |
@@ -100,6 +109,10 @@ State Management
 
 +---------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | String_                                           | :ref:`get_state<class_inkplayer_get_state>` **(** **)**                                                                                                              |
++---------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| String_                                           | :ref:`copy_state_for_background_thread_save<class_inkplayer_copy_state_for_background_thread_save>` **(** **)**                                                      |
++---------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| void                                              | :ref:`background_save_complete<class_inkplayer_background_save_complete>` **(** **)**                                                                                |
 +---------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | void                                              | :ref:`set_state<class_inkplayer_set_state>` **(** String_ state **)**                                                                                                |
 +---------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -181,6 +194,15 @@ successfully continued.
 
 ----
 
+.. _class_inkplayer_interrupted:
+
+- **interrupted (** **)**
+
+Emitted when using `continue_async`, if the time spent evaluating the ink
+exceeded the alloted time.
+
+----
+
 .. _class_inkplayer_prompt_choices:
 
 - **prompt_choices (** Array_ choices **)**
@@ -244,9 +266,9 @@ any resource, it should be an instance of *InkResource*.
 
 - bool_ **loads_in_background**
 
-+-----------+-----------------------+
-| *Default* | ``true``              |
-+-----------+-----------------------+
++-----------+----------------------------------+
+| *Default* | ``true``                         |
++-----------+----------------------------------+
 
 When ``true`` the story will be created in a separate threads, to prevent the UI
 from freezing if the story is too big. Note that on platforms where threads
@@ -258,13 +280,13 @@ aren't available, the value of this property is ignored.
 
 - bool_ **allow_external_function_fallbacks**
 
-+-----------+-----------------------+
-| *Default* | ``true``              |
-+-----------+-----------------------+
-| *Setter*  | set_aeff(value)       |
-+-----------+-----------------------+
-| *Getter*  | get_aeff()            |
-+-----------+-----------------------+
++-----------+----------------------------------+
+| *Default* | ``true``                         |
++-----------+----------------------------------+
+| *Setter*  | set_aeff(value)                  |
++-----------+----------------------------------+
+| *Getter*  | get_aeff()                       |
++-----------+----------------------------------+
 
 ``true`` to allow external function fallbacks, ``false`` otherwise. If this
 property is ``false`` and the appropriate function hasn't been binded, the
@@ -276,13 +298,13 @@ story will output an error.
 
 - bool_ **do_not_save_default_values**
 
-+-----------+-----------------------+
-| *Default* | ``true``              |
-+-----------+-----------------------+
-| *Setter*  | set_dnsdv(value)      |
-+-----------+-----------------------+
-| *Getter*  | get_dnsdv()           |
-+-----------+-----------------------+
++-----------+----------------------------------+
+| *Default* | ``true``                         |
++-----------+----------------------------------+
+| *Setter*  | set_dnsdv(value)                 |
++-----------+----------------------------------+
+| *Getter*  | get_dnsdv()                      |
++-----------+----------------------------------+
 
 When set to ``true``, *inkgd* skips saving global values that remain
 equal to the initial values that were declared in ink. This property matches
@@ -294,13 +316,13 @@ the static property declared in `VariablesState.cs`_.
 
 - bool_ **stop_execution_on_exception**
 
-+-----------+-----------------------+
-| *Default* | ``true``              |
-+-----------+-----------------------+
-| *Setter*  | set_speoex(value)     |
-+-----------+-----------------------+
-| *Getter*  | get_speoex()          |
-+-----------+-----------------------+
++-----------+----------------------------------+
+| *Default* | ``true``                         |
++-----------+----------------------------------+
+| *Setter*  | set_speoex(value)                |
++-----------+----------------------------------+
+| *Getter*  | get_speoex()                     |
++-----------+----------------------------------+
 
 When set to ``true``, *inkgd* uses ``assert()`` instead of ``push_error`` to
 report exceptions, thus making them more explicit during development.
@@ -311,13 +333,13 @@ report exceptions, thus making them more explicit during development.
 
 - bool_ **stop_execution_on_error**
 
-+-----------+-----------------------+
-| *Default* | ``true``              |
-+-----------+-----------------------+
-| *Setter*  | set_speoer(value)     |
-+-----------+-----------------------+
-| *Getter*  | get_speoer()          |
-+-----------+-----------------------+
++-----------+----------------------------------+
+| *Default* | ``true``                         |
++-----------+----------------------------------+
+| *Setter*  | set_speoer(value)                |
++-----------+----------------------------------+
+| *Getter*  | get_speoer()                     |
++-----------+----------------------------------+
 
 When set to ``true``, *inkgd* uses ``assert()`` instead of ``push_error`` to
 report errors, thus making them more explicit during development.
@@ -328,11 +350,11 @@ report errors, thus making them more explicit during development.
 
 - bool_ **story**
 
-+-----------+-----------------------+
-| *Default* | ``null``              |
-+-----------+-----------------------+
-| *Getter*  | get_can_story()       |
-+-----------+-----------------------+
++-----------+----------------------------------+
+| *Default* | ``null``                         |
++-----------+----------------------------------+
+| *Getter*  | get_can_story()                  |
++-----------+----------------------------------+
 
 The underlying story, exposed for convenience. For instance, you may want
 to create a new InkList, which in certain acses needs a reference to the
@@ -344,14 +366,30 @@ story to be constructed.
 
 - bool_ **can_continue**
 
-+-----------+-----------------------+
-| *Default* | ``false``             |
-+-----------+-----------------------+
-| *Getter*  | get_can_continue()    |
-+-----------+-----------------------+
++-----------+----------------------------------+
+| *Default* | ``false``                        |
++-----------+----------------------------------+
+| *Getter*  | get_can_continue()               |
++-----------+----------------------------------+
 
 ``true`` if the story can continue (i. e. is not expecting a choice to be
 choosen and hasn't reached the end).
+
+----
+
+.. _class_inkplayer_async_continue_complete:
+
+- bool_ **async_continue_complete**
+
++-----------+----------------------------------+
+| *Default* | ``false``                        |
++-----------+----------------------------------+
+| *Getter*  | get_async_continue_complete()    |
++-----------+----------------------------------+
+
+If ``continue_async`` was called (with milliseconds limit > 0) then this
+property will return false if the ink evaluation isn't yet finished, and
+you need to call it again in order for the continue to fully complete.
 
 ----
 
@@ -359,11 +397,11 @@ choosen and hasn't reached the end).
 
 - String_ **current_text**
 
-+-----------+-----------------------+
-| *Default* | ``""``                |
-+-----------+-----------------------+
-| *Getter*  | get_current_text()    |
-+-----------+-----------------------+
++-----------+----------------------------------+
+| *Default* | ``""``                           |
++-----------+----------------------------------+
+| *Getter*  | get_current_text()               |
++-----------+----------------------------------+
 
 The content of the current line.
 
@@ -373,11 +411,11 @@ The content of the current line.
 
 - Array_ **current_choices**
 
-+-----------+-----------------------+
-| *Default* | ``""``                |
-+-----------+-----------------------+
-| *Getter*  | get_current_choices() |
-+-----------+-----------------------+
++-----------+----------------------------------+
+| *Default* | ``""``                           |
++-----------+----------------------------------+
+| *Getter*  | get_current_choices()            |
++-----------+----------------------------------+
 
 The current choices. Empty is there are no choices for the current line.
 
@@ -387,11 +425,11 @@ The current choices. Empty is there are no choices for the current line.
 
 - Array_ **current_tags**
 
-+-----------+-----------------------+
-| *Default* | ``[]``                |
-+-----------+-----------------------+
-| *Getter*  | get_current_tags()    |
-+-----------+-----------------------+
++-----------+----------------------------------+
+| *Default* | ``[]``                           |
++-----------+----------------------------------+
+| *Getter*  | get_current_tags()               |
++-----------+----------------------------------+
 
 The current tags. Empty is there are no tags for the current line.
 
@@ -401,11 +439,11 @@ The current tags. Empty is there are no tags for the current line.
 
 - Array_ **global_tags**
 
-+-----------+-----------------------+
-| *Default* | ``[]``                |
-+-----------+-----------------------+
-| *Getter*  | get_global_tags()     |
-+-----------+-----------------------+
++-----------+----------------------------------+
+| *Default* | ``[]``                           |
++-----------+----------------------------------+
+| *Getter*  | get_global_tags()                |
++-----------+----------------------------------+
 
 The global tags for the story. Empty if none have been declared.
 
@@ -415,11 +453,41 @@ The global tags for the story. Empty if none have been declared.
 
 - bool_ **has_choices**
 
-+-----------+-----------------------+
-| *Default* | ``false``             |
-+-----------+-----------------------+
++-----------+----------------------------------+
+| *Default* | ``false``                        |
++-----------+----------------------------------+
+| *Getter*  | get_has_choices()                |
++-----------+----------------------------------+
 
 ``true`` if the story currently has choices, ``false`` otherwise.
+
+----
+
+.. _class_inkplayer_current_flow_name:
+
+- bool_ **current_flow_name**
+
++-----------+----------------------------------+
+| *Default* | ``"DEFAULT_FLOW"``               |
++-----------+----------------------------------+
+| *Getter*  | get_current_flow_name()          |
++-----------+----------------------------------+
+
+The name of the current flow.
+
+----
+
+.. _class_inkplayer_current_current_path:
+
+- bool_ **current_current_path**
+
++-----------+----------------------------------+
+| *Default* | ``""``                           |
++-----------+----------------------------------+
+| *Getter*  | get_current_path()               |
++-----------+----------------------------------+
+
+The current story path.
 
 
 Method Descriptions
@@ -458,6 +526,33 @@ recreate the story.
 - String_ **continue_story (** **)**
 
 Continues the story.
+
+----
+
+.. _class_inkplayer_continue_story:
+
+- String_ **continue_story_async (** **)**
+
+An "asynchronous" version of ``continue_story`` that only partially evaluates
+the ink, with a budget of a certain time limit. It will exit ink evaluation
+early if the evaluation isn't complete within the time limit, with the
+``async_continue_complete`` property being false. This is useful if the
+evaluation takes a long time, and you want to distribute it over multiple
+game frames for smoother animation. If you pass a limit of zero, then it will
+fully evaluate the ink in the same way as calling ``continue_story``.
+
+To get notified when the evaluation is exited early, you can connect to the
+``interrupted`` signal.
+
+----
+
+.. _class_inkplayer_continue_story_maximally:
+
+- String_ **continue_story_maximally (** **)**
+
+Continue the story until the next choice point or until it runs out of
+content. This is as opposed to ``continue`` which only evaluates one line
+of output at a time.
 
 ----
 
@@ -525,6 +620,29 @@ Returns the visit count of the given path.
 - String_ **get_state (** **)**
 
 Gets the current state as a JSON string. It can then be saved somewhere.
+
+----
+
+
+.. _class_inkplayer_copy_state_for_background_thread_save:
+
+- String_ **copy_state_for_background_thread_save (** **)**
+
+If you have a large story, and saving state to JSON takes too long for your
+framerate, you can temporarily freeze a copy of the state for saving on
+a separate thread. Internally, the engine maintains a "diff patch".
+When you've finished saving your state, call ``background_save_complete``
+and that diff patch will be applied, allowing the story to continue
+in its usual mode.
+
+----
+
+.. _class_inkplayer_copy_state_for_background_thread_save:
+
+- void **background_save_complete (** **)**
+
+See ``copy_state_for_background_thread_save``. This method releases the
+"frozen" save state, applying its patch that it was using internally.
 
 ----
 
