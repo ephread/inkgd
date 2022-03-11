@@ -25,10 +25,10 @@ scripts, but suffers from poor performances. The GDScript implementation is
 about 50 times slower than *godot-ink*. These performance limitations are
 detailed in :doc:`/advanced/performance`.
 
-If the poor performances are too limiting and you don't mind packaging a Mono
-runtime in your game, *inkgd* also supports wrapping the original C# runtime,
-while keeping the same GDScript API. :doc:`/advanced/migrating_to_godot_mono`
-describes the process of using the official runtime in inkgd.
+.. If the poor performances are too limiting and you don't mind packaging a Mono
+.. runtime in your game, *inkgd* also supports wrapping the original C# runtime,
+.. while keeping the same GDScript API. :doc:`/advanced/migrating_to_godot_mono`
+.. describes the process of using the official runtime in inkgd.
 
 --------------------------------------------------------------------------------
 
