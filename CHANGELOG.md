@@ -1,6 +1,14 @@
 # Change Log
 Important changes to _inkgd_ will be documented in this file.
 
+## [0.4.5](https://github.com/ephread/inkgd/releases/tag/0.4.5)
+Released on 2022-03-11.
+
+### Added
+- Exposed more ink APIs in InkPlayer.
+- Added 'current_path' getter in InkPlayer, thanks [@francoisdlt]!
+- Added inkgd vs. godot-ink documentation page.
+
 ## [0.4.4](https://github.com/ephread/inkgd/releases/tag/0.4.4)
 Released on 2022-01-26.
 
