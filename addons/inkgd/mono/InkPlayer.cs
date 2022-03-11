@@ -552,7 +552,7 @@ public class InkPlayer : Node
 			return;
 		}
 
-		return story.BackgroundSaveComplete();
+		story.BackgroundSaveComplete();
 	}
 
 	public void set_state(string state)
