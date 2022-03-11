@@ -216,9 +216,9 @@ selected = 0
 
 [node name="InkDirectoryLabel" type="Label" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer"]
 visible = false
-margin_top = 80.0
-margin_right = 949.0
-margin_bottom = 104.0
+margin_top = 108.0
+margin_right = 953.0
+margin_bottom = 122.0
 hint_tooltip = "The path to Mono."
 mouse_filter = 1
 size_flags_horizontal = 3
@@ -227,18 +227,19 @@ text = "Mono"
 
 [node name="InkDirectoryHBoxContainer" type="HBoxContainer" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer"]
 visible = false
-margin_top = 80.0
-margin_right = 949.0
-margin_bottom = 104.0
+margin_left = 957.0
+margin_top = 108.0
+margin_right = 1910.0
+margin_bottom = 132.0
 size_flags_horizontal = 3
 
 [node name="InkDirectoryLineEdit" type="LineEdit" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer/InkDirectoryHBoxContainer"]
-margin_right = 917.0
+margin_right = 921.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 
 [node name="InkDIrectoryDialogButton" type="Button" parent="ScrollContainer/InklecateVBoxContainer/InklecateMarginContainer/MarginContainer/VBoxContainer/GridContainer/InkDirectoryHBoxContainer"]
-margin_left = 921.0
-margin_right = 949.0
+margin_left = 925.0
+margin_right = 953.0
 margin_bottom = 24.0
 icon = SubResource( 5 )

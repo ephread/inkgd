@@ -313,15 +313,13 @@ public class InkPlayer : Node
 		}
 	}
 
-	public string continue_story_async(float millisecs_limit_async)
+	public void continue_story_async(float millisecs_limit_async)
 	{
 		if (story == null)
 		{
 			PushNullStoryError();
-			return "";
+			return;
 		}
-
-		var text = "";
 
 		try
 		{
@@ -331,10 +329,8 @@ public class InkPlayer : Node
 
 				if (!async_continue_complete) {
 					EmitSignal("interrupted");
-					return "";
+					return;
 				}
-
-				text = current_text;
 			}
 			else if (has_choices)
 			{
@@ -345,12 +341,12 @@ public class InkPlayer : Node
 				EmitSignal("ended");
 			}
 
-			return text;
+			return;
 		}
 		catch (Exception e)
 		{
 			HandleException(e);
-			return text;
+			return;
 		}
 	}
 
@@ -553,7 +549,7 @@ public class InkPlayer : Node
 		if (story == null)
 		{
 			PushNullStoryError();
-			return "";
+			return;
 		}
 
 		return story.BackgroundSaveComplete();

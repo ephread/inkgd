@@ -19,7 +19,7 @@ jobs:
       matrix:
         destination:
           - "3.3.4"
-          - "3.4.2"
+          - "3.4.3"
 
     steps:
       - name: "(Shared) Check out the repository"

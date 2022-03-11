@@ -373,26 +373,22 @@ func continue_story() -> String:
 ##
 ## To get notified when the evaluation is exited early, you can connect to the
 ## `interrupted` signal.
-func continue_story_async(millisecs_limit_async: float) -> String:
+func continue_story_async(millisecs_limit_async: float) -> void:
 	if _story == null:
 		_push_null_story_error()
-		return ""
+		return
 
-	var text: String = ""
 	if self.can_continue:
 		_story.continue_async(millisecs_limit_async)
 
 		if !self.async_continue_complete:
-			return emit_signal("interrupted")
-
-		text = self.current_text
+			emit_signal("interrupted")
+			return
 
 	elif self.has_choices:
 		emit_signal("prompt_choices", self.current_choices)
 	else:
 		emit_signal("ended")
-
-	return text
 
 ## Continue the story until the next choice point or until it runs out of
 ## content. This is as opposed to `continue` which only evaluates one line
@@ -523,7 +519,7 @@ func copy_state_for_background_thread_save() -> String:
 func background_save_complete() -> void:
 	if _story == null:
 		_push_null_story_error()
-		return ""
+		return
 
 	_story.background_save_complete()
 
@@ -816,7 +812,7 @@ func _remove_runtime() -> void:
 		InkRuntime.deinit(get_tree().root)
 
 
-func _current_platform_supports_threads() -> void:
+func _current_platform_supports_threads() -> bool:
 	return OS.get_name() != "HTML5"
 
 
