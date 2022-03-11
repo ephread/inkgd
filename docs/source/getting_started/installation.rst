@@ -67,9 +67,9 @@ The new files should appear in the FileSystem dock, under the *addons* folder.
 
 |
 
-*inkgd* also provides with an editor plugin to manage Ink stories. The plugin
-should be enabled by default, but it can be disabled from the project settings.
-(*Project > Project Settings > Plugins*).
+*inkgd* also provides with an editor plugin to manage **ink** stories. The
+plugin should be enabled by default, but it can be disabled from the project
+settings. (*Project > Project Settings > Plugins*).
 
 .. image:: img/introduction/project_settings_plugin_tab.png
     :align: center
@@ -77,7 +77,7 @@ should be enabled by default, but it can be disabled from the project settings.
 
 |
 
-The editor plugin is not required to use the runtime. Ink stories can be
+The editor plugin is not required to use the runtime. **ink** stories can be
 compiled through ``inklecate`` directly or other editors, such as
 Inky_. The resulting ``.ink.json`` file can be loaded in the project manually.
 
@@ -86,8 +86,8 @@ Inky_. The resulting ``.ink.json`` file can be loaded in the project manually.
 .. warning::
 
     If you do not enable the plugin, you will not be able to import JSON files
-    as Ink resources. Make sure to include a filter rule in the export settings
-    to prevent JSON files from being discarded during export.
+    as **ink** resources. Make sure to include a filter rule in the export
+    settings to prevent JSON files from being discarded during export.
 
 Manual Installation
 *******************

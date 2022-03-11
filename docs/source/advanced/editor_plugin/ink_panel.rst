@@ -58,7 +58,7 @@ During build
 
 On change
     an experimental feature, recompiling the stories when changes are detected
-    in ink files. For more information, see :ref:`below<watched-directory>`.
+    in **ink** files. For more information, see :ref:`below<watched-directory>`.
 
 .. warning::
 
@@ -84,7 +84,8 @@ use.
 Story tab
 ---------
 
-In the Ink panel, select the *Story* tab to manage Ink stories in the project.
+In the Ink panel, select the *Story* tab to manage **ink** stories in the
+project.
 
 .. note::
 
@@ -107,12 +108,12 @@ a new story.
 
 |
 
-To manage a story, the plugin expect two paths. The path to the main Ink file
-that should be compiled (*Source File*) and where to write the compiled story
-(*Target File*). Both files need to be inside the project's file system, thus
-they can be accessed through the regular ``res://`` scheme. To set the path of
-the source file, either click on the folder icon or paste the path in the field
-directly.
+To manage a story, the plugin expect two paths. The path to the main **ink**
+file that should be compiled (*Source File*) and where to write the compiled
+story (*Target File*). Both files need to be inside the project's file system,
+thus they can be accessed through the regular ``res://`` scheme. To set the path
+of the source file, either click on the folder icon or paste the path in the
+field directly.
 
 When the source file path is defined, the plugin populates the *Target File*
 field with a default location.

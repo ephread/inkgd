@@ -151,7 +151,7 @@ Original C# API
 
 .. _`Handlers`: https://github.com/inkle/ink/blob/master/Documentation/RunningYourInk.md#error-handling
 
-Starting with Ink version 1.0.0, it's possible to attach different types of
+Starting with **ink** version 1.0.0, it's possible to attach different types of
 handlers to a story to receive callbacks. In C#, they are implemented using
 events. In *inkgd*, they are again implemented using signals.
 
@@ -206,8 +206,8 @@ information, refer to :doc:`this document</advanced/error_management>`.
 Getting the ouput of ``evaluate_function``
 ------------------------------------------
 
-``evaluate_function`` evaluates an Ink function from GDScript. Since it's not
-possible to have in-out variables in GDScript you need to pass ``true`` to
+``evaluate_function`` evaluates an **ink** function from GDScript. Since it's
+not possible to have in-out variables in GDScript you need to pass ``true`` to
 ``return_text_output`` to retrieve the text output of the function.
 ``evaluate_function`` will then return a dictionary containing both the return
 value and the outputed text.

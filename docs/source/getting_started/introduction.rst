@@ -10,8 +10,8 @@ Introduction
 If you are not familiar with Ink, it's a good idea to take a quick look at
 two documents from the original documentation:
 
-- `Writing with Ink`_ – which describes how to write Ink stories;
-- `Running your Ink`_ – which describes how to integrate the Ink runtime in a C# environment.
+- `Writing with Ink`_ – which describes how to write **ink** stories;
+- `Running your Ink`_ – which describes how to integrate the **ink** runtime in a C# environment.
 
 .. _Ink: https://github.com/inkle/ink
 .. _`Writing with Ink`: https://github.com/inkle/ink/blob/master/Documentation/WritingWithInk.md

@@ -30,12 +30,13 @@ If you prefer a more hands-on approach, feel free to tinker with the
 .. really annoying. Hopefully MyST can solve some of those issues.
 .. _here: https://github.com/ephread/inkgd/releases/download/0.4.4/inkgd-example-0.4.4.zip
 
-.. While looking for an implementation of Ink in Godot, you may have come across
-.. godot-ink_. *inkgd* and *godot-ink* have different philosophies and purposes. If
-.. you are not certain which one you should use, :page: offers a breakdown of their
-.. differences.
+While looking for an implementation of **ink** in Godot, you may have come across
+godot-ink_. *inkgd* and *godot-ink* have different philosophies and purposes. If
+you are not certain which one you should use,
+:doc:`advanced/choosing_between_inkgd_and_godot_ink` offers a breakdown of their
+differences.
 
-.. .. _godot-ink: https://github.com/paulloz/godot-ink
+.. _godot-ink: https://github.com/paulloz/godot-ink
 
 .. .......................................................................... ..
 
@@ -43,7 +44,6 @@ If you prefer a more hands-on approach, feel free to tinker with the
    :maxdepth: 1
    :caption: Getting started
 
-   getting_started/choosing_between_inkgd_and_godot_ink
    getting_started/introduction
    getting_started/installation
    getting_started/configuration
@@ -52,6 +52,7 @@ If you prefer a more hands-on approach, feel free to tinker with the
    :maxdepth: 1
    :caption: Advanced
 
+   advanced/choosing_between_inkgd_and_godot_ink
    advanced/using_inkplayer
    advanced/editor_plugin/index
    advanced/differences_between_api

@@ -1,8 +1,8 @@
 Performance
 ===========
 
-*inkgd* is overall slow. The high number of allocations that Ink requires makes
-GDScript choke.
+*inkgd* is overall slow. The high number of allocations that **ink** requires
+makes GDScript choke.
 
 For instance, loading The Intercept will create about 30,000 objects.
 *ipsuminious 12* —a generated story based on The Intercept that contains about

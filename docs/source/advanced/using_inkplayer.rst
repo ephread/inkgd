@@ -1,7 +1,7 @@
 Using InkPlayer
 ===============
 
-InkPlayer is a custom node that greatly simplifies the use of Ink in Godot.
+InkPlayer is a custom node that greatly simplifies the use of **ink** in Godot.
 
 ``story.gd`` is a direct port of ``Story.cs``, to use it in any engine, a bit
 of boilerplate code is necessary. InkPlayer takes care of that boilerplate

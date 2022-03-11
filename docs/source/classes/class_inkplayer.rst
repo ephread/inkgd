@@ -168,7 +168,7 @@ Signals
 
 - **exception (** String_ message, PoolStringArray_ stack_trace **)**
 
-Emitted when the Ink runtime encountered an exception. Exception are
+Emitted when the **ink** runtime encountered an exception. Exception are
 usually not recoverable as they corrupt the state. ``stack_trace`` is
 optional and contains each line of the stack trace leading to the
 exception for logging purposes.
@@ -257,7 +257,7 @@ Property Descriptions
 
 - Resource_ **ink_file**
 
-The compiled Ink file (.json) to play. While you can set this property to
+The compiled **ink** file (.json) to play. While you can set this property to
 any resource, it should be an instance of *InkResource*.
 
 ----
@@ -529,17 +529,17 @@ Continues the story.
 
 ----
 
-.. _class_inkplayer_continue_story:
+.. _class_inkplayer_continue_story_async:
 
 - String_ **continue_story_async (** **)**
 
 An "asynchronous" version of ``continue_story`` that only partially evaluates
-the ink, with a budget of a certain time limit. It will exit ink evaluation
+the ink, with a budget of a certain time limit. It will exit **ink** evaluation
 early if the evaluation isn't complete within the time limit, with the
 ``async_continue_complete`` property being false. This is useful if the
 evaluation takes a long time, and you want to distribute it over multiple
 game frames for smoother animation. If you pass a limit of zero, then it will
-fully evaluate the ink in the same way as calling ``continue_story``.
+fully evaluate the **ink** in the same way as calling ``continue_story``.
 
 To get notified when the evaluation is exited early, you can connect to the
 ``interrupted`` signal.
@@ -637,7 +637,7 @@ in its usual mode.
 
 ----
 
-.. _class_inkplayer_copy_state_for_background_thread_save:
+.. _class_inkplayer_background_save_complete:
 
 - void **background_save_complete (** **)**
 
@@ -764,7 +764,7 @@ Unbinds an external function.
 
 - :ref:`InkFunctionResult<class_inkfunctionresult>` **evaluate_function (** String_ function_name, Array_ arguments **)**
 
-Evaluate a given Ink function, returning both its return value and its text output.
+Evaluate a given **ink** function, returning both its return value and its text output.
 
 ----
 
@@ -786,6 +786,7 @@ Creates a new InkList from the name of a preexisting item.
 
 .. _bool: https://docs.godotengine.org/en/stable/classes/class_bool.html
 .. _int: https://docs.godotengine.org/en/stable/classes/class_int.html
+.. _float: https://docs.godotengine.org/en/stable/classes/class_float.html
 
 .. _String: https://docs.godotengine.org/en/stable/classes/class_string.html
 .. _Array: https://docs.godotengine.org/en/stable/classes/class_array.html

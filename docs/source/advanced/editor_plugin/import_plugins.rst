@@ -8,15 +8,15 @@ while the other can import *\*.json* files.
 Ink Importer
 ------------
 
-The *\*.ink* importer converts all Ink files into dummy resources and is only
-used to enable the automatic recompilation of managed stories. Internally, the
-plugin gets notified any time an Ink file has been reimported and can trigger a
-recompilation when appropriate. For more information, refer to the section about
-:ref:`automatic recompilation <watched-directory>`.
+The *\*.ink* importer converts all **ink** files into dummy resources and is
+only used to enable the automatic recompilation of managed stories. Internally,
+the plugin gets notified any time an **ink** file has been reimported and can
+trigger a recompilation when appropriate. For more information, refer to the
+section about :ref:`automatic recompilation <watched-directory>`.
 
 .. note::
 
-    If you store Ink files in your project, it's recommended that you exclude
+    If you store **ink** files in your project, it's recommended that you exclude
     them from exports, as they serve no purpose in the final game.
 
 
