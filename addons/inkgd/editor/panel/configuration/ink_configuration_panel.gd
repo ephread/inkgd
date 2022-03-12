@@ -18,7 +18,10 @@ extends Control
 var InkExecutionConfiguration = load("res://addons/inkgd/editor/common/executors/structures/ink_execution_configuration.gd")
 var InkConfigurationTester = load("res://addons/inkgd/editor/common/executors/ink_configuration_tester.gd")
 
+var InkCSharpValidator = preload("res://addons/inkgd/editor/common/ink_csharp_validator.gd")
+
 var InkRichDialog = load("res://addons/inkgd/editor/panel/common/ink_rich_dialog.tscn")
+
 
 # ############################################################################ #
 # Enums
@@ -31,11 +34,13 @@ enum FileDialogSelection {
 	INKLECATE_EXECUTABLE
 }
 
+
 # ############################################################################ #
 # Constants
 # ############################################################################ #
 
 const BOM = "\ufeff"
+
 
 # ############################################################################ #
 # Properties
@@ -43,6 +48,7 @@ const BOM = "\ufeff"
 
 var editor_interface: InkEditorInterface = null
 var configuration: InkConfiguration = null
+
 
 # ############################################################################ #
 # Private Properties
@@ -55,6 +61,7 @@ var _file_dialog = EditorFileDialog.new()
 ## Unknown by default.
 var _file_dialog_selection = FileDialogSelection.UNKNOWN
 
+
 # ############################################################################ #
 # Nodes
 # ############################################################################ #
@@ -65,7 +72,7 @@ onready var _use_mono_label = find_node("UseMonoLabel")
 onready var _use_mono_checkbox = find_node("UseMonoCheckBox")
 
 onready var _mono_label = find_node("MonoLabel")
-onready var _mono_container = find_node("MonoHBoxContainer")
+onready var _mono_container = find_node("MonoH")
 onready var _mono_line_edit = find_node("MonoLineEdit")
 onready var _mono_dialog_button = find_node("MonoDialogButton")
 
@@ -73,6 +80,12 @@ onready var _executable_line_edit = find_node("ExecutableLineEdit")
 onready var _executable_dialog_button = find_node("ExecutableDialogButton")
 
 onready var _recompilation_mode_button = find_node("RecompilationModeOptionButton")
+
+onready var _mono_support_container = find_node("MonoSupportV")
+onready var _mono_support_documentation_button = find_node("DocumentationButton")
+onready var _mono_support_presence_label = _mono_support_container.find_node("PresenceLabel")
+onready var _mono_support_refresh_button = _mono_support_container.find_node("RefreshButton")
+
 
 # ############################################################################ #
 # Overrides
@@ -90,7 +103,12 @@ func _ready():
 	_set_button_icons()
 	_apply_configuration()
 	_connect_signals()
+	_check_runtime_presence()
+
+	_mono_support_container.visible = _can_run_mono()
+
 	add_child(_file_dialog)
+
 
 # ############################################################################ #
 # Signal Receivers
@@ -187,6 +205,23 @@ func _on_file_selected(path: String):
 
 	_file_dialog_selection = FileDialogSelection.UNKNOWN
 
+
+func _check_runtime_presence():
+	var ink_engine_runtime = InkCSharpValidator.new().get_runtime_path()
+	var is_present = !ink_engine_runtime.empty()
+
+	if is_present:
+		_mono_support_presence_label.add_color_override("font_color", Color.green)
+		_mono_support_presence_label.text = "PRESENT"
+	else:
+		_mono_support_presence_label.add_color_override("font_color", Color.red)
+		_mono_support_presence_label.text = "MISSING"
+
+
+func _mono_support_documentation_pressed():
+	OS.shell_open("https://inkgd.readthedocs.io/en/latest/advanced/migrating_to_godot_mono.html")
+
+
 # ############################################################################ #
 # Private helpers
 # ############################################################################ #
@@ -234,11 +269,19 @@ func _update_mono_availability(updates_checkbox = false):
 
 func _set_button_icons():
 	var folder_icon = get_icon("Folder", "EditorIcons")
+	var reload_icon = get_icon("Reload", "EditorIcons")
+	var instance_icon = get_icon("Instance", "EditorIcons")
+
 	_mono_dialog_button.icon = folder_icon
 	_executable_dialog_button.icon = folder_icon
 
+	_mono_support_documentation_button.icon = instance_icon
+	_mono_support_refresh_button.icon = reload_icon
+
 
 func _connect_signals():
+	editor_interface.editor_filesystem.connect("filesystem_changed", self, "_check_runtime_presence")
+
 	_test_button.connect("pressed", self, "_test_button_pressed")
 	_use_mono_checkbox.connect("toggled", self, "_use_mono_toggled")
 
@@ -253,4 +296,11 @@ func _connect_signals():
 
 	_recompilation_mode_button.connect("item_selected", self, "_recompilation_mode_button_selected")
 
+	_mono_support_documentation_button.connect("pressed", self, "_mono_support_documentation_pressed")
+	_mono_support_refresh_button.connect("pressed", self, "_check_runtime_presence")
+
 	_file_dialog.connect("file_selected", self, "_on_file_selected")
+
+
+func _can_run_mono():
+	return type_exists("_GodotSharp")

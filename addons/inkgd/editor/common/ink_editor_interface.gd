@@ -23,32 +23,29 @@ signal ink_ressources_reimported(resources)
 ## The pixel display scale of the editor.
 var scale: float = 1.0
 
+var editor_interface: EditorInterface
+var editor_settings: EditorSettings
+var editor_filesystem: EditorFileSystem
+
 ## `true` if the editor is running on Windows, `false` otherwise.
 var is_running_on_windows: bool setget , get_is_running_on_windows
 func get_is_running_on_windows() -> bool:
 	var os_name = OS.get_name()
 	return (os_name == "Windows" || os_name == "UWP")
 
-# ############################################################################ #
-# Private Properties
-# ############################################################################ #
-
-var _editor_interface: EditorInterface
-var _editor_settings: EditorSettings
-var _editor_filesystem: EditorFileSystem
 
 # ############################################################################ #
 # Overrides
 # ############################################################################ #
 
 func _init(editor_interface: EditorInterface):
-	_editor_interface = editor_interface
-	_editor_settings = _editor_interface.get_editor_settings()
-	_editor_filesystem = _editor_interface.get_resource_filesystem()
+	self.editor_interface = editor_interface
+	self.editor_settings = editor_interface.get_editor_settings()
+	self.editor_filesystem = editor_interface.get_resource_filesystem()
 
-	scale = _editor_interface.get_editor_scale()
+	scale = editor_interface.get_editor_scale()
 
-	_editor_filesystem.connect("resources_reimported", self, "_resources_reimported")
+	self.editor_filesystem.connect("resources_reimported", self, "_resources_reimported")
 
 # ############################################################################ #
 # Methods
@@ -56,17 +53,17 @@ func _init(editor_interface: EditorInterface):
 
 ## Tell Godot to scan for updated resources.
 func scan_file_system():
-	_editor_filesystem.scan()
+	self.editor_filesystem.scan()
 
 ## Tell Godot to scan the given resource.
 func update_file(path: String):
-	_editor_filesystem.update_file(path)
+	self.editor_filesystem.update_file(path)
 
 ## Returns a custom header color based on the editor's base color.
 ##
 ## If the base color is not found, return 'Color.transparent'.
 func get_custom_header_color() -> Color:
-	var color = _editor_settings.get_setting("interface/theme/base_color")
+	var color = self.editor_settings.get_setting("interface/theme/base_color")
 	if color != null:
 		return Color.from_hsv(color.h * 0.99, color.s * 0.6, color.v * 1.1)
 	else:

@@ -105,8 +105,7 @@ func _ready():
 
 	configuration.connect("compilation_mode_changed", self, "_compilation_mode_changed")
 
-	var filesystem = editor_interface._editor_interface.get_resource_filesystem()
-	filesystem.connect("resources_reimported", self, "_resources_reimported")
+	editor_interface.editor_filesystem.connect("resources_reimported", self, "_resources_reimported")
 
 	_story_configuration_container.add_child(_empty_state_container)
 	add_child(_file_dialog)

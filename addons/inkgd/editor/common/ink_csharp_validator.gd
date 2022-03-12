@@ -17,7 +17,7 @@ const INK_ENGINE_RUNTIME = "ink-engine-runtime.dll"
 # ############################################################################ #
 
 func validate_csharp_project_files(project_name) -> bool:
-	var ink_engine_runtime = _scan_directory("res://")
+	var ink_engine_runtime := get_runtime_path()
 
 	if ink_engine_runtime.empty():
 		print(
@@ -29,6 +29,8 @@ func validate_csharp_project_files(project_name) -> bool:
 
 	return _validate_csproj(project_name, ink_engine_runtime)
 
+func get_runtime_path() -> String:
+	return _scan_directory("res://")
 
 func _validate_csproj(project_name: String, runtime_path: String) -> bool:
 	var csproj_path = "res://%s.csproj" % project_name
@@ -66,7 +68,7 @@ func _validate_csproj(project_name: String, runtime_path: String) -> bool:
 	print("[inkgd] [INFO] The C# Project seems to be configured correctly.")
 	return true
 
-func _scan_directory(path):
+func _scan_directory(path) -> String:
 	var directory := Directory.new()
 	if directory.open(path) != OK:
 		printerr(
