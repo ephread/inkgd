@@ -321,8 +321,8 @@ func create_story() -> int:
 		else:
 			return OK
 	else:
-		_create_story(ink_file.json)
-		_finalise_story_creation()
+		call_deferred("_create_story", ink_file.json)
+		call_deferred("_finalise_story_creation")
 		return OK
 
 
