@@ -321,8 +321,7 @@ func create_story() -> int:
 		else:
 			return OK
 	else:
-		_create_story(ink_file.json)
-		_finalise_story_creation()
+		call_deferred("_create_and_finalize_story", ink_file.json)
 		return OK
 
 
@@ -772,6 +771,11 @@ func _async_creation_completed() -> void:
 	_thread.wait_to_finish()
 	_thread = null
 
+	_finalise_story_creation()
+
+
+func _create_and_finalize_story(json_story) -> void:
+	_create_story(json_story)
 	_finalise_story_creation()
 
 
