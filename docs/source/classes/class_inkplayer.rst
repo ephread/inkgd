@@ -90,7 +90,7 @@ Story Flow
 +---------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | void                                              | :ref:`choose_choice_index<class_inkplayer_choose_choice_index>`  **(** int_ index **)**                                                                              |
 +---------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| void                                              | :ref:`choose_path_string<class_inkplayer_choose_path_string>`  **(** String_ path_string **)**                                                                       |
+| void                                              | :ref:`choose_path<class_inkplayer_choose_path>`  **(** String_ path_string **)**                                                                       |
 +---------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | void                                              | :ref:`switch_flow<class_inkplayer_switch_flow>`  **(** String_ flow_name **)**                                                                                       |
 +---------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -565,9 +565,9 @@ out of bounds, this method does nothing.
 
 ----
 
-.. _class_inkplayer_choose_path_string:
+.. _class_inkplayer_choose_path:
 
-- void **choose_path_string (** String_ path_string **)**
+- void **choose_path (** String_ path_string **)**
 
 Moves the story to the specified knot/stitch/gather. This method will throw an
 error through :ref:`exception<class_inkplayer_exception>` if the path string
