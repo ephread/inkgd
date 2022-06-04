@@ -281,6 +281,14 @@ var _manages_runtime: bool = false
 
 
 # ############################################################################ #
+# Initialization
+# ############################################################################ #
+
+func _init():
+	name = "InkPlayer"
+
+
+# ############################################################################ #
 # Overrides
 # ############################################################################ #
 
@@ -483,7 +491,7 @@ func visit_count_at_path(path: String) -> int:
 		_push_null_story_error()
 		return 0
 
-	return _story.visit_count_at_path(path)
+	return _story.state.visit_count_at_path_string(path)
 
 
 # ############################################################################ #
@@ -643,7 +651,7 @@ func remove_variable_observer(object: Object, method_name: String, specific_vari
 
 ## Removes all observers registered with the couple object/method_name,
 ## regardless of which variable they observed.
-func remove_variable_observer_for_all_variable(object: Object, method_name: String) -> void:
+func remove_variable_observer_for_all_variables(object: Object, method_name: String) -> void:
 	if _story == null:
 		_push_null_story_error()
 		return
@@ -657,7 +665,7 @@ func remove_all_variable_observers(specific_variable_name: String) -> void:
 		_push_null_story_error()
 		return
 
-	_story.remove_variable_observer(specific_variable_name)
+	_story.remove_variable_observer(null, null, specific_variable_name)
 
 
 # ############################################################################ #
@@ -702,7 +710,11 @@ func evaluate_function(function_name: String, arguments = []) -> InkFunctionResu
 		return null
 
 	var result = _story.evaluate_function(function_name, arguments, true)
-	return InkFunctionResult.new(result["output"], result["result"])
+
+	if result != null:
+		return InkFunctionResult.new(result["output"], result["result"])
+	else:
+		return null
 
 # ############################################################################ #
 # Methods | Ink List Creation

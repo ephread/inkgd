@@ -24,7 +24,10 @@ func get_is_truthy() -> bool:
 func _init():
 	value = false
 
-func cast(new_type):
+# The method takes a `StoryErrorMetadata` object as a parameter that
+# doesn't exist in upstream. The metadat are used in case an 'exception'
+# is raised. For more information, see story.gd.
+func cast(new_type, metadata = null):
 	if new_type == self.value_type:
 		return self
 
@@ -37,7 +40,7 @@ func cast(new_type):
 	if new_type == ValueType.STRING:
 		return StringValue().new_with("true" if value else "false")
 
-	Utils.throw_story_exception(bad_cast_exception_message(new_type))
+	Utils.throw_story_exception(bad_cast_exception_message(new_type), false, metadata)
 	return null
 
 func _to_string() -> String:

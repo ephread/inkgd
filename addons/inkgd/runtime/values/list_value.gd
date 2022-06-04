@@ -21,7 +21,10 @@ func get_value_type():
 func get_is_truthy():
 	return value.size() > 0
 
-func cast(new_type):
+# The method takes a `StoryErrorMetadata` object as a parameter that
+# doesn't exist in upstream. The metadat are used in case an 'exception'
+# is raised. For more information, see story.gd.
+func cast(new_type, metadata = null):
 	if new_type == ValueType.INT:
 		var max_item = value.max_item
 		if max_item.key.is_null:
@@ -46,7 +49,7 @@ func cast(new_type):
 	if new_type == self.value_type:
 		return self
 
-	Utils.throw_story_exception(bad_cast_exception_message(new_type))
+	Utils.throw_story_exception(bad_cast_exception_message(new_type), false, metadata)
 	return null
 
 func _init():

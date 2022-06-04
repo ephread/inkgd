@@ -140,7 +140,7 @@ Variables
 +---------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | void                                              | :ref:`remove_variable_observer<class_inkplayer_remove_variable_observer>` **(** Object_ object, String_ method_name, String_ specific_variable_name **)**            |
 +---------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| void                                              | :ref:`remove_variable_observer_for_all_variable<class_inkplayer_remove_variable_observer_for_all_variable>` **(** Object_ object, String_ method_name **)**          |
+| void                                              | :ref:`remove_variable_observer_for_all_variables<class_inkplayer_remove_variable_observer_for_all_variables>` **(** Object_ object, String_ method_name **)**          |
 +---------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | void                                              | :ref:`remove_all_variable_observers<class_inkplayer_remove_all_variable_observers>` **(** String_ specific_variable_name **)**                                       |
 +---------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -727,9 +727,9 @@ and will only remove one observer.
 
 ----
 
-.. _class_inkplayer_remove_variable_observer_for_all_variable:
+.. _class_inkplayer_remove_variable_observer_for_all_variables:
 
-- void **remove_variable_observer_for_all_variable (** Object_ object, String_ method_name **)**
+- void **remove_variable_observer_for_all_variables (** Object_ object, String_ method_name **)**
 
 Removes all observers registered with the couple object/method_name,
 regardless of which variable they observed.

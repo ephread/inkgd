@@ -8,6 +8,7 @@ using Godot;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 public class InkBridger : Node
 {
@@ -31,7 +32,7 @@ public class InkBridger : Node
 	#region Methods | Helpers
 	public bool IsInkObjectOfType(Godot.Object inkObject, string name)
 	{
-		return inkObject.HasMethod("is_class") && name.Equals(inkObject.Call("is_class"));
+		return inkObject.HasMethod("is_class") && (bool)inkObject.Call("is_class", new object[] { name });
 	}
 
 	public Godot.Object MakeFunctionResult(string textOutput, object returnValue)
@@ -86,11 +87,14 @@ public class InkBridger : Node
 			throw new ArgumentException("Expected a 'Godot.Object' of class 'InkList'");
 		}
 
-		var underlyingDictionary =
-			(Godot.Collections.Dictionary<Godot.Object, int>)list.Get("_dictionary");
-		var originNames = (Godot.Collections.Array<string>)list.Get("origin_names");
+		var underlyingDictionary = new Godot.Collections.Dictionary<string, int>(
+			(Godot.Collections.Dictionary)list.Get("_dictionary"));
+
+		var originNames = new Godot.Collections.Array<string>(
+			(Godot.Collections.Array)list.Get("origin_names"));
 
 		var inkList = new Ink.Runtime.InkList();
+		inkList.origins = new List<Ink.Runtime.ListDefinition>();
 
 		inkList.SetInitialOriginNames(originNames.ToList());
 
@@ -110,7 +114,7 @@ public class InkBridger : Node
 			}
 		}
 
-		foreach(KeyValuePair<Godot.Object, int> kv in underlyingDictionary)
+		foreach(KeyValuePair<string, int> kv in underlyingDictionary)
 		{
 			inkList[MakeSharpInkListItem(kv.Key)] = kv.Value;
 		}
@@ -160,8 +164,11 @@ public class InkBridger : Node
 	#endregion
 
 	#region Private Methods | Conversion (GDScript -> C#)
-	private Ink.Runtime.InkListItem MakeSharpInkListItem(Godot.Object listItem)
+	private Ink.Runtime.InkListItem MakeSharpInkListItem(string listItemKey)
 	{
+
+		var listItem = (Godot.Object) InkListItem.Call("from_serialized_key", new object[] { listItemKey });
+
 		if (!IsInkObjectOfType(listItem, "InkListItem")) {
 			throw new ArgumentException("Expected a 'Godot.Object' of class 'InkListItem'");
 		}

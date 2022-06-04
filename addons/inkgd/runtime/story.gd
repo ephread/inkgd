@@ -36,6 +36,7 @@ var InkPointer := preload("res://addons/inkgd/runtime/structs/pointer.gd") as GD
 var InkControlCommand := preload("res://addons/inkgd/runtime/content/control_command.gd") as GDScript
 
 var InkVoid := preload("res://addons/inkgd/runtime/content/void.gd") as GDScript
+var StoryErrorMetadata := preload("res://addons/inkgd/runtime/extra/story_error_metadata.gd") as GDScript
 
 # ############################################################################ #
 
@@ -269,7 +270,7 @@ func reset_globals() -> void:
 	self.state.variables_state.snapshot_default_globals()
 
 
-func switch_flow(flow_name) -> void:
+func switch_flow(flow_name: String) -> void:
 	if async_we_cant("SwitchFlow"):
 		return
 
@@ -279,7 +280,7 @@ func switch_flow(flow_name) -> void:
 	self.state.switch_flow_internal(flow_name)
 
 
-func remove_flow(flow_name) -> void:
+func remove_flow(flow_name: String) -> void:
 	self.state.remove_flow_internal(flow_name)
 
 
@@ -349,7 +350,7 @@ func continue_internal(millisecs_limit_async: float = 0) -> void:
 		var recorded_exceptions = _get_and_clear_recorded_story_exceptions()
 		if recorded_exceptions.size() > 0:
 			for error in recorded_exceptions:
-				add_error(error.message, false, error.use_end_line_number)
+				add_story_error(error)
 			break
 
 		if output_stream_ends_in_newline:
@@ -422,7 +423,7 @@ func continue_internal(millisecs_limit_async: float = 0) -> void:
 			exception += self.state.current_errors[0] if self.state.has_error else self.state.current_warnings[0]
 
 			# If you get this exception, please connect an error handler to the appropriate signal: "on_error".
-			Utils.throw_story_exception(exception)
+			self._throw_story_exception(exception)
 
 
 func continue_single_step() -> bool:
@@ -1047,7 +1048,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 				var list_name_val = Utils.as_or_null(self.state.pop_evaluation_stack(), "StringValue")
 
 				if int_val == null:
-					Utils.throw_story_exception(
+					self._throw_story_exception(
 							"Passed non-integer when creating a list element from a numerical value."
 					)
 					return false
@@ -1063,7 +1064,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 								int_val.value
 						)
 				else:
-					Utils.throw_story_exception("Failed to find LIST called %s" % list_name_val.value)
+					self._throw_story_exception("Failed to find LIST called %s" % list_name_val.value)
 					return false
 
 				if generated_list_value == null:
@@ -1078,7 +1079,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 				var target_list = Utils.as_or_null(self.state.pop_evaluation_stack(), "ListValue")
 
 				if target_list == null || min_value == null || max_value == null:
-					Utils.throw_story_exception("Expected list, minimum and maximum for LIST_RANGE")
+					self._throw_story_exception("Expected list, minimum and maximum for LIST_RANGE")
 					return false
 
 				var result = target_list.value.list_with_sub_range(min_value.value_object, max_value.value_object)
@@ -1089,7 +1090,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 
 				var list_val = Utils.as_or_null(self.state.pop_evaluation_stack(), "ListValue")
 				if list_val == null:
-					Utils.throw_story_exception("Expected list for LIST_RANDOM")
+					self._throw_story_exception("Expected list for LIST_RANDOM")
 					return false
 
 				var list = list_val.value
@@ -1148,8 +1149,8 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 			if found_value == null:
 				warning(str("Variable not found: '", var_ref.name,
 							"', using default value of 0 (false). this can ",
-							"happen with temporary variables if the declaration",
-							"hasn't yet been hit. Globals are always given a default",
+							"happen with temporary variables if the declaration ",
+							"hasn't yet been hit. Globals are always given a default ",
 							"value on load if a value doesn't exist in the save state."))
 				found_value = InkIntValue.new_with(0)
 
@@ -1159,7 +1160,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 	elif Utils.as_or_null(content_obj, "NativeFunctionCall"):
 		var function = content_obj
 		var func_params = self.state.pop_evaluation_stack(function.number_of_parameters)
-		var result = function.call_with_parameters(func_params)
+		var result = function.call_with_parameters(func_params, _make_story_error_metadata())
 		self.state.push_evaluation_stack(result)
 		return true
 
@@ -1181,7 +1182,7 @@ func choose_path_string(path, reset_callstack = true, arguments = null):
 			if container != null:
 				func_detail = "(" + container.path._to_string() + ") "
 
-			Utils.throw_story_exception(
+			Utils.throw_exception(
 					"Story was running a function %s" % func_detail,
 					"when you called ChoosePathString(%s) " % path,
 					"- this is almost certainly not not what you want! Full stack trace: \n" +
@@ -1196,7 +1197,7 @@ func choose_path_string(path, reset_callstack = true, arguments = null):
 
 func async_we_cant(activity_str):
 	if self._async_continue_active:
-		Utils.throw_story_exception(
+		Utils.throw_exception(
 				"Can't %s. Story is in the middle of a ContinueAsync(). " % activity_str +
 				"Make more ContinueAsync() calls or a single Continue() call beforehand."
 		)
@@ -1249,15 +1250,15 @@ func evaluate_function(
 		return
 
 	if function_name == null:
-		Utils.throw_story_exception("Function is null")
+		Utils.throw_exception("Function is null")
 		return null
 	elif function_name == "" || Utils.trim(function_name) == "":
-		Utils.throw_story_exception("Function is empty or white space.")
+		Utils.throw_exception("Function is empty or white space.")
 		return null
 
 	var func_container = knot_container_with_name(function_name)
 	if func_container == null:
-		Utils.throw_story_exception("Function doesn't exist: '%s'" % function_name)
+		Utils.throw_exception("Function doesn't exist: '%s'" % function_name)
 		return null
 
 	var output_stream_before = self.state.output_stream.duplicate() # Array<InkObject>
@@ -1345,6 +1346,7 @@ func call_external_function(func_name: String, number_of_arguments: int) -> void
 				"Trying to call EXTERNAL function '%s' " % func_name +
 				"which has not been bound (and ink fallbacks disabled)."
 			)
+			return
 
 	var arguments = [] # Array<Variant>
 	var i = 0
@@ -1387,6 +1389,7 @@ func bind_external_function_general(
 			!_externals.has(func_name),
 			"Function '%s' has already been bound." % func_name
 	)
+
 	_externals[func_name] = ExternalFunctionDef.new(object, method, lookahead_safe)
 
 
@@ -1739,7 +1742,7 @@ func next_sequence_shuffle_index() -> int:
 
 # (String, bool) -> void
 func error(message: String, use_end_line_number: bool = false) -> void:
-	Utils.throw_story_exception(message, use_end_line_number)
+	Utils.throw_story_exception(message, use_end_line_number, _make_story_error_metadata())
 
 
 # (String) -> void
@@ -1749,22 +1752,31 @@ func warning(message: String) -> void:
 
 # (String, bool, bool) -> void
 func add_error(message: String, is_warning: bool = false, use_end_line_number: bool = false) -> void:
-	var dm = self.current_debug_metadata
+	# This method differs from upstream, because GDScript doesn't support exceptions.
+	# Error formatting is handled by add_error_with_metadata, because there's a new
+	# method `add_story_error` used by `continue_internal` to report errors
+	# that occured during the step.
+	_add_error_with_metadata(
+		message,
+		is_warning,
+		use_end_line_number,
+		self.current_debug_metadata,
+		self.state.current_pointer
+	)
 
-	var error_type_str = "WARNING" if is_warning else "ERROR"
 
-	if dm != null:
-		var line_num = dm.end_line_number if use_end_line_number else dm.start_line_number
-		message = "RUNTIME %s: '%s' line %s: %s" % [error_type_str, dm.file_name, line_num, message]
-	elif !self.state.current_pointer.is_null:
-		message = "RUNTIME %s: (%s): %s" % [error_type_str, self.state.current_pointer.path._to_string(), message]
-	else:
-		message = "RUNTIME " + error_type_str + ": " + message
-
-	self.state.add_error(message, is_warning)
-
-	if !is_warning:
-		self.state.force_end()
+# (StoryError) -> void
+#
+# This method doesn't exist in upstream. It's used by `continue_internal` to
+# report error that occured during the step.
+func add_story_error(story_error: StoryError) -> void:
+	_add_error_with_metadata(
+			story_error.message,
+			false,
+			story_error.use_end_line_number,
+			story_error.metadata.debug_metadata,
+			story_error.metadata.pointer
+	)
 
 
 # (bool, String?, Array<Variant>?) -> void
@@ -1897,9 +1909,44 @@ func _get_and_clear_recorded_story_exceptions() -> Array:
 		return []
 
 	var exceptions = runtime.current_story_exceptions
-	runtime.current_story_exceptions.clear()
+	runtime.current_story_exceptions = []
 
 	return exceptions
+
+
+func _add_error_with_metadata(
+	message: String,
+	is_warning: bool = false,
+	use_end_line_number: bool = false,
+	dm = null,
+	current_pointer = InkPointer.null()
+) -> void:
+	var error_type_str = "WARNING" if is_warning else "ERROR"
+
+	if dm != null:
+		var line_num = dm.end_line_number if use_end_line_number else dm.start_line_number
+		message = "RUNTIME %s: '%s' line %s: %s" % [error_type_str, dm.file_name, line_num, message]
+	elif !current_pointer.is_null:
+		message = "RUNTIME %s: (%s): %s" % [error_type_str, current_pointer.path._to_string(), message]
+	else:
+		message = "RUNTIME " + error_type_str + ": " + message
+
+	self.state.add_error(message, is_warning)
+
+	if !is_warning:
+		self.state.force_end()
+
+
+func _throw_story_exception(message: String):
+	Utils.throw_story_exception(message, false, _make_story_error_metadata())
+
+
+# This method is used to ensure that the debug metadata and pointer used
+# to report errors are the ones at the moment the error occured (and not
+# the current one). Since GDScript doesn't have exceptions, errors may be
+# stored until they can be processed at the end of `continue_internal`.
+func _make_story_error_metadata():
+	return StoryErrorMetadata.new(self.current_debug_metadata, self.state.current_pointer)
 
 
 # ############################################################################ #

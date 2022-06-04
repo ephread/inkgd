@@ -1,0 +1,14 @@
+[remap]
+
+importer="inkgd.ink.json"
+type="Resource"
+path="res://.import/flow.ink.json-4574b3159976c3ba17ca07853f8fa778.res"
+
+[deps]
+
+source_file="res://test/fixture/compiled/player/flow.ink.json"
+dest_files=[ "res://.import/flow.ink.json-4574b3159976c3ba17ca07853f8fa778.res" ]
+
+[params]
+
+compress=true

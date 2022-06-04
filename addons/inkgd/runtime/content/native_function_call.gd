@@ -56,10 +56,15 @@ func set_number_of_parameters(value: int):
 var _number_of_parameters = 0
 
 # (Array<InkObject>) -> InkObject
-# The name is different to avoid shadowing 'Object.call'.
-func call_with_parameters(parameters: Array) -> InkObject:
+#
+# The name is different to avoid shadowing 'Object.call'
+#
+# The method takes a `StoryErrorMetadata` object as a parameter that
+# doesn't exist in upstream. The metadat are used in case an 'exception'
+# is raised. For more information, see story.gd.
+func call_with_parameters(parameters: Array, metadata: StoryErrorMetadata) -> InkObject:
 	if _prototype:
-		return _prototype.call_with_parameters(parameters)
+		return _prototype.call_with_parameters(parameters, metadata)
 
 	if self.number_of_parameters != parameters.size():
 		Utils.throw_exception("Unexpected number of parameters")
@@ -68,18 +73,20 @@ func call_with_parameters(parameters: Array) -> InkObject:
 	var has_list = false
 	for p in parameters:
 		if Utils.is_ink_class(p, "Void"):
-			Utils.throw_exception(
+			Utils.throw_story_exception(
 					"Attempting to perform operation on a void value. Did you forget to " +
-					"'return' a value from a function you called here?"
+					"'return' a value from a function you called here?",
+					false,
+					metadata
 			)
 			return null
 		if Utils.is_ink_class(p, "ListValue"):
 			has_list = true
 
 	if parameters.size() == 2 && has_list:
-		return call_binary_list_operation(parameters)
+		return call_binary_list_operation(parameters, metadata)
 
-	var coerced_params: Array = coerce_values_to_single_type(parameters)
+	var coerced_params: Array = coerce_values_to_single_type(parameters, metadata)
 
 	# ValueType
 	var coerced_type: int = coerced_params[0].value_type
@@ -91,12 +98,16 @@ func call_with_parameters(parameters: Array) -> InkObject:
 			coerced_type == ValueType.DIVERT_TARGET ||
 			coerced_type == ValueType.LIST
 	):
-		return call_coerced(coerced_params)
+		return call_coerced(coerced_params, metadata)
 
 	return null
 
 # (Array<Value>) -> Value # Call<T> in the original code
-func call_coerced(parameters_of_single_type: Array) -> InkValue:
+#
+# The method takes a `StoryErrorMetadata` object as a parameter that
+# doesn't exist in upstream. The metadat are used in case an 'exception'
+# is raised. For more information, see story.gd.
+func call_coerced(parameters_of_single_type: Array, metadata: StoryErrorMetadata) -> InkValue:
 	var param1: InkValue = parameters_of_single_type[0]
 	var val_type: int = param1.value_type
 
@@ -110,7 +121,9 @@ func call_coerced(parameters_of_single_type: Array) -> InkValue:
 			var type_name = Utils.value_type_name(val_type)
 			Utils.throw_story_exception(
 					"Cannot perform operation '%s' on value of type (%d)" \
-					% [self.name, type_name]
+					% [self.name, type_name],
+					false,
+					metadata
 			)
 			return null
 
@@ -132,7 +145,11 @@ func call_coerced(parameters_of_single_type: Array) -> InkValue:
 		return null
 
 # (Array<InkObject>) -> Value
-func call_binary_list_operation(parameters: Array) -> InkValue:
+#
+# The method takes a `StoryErrorMetadata` object as a parameter that
+# doesn't exist in upstream. The metadat are used in case an 'exception'
+# is raised. For more information, see story.gd.
+func call_binary_list_operation(parameters: Array, metadata) -> InkValue:
 	if ((self.name == "+" || self.name == "-") &&
 		Utils.is_ink_class(parameters[0], "ListValue") &&
 		Utils.is_ink_class(parameters [1], "IntValue")
@@ -155,13 +172,15 @@ func call_binary_list_operation(parameters: Array) -> InkValue:
 		return InkBoolValue.new_with(result)
 
 	if v1.value_type == ValueType.LIST && v2.value_type == ValueType.LIST:
-		return call_coerced([v1, v2])
+		return call_coerced([v1, v2], metadata)
 
 	var v1_type_name = Utils.value_type_name(v1.value_type)
 	var v2_type_name = Utils.value_type_name(v2.value_type)
-	Utils.throw_exception(
+	Utils.throw_story_exception(
 			"Can not call use '%s' operation on %s and %s" % \
-			[self.name, v1_type_name, v2_type_name]
+			[self.name, v1_type_name, v2_type_name],
+			false,
+			metadata
 	)
 
 	return null
@@ -200,7 +219,11 @@ func call_list_increment_operation(list_int_params: Array) -> InkValue:
 	return InkListValue.new_with(result_raw_list)
 
 # (Array<InkObject>) -> Array<Value>?
-func coerce_values_to_single_type(parameters_in: Array):
+#
+# The method takes a `StoryErrorMetadata` object as a parameter that
+# doesn't exist in upstream. The metadat are used in case an 'exception'
+# is raised. For more information, see story.gd.
+func coerce_values_to_single_type(parameters_in: Array, metadata):
 	var val_type = ValueType.INT
 
 	var special_case_list: InkListValue = null # ListValue
@@ -228,16 +251,20 @@ func coerce_values_to_single_type(parameters_in: Array):
 					var casted_value = InkListValue.new_with_single_item(item.result, int_val)
 					parameters_out.append(casted_value)
 				else:
-					Utils.throw_exception(
+					Utils.throw_story_exception(
 							"Could not find List item with the value %d in %s" \
-							% [int_val, list.name]
+							% [int_val, list.name],
+							false,
+							metadata
 					)
 
 					return null
 			else:
 				var type_name = Utils.value_type_name(val.value_type)
-				Utils.throw_exception(
-						"Cannot mix Lists and %s values in this operation" % type_name
+				Utils.throw_story_exception(
+						"Cannot mix Lists and %s values in this operation" % type_name,
+						false,
+						metadata
 				)
 
 				return null

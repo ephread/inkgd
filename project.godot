@@ -323,6 +323,16 @@ _global_script_classes=[ {
 "class": "InkVoid",
 "language": "GDScript",
 "path": "res://addons/inkgd/runtime/content/void.gd"
+}, {
+"base": "Reference",
+"class": "StoryError",
+"language": "GDScript",
+"path": "res://addons/inkgd/runtime/extra/story_error.gd"
+}, {
+"base": "Reference",
+"class": "StoryErrorMetadata",
+"language": "GDScript",
+"path": "res://addons/inkgd/runtime/extra/story_error_metadata.gd"
 } ]
 _global_script_class_icons={
 "ChoiceContainer": "",
@@ -387,7 +397,9 @@ _global_script_class_icons={
 "InkVariablePointerValue": "",
 "InkVariableReference": "",
 "InkVariablesState": "",
-"InkVoid": ""
+"InkVoid": "",
+"StoryError": "",
+"StoryErrorMetadata": ""
 }
 
 [application]

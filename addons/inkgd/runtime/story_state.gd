@@ -850,13 +850,19 @@ func peek_evaluation_stack() -> InkObject:
 	return self.evaluation_stack.back()
 
 
+# This method combines both methods found in upstream.
 # (int) -> InkObject | Array<InkObject>
 func pop_evaluation_stack(number_of_objects: int = -1):
 	if number_of_objects == -1:
-		return self.evaluation_stack.pop_back()
+		# This code raises an exception to match the behaviour of upstream.
+		# `pop_back` doesn't raise an error on an empty collection.
+		if self.evaluation_stack.size() == 0:
+			Utils.throw_exception("trying to pop an empty evaluation stack")
+		else :
+			return self.evaluation_stack.pop_back()
 
 	if number_of_objects > self.evaluation_stack.size():
-		Utils.throw_argument_exception("trying to pop too many objects")
+		Utils.throw_exception("trying to pop too many objects")
 		return []
 
 	var popped = Utils.get_range(self.evaluation_stack,
@@ -951,7 +957,7 @@ func pass_arguments_to_evaluation_stack(arguments) -> void:
 						"ink arguments when calling EvaluateFunction / " +
 						"ChoosePathStringWithParameters must be int, " +
 						"float, string or InkList. Argument was " +
-						"null" if arguments[i] == null else Utils.typename_of(arguments[i])
+						("null" if arguments[i] == null else Utils.typename_of(arguments[i]))
 				)
 				return
 

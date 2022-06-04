@@ -78,7 +78,7 @@ func get(variable_name: String):
 # (String, Variant) -> void
 func set(variable_name: String, value) -> void:
 	if !_default_global_variables.has(variable_name):
-		Utils.throw_exception(
+		Utils.throw_story_exception(
 				"Cannot assign to a variable (%s) that hasn't been declared in the story" \
 				% variable_name
 		)

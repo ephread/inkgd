@@ -12,7 +12,6 @@
 # Less accurate than the original implemntation, but good enough for
 # the use-case.
 
-
 class_name InkStopWatch
 
 # ############################################################################ #

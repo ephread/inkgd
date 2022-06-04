@@ -17,19 +17,19 @@ var _exception_raised_count = 0
 
 # ############################################################################ #
 
-func before_all():
-	.before_all()
+func before_each():
+	.before_each()
 	ink_runtime.connect("exception_raised", self, "_exception_raised")
 
-func after_all():
-	ink_runtime.disconnect("exception_raised", self, "_exception_raised")
-	.after_all()
 
 func after_each():
 	_temp_not_found_last_error_type = -1
 	_temp_not_found_error_count = 0
 
 	_exception_raised_count = 0
+
+	ink_runtime.disconnect("exception_raised", self, "_exception_raised")
+	.after_each()
 
 # ############################################################################ #
 

@@ -1,0 +1,14 @@
+[remap]
+
+importer="inkgd.ink.json"
+type="Resource"
+path="res://.import/functions.ink.json-f2a16cc9d0ae4be051135d81ccabe138.res"
+
+[deps]
+
+source_file="res://test/fixture/compiled/player/functions.ink.json"
+dest_files=[ "res://.import/functions.ink.json-f2a16cc9d0ae4be051135d81ccabe138.res" ]
+
+[params]
+
+compress=true

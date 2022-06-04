@@ -39,7 +39,7 @@ signal exception_raised(message, stack_trace)
 
 # Skips saving global values that remain equal to the initial values that were
 # declared in Ink.
-var dont_save_default_values: bool = false
+var dont_save_default_values: bool = true
 
 ## Uses `assert` instead of `push_error` to report critical errors, thus
 ## making them more explicit during development.
@@ -130,16 +130,17 @@ func handle_argument_exception(message: String) -> void:
 
 	emit_signal("exception_raised", exception_message, stack_trace)
 
-func handle_story_exception(message: String, use_end_line_number: bool) -> void:
+func handle_story_exception(message: String, use_end_line_number: bool, metadata) -> void:
+	# When exceptions are "recorded", they are not reported immediately.
+	# 'Story' will take care of that at the end of the step.
 	if record_story_exceptions:
-		current_story_exceptions.append(StoryError.new(message, use_end_line_number))
+		current_story_exceptions.append(StoryError.new(message, use_end_line_number, metadata))
+	else:
+		var exception_message = "STORY EXCEPTION: %s" % message
+		var stack_trace = _get_stack_trace()
 
-	var exception_message = "STORY EXCEPTION: %s" % message
-	var stack_trace = _get_stack_trace()
+		_handle_generic_exception(exception_message, stop_execution_on_error, stack_trace)
 
-	_handle_generic_exception(exception_message, stop_execution_on_error, stack_trace)
-
-	if !record_story_exceptions:
 		emit_signal("exception_raised", exception_message, stack_trace)
 
 # ############################################################################ #
@@ -180,15 +181,3 @@ func _get_stack_trace() -> PoolStringArray:
 		i += 1
 
 	return trace
-
-# ############################################################################ #
-# Internal Class
-# ############################################################################ #
-
-class StoryError:
-	var message: String
-	var use_end_line_number: bool
-
-	func _init(message: String, use_end_line_number: bool):
-		self.message = message
-		self.use_end_line_number = use_end_line_number

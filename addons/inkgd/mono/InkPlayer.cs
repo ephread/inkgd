@@ -16,15 +16,15 @@ using System.Diagnostics;
 public class InkPlayer : Node
 {
 	#region Signals
-	[Signal] public delegate void exception_raised(string message, string[] stack_trace);
+	[Signal] public delegate void exception_raised(string message, Godot.Collections.Array<string> stack_trace);
 	[Signal] public delegate void error_encountered(string message, int type);
 	[Signal] public delegate void loaded(bool successfully);
-	[Signal] public delegate void continued(string text, string[] tags);
+	[Signal] public delegate void continued(string text, Godot.Collections.Array<string> tags);
 	[Signal] public delegate void interrupted();
-	[Signal] public delegate void prompt_choices(string[] choices);
+	[Signal] public delegate void prompt_choices(Godot.Collections.Array<string> choices);
 	[Signal] public delegate void choice_made(string choice);
-	[Signal] public delegate void function_evaluating(string[] function_name, object[] arguments);
-	[Signal] public delegate void function_evaluated(string[] function_name, object[] arguments, Godot.Object function_result);
+	[Signal] public delegate void function_evaluating(Godot.Collections.Array<string> function_name, object[] arguments);
+	[Signal] public delegate void function_evaluated(Godot.Collections.Array<string> function_name, object[] arguments, Godot.Object function_result);
 	[Signal] public delegate void path_choosen(string path, object[] arguments);
 	[Signal] public delegate void ended();
 	#endregion
@@ -66,7 +66,7 @@ public class InkPlayer : Node
 		}
 	}
 
-	public bool dont_save_default_values
+	public bool do_not_save_default_values
 	{
 		get { return Ink.Runtime.VariablesState.dontSaveDefaultValues; }
 
@@ -125,61 +125,74 @@ public class InkPlayer : Node
 		}
 	}
 
-	public string[] current_choices
+	public Godot.Collections.Array<string> current_choices
 	{
 		get {
 			if (story == null)
 			{
 				PushNullStoryError();
-				return new string[0];
+				return new Godot.Collections.Array<string>();
 			}
 
 			if (story.currentChoices == null)
 			{
 				PushNullStateError("current_choices");
-				return new string[0];
+				return new Godot.Collections.Array<string>();
 			}
 
 			var choices = story.currentChoices?.ConvertAll(choice => choice.text).ToArray();
-			return choices ?? new string[0];
+
+			if (choices != null) {
+				return new Godot.Collections.Array<string>(choices);
+			} else {
+				return new Godot.Collections.Array<string>();
+			}
 		}
 	}
 
-	public string[] current_tags
+	public Godot.Collections.Array<string> current_tags
 	{
 		get {
 			if (story == null)
 			{
 				PushNullStoryError();
-				return new string[0];
+				return new Godot.Collections.Array<string>();
 			}
 
 			if (story.currentTags == null)
 			{
 				PushNullStateError("current_tags");
-				return new string[0];
+				return new Godot.Collections.Array<string>();
 			}
 
-			return story.currentTags?.ToArray() ?? new string[0];
+			if (story.currentTags != null) {
+				return new Godot.Collections.Array<string>(story.currentTags);
+			} else {
+				return new Godot.Collections.Array<string>();
+			}
 		}
 	}
 
-	public string[] global_tags
+	public Godot.Collections.Array<string> global_tags
 	{
 		get {
 			if (story == null)
 			{
 				PushNullStoryError();
-				return new string[0];
+				return new Godot.Collections.Array<string>();
 			}
 
-			return story.globalTags?.ToArray() ?? new string[0];
+			if (story.globalTags != null) {
+				return new Godot.Collections.Array<string>(story.globalTags);
+			} else {
+				return new Godot.Collections.Array<string>();
+			}
 		}
 	}
 
 	public bool has_choices
 	{
-		get { return current_choices.Length > 0; }
+		get { return current_choices.Count > 0; }
 	}
 
 	public string current_flow_name
@@ -216,6 +229,12 @@ public class InkPlayer : Node
 	private readonly InkBridger inkBridger = new InkBridger();
 	private Dictionary<string, List<FunctionReference>> observers =
 		new Dictionary<string, List<FunctionReference>>();
+	#endregion
+
+	#region Private Properties
+	public InkPlayer() {
+		this.Set("name", "InkPlayer");
+	}
 	#endregion
 
 	#region Methods
@@ -389,7 +408,7 @@ public class InkPlayer : Node
 	{
 		try
 		{
-			if (index >= 0 && index < current_choices.Length)
+			if (index >= 0 && index < current_choices.Count)
 			{
 				story.ChooseChoiceIndex(index);
 			}
@@ -400,7 +419,7 @@ public class InkPlayer : Node
 		}
 	}
 
-	public void choose_path_string(string path_string)
+	public void choose_path(string path)
 	{
 		if (story == null)
 		{
@@ -410,7 +429,7 @@ public class InkPlayer : Node
 
 		try
 		{
-			story.ChoosePathString(path_string);
+			story.ChoosePathString(path);
 		}
 		catch (Exception e)
 		{
@@ -474,22 +493,27 @@ public class InkPlayer : Node
 	#endregion
 
 	#region Methods | Tags
-	public string[] tags_for_content_at_path(string path)
+	public Godot.Collections.Array<string> tags_for_content_at_path(string path)
 	{
 		if (story == null)
 		{
 			PushNullStoryError();
-			return new string[0];
+			return new Godot.Collections.Array<string>();
 		}
 
 		try
 		{
-			return story.TagsForContentAtPath(path).ToArray();
+			var tags = story.TagsForContentAtPath(path);
+			if (tags != null) {
+				return new Godot.Collections.Array<string>(tags);
+			} else {
+				return new Godot.Collections.Array<string>();
+			}
 		}
 		catch (Exception e)
 		{
 			HandleException(e);
-			return new string[0];
+			return new Godot.Collections.Array<string>();
 		}
 	}
 
@@ -710,7 +734,6 @@ public class InkPlayer : Node
 					return;
 				}
 			}
-
 			story.variablesState[name] = value;
 		}
 		catch (Exception e)
@@ -721,7 +744,7 @@ public class InkPlayer : Node
 	#endregion
 
 	#region Methods | Variable Observers
-	public void observe_variables(string[] variable_names, Godot.Object gd_object, string method_name)
+	public void observe_variables(Godot.Collections.Array<string> variable_names, Godot.Object gd_object, string method_name)
 	{
 		if (story == null)
 		{
@@ -733,7 +756,7 @@ public class InkPlayer : Node
 		{
 			foreach(string variable_name in variable_names)
 			{
-				observe_variable(variable_name, gd_object,method_name);
+				observe_variable(variable_name, gd_object, method_name);
 			}
 		}
 		catch (Exception e)
@@ -755,11 +778,14 @@ public class InkPlayer : Node
 			var instanceId = (int)gd_object.Call("get_instance_id");
 			var funcRef = GD.FuncRef(gd_object, method_name);
 
-			Ink.Runtime.Story.VariableObserver lambda = (string variableName, object value) => {
-				funcRef.CallFuncv(new Godot.Collections.Array() { variableName, value });
-			};
-
-			var functionReference = new FunctionReference(instanceId, method_name, lambda);
+			var functionReference = new FunctionReference(
+				variable_name,
+				instanceId,
+				method_name,
+				(string variableName, object value) => {
+					funcRef.CallFuncv(new Godot.Collections.Array() { variableName, value });
+				}
+			);
 
 			if (observers.TryGetValue(variable_name, out List<FunctionReference> referenceList))
 			{
@@ -770,7 +796,7 @@ public class InkPlayer : Node
 				observers[variable_name] = new List<FunctionReference> () { functionReference };
 			}
 
-			story.ObserveVariable(variable_name, lambda);
+			story.ObserveVariable(variable_name, functionReference.observer);
 		}
 		catch (Exception e)
 		{
@@ -791,9 +817,9 @@ public class InkPlayer : Node
 			if (observers.TryGetValue(specific_variable_name, out List<FunctionReference> references))
 			{
 				var validReferences =
-					references.FindAll(reference => reference.Matches(gd_object, method_name));
+					references.FindAll(reference => reference.Matches(specific_variable_name, gd_object, method_name));
 
-				foreach(FunctionReference reference in references) {
+				foreach(FunctionReference reference in validReferences) {
 					story.RemoveVariableObserver(reference.observer, specific_variable_name);
 					references.Remove(reference);
 				}
@@ -805,7 +831,7 @@ public class InkPlayer : Node
 		}
 	}
 
-	public void remove_variable_observer_for_all_variable(Godot.Object gd_object, string method_name)
+	public void remove_variable_observer_for_all_variables(Godot.Object gd_object, string method_name)
 	{
 		if (story == null)
 		{
@@ -815,12 +841,14 @@ public class InkPlayer : Node
 
 		try
 		{
+			List<string> observersToRemove = new List<string>();
+
 			foreach(KeyValuePair<string, List<FunctionReference>> kv in observers)
 			{
 				var validReferences =
 					kv.Value.FindAll(reference => reference.Matches(gd_object, method_name));
 
-				foreach(FunctionReference reference in kv.Value) {
+				foreach(FunctionReference reference in validReferences) {
 					story.RemoveVariableObserver(reference.observer);
 					kv.Value.Remove(reference);
 				}
@@ -906,6 +934,18 @@ public class InkPlayer : Node
 	#endregion
 
 	#region Methods | Functions
+
+	public bool has_function(string function_name)
+	{
+		if (story == null)
+		{
+			PushNullStoryError();
+			return false;
+		}
+
+		return story.HasFunction(function_name);
+	}
+
 	public Godot.Object evaluate_function(string function_name, object[] arguments)
 	{
 		if (story == null)
@@ -914,9 +954,18 @@ public class InkPlayer : Node
 			return null;
 		}
 
+		// Prevents sending `null` to EvaluateFunction, which would
+		// otherwise raise an exception.
+		object[] sanitizedArguments;
+		if (arguments != null) {
+			sanitizedArguments = arguments;
+		} else {
+			sanitizedArguments = new object[] { };
+		}
+
 		try
 		{
-			object returnValue = story.EvaluateFunction(function_name, out string textOutput, arguments);
+			object returnValue = story.EvaluateFunction(function_name, out string textOutput, sanitizedArguments);
 			return inkBridger.MakeFunctionResult(textOutput, returnValue);
 		}
 		catch (Exception e)
@@ -1130,14 +1179,16 @@ public class InkPlayer : Node
 
 	private bool IsInkObject(Godot.Object inkObject, string name)
 	{
-		return inkObject.HasMethod("is_class") && name.Equals(inkObject.Call("is_class"));
+		return inkObject.HasMethod("is_class") && (bool)inkObject.Call("is_class", new object[] { name });
 	}
 
 	private void HandleException(Exception e)
 	{
-		if (stop_execution_on_exception)
+		var message = $"{GetExceptionType(e)}: {e.Message}";
+
+		if (ShouldStopExecution(e))
 		{
-			GD.PrintErr(e.Message);
+			GD.PrintErr(message);
 
 			foreach(string line in e.StackTrace.Split("\n"))
 			{
@@ -1148,26 +1199,61 @@ public class InkPlayer : Node
 		}
 		else
 		{
-			EmitSignal("exception_raised", new object[] { e.Message, e.StackTrace.Split("\n") });
+			EmitSignal("exception_raised", new object[] { message, e.StackTrace.Split("\n") });
 		}
+	}
+
+	private bool ShouldStopExecution(Exception e)
+	{
+		return (
+			(e is Ink.Runtime.StoryException && stop_execution_on_error) ||
+			(!(e is Ink.Runtime.StoryException) && stop_execution_on_exception)
+		);
+	}
+
+	private string GetExceptionType(Exception e)
+	{
+		if (e is Ink.Runtime.StoryException)
+		{
+			return "STORY EXCEPTION";
+		}
+		else if (e is System.ArgumentException)
+		{
+			return "ARGUMENT EXCEPTION";
+		}
+		else
+		{
+			return "EXCEPTION";
+		}
+
 	}
 	#endregion
 
 	#region Private Structures
 	private readonly struct FunctionReference
 	{
+		public readonly string variableName;
+
 		public readonly int objectReferenceId;
 		public readonly string methodName;
+
 		public readonly Ink.Runtime.Story.VariableObserver observer;
 
 		public FunctionReference(
+			string variableName,
 			int objectReferenceId,
 			string methodName,
 			Ink.Runtime.Story.VariableObserver observer)
 		{
+			this.variableName = variableName;
 			this.objectReferenceId = objectReferenceId;
 			this.methodName = methodName;
 			this.observer = observer;
+		}
+
+		public bool Matches(string variableName, Godot.Object gdObject, string methodName)
+		{
+			return this.variableName.Equals(variableName) && Matches(gdObject, methodName);
 		}
 
 		public bool Matches(Godot.Object gdObject, string methodName)
@@ -1176,6 +1262,11 @@ public class InkPlayer : Node
 				(int)gdObject.Call("get_instance_id") == objectReferenceId &&
 				this.methodName.Equals(methodName)
 			);
+		}
+
+		public override string ToString()
+		{
+			return $"FunctionReference[{variableName}, {objectReferenceId}, {methodName}]";
 		}
 	}
 	#endregion

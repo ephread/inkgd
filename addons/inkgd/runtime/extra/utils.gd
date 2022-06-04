@@ -26,9 +26,10 @@ static func throw_exception(message: String) -> void:
 
 static func throw_story_exception(
 		message: String,
-		use_end_line_number = false
+		use_end_line_number = false,
+		metadata = null
 ) -> void:
-	InkRuntime().handle_story_exception(message, use_end_line_number)
+	InkRuntime().handle_story_exception(message, use_end_line_number, metadata)
 
 static func throw_argument_exception(message: String) -> void:
 	InkRuntime().handle_argument_exception(message)
