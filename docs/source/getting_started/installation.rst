@@ -40,8 +40,8 @@ In the popup window, click on *Download*.
 |
 
 Once the plugin is downloaded, another window will pop up. This window displays
-the new file expected to be added to the project. By default, all files should
-selected. If this isn't the case, select all the files, then click on *Install*.
+the new file expected to be added to the project. Select all files except
+*examples/* then click on *Install*.
 
 .. image:: img/introduction/asset_lib_file_section.png
     :align: center

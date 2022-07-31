@@ -27,7 +27,6 @@
 
 /build_example             export-ignore
 
-/examples                  export-ignore
 /test                      export-ignore
 /docs                      export-ignore
 /icons                     export-ignore

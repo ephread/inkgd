@@ -19,13 +19,6 @@ If you prefer a more hands-on approach, feel free to tinker with the
 
 .. _`example project`: https://github.com/ephread/inkgd/
 
-.. note::
-
-   *inkgd* has a .gitattributes file which makes sure that only ``addons/inkgd``
-   is added to the Github archive, so it can't be downloaded through Github's
-   automatic archiving system. Instead, the example can be downloaded
-   here_.
-
 .. The version is hardcoded for now. The inability to nest markup in reST is
 .. really annoying. Hopefully MyST can solve some of those issues.
 .. _here: https://github.com/ephread/inkgd/releases/download/0.4.5/inkgd-example-0.4.5.zip
