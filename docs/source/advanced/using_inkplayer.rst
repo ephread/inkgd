@@ -11,8 +11,8 @@ While it's possible to instantiate ``story.gd`` directly, it's highly
 recommended that you use InkPlayer instead.
 
 In addition to reading this document, feel free to glance at
-`the_intercept.tscn`_ and `the_intercept.gd`_, which use InkPlayer to run
-*The Intercept*.
+`story_player.tscn`_ and `story_player.gd`_, which use InkPlayer to run
+different stories.
 
 .. tip::
 
@@ -168,5 +168,5 @@ On platforms that don't support threads, the feature is automatically disabled
 regardles of the value of
 :ref:`loads_in_background<class_inkplayer_loads_in_background>`.
 
-.. _`the_intercept.tscn`: https://github.com/ephread/inkgd/blob/main/examples/scenes/the_intercept.tscn
-.. _`the_intercept.gd`: https://github.com/ephread/inkgd/blob/main/examples/scenes/the_intercept.gd
+.. _`story_player.tscn`: https://github.com/ephread/inkgd/blob/main/examples/scenes/common/story_player.tscn
+.. _`story_player.gd`: https://github.com/ephread/inkgd/blob/main/examples/scenes/common/story_player.gd
