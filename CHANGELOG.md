@@ -2,13 +2,23 @@
 Important changes to _inkgd_ will be documented in this file.
 
 ## [0.4.6](https://github.com/ephread/inkgd/releases/tag/0.4.6)
-Released on 2022-XX-XX.
+Released on 2022-07-31.
+
+### Added
+- Added new tests for InkPlayer.
+- Error management in documentation.
+
+### Changed
+- Remove `examples/` from the list of excluded directory when archiving from GitHub.
 
 ### Fixed
-- Fixed [#58] . (thanks [@GreenCloversGames]!)
+- Fixed [#58] – InkRuntime not found when exporting for the web. (thanks [@GreenCloversGames]!)
+- Fixed [#60] – Rename `choose_path_string` to `choose_path` in documentation. (thanks [@bram-dingelstad]!)
 
 [#58]: https://github.com/ephread/inkgd/issues/58
+[#60]: https://github.com/ephread/inkgd/issues/60
 [@GreenCloversGames]: https://github.com/GreenCloversGames
+[@bram-dingelstad]: https://github.com/bram-dingelstad
 
 ## [0.4.5](https://github.com/ephread/inkgd/releases/tag/0.4.5)
 Released on 2022-03-11.

@@ -20,8 +20,8 @@ project = 'inkgd'
 copyright = '2021, Frédéric Maquin'
 author = 'Frédéric Maquin'
 
-version = '0.4.5'
-release = '0.4.5'
+version = '0.4.6'
+release = '0.4.6'
 
 
 # -- General configuration ---------------------------------------------------

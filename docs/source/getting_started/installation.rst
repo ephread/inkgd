@@ -104,7 +104,7 @@ of the archive.
 Once you have the content of the repository on your computer, copy the folder
 ``addons/inkgd`` to ``res://addons/`` in your project.
 
-.. _`stable version`: https://github.com/ephread/inkgd/releases/tag/0.4.5
+.. _`stable version`: https://github.com/ephread/inkgd/releases/tag/0.4.6
 
 --------------------------------------------------------------------------------
 
