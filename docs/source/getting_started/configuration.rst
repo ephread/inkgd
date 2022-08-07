@@ -2,8 +2,8 @@ Initial configuration
 =====================
 
 One of the divergences in API mentioned above relates to *static members*.
-The orignal C# implementation makes heavy use of static variables, but since
-GDScript don't support them, it uses a singleton node called
+The original C# implementation makes heavy use of static variables, but since
+GDScript doesn't support them, it uses a singleton node called
 :doc:`/classes/class_inkruntime` instead. This runtime node must be added to
 the scene tree before executing any of the methods of the GDScript API.
 

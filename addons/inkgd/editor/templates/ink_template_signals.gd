@@ -22,6 +22,9 @@ onready var _ink_player = InkPlayer.new()
 # ############################################################################ #
 
 func _ready():
+%TS%# Adds the player to the tree.
+%TS%add_child(_ink_player)
+
 %TS%# Replace the example path with the path to your story.
 %TS%# Remove this line if you set 'ink_file' in the inspector.
 %TS%_ink_player.ink_file = load("res://path/to/file.ink.json")

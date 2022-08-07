@@ -27,9 +27,9 @@ Main differences with *story.gd*
    the JSON bytecode.
 
 2. It unifies Ink's original handlers and *inkgd* custom signals under
-   a same set of consistent signals.
+   the same set of consistent signals.
 
-3. It adds convenience methods to save and load the story state.
+3. It adds convenient methods to save and load the story state.
 
 4. It simplifies certain APIs, such as
    :ref:`evaluate_function<class_inkplayer_evaluate_function>`
@@ -40,13 +40,12 @@ Main differences with *story.gd*
 Loop-based vs. signal-based flow
 --------------------------------
 
-InkPlayer can be used in two different ways. The examples below are
-incomplete, for a working example, refer to `the_intercept.gd`_.
+InkPlayer can be used in two different ways.
 
 .. warning::
 
-    The example below are not complete. For a working example, refer to
-    `the_intercept.gd`_.
+    The examples below are not complete. For a working example, refer to
+    `story_player.gd`_.
 
 
 Loop-based
@@ -130,7 +129,7 @@ more flexible.
         if !choices.empty():
             print(choices)
 
-            # In a real world scenario, _select_choice' could be
+            # In a real-world scenario, _select_choice' could be
             # connected to a signal, like 'Button.pressed'.
             _select_choice(0)
 
@@ -165,7 +164,7 @@ in code.
 |
 
 On platforms that don't support threads, the feature is automatically disabled
-regardles of the value of
+regardless of the value of
 :ref:`loads_in_background<class_inkplayer_loads_in_background>`.
 
 .. _`story_player.tscn`: https://github.com/ephread/inkgd/blob/main/examples/scenes/common/story_player.tscn

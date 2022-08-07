@@ -22,7 +22,7 @@ Benchmarks
 The time required to create and allocate a story is benchmarked below.
 
 All benchmarks use variations of *ipsuminious*, a story based on the
-Intercept, which can replicate itself to artifically increase the number
+Intercept, which can replicate itself to artificially increase the number
 of words and constructs. The growth is linear. Size 12 is 12 times bigger than
 size 1.
 
@@ -172,7 +172,11 @@ Average novels contain about 90,000 words.
 Alternatives to *inkgd*
 -----------------------
 
-If *inkgd* proves too slow for you needs, the only other option is to migrate
-to Godot Mono and use the official C# implementation through `godot-ink`_.
+If vanilla *inkgd* proves too slow for your needs, there are two options
+involving Godot Mono.
+
+1. use the (undocumented) compatibility layer of inkgd, that exposes
+   the official C# implementation while keeping the same API;
+2. use the official C# implementation through `godot-ink`_.
 
 .. _`godot-ink`: https://github.com/paulloz/godot-ink

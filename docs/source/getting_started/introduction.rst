@@ -46,3 +46,10 @@ the story reaches its end:
 --------------------------------------------------------------------------------
 
 Click on the *Next* button to discover how to install *inkgd*!
+
+.. note::
+
+    Nicholas O'Brien created `step-by-step video tutorial`_ showing how to create a
+    visual-novel-like game using Godot and Ink. Feel free to check it out!
+
+.. _`step-by-step video tutorial`: https://www.youtube.com/playlist?list=PLtepyzbiiwBrHoTloHJ2B-DWQxgrseuMB

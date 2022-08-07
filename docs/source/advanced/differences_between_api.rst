@@ -60,7 +60,7 @@ InkRuntime contains a few configuration settings you may want to tweak, see the
 .. note::
 
     When using InkPlayer, you don't need to manually add the runtime node to
-    the tree. All the properties defined on InkRuntime also available on
+    the tree. All the properties defined on InkRuntime are also available on
     InkPlayer, use them instead if you did not instantiate the node by
     yourself.
 
@@ -203,14 +203,14 @@ information, refer to :doc:`this document</advanced/error_management>`.
     :ref:`exception_raised<class_inkruntime_exception_raised>`.
 
 
-Getting the ouput of ``evaluate_function``
+Getting the output of ``evaluate_function``
 ------------------------------------------
 
 ``evaluate_function`` evaluates an **ink** function from GDScript. Since it's
 not possible to have in-out variables in GDScript you need to pass ``true`` to
 ``return_text_output`` to retrieve the text output of the function.
 ``evaluate_function`` will then return a dictionary containing both the return
-value and the outputed text.
+value and the output text.
 
 .. code:: gdscript
 

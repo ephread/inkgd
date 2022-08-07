@@ -11,7 +11,7 @@ Asset Library Installation
 
     Due to review processes, there is often a delay between the moment a new
     version of the documentation is published and the new version of *inkgd* is
-    available in the Asset Library. Always double check whether the version in
+    available in the Asset Library. Always double-check whether the version in
     the library matches the version of the documentation you are reading.
 
 Open a Godot project, click on the to *AssetLib* tab, at the top of the screen,
@@ -49,7 +49,7 @@ the new file expected to be added to the project. Select all files except
 
 |
 
-After the installation is completed, a confimation dialog should pop up.
+After the installation is completed, a confirmation dialog should pop up.
 Click on *OK* to close it.
 
 .. image:: img/introduction/asset_lib_successful_installation.png

@@ -50,7 +50,7 @@ Depending on the build type the runtime will behave differently.
      to the editor/terminal using ``push_error``;
 
    * if ``__InkRuntime.stop_execution_on_exception`` is ``true``, exceptions are reported using
-     ``assert`` instead, which pauses the execution and make them explicit.
+     ``assert`` instead, which pauses the execution and makes them explicit.
 
 #. This is a release build:
 

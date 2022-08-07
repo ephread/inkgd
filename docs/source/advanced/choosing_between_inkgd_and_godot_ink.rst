@@ -21,7 +21,7 @@ instance, methods are written in PascalCase. Additionally, some types —such as
 InkList— can't be easily bridged to GDScript.
 
 *inkgd* provides a snake-cased API that integrates well with other GDScript
-scripts, but suffers from poor performances. The GDScript implementation is
+scripts but suffers from poor performance. The GDScript implementation is
 about 50 times slower than *godot-ink*. These performance limitations are
 detailed in :doc:`/advanced/performance`.
 
