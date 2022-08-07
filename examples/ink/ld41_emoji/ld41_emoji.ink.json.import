@@ -1,0 +1,14 @@
+[remap]
+
+importer="inkgd.ink.json"
+type="Resource"
+path="res://.import/ld41_emoji.ink.json-13fdb4ae8f6b7b82055e18ba9228b40a.res"
+
+[deps]
+
+source_file="res://examples/ink/ld41_emoji/ld41_emoji.ink.json"
+dest_files=[ "res://.import/ld41_emoji.ink.json-13fdb4ae8f6b7b82055e18ba9228b40a.res" ]
+
+[params]
+
+compress=true

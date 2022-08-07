@@ -2,8 +2,30 @@
 .import/
 export.cfg
 export_presets.cfg
+*.pck
 
 # inkgd ignores
-
 .inkgd_compiler.cfg
 inkgd-issue-*
+inkgd-example-*.zip
+
+# template ignores
+script_templates
+
+# sphinx build folder
+docs/build
+
+# Visual Studio code
+.vscode
+
+# ipsuminious
+ipsuminious*.ink
+ipsuminious*.json
+ipsuminious*.import
+
+# python
+__pycache__
+
+# mono
+.mono
+*.dll

@@ -1,0 +1,141 @@
+[gd_scene load_steps=14 format=2]
+
+[ext_resource path="res://examples/scenes/common/story_player.gd" type="Script" id=1]
+[ext_resource path="res://examples/fonts/Poppins-Medium.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://examples/images/spinner.png" type="Texture" id=4]
+[ext_resource path="res://examples/images/transparent.png" type="Texture" id=5]
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 0.145098, 0.145098, 0.145098, 1 )
+
+[sub_resource type="StyleBoxFlat" id=3]
+bg_color = Color( 0.270588, 0.270588, 0.270588, 1 )
+
+[sub_resource type="StyleBoxEmpty" id=4]
+
+[sub_resource type="StyleBoxEmpty" id=5]
+
+[sub_resource type="Theme" id=6]
+VScrollBar/icons/decrement = ExtResource( 5 )
+VScrollBar/icons/decrement_highlight = ExtResource( 5 )
+VScrollBar/icons/increment = ExtResource( 5 )
+VScrollBar/icons/increment_highlight = ExtResource( 5 )
+VScrollBar/styles/grabber = SubResource( 1 )
+VScrollBar/styles/grabber_highlight = SubResource( 2 )
+VScrollBar/styles/grabber_pressed = SubResource( 3 )
+VScrollBar/styles/scroll = SubResource( 4 )
+VScrollBar/styles/scroll_focus = SubResource( 5 )
+
+[sub_resource type="Animation" id=7]
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("LoadingAnimationPlayer/CenterContainer/VBoxContainer/CenterContainer/SpinnerTextureRect:rect_rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 360.0 ]
+}
+
+[sub_resource type="DynamicFont" id=9]
+size = 55
+font_data = ExtResource( 2 )
+
+[sub_resource type="Theme" id=8]
+Label/colors/font_color = Color( 0, 0, 0, 1 )
+Label/fonts/font = SubResource( 9 )
+
+[node name="StoryPlayer" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 1.0
+margin_right = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+bind_externals = true
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0.929412, 0.898039, 0.854902, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="StoryMarginContainer" type="MarginContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/margin_right = 250
+custom_constants/margin_top = 40
+custom_constants/margin_left = 250
+custom_constants/margin_bottom = 40
+
+[node name="StoryScrollContainer" type="ScrollContainer" parent="StoryMarginContainer"]
+margin_left = 250.0
+margin_top = 40.0
+margin_right = 1670.0
+margin_bottom = 1040.0
+grow_horizontal = 2
+theme = SubResource( 6 )
+scroll_horizontal_enabled = false
+
+[node name="StoryVBoxContainer" type="VBoxContainer" parent="StoryMarginContainer/StoryScrollContainer"]
+margin_right = 1420.0
+grow_horizontal = 2
+size_flags_horizontal = 3
+custom_constants/separation = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -113.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LoadingAnimationPlayer" type="AnimationPlayer" parent="."]
+autoplay = "LoadingAnimation"
+anims/LoadingAnimation = SubResource( 7 )
+
+[node name="CenterContainer" type="CenterContainer" parent="LoadingAnimationPlayer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="LoadingAnimationPlayer/CenterContainer"]
+margin_left = 776.0
+margin_top = 449.0
+margin_right = 1143.0
+margin_bottom = 631.0
+custom_constants/separation = 40
+
+[node name="TitleLabel" type="Label" parent="LoadingAnimationPlayer/CenterContainer/VBoxContainer"]
+margin_right = 367.0
+margin_bottom = 78.0
+theme = SubResource( 8 )
+text = "The Intercept"
+
+[node name="CenterContainer" type="CenterContainer" parent="LoadingAnimationPlayer/CenterContainer/VBoxContainer"]
+margin_top = 118.0
+margin_right = 367.0
+margin_bottom = 182.0
+
+[node name="SpinnerTextureRect" type="TextureRect" parent="LoadingAnimationPlayer/CenterContainer/VBoxContainer/CenterContainer"]
+margin_left = 151.0
+margin_right = 215.0
+margin_bottom = 64.0
+rect_pivot_offset = Vector2( 32, 32 )
+texture = ExtResource( 4 )
+stretch_mode = 4

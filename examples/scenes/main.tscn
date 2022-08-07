@@ -1,0 +1,234 @@
+[gd_scene load_steps=16 format=2]
+
+[ext_resource path="res://examples/images/buttons/button_normal.png" type="Texture" id=1]
+[ext_resource path="res://examples/fonts/Vollkorn-Regular.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://examples/images/buttons/button_focus_hover.png" type="Texture" id=3]
+[ext_resource path="res://examples/images/buttons/button_pressed.png" type="Texture" id=4]
+[ext_resource path="res://examples/images/buttons/button_disabled.png" type="Texture" id=5]
+[ext_resource path="res://examples/images/inkgd.png" type="Texture" id=6]
+[ext_resource path="res://examples/scenes/main.gd" type="Script" id=7]
+[ext_resource path="res://examples/fonts/Poppins-Medium.tres" type="DynamicFont" id=8]
+
+[sub_resource type="DynamicFont" id=7]
+size = 40
+font_data = ExtResource( 2 )
+
+[sub_resource type="Theme" id=8]
+Label/colors/font_color = Color( 0, 0, 0, 1 )
+Label/fonts/font = SubResource( 7 )
+
+[sub_resource type="StyleBoxTexture" id=4]
+content_margin_left = 35.0
+content_margin_right = 35.0
+content_margin_top = 25.0
+content_margin_bottom = 25.0
+texture = ExtResource( 5 )
+region_rect = Rect2( 0, 0, 32, 32 )
+margin_left = 3.0
+margin_right = 3.0
+margin_top = 3.0
+margin_bottom = 3.0
+
+[sub_resource type="StyleBoxTexture" id=2]
+content_margin_left = 35.0
+content_margin_right = 35.0
+content_margin_top = 25.0
+content_margin_bottom = 25.0
+texture = ExtResource( 1 )
+region_rect = Rect2( 0, 0, 32, 32 )
+margin_left = 3.0
+margin_right = 3.0
+margin_top = 3.0
+margin_bottom = 3.0
+
+[sub_resource type="StyleBoxTexture" id=5]
+content_margin_left = 35.0
+content_margin_right = 35.0
+content_margin_top = 25.0
+content_margin_bottom = 25.0
+texture = ExtResource( 3 )
+region_rect = Rect2( 0, 0, 32, 32 )
+margin_left = 3.0
+margin_right = 3.0
+margin_top = 3.0
+margin_bottom = 3.0
+
+[sub_resource type="StyleBoxTexture" id=6]
+content_margin_left = 35.0
+content_margin_right = 35.0
+content_margin_top = 25.0
+content_margin_bottom = 25.0
+texture = ExtResource( 4 )
+region_rect = Rect2( 0, 0, 32, 32 )
+margin_left = 3.0
+margin_right = 3.0
+margin_top = 3.0
+margin_bottom = 3.0
+
+[sub_resource type="Theme" id=3]
+Button/colors/font_color = Color( 0, 0, 0, 0.498039 )
+Button/colors/font_color_disabled = Color( 0, 0, 0, 0.25098 )
+Button/colors/font_color_focus = Color( 0, 0, 0, 0.498039 )
+Button/colors/font_color_hover = Color( 0, 0, 0, 1 )
+Button/colors/font_color_pressed = Color( 0, 0, 0, 1 )
+Button/fonts/font = ExtResource( 8 )
+Button/styles/disabled = SubResource( 4 )
+Button/styles/focus = SubResource( 2 )
+Button/styles/hover = SubResource( 5 )
+Button/styles/normal = SubResource( 2 )
+Button/styles/pressed = SubResource( 6 )
+
+[node name="Main" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 7 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0.929412, 0.898039, 0.854902, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/margin_right = 75
+custom_constants/margin_top = 75
+custom_constants/margin_left = 75
+custom_constants/margin_bottom = 75
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer"]
+margin_left = 75.0
+margin_top = 75.0
+margin_right = 1845.0
+margin_bottom = 1005.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+margin_left = 75.0
+margin_top = 75.0
+margin_right = 1845.0
+margin_bottom = 1005.0
+custom_constants/separation = 150
+alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer"]
+margin_top = 221.0
+margin_right = 1770.0
+margin_bottom = 402.0
+texture = ExtResource( 6 )
+stretch_mode = 6
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+margin_top = 552.0
+margin_right = 1770.0
+margin_bottom = 708.0
+custom_constants/separation = 75
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ExampleVBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+margin_left = 222.0
+margin_right = 847.0
+margin_bottom = 156.0
+custom_constants/separation = 20
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ExampleLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/ExampleVBoxContainer"]
+margin_right = 625.0
+margin_bottom = 40.0
+rect_pivot_offset = Vector2( -815, -44 )
+theme = SubResource( 8 )
+text = "Examples"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ExampleVBoxContainer"]
+margin_top = 60.0
+margin_right = 625.0
+margin_bottom = 156.0
+custom_constants/separation = 25
+
+[node name="TheIntercept" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/ExampleVBoxContainer/HBoxContainer"]
+margin_right = 300.0
+margin_bottom = 96.0
+rect_min_size = Vector2( 300, 0 )
+theme = SubResource( 3 )
+text = "The Intercept"
+align = 0
+
+[node name="CrimeScene" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/ExampleVBoxContainer/HBoxContainer"]
+margin_left = 325.0
+margin_right = 625.0
+margin_bottom = 96.0
+rect_min_size = Vector2( 300, 0 )
+theme = SubResource( 3 )
+text = "Crime Scene"
+align = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TestVBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+margin_left = 922.0
+margin_right = 1547.0
+margin_bottom = 156.0
+custom_constants/separation = 20
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TestLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/TestVBoxContainer"]
+margin_right = 625.0
+margin_bottom = 40.0
+rect_pivot_offset = Vector2( -815, -44 )
+theme = SubResource( 8 )
+text = "Tests"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/TestVBoxContainer"]
+margin_top = 60.0
+margin_right = 625.0
+margin_bottom = 156.0
+custom_constants/separation = 25
+
+[node name="Test" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/TestVBoxContainer/HBoxContainer"]
+margin_right = 300.0
+margin_bottom = 96.0
+rect_min_size = Vector2( 300, 0 )
+theme = SubResource( 3 )
+text = "GUT"
+align = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Performance" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/TestVBoxContainer/HBoxContainer"]
+margin_left = 325.0
+margin_right = 625.0
+margin_bottom = 96.0
+rect_min_size = Vector2( 300, 0 )
+theme = SubResource( 3 )
+text = "Performance"
+align = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[connection signal="button_up" from="MarginContainer/VBoxContainer/HBoxContainer/ExampleVBoxContainer/HBoxContainer/TheIntercept" to="." method="_switch_to_the_intercept"]
+[connection signal="button_up" from="MarginContainer/VBoxContainer/HBoxContainer/ExampleVBoxContainer/HBoxContainer/CrimeScene" to="." method="_switch_to_crime_scene"]
+[connection signal="button_up" from="MarginContainer/VBoxContainer/HBoxContainer/TestVBoxContainer/HBoxContainer/Test" to="." method="_switch_to_gut"]
+[connection signal="button_up" from="MarginContainer/VBoxContainer/HBoxContainer/TestVBoxContainer/HBoxContainer/Performance" to="." method="_switch_to_performance"]

@@ -1,0 +1,189 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://addons/inkgd/editor/panel/stories/ink_story_configuration.gd" type="Script" id=1]
+
+[sub_resource type="Image" id=3]
+data = {
+"data": PoolByteArray( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
+"format": "LumAlpha8",
+"height": 16,
+"mipmaps": false,
+"width": 16
+}
+
+[sub_resource type="ImageTexture" id=2]
+flags = 4
+flags = 4
+image = SubResource( 3 )
+size = Vector2( 16, 16 )
+
+[node name="StoryConfiguration" type="VBoxContainer"]
+margin_right = 1902.0
+margin_bottom = 87.0
+custom_constants/separation = 5
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HeaderMarginContainer" type="MarginContainer" parent="."]
+margin_right = 1902.0
+margin_bottom = 32.0
+custom_constants/margin_right = 0
+custom_constants/margin_top = 0
+custom_constants/margin_left = 0
+custom_constants/margin_bottom = 0
+
+[node name="BackgroundColorRect" type="ColorRect" parent="HeaderMarginContainer"]
+margin_right = 1902.0
+margin_bottom = 32.0
+color = Color( 0.268314, 0.291712, 0.340784, 1 )
+
+[node name="MarginContainer" type="MarginContainer" parent="HeaderMarginContainer"]
+margin_right = 1902.0
+margin_bottom = 32.0
+custom_constants/margin_right = 5
+custom_constants/margin_top = 5
+custom_constants/margin_left = 25
+custom_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HeaderMarginContainer/MarginContainer"]
+margin_left = 25.0
+margin_top = 5.0
+margin_right = 1897.0
+margin_bottom = 27.0
+
+[node name="StoryLabel" type="Label" parent="HeaderMarginContainer/MarginContainer/HBoxContainer"]
+margin_top = 4.0
+margin_right = 1711.0
+margin_bottom = 18.0
+size_flags_horizontal = 3
+text = "0"
+
+[node name="RemoveButton" type="Button" parent="HeaderMarginContainer/MarginContainer/HBoxContainer"]
+margin_left = 1715.0
+margin_right = 1803.0
+margin_bottom = 22.0
+mouse_filter = 1
+custom_constants/hseparation = 8
+text = "Remove"
+icon = SubResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false,
+"_editor_description_": "Compile the story manually, based on the configuration below."
+}
+
+[node name="BuildButton" type="Button" parent="HeaderMarginContainer/MarginContainer/HBoxContainer"]
+margin_left = 1807.0
+margin_right = 1872.0
+margin_bottom = 22.0
+mouse_filter = 1
+custom_constants/hseparation = 8
+text = "Compile"
+__meta__ = {
+"_edit_use_anchors_": false,
+"_editor_description_": "Compile the story manually, based on the configuration below."
+}
+
+[node name="ConfigurationMarginContainer" type="MarginContainer" parent="."]
+margin_top = 37.0
+margin_right = 1902.0
+margin_bottom = 117.0
+custom_constants/margin_right = 0
+custom_constants/margin_top = 0
+custom_constants/margin_left = 5
+custom_constants/margin_bottom = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="GridContainer" type="GridContainer" parent="ConfigurationMarginContainer"]
+margin_left = 5.0
+margin_right = 1902.0
+margin_bottom = 80.0
+size_flags_horizontal = 3
+columns = 2
+
+[node name="SourceFileLabel" type="Label" parent="ConfigurationMarginContainer/GridContainer"]
+margin_right = 946.0
+margin_bottom = 24.0
+hint_tooltip = "The input path, a.k.a the original ink story."
+mouse_filter = 1
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "Source File (*.ink)"
+
+[node name="SourceFileHBoxContainer" type="HBoxContainer" parent="ConfigurationMarginContainer/GridContainer"]
+margin_left = 950.0
+margin_right = 1896.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+
+[node name="SourceFileLineEdit" type="LineEdit" parent="ConfigurationMarginContainer/GridContainer/SourceFileHBoxContainer"]
+margin_right = 914.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+
+[node name="SourceFileDialogButton" type="Button" parent="ConfigurationMarginContainer/GridContainer/SourceFileHBoxContainer"]
+margin_left = 918.0
+margin_right = 946.0
+margin_bottom = 24.0
+icon = SubResource( 2 )
+
+[node name="TargetFileLabel" type="Label" parent="ConfigurationMarginContainer/GridContainer"]
+margin_top = 28.0
+margin_right = 946.0
+margin_bottom = 52.0
+hint_tooltip = "The output path, a.k.a the JSON file compiled from the original ink story."
+mouse_filter = 1
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "Target File (*.json)"
+
+[node name="TargetFileHBoxContainer" type="HBoxContainer" parent="ConfigurationMarginContainer/GridContainer"]
+margin_left = 950.0
+margin_top = 28.0
+margin_right = 1896.0
+margin_bottom = 52.0
+size_flags_horizontal = 3
+
+[node name="TargetFileLineEdit" type="LineEdit" parent="ConfigurationMarginContainer/GridContainer/TargetFileHBoxContainer"]
+margin_right = 914.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+
+[node name="TargetFileDialogButton" type="Button" parent="ConfigurationMarginContainer/GridContainer/TargetFileHBoxContainer"]
+margin_left = 918.0
+margin_right = 946.0
+margin_bottom = 24.0
+icon = SubResource( 2 )
+
+[node name="WatchedFolderLabel" type="Label" parent="ConfigurationMarginContainer/GridContainer"]
+margin_top = 56.0
+margin_right = 946.0
+margin_bottom = 80.0
+hint_tooltip = "The directory to watch for changes in Ink sources.
+
+This path is optional, leave it blank to disable automatic recompilation for that story."
+mouse_filter = 1
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "Watched Folder"
+
+[node name="WatchedFolderHBoxContainer" type="HBoxContainer" parent="ConfigurationMarginContainer/GridContainer"]
+margin_left = 950.0
+margin_top = 56.0
+margin_right = 1896.0
+margin_bottom = 80.0
+size_flags_horizontal = 3
+
+[node name="WatchedFolderLineEdit" type="LineEdit" parent="ConfigurationMarginContainer/GridContainer/WatchedFolderHBoxContainer"]
+margin_right = 914.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+
+[node name="WatchedFolderDialogButton" type="Button" parent="ConfigurationMarginContainer/GridContainer/WatchedFolderHBoxContainer"]
+margin_left = 918.0
+margin_right = 946.0
+margin_bottom = 24.0
+icon = SubResource( 2 )

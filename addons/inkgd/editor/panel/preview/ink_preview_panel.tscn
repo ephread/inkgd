@@ -1,0 +1,168 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://addons/inkgd/editor/panel/preview/ink_preview_panel.gd" type="Script" id=2]
+
+[sub_resource type="Image" id=3]
+data = {
+"data": PoolByteArray( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
+"format": "LumAlpha8",
+"height": 16,
+"mipmaps": false,
+"width": 16
+}
+
+[sub_resource type="ImageTexture" id=2]
+flags = 4
+flags = 4
+image = SubResource( 3 )
+size = Vector2( 16, 16 )
+
+[node name="Preview" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 2 )
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HSplitContainer" type="HSplitContainer" parent="MarginContainer"]
+margin_right = 1920.0
+margin_bottom = 1080.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="StoryVBoxContainer" type="VBoxContainer" parent="MarginContainer/HSplitContainer"]
+margin_right = 1608.0
+margin_bottom = 1080.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/separation = 5
+
+[node name="CommandStripHBoxContainer" type="HBoxContainer" parent="MarginContainer/HSplitContainer/StoryVBoxContainer"]
+margin_right = 1608.0
+margin_bottom = 22.0
+size_flags_horizontal = 3
+custom_constants/separation = 10
+
+[node name="LoadStoryButton" type="Button" parent="MarginContainer/HSplitContainer/StoryVBoxContainer/CommandStripHBoxContainer"]
+margin_right = 96.0
+margin_bottom = 22.0
+custom_constants/hseparation = 8
+text = "Load new…"
+icon = SubResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PickStoryOptionButton" type="OptionButton" parent="MarginContainer/HSplitContainer/StoryVBoxContainer/CommandStripHBoxContainer"]
+margin_left = 106.0
+margin_right = 135.0
+margin_bottom = 22.0
+size_flags_horizontal = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Control" type="Control" parent="MarginContainer/HSplitContainer/StoryVBoxContainer/CommandStripHBoxContainer"]
+margin_left = 145.0
+margin_right = 1455.0
+margin_bottom = 22.0
+size_flags_horizontal = 3
+
+[node name="StartButton" type="Button" parent="MarginContainer/HSplitContainer/StoryVBoxContainer/CommandStripHBoxContainer"]
+margin_left = 1465.0
+margin_right = 1530.0
+margin_bottom = 22.0
+custom_constants/hseparation = 8
+text = "Start"
+icon = SubResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="StopButton" type="Button" parent="MarginContainer/HSplitContainer/StoryVBoxContainer/CommandStripHBoxContainer"]
+visible = false
+margin_left = 461.0
+margin_right = 527.0
+margin_bottom = 22.0
+custom_constants/hseparation = 10
+text = "Stop"
+icon = SubResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ClearButton" type="Button" parent="MarginContainer/HSplitContainer/StoryVBoxContainer/CommandStripHBoxContainer"]
+margin_left = 1540.0
+margin_right = 1608.0
+margin_bottom = 22.0
+custom_constants/hseparation = 8
+text = "Clear"
+icon = SubResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HSplitContainer/StoryVBoxContainer"]
+margin_top = 27.0
+margin_right = 1608.0
+margin_bottom = 1080.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Panel" type="Panel" parent="MarginContainer/HSplitContainer/StoryVBoxContainer/MarginContainer"]
+margin_right = 1608.0
+margin_bottom = 1053.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/HSplitContainer/StoryVBoxContainer/MarginContainer"]
+margin_right = 1608.0
+margin_bottom = 1053.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+scroll_horizontal_enabled = false
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HSplitContainer/StoryVBoxContainer/MarginContainer/ScrollContainer"]
+margin_right = 1608.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+custom_constants/margin_right = 10
+custom_constants/margin_top = 10
+custom_constants/margin_left = 10
+custom_constants/margin_bottom = 10
+
+[node name="StoryVBoxContainer" type="VBoxContainer" parent="MarginContainer/HSplitContainer/StoryVBoxContainer/MarginContainer/ScrollContainer/MarginContainer"]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 1598.0
+margin_bottom = 10.0
+size_flags_horizontal = 3
+
+[node name="ChoicesAreaVBoxContainer" type="VBoxContainer" parent="MarginContainer/HSplitContainer"]
+margin_left = 1620.0
+margin_right = 1920.0
+margin_bottom = 1080.0
+rect_min_size = Vector2( 300, 0 )
+custom_constants/separation = 5
+
+[node name="Button" type="Button" parent="MarginContainer/HSplitContainer/ChoicesAreaVBoxContainer"]
+margin_right = 300.0
+margin_bottom = 20.0
+mouse_filter = 2
+text = "Choices"
+flat = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ChoicesVBoxContainer" type="VBoxContainer" parent="MarginContainer/HSplitContainer/ChoicesAreaVBoxContainer"]
+margin_top = 25.0
+margin_right = 300.0
+margin_bottom = 25.0

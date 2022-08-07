@@ -8,18 +8,25 @@
 /.github                   export-ignore
 /.gitattributes            export-ignore
 /.gitignore                export-ignore
+/.gut_editor_config.json   export-ignore
 /.gutconfig.json           export-ignore
 /.inkgd_compiler.cfg       export-ignore
 /.inkgd_ink.cfg            export-ignore
+/.ci_export_presets.cfg    export-ignore
+
+/AUTHORS                   export-ignore
 /CHANGELOG.md              export-ignore
 /CONTRIBUTING.md           export-ignore
-/default_env.tres          export-ignore
-/icon.png                  export-ignore
-/icon.png.import           export-ignore
-/LICENSE                   export-ignore
-/project.godot             export-ignore
-/PULL_REQUEST_TEMPLATE.md  export-ignore
 /README.md                 export-ignore
+/LICENSE                   export-ignore
 
-/examples                  export-ignore
+/default_env.tres          export-ignore
+/project.godot             export-ignore
+/inkgd.csproj              export-ignore
+/inkgd.sln                 export-ignore
+
+/build_example             export-ignore
+
 /test                      export-ignore
+/docs                      export-ignore
+/icons                     export-ignore

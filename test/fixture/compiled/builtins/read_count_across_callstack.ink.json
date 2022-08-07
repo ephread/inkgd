@@ -1,1 +1,0 @@
-﻿{"inkVersion":19,"root":[[{"->":"first"},["done",{"#n":"g-0"}],null],"done",{"first":["^1) Seen first ","ev",{"CNT?":".^"},"out","/ev","^ times.","\n",{"->t->":"second"},"^2) Seen first ","ev",{"CNT?":".^"},"out","/ev","^ times.","\n","done",{"#f":3}],"second":["^In second.","\n","ev","void","/ev","->->",{"#f":3}],"#f":3}],"listDefs":{}}

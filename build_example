@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# This script is expected to be run on macOS, at the root of the project.
+
+TAG=$(git describe --tags --abbrev=0)
+
+zip -r "inkgd-example-$TAG.zip" "." \
+    -x ".DS_Store"               \
+    -x ".github/*"               \
+    -x ".mono/*"                 \
+    -x ".vscode/*"               \
+    -x ".git/*"                  \
+    -x "docs/.vscode/*"          \
+    -x "docs/build/*"            \
+                                 \
+    -x "script_templates/*"      \
+    -x "script_templates"        \
+                                 \
+    -x ".gitattributes"          \
+    -x ".gitignore"              \
+    -x ".inkgd_compiler.cfg"     \
+                                 \
+    -x "ci_export_presets.cfg"   \
+    -x "export_presets.cfg"      \
+                                 \
+    -x "CONTRIBUTING.md"         \
+    -x "build_example"           \
+                                 \
+    -x "*.pck"                   \
+    -x "*.zip"                   \

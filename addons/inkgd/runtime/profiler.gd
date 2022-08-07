@@ -1,61 +1,57 @@
 # ############################################################################ #
-# Copyright © 2015-present inkle Ltd.
-# Copyright © 2019-present Frédéric Maquin <fred@ephread.com>
+# Copyright © 2015-2021 inkle Ltd.
+# Copyright © 2019-2022 Frédéric Maquin <fred@ephread.com>
 # All Rights Reserved
 #
 # This file is part of inkgd.
 # inkgd is licensed under the terms of the MIT license.
 # ############################################################################ #
 
-extends "res://addons/inkgd/runtime/ink_base.gd"
+extends InkBase
+
+class_name InkProfiler
 
 func _init():
-    pass
+	pass
 
 # () -> String
-func report():
-    return ""
+func report() -> String:
+	return ""
 
 # () -> void
-func pre_continue():
-    pass
+func pre_continue() -> void:
+	pass
 
 # () -> void
-func post_continue():
-    pass
+func post_continue() -> void:
+	pass
 
 # () -> void
-func pre_step():
-    pass
+func pre_step() -> void:
+	pass
 
 # (CallStack) -> void
-func step(callstack):
-    pass
+func step(callstack: InkCallStack) -> void:
+	pass
 
 # () -> void
-func post_step():
-    pass
+func post_step() -> void:
+	pass
 
-# () -> String
-func step_length_record():
-    return ""
+func step_length_record() -> String:
+	return ""
 
-# () -> String
-func mega_log():
-    return ""
+func mega_log() -> String:
+	return ""
 
-# () -> void
-func pre_snapshot():
-    pass
+func pre_snapshot() -> void:
+	pass
 
-# () -> void
-func post_snapshot():
-    pass
+func post_snapshot() -> void:
+	pass
 
-# (Stopwatch) -> float
-func millisecs(watch):
-    pass
+func millisecs(watch: InkStopWatch) -> float:
+	return 0.0
 
-# (float) -> String
-static func format_millisecs(num):
-    return ""
+static func format_millisecs(num: float) -> String:
+	return ""

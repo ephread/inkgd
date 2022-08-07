@@ -1,0 +1,13 @@
+[remap]
+
+importer="inkgd.ink"
+type="Resource"
+path="res://.import/bob.ink-e0b0b22412a3d224ec629c3e67b547c0.res"
+
+[deps]
+
+source_file="res://examples/ink/not_a_halloween_game/includes/bob.ink"
+dest_files=[ "res://.import/bob.ink-e0b0b22412a3d224ec629c3e67b547c0.res" ]
+
+[params]
+

@@ -1,6 +1,6 @@
-# ############################################################################ #
-# Copyright © 2015-present inkle Ltd.
-# Copyright © 2019-present Frédéric Maquin <fred@ephread.com>
+ # ############################################################################ #
+# Copyright © 2015-2021 inkle Ltd.
+# Copyright © 2019-2022 Frédéric Maquin <fred@ephread.com>
 # All Rights Reserved
 #
 # This file is part of inkgd.
@@ -15,46 +15,49 @@
 
 extends Reference
 
+class_name InkStringSet
+
 # ############################################################################ #
 # Self-reference
 # ############################################################################ #
 
-var StringSet = weakref(load("res://addons/inkgd/runtime/extra/string_set.gd"))
+static func InkStringSet() -> GDScript:
+	return load("res://addons/inkgd/runtime/extra/string_set.gd") as GDScript
 
 # ############################################################################ #
 
-var _dictionary = {}
+var _dictionary: Dictionary = {}
 
 # ############################################################################ #
 
-func clear():
-    _dictionary.clear()
+func clear() -> void:
+	_dictionary.clear()
 
-func duplicate():
-    var set = StringSet.get_ref().new()
-    set._dictionary = self._dictionary.duplicate()
-    return set
+func duplicate() -> InkStringSet:
+	var set = InkStringSet().new()
+	set._dictionary = _dictionary.duplicate()
+	return set
 
-func enumerate():
-    return _dictionary.keys()
+func enumerate() -> Array:
+	return _dictionary.keys()
 
-func empty():
-    _dictionary.empty()
+func empty() -> bool:
+	return _dictionary.empty()
 
-func contains(element: String):
-    return _dictionary.has(element)
+func contains(element: String) -> bool:
+	return _dictionary.has(element)
 
-func contains_all(elements: Array):
-    return _dictionary.has_all(elements)
+func contains_all(elements: Array) -> bool:
+	return _dictionary.has_all(elements)
 
-func size():
-    return _dictionary.size()
+func size() -> int:
+	return _dictionary.size()
 
-func to_array():
-    return _dictionary.keys()
+func to_array() -> Array:
+	return _dictionary.keys()
 
-func append(value: String):
-    _dictionary[value] = null
+func append(value: String) -> void:
+	_dictionary[value] = null
 
-func erase(value: String):
-    _dictionary.erase(value)
+func erase(value: String) -> bool:
+	return _dictionary.erase(value)

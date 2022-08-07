@@ -1,7 +1,7 @@
 # warning-ignore-all:unused_class_variable
 # ############################################################################ #
-# Copyright © 2015-present inkle Ltd.
-# Copyright © 2019-present Frédéric Maquin <fred@ephread.com>
+# Copyright © 2015-2021 inkle Ltd.
+# Copyright © 2019-2022 Frédéric Maquin <fred@ephread.com>
 # All Rights Reserved
 #
 # This file is part of inkgd.
@@ -12,13 +12,19 @@
 # !! VALUE TYPE
 # ############################################################################ #
 
-extends "res://addons/inkgd/runtime/ink_base.gd"
+# Search results are never duplicated / passed around so they don't need to
+# be either immutable or have a 'duplicate' method.
+
+extends InkBase
+
+class_name InkSearchResult
 
 # ############################################################################ #
 # Self-reference
 # ############################################################################ #
 
-var SearchResult = weakref(load("res://addons/inkgd/runtime/search_result.gd"))
+static func SearchResult() -> GDScript:
+	return load("res://addons/inkgd/runtime/search_result.gd") as GDScript
 
 # ############################################################################ #
 
@@ -27,26 +33,18 @@ var approximate = false # bool
 
 var correct_obj setget , get_correct_obj # InkObject
 func get_correct_obj():
-    return null if approximate else obj
+	return null if approximate else obj
 
 var container setget , get_container # Container
 func get_container():
-    return Utils.as_or_null(obj, "InkContainer")
+	return Utils.as_or_null(obj, "InkContainer")
 
 # ############################################################################ #
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type):
-    return type == "SearchResult" || .is_class(type)
+func is_class(type: String) -> bool:
+	return type == "SearchResult" || .is_class(type)
 
-func get_class():
-    return "SearchResult"
-
-# () -> InkSearchResult
-func duplicate():
-    var search_result = SearchResult.get_ref().new()
-    search_result.obj = obj
-    search_result.approximate = approximate
-
-    return search_result
+func get_class() -> String:
+	return "SearchResult"

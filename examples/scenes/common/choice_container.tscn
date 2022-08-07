@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://examples/scenes/common/choice_container.gd" type="Script" id=1]
+
+[node name="ChoiceContainer" type="MarginContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/margin_right = 150
+custom_constants/margin_left = 150
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ChoiceVBoxContainer" type="VBoxContainer" parent="."]
+margin_left = 150.0
+margin_right = 1770.0
+margin_bottom = 1080.0
+custom_constants/separation = 10

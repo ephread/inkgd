@@ -1,0 +1,35 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://examples/images/buttons/back_button_disabled.png" type="Texture" id=1]
+[ext_resource path="res://examples/images/buttons/back_button_normal.png" type="Texture" id=2]
+[ext_resource path="res://examples/images/buttons/back_button_pressed.png" type="Texture" id=3]
+[ext_resource path="res://examples/images/buttons/back_button_hover.png" type="Texture" id=4]
+[ext_resource path="res://examples/scenes/common/back_button_margin_container.gd" type="Script" id=5]
+
+[node name="BackButtonMarginContainer" type="MarginContainer"]
+margin_right = 64.0
+margin_bottom = 64.0
+custom_constants/margin_right = 75
+custom_constants/margin_top = 75
+custom_constants/margin_left = 75
+custom_constants/margin_bottom = 75
+script = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TextureButton" type="TextureButton" parent="."]
+margin_left = 75.0
+margin_top = 75.0
+margin_right = 139.0
+margin_bottom = 139.0
+texture_normal = ExtResource( 2 )
+texture_pressed = ExtResource( 3 )
+texture_hover = ExtResource( 4 )
+texture_disabled = ExtResource( 1 )
+texture_focused = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[connection signal="pressed" from="TextureButton" to="." method="_switch_to_main"]
