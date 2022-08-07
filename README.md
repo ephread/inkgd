@@ -97,11 +97,11 @@ hosted on [Read The Docs].
 
 ### Ink Stories
 
-- [_The Intercept_] and [_Crime Scene_] are released under the MIT license,
+- [_The Intercept_] and [_Crime Scene_], released under the MIT license,
   copyright inkle Ltd. The sample project uses slightly modified versions of
   these two stories.
-- [_LD41 Emoji_] is released under the MIT license, copyright Pat Scott.
-- [_Not a halloween game_] is released under the MIT license, copyright Samuel
+- [_LD41 Emoji_], released under the MIT license, copyright Pat Scott.
+- [_Not a halloween game_], released under the MIT license, copyright Samuel
   Sarette and Zachary Sarette.
 
 [_The Intercept_]: https://github.com/inkle/ink-library/tree/master/Stories/The%20Intercept
@@ -109,10 +109,13 @@ hosted on [Read The Docs].
 [_LD41 Emoji_]: https://github.com/inkle/ink-library/tree/master/Stories/LD41%20Emoji
 [_Not a halloween game_]: https://github.com/lunarcloud/not-a-halloween-game
 
+### Documentation & Tutorials
+
+- @videlanicolas started the documentation project on ReadTheDocs.
+- Nicholas O'Brien did a whole [video series] about inkgd & Godot.
+
+[video series]: https://www.youtube.com/playlist?list=PLtepyzbiiwBrHoTloHJ2B-DWQxgrseuMB
+
 ## License
 
 _inkgd_ is released under the MIT license. See LICENSE for details.
-
-
-
-
