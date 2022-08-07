@@ -1,8 +1,8 @@
 # Change Log
 Important changes to _inkgd_ will be documented in this file.
 
-## [0.4.X](https://github.com/ephread/inkgd/releases/tag/0.4.X)
-Released on 2022-0X-3X.
+## [0.4.7](https://github.com/ephread/inkgd/releases/tag/0.4.X)
+Released on 2022-08-07.
 
 ### Fixed
 - Add missing `add_child` call in templates.

@@ -21,7 +21,7 @@ If you prefer a more hands-on approach, feel free to tinker with the
 
 .. The version is hardcoded for now. The inability to nest markup in reST is
 .. really annoying. Hopefully MyST can solve some of those issues.
-.. _here: https://github.com/ephread/inkgd/releases/download/0.4.6/inkgd-example-0.4.6.zip
+.. _here: https://github.com/ephread/inkgd/releases/download/0.4.7/inkgd-example-0.4.7.zip
 
 While looking for an implementation of **ink** in Godot, you may have come across
 godot-ink_. *inkgd* and *godot-ink* have different philosophies and purposes. If
