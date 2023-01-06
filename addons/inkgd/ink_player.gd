@@ -262,7 +262,7 @@ func get_alive_flow_names() -> Array:
 	return _story.alive_flow_names
 
 
-## `true` is the current flow is the default flow.
+## `true` if the current flow is the default flow.
 var current_flow_is_default_flow: bool setget , get_current_flow_is_default_flow
 func get_current_flow_is_default_flow() -> bool:
 	if _story == null:

@@ -8,11 +8,11 @@
 
 Hello # helloTag1
 
-* Choice 1
+* Choice 1 #choice1_tag1 #choice1_tag2
     -> chapter0
-* Choice 2
+* Choice 2 #choice2_tag2
     -> chapter1
-* Choice 3
+* Choice 3 #choice3_tag3
     -> epilogue
 
 -> DONE

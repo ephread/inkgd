@@ -49,7 +49,12 @@ func test_choices() -> void:
 	_ink_player.continue_story_maximally()
 
 	assert_true(_ink_player.has_choices)
-	assert_eq_shallow(_ink_player.current_choices, ["Choice 1", "Choice 2", "Choice 3"])
+	assert_eq(_ink_player.current_choices[0].text, "Choice 1")
+	assert_eq(_ink_player.current_choices[0].tags, ["choice1_tag1", "choice1_tag2"])
+	assert_eq(_ink_player.current_choices[1].text, "Choice 2")
+	assert_eq(_ink_player.current_choices[1].tags, ["choice2_tag2"])
+	assert_eq(_ink_player.current_choices[2].text, "Choice 3")
+	assert_eq(_ink_player.current_choices[2].tags, ["choice3_tag3"])
 	_ink_player.choose_choice_index(1)
 
 	assert_true(_ink_player.can_continue)
