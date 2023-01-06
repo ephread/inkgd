@@ -1,4 +1,5 @@
-# globalTag1 # globalTag2
+# globalTag1
+# globalTag2
 
 -> prologue
 
@@ -17,7 +18,8 @@ Hello # helloTag1
 -> DONE
 
 = chapter0
-# chapter0Tag1 # chapter0Tag2
+# chapter0Tag1
+# chapter0Tag2
 - (chapter0Gather) This is chapter 0
 -> DONE
 
@@ -26,6 +28,7 @@ This is chapter 1
 -> DONE
 
 === epilogue ===
-# epilogue1Tag1 # epilogue1Tag2
+# epilogue1Tag1
+# epilogue1Tag2
 This is the end
 -> END

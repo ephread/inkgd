@@ -237,6 +237,7 @@ func write_runtime_object(writer, obj: InkObject) -> void:
 		writer.write("void")
 		return
 
+	# Legacy Tags (replaced in 1.1+)
 	var tag = Utils.as_or_null(obj, "Tag")
 	if tag:
 		writer.write_object_start()
@@ -410,6 +411,7 @@ func jtoken_to_runtime_object(token) -> InkObject:
 			var_ass.is_global = is_global_var
 			return var_ass
 
+		# Legacy Tags with texts (replaced in 1.1+)
 		if obj.has("#"):
 			prop_value = obj["#"]
 			return InkTag.new(str(prop_value))
@@ -626,6 +628,8 @@ func _init(native_function_call):
 	_control_command_names.append("listInt")   # LIST_FROM_INT
 	_control_command_names.append("range")     # LIST_RANGE
 	_control_command_names.append("lrnd")      # LIST_RANDOM
+	_control_command_names.append("#")         # BEGIN_TAG
+	_control_command_names.append("/#")        # END_TAG
 
 	var i = 0
 	while i < InkControlCommand.CommandType.TOTAL_VALUES:

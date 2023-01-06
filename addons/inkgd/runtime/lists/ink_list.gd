@@ -33,12 +33,17 @@ func _init_from_csharp(items: Dictionary, origin_names: Array, origins: Array):
 	_origin_names = origin_names
 	self.origins = origins
 
+
 # (InkList) -> InkList
 func _init_with_ink_list(other_list: InkList):
 	_dictionary = other_list._dictionary.duplicate()
-	_origin_names = other_list.origin_names
+	var other_origin_names = other_list.origin_names
+	if other_origin_names != null:
+		_origin_names = other_list.origin_names.duplicate()
+
 	if other_list.origins != null:
 		self.origins = other_list.origins.duplicate()
+
 
 # (string, Story) -> InkList
 func _init_with_origin(single_origin_list_name: String, origin_story):
@@ -53,9 +58,11 @@ func _init_with_origin(single_origin_list_name: String, origin_story):
 				% single_origin_list_name
 		)
 
+
 # (InkListItem, int) -> InkList
 func _init_with_single_item(single_item: InkListItem, single_value: int):
 	set_item(single_item, single_value)
+
 
 # (string, Story) -> InkList
 static func from_string(my_list_item: String, origin_story) -> InkList:
@@ -68,6 +75,7 @@ static func from_string(my_list_item: String, origin_story) -> InkList:
 				"it doesn't exist in the original list definition in ink." % my_list_item
 		)
 		return null
+
 
 func add_item(item: InkListItem) -> void:
 	if item.origin_name == null:
@@ -92,6 +100,7 @@ func add_item(item: InkListItem) -> void:
 			"wasn't previously known to this list. Only items from previously known lists can " +
 			"be used, so that the int value can be found."
 	)
+
 
 func add_item_by_string(item_name: String) -> void:
 	var found_list_def: InkListDefinition = null
@@ -118,12 +127,14 @@ func add_item_by_string(item_name: String) -> void:
 	var item_val: int = found_list_def.value_for_item(item)
 	set_item(item, item_val)
 
+
 func contains_item_named(item_name: String) -> bool:
 	for item_key in keys():
 		if item_key.item_name == item_name:
 			return true
 
 	return false
+
 
 # Array<ListDefinition>
 var origins = null
@@ -139,6 +150,7 @@ func get_origin_of_max_item() -> InkListDefinition:
 
 	return null
 
+
 # Array<String>
 var origin_names setget , get_origin_names
 func get_origin_names():
@@ -153,10 +165,11 @@ func get_origin_names():
 
 	return _origin_names
 
-var _origin_names = null # Array<String>
 
+var _origin_names = null # Array<String>
 func set_initial_origin_name(initial_origin_name: String) -> void:
 	_origin_names = [ initial_origin_name ]
+
 
 # (Array<String>) -> void
 func set_initial_origin_names(initial_origin_names) -> void:
@@ -164,6 +177,7 @@ func set_initial_origin_names(initial_origin_names) -> void:
 		_origin_names = null
 	else:
 		_origin_names = initial_origin_names.duplicate()
+
 
 # TODO: Make inspectable
 var max_item: InkKeyValuePair setget , get_max_item # InkKeyValuePair<InkListItem, int>
@@ -175,6 +189,7 @@ func get_max_item() -> InkKeyValuePair:
 
 	return _max_item
 
+
 # TODO: Make inspectable
 var min_item: InkKeyValuePair setget , get_min_item # InkKeyValuePair<InkListItem, int>
 func get_min_item() -> InkKeyValuePair:
@@ -184,6 +199,7 @@ func get_min_item() -> InkKeyValuePair:
 			_min_item = InkKeyValuePair.new_with_key_value(k, get_item(k))
 
 	return _min_item
+
 
 # TODO: Make inspectable
 var inverse: InkList setget , get_inverse
@@ -197,6 +213,7 @@ func get_inverse() -> InkList:
 
 	return list
 
+
 # TODO: Make inspectable
 var all: InkList setget , get_all
 func get_all() -> InkList:
@@ -208,12 +225,14 @@ func get_all() -> InkList:
 
 	return list
 
+
 # TODO: Make inspectable
 func union(other_list: InkList) -> InkList:
 	var union: InkList = InkList().new_with_ink_list(self)
 	for key in other_list._dictionary:
 		union._dictionary[key] = other_list._dictionary[key]
 	return union
+
 
 # TODO: Make inspectable
 func intersection(other_list: InkList) -> InkList:
@@ -223,6 +242,14 @@ func intersection(other_list: InkList) -> InkList:
 			intersection._dictionary[key] = other_list._dictionary[key]
 	return intersection
 
+
+func has_intersection(other_list: InkList) -> bool:
+	for key in other_list._dictionary:
+		if self._dictionary.has(key):
+			return true
+	return false
+
+
 # TODO: Make inspectable
 func without(list_to_remove: InkList) -> InkList:
 	var result = InkList().new_with_ink_list(self)
@@ -230,12 +257,28 @@ func without(list_to_remove: InkList) -> InkList:
 		result._dictionary.erase(key)
 	return result
 
+
 func contains(other_list: InkList) -> bool:
+	if other_list._dictionary.empty() || self._dictionary.empty():
+		return false
+
 	for key in other_list._dictionary:
 		if !_dictionary.has(key):
 			return false
 
 	return true
+
+
+# In the original source code 'list_item_name' is of type (String | null),
+# but the method doesn't need to allow null names.
+func contains_item(list_item_name: String) -> bool:
+	for key in self._dictionary:
+		var list_item = InkListItem.from_serialized_key(key)
+		if list_item.item_name == list_item_name:
+			return true
+
+	return false
+
 
 func greater_than(other_list: InkList) -> bool:
 	if size() == 0:
@@ -244,6 +287,7 @@ func greater_than(other_list: InkList) -> bool:
 		return true
 
 	return self.min_item.value > other_list.max_item.value
+
 
 func greater_than_or_equals(other_list: InkList) -> bool:
 	if size() == 0:
@@ -256,6 +300,7 @@ func greater_than_or_equals(other_list: InkList) -> bool:
 			self.max_item.value >= other_list.max_item.value
 	)
 
+
 func less_than(other_list: InkList) -> bool:
 	if other_list.size() == 0:
 		return false
@@ -263,6 +308,7 @@ func less_than(other_list: InkList) -> bool:
 		return true
 
 	return self.max_item.value < other_list.min_item.value
+
 
 func less_than_or_equals(other_list: InkList) -> bool:
 	if other_list.size() == 0:
@@ -275,6 +321,7 @@ func less_than_or_equals(other_list: InkList) -> bool:
 			self.min_item.value <= other_list.min_item.value
 	)
 
+
 func max_as_list() -> InkList:
 	if size() > 0:
 		var _max_item: InkKeyValuePair = self.max_item
@@ -282,12 +329,14 @@ func max_as_list() -> InkList:
 	else:
 		return InkList().new()
 
+
 func min_as_list() -> InkList:
 	if size() > 0:
 		var _min_item: InkKeyValuePair = self.min_item
 		return InkList().new_with_single_item(_min_item.key, _min_item.value)
 	else:
 		return InkList().new()
+
 
 # (Variant, Variant) -> InkList
 func list_with_sub_range(min_bound, max_bound) -> InkList:
@@ -320,6 +369,7 @@ func list_with_sub_range(min_bound, max_bound) -> InkList:
 
 	return sub_list
 
+
 func equals(other: InkList) -> bool:
 	var other_raw_list: InkList = other
 	# Simple test to make sure the object is of the right type.
@@ -337,6 +387,7 @@ func equals(other: InkList) -> bool:
 
 	return true
 
+
 var ordered_items: Array setget , get_ordered_items # Array<InkKeyValuePair<InkListItem, int>>
 func get_ordered_items():
 	var ordered: Array = []
@@ -345,6 +396,7 @@ func get_ordered_items():
 
 	ordered.sort_custom(KeyValueInkListItemSorter, "sort")
 	return ordered
+
 
 func _to_string() -> String:
 	var ordered: Array = self.ordered_items
@@ -361,25 +413,30 @@ func _to_string() -> String:
 
 	return description
 
+
 static func new_with_dictionary(other_dictionary: Dictionary) -> InkList:
 	var ink_list: InkList = InkList().new()
 	ink_list._init_with_dictionary(other_dictionary)
 	return ink_list
+
 
 static func new_with_ink_list(other_list: InkList) -> InkList:
 	var ink_list: InkList = InkList().new()
 	ink_list._init_with_ink_list(other_list)
 	return ink_list
 
+
 static func new_with_origin(single_origin_list_name: String, origin_story) -> InkList:
 	var ink_list: InkList = InkList().new()
 	ink_list._init_with_origin(single_origin_list_name, origin_story)
 	return ink_list
 
+
 static func new_with_single_item(single_item: InkListItem, single_value: int) -> InkList:
 	var ink_list: InkList = InkList().new()
 	ink_list._init_with_single_item(single_item, single_value)
 	return ink_list
+
 
 class KeyValueInkListItemSorter:
 	static func sort(a, b):
@@ -387,6 +444,7 @@ class KeyValueInkListItemSorter:
 			return a.key.origin_name.nocasecmp_to(b.key.origin_name) <= 0
 		else:
 			return a.value <= b.value
+
 
 # ############################################################################ #
 # Originally, this class would inherit Dictionary. This isn't possible in
@@ -396,17 +454,21 @@ class KeyValueInkListItemSorter:
 
 var _dictionary: Dictionary = {}
 
+
 # Name set_item instead of set to prevent shadowing 'Object.set'.
 func set_item(key: InkListItem, value: int) -> void:
 	_dictionary[key.serialized()] = value
+
 
 # Name get_item instead of get to prevent shadowing 'Object.get'.
 func get_item(key: InkListItem, default = null):
 	return _dictionary.get(key.serialized(), default)
 
+
 # Name has_item instead of has to prevent shadowing 'Object.get'.
 func has_item(key: InkListItem) -> bool:
 	return _dictionary.has(key.serialized())
+
 
 func keys() -> Array:
 	var deserialized_keys = []
@@ -415,8 +477,10 @@ func keys() -> Array:
 
 	return deserialized_keys
 
+
 func size() -> int:
 	return _dictionary.size()
+
 
 # ############################################################################ #
 # Additional methods
@@ -428,11 +492,13 @@ func set_raw(key: String, value: int) -> void:
 
 	_dictionary[key] = value
 
+
 func erase_raw(key: String) -> bool:
 	if OS.is_debug_build() && !(key is String):
 		print("Warning: Expected serialized key in InkList.erase_raw().")
 
 	return _dictionary.erase(key)
+
 
 func get_raw(key: String, default = null):
 	if OS.is_debug_build() && !(key is String):
@@ -440,17 +506,21 @@ func get_raw(key: String, default = null):
 
 	return _dictionary.get(key, default)
 
+
 func has_raw(key: String) -> bool:
 	if OS.is_debug_build() && !(key is String):
 		print("Warning: Expected serialized key in InkList.has_raw().")
 
 	return _dictionary.has(key)
 
+
 func has_all_raw(keys: Array) -> bool:
 	return _dictionary.has_all(keys)
 
+
 func raw_keys() -> Array:
 	return _dictionary.keys()
+
 
 # ############################################################################ #
 # GDScript extra methods
@@ -459,5 +529,7 @@ func raw_keys() -> Array:
 func is_class(type: String) -> bool:
 	return type == "InkList" || .is_class(type)
 
+
 func get_class() -> String:
 	return "InkList"
+

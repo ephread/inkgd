@@ -14,7 +14,7 @@ extends InkObject
 
 class_name InkStory
 
-const INK_VERSION_CURRENT := 20
+const INK_VERSION_CURRENT := 21
 const INK_VERSION_MINIMUM_COMPATIBLE := 18
 
 # ############################################################################ #
@@ -48,6 +48,7 @@ var InkListValue := load("res://addons/inkgd/runtime/values/list_value.gd") as G
 
 var InkList := load("res://addons/inkgd/runtime/lists/ink_list.gd") as GDScript
 var InkChoice := load("res://addons/inkgd/runtime/content/choices/choice.gd") as GDScript
+var InkTag := load("res://addons/inkgd/runtime/content/tag.gd") as GDScript
 
 var InkStoryState := load("res://addons/inkgd/runtime/story_state.gd") as GDScript
 
@@ -485,7 +486,7 @@ func calculate_newline_output_state_change(
 	prev_tag_count: int,
 	curr_tag_count: int
 ) -> int:
-	var newline_still_exists = curr_text.length() >= prev_text.length() && curr_text[prev_text.length() - 1] == "\n"
+	var newline_still_exists = curr_text.length() >= prev_text.length() && prev_text.length() > 0 && curr_text[prev_text.length() - 1] == "\n"
 	if (prev_tag_count == curr_tag_count && prev_text.length() == curr_text.length() && newline_still_exists):
 		return OutputStateChange.NO_CHANGE
 
@@ -716,24 +717,43 @@ func visit_changed_containers_due_to_divert() -> void:
 		current_container_ancestor = Utils.as_or_null(current_container_ancestor.parent, "InkContainer")
 
 
+# The original implementation would return the choice string and update the
+# array of tags passed in parameter. Since in/out (ref) parameters are not supported
+# in GDScript, the method returns a tuple (array) instead.
+# (Array<String>) -> [String, Array<String>]
+func pop_choice_string_and_tags(tags) -> Array:
+	var choice_only_str_val = Utils.cast(self.state.pop_evaluation_stack(), "StringValue")
+
+	while self.state.evaluation_stack.size() > 0 and Utils.is_ink_class(state.peek_evaluation_stack(), "Tag"):
+		if tags == null:
+			tags = []
+		var tag = Utils.cast(self.state.pop_evaluation_stack(), "Tag")
+		tags.insert(0, tag.text)
+
+	return [choice_only_str_val.value, tags]
+
+
 func process_choice(choice_point: InkChoicePoint) -> InkChoice:
-	var show_choice = true
+	var show_choice := true
 
 	if choice_point.has_condition:
 		var condition_value = self.state.pop_evaluation_stack()
 		if !self.is_truthy(condition_value):
 			show_choice = false
 
-	var start_text = ""
-	var choice_only_text = ""
+	var start_text := ""
+	var choice_only_text := ""
+	var tags = null
 
 	if choice_point.has_choice_only_content:
-		var choice_only_str_val = Utils.as_or_null(self.state.pop_evaluation_stack(), "StringValue")
-		choice_only_text = choice_only_str_val.value
+		var choice_strings_and_tags = self.pop_choice_string_and_tags(tags)
+		choice_only_text = choice_strings_and_tags[0]
+		tags = choice_strings_and_tags[1]
 
 	if choice_point.has_start_content:
-		var start_str_val = Utils.as_or_null(self.state.pop_evaluation_stack(), "StringValue")
-		start_text = start_str_val.value
+		var choice_strings_and_tags = self.pop_choice_string_and_tags(tags)
+		start_text = choice_strings_and_tags[0]
+		tags = choice_strings_and_tags[1]
 
 	if choice_point.once_only:
 		var visit_count = self.state.visit_count_for_container(choice_point.choice_target)
@@ -747,6 +767,7 @@ func process_choice(choice_point: InkChoicePoint) -> InkChoice:
 	choice.target_path = choice_point.path_on_choice
 	choice.source_path = choice_point.path._to_string()
 	choice.is_invisible_default = choice_point.is_invisible_default
+	choice.tags = tags
 	choice.thread_at_generation = self.state.callstack.fork_thread()
 
 	choice.text = Utils.trim(start_text + choice_only_text, [" ", "\t"])
@@ -912,10 +933,51 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 				)
 				self.state.in_expression_evaluation = false
 
-			InkControlCommand.CommandType.END_STRING:
-				var content_stack_for_string = [] # Stack<InkObject>
+			InkControlCommand.CommandType.BEGIN_TAG:
+				self.state.push_to_output_stream(eval_command)
 
-				var output_count_consumed = 0
+			InkControlCommand.CommandType.END_TAG:
+				if self.state.in_string_evaluation:
+					var content_stack_for_tag := [] # Stack<InkObject>
+					var output_count_consumed := 0
+
+					var i = self.state.output_stream.size() - 1
+					while i >= 0:
+						var obj = self.state.output_stream[i]
+
+						output_count_consumed += 1
+
+						var command = Utils.as_or_null(obj, "ControlCommand")
+						if command != null:
+							if command.command_type == InkControlCommand.CommandType.BEGIN_TAG:
+								break
+							else:
+								self.error("Unexpected ControlCommand while extracting tag from choice")
+								break
+
+						if Utils.is_ink_class(obj, "StringValue"):
+							content_stack_for_tag.push_front(obj)
+
+						i -= 1
+
+					self.state.pop_from_output_stream(output_count_consumed)
+
+					var sb = ""
+					for str_val in content_stack_for_tag:
+						sb += str_val.value
+
+					var choice_tag = InkTag.new(self.state.clean_output_whitespace(sb))
+
+					self.state.push_evaluation_stack(choice_tag)
+				else:
+					self.state.push_to_output_stream(eval_command)
+
+
+			InkControlCommand.CommandType.END_STRING:
+				var content_stack_for_string := [] # Stack<InkObject>
+				var content_to_retain := [] # Stack<InkObject>
+
+				var output_count_consumed := 0
 				var i = self.state.output_stream.size() - 1
 				while (i >= 0):
 					var obj = self.state.output_stream[i]
@@ -927,6 +989,9 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 						command.command_type == InkControlCommand.CommandType.BEGIN_STRING):
 						break
 
+					if Utils.is_ink_class(obj, "Tag"):
+						content_to_retain.push_front(obj)
+
 					if Utils.is_ink_class(obj, "StringValue"):
 						content_stack_for_string.push_front(obj)
 
@@ -934,7 +999,10 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 
 				self.state.pop_from_output_stream(output_count_consumed)
 
-				var _str = ""
+				for rescued_tag in content_to_retain:
+					state.push_to_output_stream(rescued_tag)
+
+				var _str := ""
 				for c in content_stack_for_string:
 					_str += c._to_string()
 
@@ -1583,13 +1651,30 @@ func tags_at_start_of_flow_container_with_path_string(path_string: String):
 			flow_container = first_content
 		else: break
 
+	var in_tag := false
 	var tags = null # Array<String>
 	for c in flow_container.content:
-		var tag = Utils.as_or_null(c , "Tag")
-		if tag:
-			if tags == null: tags = [] # Array<String> ()
-			tags.append(tag.text)
-		else: break
+		var command = Utils.as_or_null(c, "ControlCommand")
+		if command != null:
+			if command.command_type == InkControlCommand.CommandType.BEGIN_TAG:
+				in_tag = true
+			elif command.command_type == InkControlCommand.CommandType.END_TAG:
+				in_tag = false
+		elif in_tag:
+			var _str = Utils.as_or_null(c, "StringValue")
+			if _str != null:
+				if tags == null:
+					tags = [] # Array<String>
+				tags.append(_str.value)
+				print(str("\"", _str.value, "\""))
+			else:
+				self.error(str(
+						"Tag contained non-text content. Only plain text is allowed when using ",
+						"globalTags or TagsAtContentPath. If you want to evaluate dynamic ",
+						"content, you need to use story.Continue()."
+				))
+		else:
+			break
 
 	return tags
 

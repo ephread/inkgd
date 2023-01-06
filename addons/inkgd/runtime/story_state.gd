@@ -45,7 +45,7 @@ static func InkStoryState() -> GDScript:
 
 # ############################################################################ #
 
-const INK_SAVE_STATE_VERSION: int = 9
+const INK_SAVE_STATE_VERSION: int = 10
 const MIN_COMPATIBLE_LOAD_VERSION: int = 8
 
 # ############################################################################ #
@@ -236,12 +236,20 @@ func get_has_warning() -> bool:
 var current_text: String setget , get_current_text
 func get_current_text():
 	if self._output_stream_text_dirty:
-		var _str = ""
+		var _str := ""
 
+		var in_tag := false
 		for output_obj in self.output_stream:
-			var text_content: InkStringValue = Utils.as_or_null(output_obj, "StringValue")
-			if text_content != null:
+			var text_content = Utils.as_or_null(output_obj, "StringValue")
+			if !in_tag && text_content != null:
 				_str += text_content.value
+			else:
+				var control_command = Utils.as_or_null(output_obj, "ControlCommand")
+				if control_command != null:
+					if control_command.command_type == InkControlCommand.CommandType.BEGIN_TAG:
+						in_tag = true
+					elif control_command.command_type == InkControlCommand.CommandType.END_TAG:
+						in_tag = false
 
 		self._current_text = self.clean_output_whitespace(_str)
 
@@ -289,10 +297,38 @@ func get_current_tags():
 	if self._output_stream_tags_dirty:
 		self._current_tags = []
 
+		var in_tag := false
+		var sb := ""
+
 		for output_obj in self.output_stream:
-			var tag = Utils.as_or_null(output_obj, "Tag")
-			if tag != null:
-				self._current_tags.append(tag.text)
+			var control_command = Utils.as_or_null(output_obj, "ControlCommand")
+
+			if control_command != null:
+				if control_command.command_type == InkControlCommand.CommandType.BEGIN_TAG:
+					if in_tag && sb.length() > 0:
+						var txt = self.clean_output_whitespace(sb)
+						self._current_tags.append(txt)
+						sb = ""
+					in_tag = true
+				elif control_command.command_type == InkControlCommand.CommandType.END_TAG:
+					if sb.length() > 0:
+						var txt = self.clean_output_whitespace(sb)
+						self._current_tags.append(txt)
+						sb = ""
+					in_tag = false
+			elif in_tag:
+				var str_val = Utils.as_or_null(output_obj, "StringValue")
+				if str_val != null:
+					sb += str_val.value
+			else:
+				var tag = Utils.as_or_null(output_obj, "Tag")
+				if tag != null && tag.text != null && !tag.text.empty():
+					self._current_tags.append(tag.text)
+
+		if !sb.empty():
+			var txt = self.clean_output_whitespace(sb)
+			self._current_tags.append(txt)
+			sb = ""
 
 		self._output_stream_tags_dirty = false
 
@@ -304,6 +340,26 @@ var _current_tags: Array = []
 var current_flow_name: String setget , get_current_flow_name
 func get_current_flow_name() -> String:
 	return self._current_flow.name
+
+var current_flow_is_default_flow: bool setget , get_current_flow_is_default_flow
+func get_current_flow_is_default_flow() -> bool:
+	return self._current_flow.name == DEFAULT_FLOW_NAME
+
+var alive_flow_names: Array setget , get_alive_flow_names
+func get_alive_flow_names() -> Array:
+	if self._alive_flow_names_dirty:
+		self._alive_flow_names = []
+
+		if self._named_flows != null:
+			for flow_name in self._named_flows.keys():
+				if flow_name != DEFAULT_FLOW_NAME:
+					self._alive_flow_names.append(flow_name)
+
+		self._alive_flow_names_dirty = false
+
+	return self._alive_flow_names
+
+var _alive_flow_names: Array = []
 
 var in_expression_evaluation: bool setget \
 		set_in_expression_evaluation, \
@@ -322,6 +378,7 @@ func _init(story):
 
 	self._current_flow = InkFlow.new_with_name(DEFAULT_FLOW_NAME, story)
 	self.output_stream_dirty()
+	self._alive_flow_names_dirty = true
 
 	self.evaluation_stack = []
 
@@ -360,6 +417,7 @@ func switch_flow_internal(flow_name: String) -> void:
 	else:
 		flow = InkFlow.new_with_name(flow_name, self.story)
 		self._named_flows[flow_name] = flow
+		self._alive_flow_names_dirty = true
 
 	self._current_flow = flow
 	self.variables_state.callstack = self._current_flow.callstack
@@ -387,6 +445,7 @@ func remove_flow_internal(flow_name: String) -> void:
 		self.switch_to_default_flow_internal()
 
 	self._named_flows.erase(flow_name)
+	self._alive_flow_names_dirty = true
 
 # () -> InkStoryState
 func copy_and_start_patching():
@@ -406,6 +465,7 @@ func copy_and_start_patching():
 			var named_flow_value = self._named_flows[named_flow_key]
 			copy._named_flows[named_flow_key] = named_flow_value
 		copy._named_flows[self._current_flow.name] = copy._current_flow
+		copy._alive_flow_names_dirty = true
 
 	if self.has_error:
 		copy.current_errors = [] # Array<String>
@@ -547,6 +607,7 @@ func load_json_obj(jobject: Dictionary) -> void:
 		self._current_flow.load_flow_choice_threads(jchoice_threads_obj, self.story)
 
 	self.output_stream_dirty()
+	self._alive_flow_names_dirty = true
 
 	self.variables_state.set_json_token(jobject["variablesState"])
 	self.variables_state.callstack = self._current_flow.callstack
@@ -952,11 +1013,11 @@ func pass_arguments_to_evaluation_stack(arguments) -> void:
 	if arguments != null:
 		var i = 0
 		while (i < arguments.size()):
-			if !(arguments[i] is int || arguments[i] is float || arguments[i] is String || ((arguments[i] is Object) && arguments[i].is_class("InkList"))):
+			if !(arguments[i] is int || arguments[i] is float || arguments[i] is String || arguments[i] is bool || ((arguments[i] is Object) && arguments[i].is_class("InkList"))):
 				Utils.throw_argument_exception(
 						"ink arguments when calling EvaluateFunction / " +
 						"ChoosePathStringWithParameters must be int, " +
-						"float, string or InkList. Argument was " +
+						"float, string, bool or InkList. Argument was " +
 						("null" if arguments[i] == null else Utils.typename_of(arguments[i]))
 				)
 				return
@@ -1040,6 +1101,7 @@ var _patch # StatePatch?
 var _current_flow = null # Flow?
 var _named_flows = null # Dictionary<String, Flow>?
 const DEFAULT_FLOW_NAME: String = "DEFAULT_FLOW" # String
+var _alive_flow_names_dirty := true
 
 
 # C# Actions & Delegates ##################################################### #

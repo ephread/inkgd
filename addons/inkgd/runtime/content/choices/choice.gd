@@ -44,6 +44,9 @@ var original_thread_index: int = 0
 
 var is_invisible_default: bool = false
 
+# Array<String>?
+var tags
+
 # ############################################################################ #
 # GDScript extra methods
 # ############################################################################ #
