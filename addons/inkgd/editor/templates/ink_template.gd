@@ -66,7 +66,8 @@ func _continue_story():
 %TS%if _ink_player.has_choices:
 %TS%%TS%# 'current_choices' contains a list of the choices, as strings.
 %TS%%TS%for choice in _ink_player.current_choices:
-%TS%%TS%%TS%print(choice)
+%TS%%TS%%TS%print(choice.text)
+%TS%%TS%%TS%print(choice.tags)
 %TS%%TS%# '_select_choice' is a function that will take the index of
 %TS%%TS%# your selection and continue the story.
 %TS%%TS%_select_choice(0)

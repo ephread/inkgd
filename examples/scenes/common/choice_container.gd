@@ -33,7 +33,7 @@ var _buttons = []
 func create_choices(choices):
 	for choice in choices:
 		var button = ChoiceButton.instance()
-		button.text = choice
+		button.text = choice.text
 		button.connect("pressed", self, "_button_pressed", [button])
 
 		_buttons.append(button)

@@ -60,6 +60,10 @@ Read Only Properties
 +------------+---------------------------------------------------------------------------------------------+--------------------+
 | bool_      | :ref:`current_flow_name<class_inkplayer_current_flow_name>`                                 | ``"DEFAULT_FLOW"`` |
 +------------+---------------------------------------------------------------------------------------------+--------------------+
+| bool_      | :ref:`alive_flow_names<class_inkplayer_alive_flow_names>`                                   | ``[]``             |
++------------+---------------------------------------------------------------------------------------------+--------------------+
+| bool_      | :ref:`current_flow_is_default_flow<class_inkplayer_current_flow_is_default_flow>`           | ``true``           |
++------------+---------------------------------------------------------------------------------------------+--------------------+
 | bool_      | :ref:`current_current_path<class_inkplayer_current_current_path>`                           | ``""``             |
 +------------+---------------------------------------------------------------------------------------------+--------------------+
 
@@ -266,9 +270,9 @@ any resource, it should be an instance of *InkResource*.
 
 - bool_ **loads_in_background**
 
-+-----------+----------------------------------+
-| *Default* | ``true``                         |
-+-----------+----------------------------------+
++-----------+------------------------------------+
+| *Default* | ``true``                           |
++-----------+------------------------------------+
 
 When ``true`` the story will be created in a separate threads, to prevent the UI
 from freezing if the story is too big. Note that on platforms where threads
@@ -280,13 +284,13 @@ aren't available, the value of this property is ignored.
 
 - bool_ **allow_external_function_fallbacks**
 
-+-----------+----------------------------------+
-| *Default* | ``true``                         |
-+-----------+----------------------------------+
-| *Setter*  | set_aeff(value)                  |
-+-----------+----------------------------------+
-| *Getter*  | get_aeff()                       |
-+-----------+----------------------------------+
++-----------+------------------------------------+
+| *Default* | ``true``                           |
++-----------+------------------------------------+
+| *Setter*  | set_aeff(value)                    |
++-----------+------------------------------------+
+| *Getter*  | get_aeff()                         |
++-----------+------------------------------------+
 
 ``true`` to allow external function fallbacks, ``false`` otherwise. If this
 property is ``false`` and the appropriate function hasn't been binded, the
@@ -298,13 +302,13 @@ story will output an error.
 
 - bool_ **do_not_save_default_values**
 
-+-----------+----------------------------------+
-| *Default* | ``true``                         |
-+-----------+----------------------------------+
-| *Setter*  | set_dnsdv(value)                 |
-+-----------+----------------------------------+
-| *Getter*  | get_dnsdv()                      |
-+-----------+----------------------------------+
++-----------+------------------------------------+
+| *Default* | ``true``                           |
++-----------+------------------------------------+
+| *Setter*  | set_dnsdv(value)                   |
++-----------+------------------------------------+
+| *Getter*  | get_dnsdv()                        |
++-----------+------------------------------------+
 
 When set to ``true``, *inkgd* skips saving global values that remain
 equal to the initial values that were declared in ink. This property matches
@@ -316,13 +320,13 @@ the static property declared in `VariablesState.cs`_.
 
 - bool_ **stop_execution_on_exception**
 
-+-----------+----------------------------------+
-| *Default* | ``true``                         |
-+-----------+----------------------------------+
-| *Setter*  | set_speoex(value)                |
-+-----------+----------------------------------+
-| *Getter*  | get_speoex()                     |
-+-----------+----------------------------------+
++-----------+------------------------------------+
+| *Default* | ``true``                           |
++-----------+------------------------------------+
+| *Setter*  | set_speoex(value)                  |
++-----------+------------------------------------+
+| *Getter*  | get_speoex()                       |
++-----------+------------------------------------+
 
 When set to ``true``, *inkgd* uses ``assert()`` instead of ``push_error`` to
 report exceptions, thus making them more explicit during development.
@@ -333,13 +337,13 @@ report exceptions, thus making them more explicit during development.
 
 - bool_ **stop_execution_on_error**
 
-+-----------+----------------------------------+
-| *Default* | ``true``                         |
-+-----------+----------------------------------+
-| *Setter*  | set_speoer(value)                |
-+-----------+----------------------------------+
-| *Getter*  | get_speoer()                     |
-+-----------+----------------------------------+
++-----------+------------------------------------+
+| *Default* | ``true``                           |
++-----------+------------------------------------+
+| *Setter*  | set_speoer(value)                  |
++-----------+------------------------------------+
+| *Getter*  | get_speoer()                       |
++-----------+------------------------------------+
 
 When set to ``true``, *inkgd* uses ``assert()`` instead of ``push_error`` to
 report errors, thus making them more explicit during development.
@@ -350,11 +354,11 @@ report errors, thus making them more explicit during development.
 
 - bool_ **story**
 
-+-----------+----------------------------------+
-| *Default* | ``null``                         |
-+-----------+----------------------------------+
-| *Getter*  | get_can_story()                  |
-+-----------+----------------------------------+
++-----------+------------------------------------+
+| *Default* | ``null``                           |
++-----------+------------------------------------+
+| *Getter*  | get_can_story()                    |
++-----------+------------------------------------+
 
 The underlying story, exposed for convenience. For instance, you may want
 to create a new InkList, which in certain acses needs a reference to the
@@ -366,11 +370,11 @@ story to be constructed.
 
 - bool_ **can_continue**
 
-+-----------+----------------------------------+
-| *Default* | ``false``                        |
-+-----------+----------------------------------+
-| *Getter*  | get_can_continue()               |
-+-----------+----------------------------------+
++-----------+------------------------------------+
+| *Default* | ``false``                          |
++-----------+------------------------------------+
+| *Getter*  | get_can_continue()                 |
++-----------+------------------------------------+
 
 ``true`` if the story can continue (i. e. is not expecting a choice to be
 choosen and hasn't reached the end).
@@ -381,11 +385,11 @@ choosen and hasn't reached the end).
 
 - bool_ **async_continue_complete**
 
-+-----------+----------------------------------+
-| *Default* | ``false``                        |
-+-----------+----------------------------------+
-| *Getter*  | get_async_continue_complete()    |
-+-----------+----------------------------------+
++-----------+------------------------------------+
+| *Default* | ``false``                          |
++-----------+------------------------------------+
+| *Getter*  | get_async_continue_complete()      |
++-----------+------------------------------------+
 
 If ``continue_async`` was called (with milliseconds limit > 0) then this
 property will return false if the ink evaluation isn't yet finished, and
@@ -397,11 +401,11 @@ you need to call it again in order for the continue to fully complete.
 
 - String_ **current_text**
 
-+-----------+----------------------------------+
-| *Default* | ``""``                           |
-+-----------+----------------------------------+
-| *Getter*  | get_current_text()               |
-+-----------+----------------------------------+
++-----------+------------------------------------+
+| *Default* | ``""``                             |
++-----------+------------------------------------+
+| *Getter*  | get_current_text()                 |
++-----------+------------------------------------+
 
 The content of the current line.
 
@@ -411,11 +415,11 @@ The content of the current line.
 
 - Array_ **current_choices**
 
-+-----------+----------------------------------+
-| *Default* | ``""``                           |
-+-----------+----------------------------------+
-| *Getter*  | get_current_choices()            |
-+-----------+----------------------------------+
++-----------+------------------------------------+
+| *Default* | ``""``                             |
++-----------+------------------------------------+
+| *Getter*  | get_current_choices()              |
++-----------+------------------------------------+
 
 The current choices. Empty is there are no choices for the current line.
 
@@ -425,11 +429,11 @@ The current choices. Empty is there are no choices for the current line.
 
 - Array_ **current_tags**
 
-+-----------+----------------------------------+
-| *Default* | ``[]``                           |
-+-----------+----------------------------------+
-| *Getter*  | get_current_tags()               |
-+-----------+----------------------------------+
++-----------+------------------------------------+
+| *Default* | ``[]``                             |
++-----------+------------------------------------+
+| *Getter*  | get_current_tags()                 |
++-----------+------------------------------------+
 
 The current tags. Empty is there are no tags for the current line.
 
@@ -439,11 +443,11 @@ The current tags. Empty is there are no tags for the current line.
 
 - Array_ **global_tags**
 
-+-----------+----------------------------------+
-| *Default* | ``[]``                           |
-+-----------+----------------------------------+
-| *Getter*  | get_global_tags()                |
-+-----------+----------------------------------+
++-----------+------------------------------------+
+| *Default* | ``[]``                             |
++-----------+------------------------------------+
+| *Getter*  | get_global_tags()                  |
++-----------+------------------------------------+
 
 The global tags for the story. Empty if none have been declared.
 
@@ -453,11 +457,11 @@ The global tags for the story. Empty if none have been declared.
 
 - bool_ **has_choices**
 
-+-----------+----------------------------------+
-| *Default* | ``false``                        |
-+-----------+----------------------------------+
-| *Getter*  | get_has_choices()                |
-+-----------+----------------------------------+
++-----------+------------------------------------+
+| *Default* | ``false``                          |
++-----------+------------------------------------+
+| *Getter*  | get_has_choices()                  |
++-----------+------------------------------------+
 
 ``true`` if the story currently has choices, ``false`` otherwise.
 
@@ -467,13 +471,41 @@ The global tags for the story. Empty if none have been declared.
 
 - bool_ **current_flow_name**
 
-+-----------+----------------------------------+
-| *Default* | ``"DEFAULT_FLOW"``               |
-+-----------+----------------------------------+
-| *Getter*  | get_current_flow_name()          |
-+-----------+----------------------------------+
++-----------+------------------------------------+
+| *Default* | ``"DEFAULT_FLOW"``                 |
++-----------+------------------------------------+
+| *Getter*  | get_current_flow_name()            |
++-----------+------------------------------------+
 
 The name of the current flow.
+
+----
+
+.. _class_inkplayer_alive_flow_names:
+
+- bool_ **alive_flow_names**
+
++-----------+------------------------------------+
+| *Default* | ``[]``                             |
++-----------+------------------------------------+
+| *Getter*  | get_alive_flow_names()             |
++-----------+------------------------------------+
+
+The names of all flows currently alive.
+
+----
+
+.. _class_inkplayer_current_flow_is_default_flow:
+
+- bool_ **current_flow_is_default_flow**
+
++-----------+------------------------------------+
+| *Default* | ``true``                           |
++-----------+------------------------------------+
+| *Getter*  | get_current_flow_is_default_flow() |
++-----------+------------------------------------+
+
+``true`` if the current flow is the default flow.
 
 ----
 
@@ -481,11 +513,11 @@ The name of the current flow.
 
 - bool_ **current_current_path**
 
-+-----------+----------------------------------+
-| *Default* | ``""``                           |
-+-----------+----------------------------------+
-| *Getter*  | get_current_path()               |
-+-----------+----------------------------------+
++-----------+------------------------------------+
+| *Default* | ``""``                             |
++-----------+------------------------------------+
+| *Getter*  | get_current_path()                 |
++-----------+------------------------------------+
 
 The current story path.
 

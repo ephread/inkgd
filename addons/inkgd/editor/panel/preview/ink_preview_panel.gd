@@ -301,7 +301,7 @@ func _continue_story():
 		var i = 0
 		for choice in _ink_player.current_choices:
 			var button = Button.new()
-			button.text = choice
+			button.text = choice.text
 			button.connect("pressed", self, "_choice_button_pressed", [i])
 
 			_choices_container.add_child(button)

@@ -21,8 +21,8 @@ public class InkPlayer : Node
 	[Signal] public delegate void loaded(bool successfully);
 	[Signal] public delegate void continued(string text, Godot.Collections.Array<string> tags);
 	[Signal] public delegate void interrupted();
-	[Signal] public delegate void prompt_choices(Godot.Collections.Array<string> choices);
-	[Signal] public delegate void choice_made(string choice);
+	[Signal] public delegate void prompt_choices(Godot.Collections.Array<Godot.Object> choices);
+	[Signal] public delegate void choice_made(Godot.Object choice);
 	[Signal] public delegate void function_evaluating(Godot.Collections.Array<string> function_name, object[] arguments);
 	[Signal] public delegate void function_evaluated(Godot.Collections.Array<string> function_name, object[] arguments, Godot.Object function_result);
 	[Signal] public delegate void path_choosen(string path, object[] arguments);
@@ -140,10 +140,8 @@ public class InkPlayer : Node
 				return new Godot.Collections.Array<string>();
 			}
 
-			var choices = story.currentChoices?.ConvertAll(choice => choice.text).ToArray();
-
 			if (choices != null) {
-				return new Godot.Collections.Array<string>(choices);
+				return new Godot.Collections.Array<string>(story.currentChoices);
 			} else {
 				return new Godot.Collections.Array<string>();
 			}
@@ -1045,7 +1043,7 @@ public class InkPlayer : Node
 
 	private void onMakeChoice(Ink.Runtime.Choice choice)
 	{
-		EmitSignal("choice_made",  new object[] { choice.text });
+		EmitSignal("choice_made",  new object[] { choice });
 	}
 
 	private void onEvaluateFunction(string functionName, object[] arguments)
