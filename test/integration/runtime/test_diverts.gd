@@ -13,7 +13,7 @@ extends "res://test/integration/runtime/test_base.gd"
 func test_basic_tunnel():
 	var story = Story.new(load_file("basic_tunnel"))
 
-	assert_eq(story.continue(), "Hello world\n")
+	assert_eq(story.continue_story(), "Hello world\n")
 
 func test_compare_divert_targets():
 	var story = Story.new(load_file("compare_divert_targets"))
@@ -48,10 +48,10 @@ func test_done_stops_thread():
 func test_path_to_self():
 	var story = Story.new(load_file("path_to_self"))
 
-	story.continue()
+	story.continue_story()
 	story.choose_choice_index(0)
 
-	story.continue()
+	story.continue_story()
 	story.choose_choice_index(0)
 
 	assert_true(story.can_continue)
@@ -59,7 +59,7 @@ func test_path_to_self():
 func test_same_line_divert_is_inline():
 	var story = Story.new(load_file("same_line_divert_is_inline"))
 
-	assert_eq(story.continue(), "We hurried home to Savile Row as fast as we could.\n")
+	assert_eq(story.continue_story(), "We hurried home to Savile Row as fast as we could.\n")
 
 func test_tunnel_onwards_after_tunnel():
 	var story = Story.new(load_file("tunnel_onwards_after_tunnel"))

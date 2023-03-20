@@ -12,32 +12,32 @@ extends "res://test/integration/runtime/test_base.gd"
 
 func test_choice_count():
 	var story = Story.new(load_file("choice_count"))
-	assert_eq(story.continue(), "2\n")
+	assert_eq(story.continue_story(), "2\n")
 
 func test_choice_diverts_to_done():
 	var story = Story.new(load_file("choice_diverts_to_done"))
-	story.continue()
+	story.continue_story()
 
 	assert_eq(story.current_choices.size(), 1)
 	story.choose_choice_index(0)
 
-	assert_eq(story.continue(), "choice")
+	assert_eq(story.continue_story(), "choice")
 	assert_false(story.has_error) # Removed in ink 1.0.0 but kept here for now.
 
 func test_choice_with_brackets_only():
 	var story = Story.new(load_file("choice_with_brackets_only"))
-	story.continue()
+	story.continue_story()
 
 	assert_eq(story.current_choices.size(), 1)
 	assert_eq(story.current_choices[0].text, "Option")
 	story.choose_choice_index(0)
 
-	assert_eq(story.continue(), "Text\n")
+	assert_eq(story.continue_story(), "Text\n")
 
 func test_choice_thread_forking():
 	var story = Story.new(load_file("choice_thread_forking"))
 
-	story.continue()
+	story.continue_story()
 	var saved_state = story.state.to_json()
 
 	story = Story.new(load_file("choice_thread_forking"))
@@ -61,11 +61,11 @@ func test_conditional_choices():
 func test_default_choice():
 	var story = Story.new(load_file("default_choices"))
 
-	assert_eq(story.continue(), "")
+	assert_eq(story.continue_story(), "")
 	assert_eq(story.current_choices.size(), 2)
 
 	story.choose_choice_index(0)
-	assert_eq(story.continue(), "After choice\n")
+	assert_eq(story.continue_story(), "After choice\n")
 
 	assert_eq(story.current_choices.size(), 1)
 
@@ -74,21 +74,21 @@ func test_default_choice():
 
 func test_default_simple_gather():
 	var story = Story.new(load_file("default_simple_gather"))
-	assert_eq(story.continue(), "x\n")
+	assert_eq(story.continue_story(), "x\n")
 
 func test_fallback_choice_on_thread():
 	var story = Story.new(load_file("fallback_choice_on_thread"))
 
-	assert_eq(story.continue(), "Should be 1 not 0: 1.\n")
+	assert_eq(story.continue_story(), "Should be 1 not 0: 1.\n")
 
 func test_gather_choice_same_line():
 	var story = Story.new(load_file("gather_choice_same_line"))
 
-	story.continue()
+	story.continue_story()
 	assert_eq(story.current_choices[0].text, "hello")
 
 	story.choose_choice_index(0)
-	story.continue()
+	story.continue_story()
 
 	assert_eq(story.current_choices[0].text, "world")
 
@@ -111,10 +111,10 @@ func test_logic_in_choices():
 func test_non_text_in_choice_inner_content():
 	var story = Story.new(load_file("non_text_in_choice_inner_content"))
 
-	story.continue()
+	story.continue_story()
 	story.choose_choice_index(0)
 
-	assert_eq(story.continue(), "option text. Conditional bit. Next.\n")
+	assert_eq(story.continue_story(), "option text. Conditional bit. Next.\n")
 
 func test_once_only_choices_can_link_back_to_self():
 	var story = Story.new(load_file("once_only_choices_can_link_back_to_self"))
@@ -168,8 +168,8 @@ func test_should_not_gather_due_to_choice():
 func test_state_rollback_over_default_choice():
 	var story = Story.new(load_file("state_rollback_over_default_choice"))
 
-	assert_eq(story.continue(), "Text.\n");
-	assert_eq(story.continue(), "5\n");
+	assert_eq(story.continue_story(), "Text.\n");
+	assert_eq(story.continue_story(), "5\n");
 
 func test_sticky_choices_stay_sticky():
 	var story = Story.new(load_file("sticky_choices_stay_sticky"))

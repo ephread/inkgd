@@ -13,7 +13,7 @@ extends "res://test/integration/runtime/test_base.gd"
 func test_string_constants():
 	var story = Story.new(load_file("string_constants"))
 
-	assert_eq(story.continue(), "hi\n")
+	assert_eq(story.continue_story(), "hi\n")
 
 func test_string_contains():
 	var story = Story.new(load_file("string_contains"))
@@ -34,7 +34,7 @@ func test_string_in_choices():
 	assert_eq(story.current_choices[0].text, "test1 \"test2 test3\"")
 
 	story.choose_choice_index(0)
-	assert_eq(story.continue(), "test1 test4\n")
+	assert_eq(story.continue_story(), "test1 test4\n")
 
 # ############################################################################ #
 

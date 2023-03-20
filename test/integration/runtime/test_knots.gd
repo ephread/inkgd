@@ -13,7 +13,7 @@ extends "res://test/integration/runtime/test_base.gd"
 func test_knot_do_not_gather():
 	var story = Story.new(load_file("knot_do_not_gather"))
 
-	assert_eq(story.continue(), "g\n")
+	assert_eq(story.continue_story(), "g\n")
 
 func test_knot_stitch_gather_counts():
 	var story = Story.new(load_file("knot_stitch_gather_counts"))
@@ -30,8 +30,8 @@ func test_knot_thread_interaction():
 	assert_true(story.current_choices[1].text.find("wigwag") != -1)
 
 	story.choose_choice_index(1)
-	assert_eq(story.continue(), "wigwag\n")
-	assert_eq(story.continue(), "THE END\n")
+	assert_eq(story.continue_story(), "wigwag\n")
+	assert_eq(story.continue_story(), "THE END\n")
 	assert_false(story.has_error)  # Removed in ink 1.0.0 but kept here for now.
 
 func test_knot_thread_interaction_2():

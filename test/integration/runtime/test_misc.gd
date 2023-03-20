@@ -38,7 +38,7 @@ func test_escape_character():
 func test_hello_world():
 	var story = Story.new(load_file("hello_world"))
 
-	assert_eq(story.continue(), "Hello world\n")
+	assert_eq(story.continue_story(), "Hello world\n")
 
 func test_identifiers_can_start_with_number():
 	var story = Story.new(load_file("identifiers_can_start_with_number"))

@@ -288,7 +288,7 @@ func switch_to_default_flow() -> void:
 	self.state.switch_to_default_flow_internal()
 
 
-func continue() -> String:
+func continue_story() -> String:
 	self.continue_async(0)
 	return self.current_text
 
@@ -514,7 +514,7 @@ func continue_maximally() -> String:
 	var _str = ""
 
 	while (self.can_continue):
-		_str += self.continue()
+		_str += self.continue_story()
 
 	return _str
 
@@ -1199,7 +1199,7 @@ func async_we_cant(activity_str):
 	if self._async_continue_active:
 		Utils.throw_exception(
 				"Can't %s. Story is in the middle of a ContinueAsync(). " % activity_str +
-				"Make more ContinueAsync() calls or a single Continue() call beforehand."
+				"Make more ContinueAsync() calls or a single continue_story() call beforehand."
 		)
 
 	return _async_continue_active
@@ -1268,7 +1268,7 @@ func evaluate_function(
 
 	var string_output = ""
 	while self.can_continue:
-		string_output += self.continue()
+		string_output += self.continue_story()
 
 	var text_output = string_output
 
@@ -1295,7 +1295,7 @@ func evaluate_expression(expr_container: InkContainer) -> InkObject:
 
 	var eval_stack_height = self.state.evaluation_stack.size()
 
-	self.continue()
+	self.continue_story()
 
 	_temporary_evaluation_container = null
 

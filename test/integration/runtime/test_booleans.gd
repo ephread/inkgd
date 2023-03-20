@@ -12,43 +12,43 @@ extends "res://test/integration/runtime/test_base.gd"
 
 func test_false_plus_false():
 	var story = Story.new(load_file("false_plus_false"))
-	assert_eq(story.continue(), "0\n")
+	assert_eq(story.continue_story(), "0\n")
 
 func test_list_hasnt():
 	var story = Story.new(load_file("list_hasnt"))
-	assert_eq(story.continue(), "true\n")
+	assert_eq(story.continue_story(), "true\n")
 
 func test_not_one():
 	var story = Story.new(load_file("not_one"))
-	assert_eq(story.continue(), "false\n")
+	assert_eq(story.continue_story(), "false\n")
 
 func test_not_true():
 	var story = Story.new(load_file("not_true"))
-	assert_eq(story.continue(), "false\n")
+	assert_eq(story.continue_story(), "false\n")
 
 func test_three_greater_than_one():
 	var story = Story.new(load_file("three_greater_than_one"))
-	assert_eq(story.continue(), "true\n")
+	assert_eq(story.continue_story(), "true\n")
 
 func test_true_equals_one():
 	var story = Story.new(load_file("true_equals_one"))
-	assert_eq(story.continue(), "true\n")
+	assert_eq(story.continue_story(), "true\n")
 
 func test_true_plus_one():
 	var story = Story.new(load_file("true_plus_one"))
-	assert_eq(story.continue(), "2\n")
+	assert_eq(story.continue_story(), "2\n")
 
 func test_true_plus_true():
 	var story = Story.new(load_file("true_plus_true"))
-	assert_eq(story.continue(), "2\n")
+	assert_eq(story.continue_story(), "2\n")
 
 func test_true():
 	var story = Story.new(load_file("true"))
-	assert_eq(story.continue(), "true\n")
+	assert_eq(story.continue_story(), "true\n")
 
 func test_two_plus_true():
 	var story = Story.new(load_file("two_plus_true"))
-	assert_eq(story.continue(), "3\n")
+	assert_eq(story.continue_story(), "3\n")
 
 # ############################################################################ #
 

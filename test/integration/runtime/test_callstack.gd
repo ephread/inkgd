@@ -12,12 +12,12 @@ extends "res://test/integration/runtime/test_base.gd"
 
 func test_callstack_evaluation():
 	var story = Story.new(load_file("callstack_evaluation"))
-	assert_eq(story.continue(), "8\n")
+	assert_eq(story.continue_story(), "8\n")
 
 func test_clean_callstack_reset_on_path_choice():
 	var story = Story.new(load_file("clean_callstack_reset_on_path_choice"))
 
-	assert_eq("The first line.\n", story.continue())
+	assert_eq("The first line.\n", story.continue_story())
 
 	story.choose_path_string("SomewhereElse")
 

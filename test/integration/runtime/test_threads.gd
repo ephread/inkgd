@@ -26,12 +26,12 @@ func test_thread_done():
 func test_thread_in_logic():
 	var story = Story.new(load_file("thread_in_logic"))
 
-	assert_eq(story.continue(), "Content\n")
+	assert_eq(story.continue_story(), "Content\n")
 
 func test_top_flow_terminator_should_not_kill_thread_choices():
 	var story = Story.new(load_file("top_flow_terminator_should_not_kill_thread_choices"))
 
-	assert_eq(story.continue(), "Limes\n")
+	assert_eq(story.continue_story(), "Limes\n")
 	assert_eq(story.current_choices.size(), 1)
 
 # ############################################################################ #

@@ -12,7 +12,7 @@ extends "res://test/integration/runtime/test_base.gd"
 
 func test_all_switch_branches_fail_is_clean():
 	var story = Story.new(load_file("all_switch_branches_fail_is_clean"))
-	story.continue()
+	story.continue_story()
 
 	assert_eq(story.state.evaluation_stack.size(), 0)
 
@@ -26,11 +26,11 @@ func test_else_branches():
 
 func test_empty_multiline_conditional_branch():
 	var story = Story.new(load_file("empty_multiline_conditional_branch"))
-	assert_eq(story.continue(), "")
+	assert_eq(story.continue_story(), "")
 
 func test_trivial_condition():
 	var story = Story.new(load_file("trivial_condition"))
-	story.continue()
+	story.continue_story()
 
 	assert_false(story.has_error)  # Removed in ink 1.0.0 but kept here for now.
 

@@ -19,25 +19,25 @@ func test_tags():
 	var stitch_tags = ["stitch tag"]
 
 	assert_eq(story.global_tags, global_tags)
-	assert_eq(story.continue(), "This is the content\n")
+	assert_eq(story.continue_story(), "This is the content\n")
 	assert_eq(story.current_tags, global_tags)
 
 	assert_eq(story.tags_for_content_at_path("knot"), knot_tags)
 	assert_eq(story.tags_for_content_at_path("knot.stitch"), stitch_tags)
 
 	story.choose_path_string("knot")
-	assert_eq(story.continue(), "Knot content\n")
+	assert_eq(story.continue_story(), "Knot content\n")
 	assert_eq(story.current_tags, knot_tags)
-	assert_eq(story.continue(), "")
+	assert_eq(story.continue_story(), "")
 	assert_eq(story.current_tags, knot_tag_when_continued_twice_tags)
 
 func test_tags_on_choice():
 	var story = Story.new(load_file("tags_on_choice"))
 
-	story.continue()
+	story.continue_story()
 	story.choose_choice_index(0)
 
-	var txt = story.continue()
+	var txt = story.continue_story()
 	var tags = story.current_tags
 
 	assert_eq(txt, "Hello")

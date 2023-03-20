@@ -13,7 +13,7 @@ extends "res://test/integration/runtime/test_base.gd"
 func test_implicit_inline_glue():
 	var story = Story.new(load_file("implicit_inline_glue"))
 
-	assert_eq(story.continue(), "I have five eggs.\n")
+	assert_eq(story.continue_story(), "I have five eggs.\n")
 
 func test_implicit_inline_glue_b():
 	var story = Story.new(load_file("implicit_inline_glue_b"))
@@ -33,7 +33,7 @@ func test_left_right_glue_matching():
 func test_simple_glue():
 	var story = Story.new(load_file("simple_glue"))
 
-	assert_eq(story.continue(), "Some content with glue.\n")
+	assert_eq(story.continue_story(), "Some content with glue.\n")
 
 # ############################################################################ #
 

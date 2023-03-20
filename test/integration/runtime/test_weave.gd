@@ -24,7 +24,7 @@ func test_conditional_choice_in_weave():
 func test_conditional_choice_in_weave_2():
 	var story = Story.new(load_file("conditional_choice_in_weave_2"))
 
-	assert_eq(story.continue(), "first gather\n")
+	assert_eq(story.continue_story(), "first gather\n")
 	assert_eq(story.current_choices.size(), 2)
 
 	story.choose_choice_index(0)
@@ -75,12 +75,12 @@ func test_weave_options():
 	assert_eq(story.current_choices[0].text, "Hello.")
 
 	story.choose_choice_index(0)
-	assert_eq(story.continue(), "Hello, world.\n")
+	assert_eq(story.continue_story(), "Hello, world.\n")
 
 func test_weave_within_sequence():
 	var story = Story.new(load_file("weave_within_sequence"))
 
-	story.continue()
+	story.continue_story()
 
 	assert_eq(story.current_choices.size(), 1)
 

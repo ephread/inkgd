@@ -74,7 +74,7 @@ func test_turns():
 
 	var i = 0
 	while i < 10:
-		assert_eq(story.continue(), str(i, "\n"))
+		assert_eq(story.continue_story(), str(i, "\n"))
 		story.choose_choice_index(0)
 
 		i += 1
@@ -82,7 +82,7 @@ func test_turns():
 func test_visit_count_bug_due_to_nested_containers():
 	var story = Story.new(load_file("visit_count_bug_due_to_nested_containers"))
 
-	assert_eq(story.continue(), "1\n")
+	assert_eq(story.continue_story(), "1\n")
 
 	story.choose_choice_index(0)
 	assert_eq(story.continue_maximally(), "choice\n1\n")
@@ -98,7 +98,7 @@ func test_visit_counts_when_choosing():
 	assert_eq(story.state.visit_count_at_path_string("TestKnot"), 1)
 	assert_eq(story.state.visit_count_at_path_string("TestKnot2"), 0)
 
-	story.continue()
+	story.continue_story()
 
 	assert_eq(story.state.visit_count_at_path_string("TestKnot"), 1)
 	assert_eq(story.state.visit_count_at_path_string("TestKnot2"), 0)
@@ -108,7 +108,7 @@ func test_visit_counts_when_choosing():
 	assert_eq(story.state.visit_count_at_path_string("TestKnot"), 1)
 	assert_eq(story.state.visit_count_at_path_string("TestKnot2"), 0)
 
-	story.continue()
+	story.continue_story()
 
 	assert_eq(story.state.visit_count_at_path_string("TestKnot"), 1)
 	assert_eq(story.state.visit_count_at_path_string("TestKnot2"), 1)

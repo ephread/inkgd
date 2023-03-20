@@ -15,30 +15,30 @@ func test_multi_flow_basics():
 
 	story.switch_flow("First")
 	story.choose_path_string("knot1")
-	assert_eq(story.continue(), "knot 1 line 1\n")
+	assert_eq(story.continue_story(), "knot 1 line 1\n")
 
 	story.switch_flow("Second")
 	story.choose_path_string("knot2")
-	assert_eq(story.continue(), "knot 2 line 1\n")
+	assert_eq(story.continue_story(), "knot 2 line 1\n")
 
 	story.switch_flow("First")
-	assert_eq(story.continue(), "knot 1 line 2\n")
+	assert_eq(story.continue_story(), "knot 1 line 2\n")
 
 	story.switch_flow("Second")
-	assert_eq(story.continue(), "knot 2 line 2\n")
+	assert_eq(story.continue_story(), "knot 2 line 2\n")
 
 func test_multi_flow_save_load_threads():
 	var story = Story.new(load_file("multi_flow_save_load_threads"))
 
-	assert_eq(story.continue(), "Default line 1\n")
+	assert_eq(story.continue_story(), "Default line 1\n")
 
 	story.switch_flow("Blue Flow")
 	story.choose_path_string("blue")
-	assert_eq(story.continue(), "Hello I'm blue\n")
+	assert_eq(story.continue_story(), "Hello I'm blue\n")
 
 	story.switch_flow("Red Flow")
 	story.choose_path_string("red")
-	assert_eq(story.continue(), "Hello I'm red\n")
+	assert_eq(story.continue_story(), "Hello I'm red\n")
 
 	story.switch_flow("Blue Flow")
 	assert_eq("Hello I'm blue\n", story.current_text)
@@ -70,7 +70,7 @@ func test_multi_flow_save_load_threads():
 	assert_eq("Thread 2 blue choice\nAfter thread 2 choice (blue)\n", story.continue_maximally())
 
 	story.remove_flow("Blue Flow")
-	assert_eq(story.continue(), "Default line 2\n")
+	assert_eq(story.continue_story(), "Default line 2\n")
 
 # ############################################################################ #
 

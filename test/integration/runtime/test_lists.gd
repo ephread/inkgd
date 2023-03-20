@@ -34,7 +34,7 @@ func test_list_random():
 	var story = Story.new(load_file("list_random"))
 
 	while story.can_continue:
-		var result = story.continue()
+		var result = story.continue_story()
 		assert_true(result == "B\n" || result == "C\n" || result == "D\n")
 
 func test_list_range():

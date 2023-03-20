@@ -20,12 +20,12 @@ func test_newline_consistency():
 	assert_eq(story.continue_maximally(), "hello world\n")
 
 	story = Story.new(load_file("newline_consistency_2"))
-	story.continue()
+	story.continue_story()
 	story.choose_choice_index(0)
 	assert_eq(story.continue_maximally(), "hello world\n")
 
 	story = Story.new(load_file("newline_consistency_3"))
-	story.continue()
+	story.continue_story()
 	story.choose_choice_index(0)
 	assert_eq(story.continue_maximally(), "hello\nworld\n")
 

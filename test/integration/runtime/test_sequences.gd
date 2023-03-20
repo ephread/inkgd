@@ -22,17 +22,17 @@ func test_empty_sequence_content():
 func test_gather_read_count_with_initial_sequence():
 	var story = Story.new(load_file("gather_read_count_with_initial_sequence"))
 
-	assert_eq(story.continue(), "seen test\n")
+	assert_eq(story.continue_story(), "seen test\n")
 
 func test_leading_newline_multiline_sequence():
 	var story = Story.new(load_file("leading_newline_multiline_sequence"))
 
-	assert_eq(story.continue(), "a line after an empty line\n")
+	assert_eq(story.continue_story(), "a line after an empty line\n")
 
 func test_shuffle_stack_muddying():
 	var story = Story.new(load_file("shuffle_stack_muddying"))
 
-	story.continue()
+	story.continue_story()
 
 	assert_eq(story.current_choices.size(), 2)
 

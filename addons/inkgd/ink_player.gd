@@ -359,7 +359,7 @@ func continue_story() -> String:
 
 	var text: String = ""
 	if self.can_continue:
-		_story.continue()
+		_story.continue_story()
 
 		text = self.current_text
 

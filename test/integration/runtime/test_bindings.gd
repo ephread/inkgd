@@ -17,9 +17,9 @@ func test_external_binding():
 	story.bind_external_function("multiply", self, "_external_binding_multiply")
 	story.bind_external_function("times", self, "_external_binding_times")
 
-	assert_eq(story.continue(), "15\n")
+	assert_eq(story.continue_story(), "15\n")
 
-	assert_eq(story.continue(), "knock knock knock\n")
+	assert_eq(story.continue_story(), "knock knock knock\n")
 
 	assert_eq(_test_external_binding_message, "MESSAGE: hello world")
 
@@ -65,7 +65,7 @@ func test_variable_observer():
 	assert_eq(story.current_choices.size(), 1)
 
 	story.choose_choice_index(0)
-	story.continue()
+	story.continue_story()
 
 	assert_eq(self._test_variable_observer_current_var_value, 25)
 	assert_eq(self._test_variable_observer_observer_call_count, 2)
