@@ -26,6 +26,7 @@ __InkRuntime="*res://addons/inkgd/runtime/static/ink_runtime.gd"
 
 gdscript/warnings/exclude_addons=false
 gdscript/warnings/unused_variable=false
+gdscript/warnings/native_method_override=1
 gdscript/completion/autocomplete_setters_and_getters=true
 gdscript/warnings/unused_argument=false
 
