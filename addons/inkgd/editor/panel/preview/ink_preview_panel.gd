@@ -282,7 +282,7 @@ func _continue_story():
 		if !tags.is_empty():
 			var tag_label = Label.new()
 			tag_label.autowrap = true
-			tag_label.align = Label.ALIGNMENT_CENTER
+			tag_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			tag_label.text = "# " + ", ".join(PackedStringArray(tags))
 			tag_label.add_theme_color_override("font_color", Color(1, 1, 1, 0.4))
 
@@ -305,7 +305,7 @@ func _continue_story():
 	else:
 		var label = Label.new()
 		label.text = "End of the story."
-		label.align = Label.ALIGN_RIGHT
+		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 
 		_story_container.add_child(label)
 
