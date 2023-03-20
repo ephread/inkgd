@@ -93,7 +93,7 @@ static func start_of(container: InkContainer) -> InkPointer:
 # ############################################################################ #
 
 # () -> InkPointer
-static func null():
+static func new_null():
 	return InkPointer.new(null, -1)
 
 # ############################################################################ #

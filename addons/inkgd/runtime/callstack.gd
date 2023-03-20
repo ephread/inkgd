@@ -23,7 +23,7 @@ var PushPopType = preload("res://addons/inkgd/runtime/enums/push_pop.gd").PushPo
 
 class Element extends InkBase:
 
-	var current_pointer = InkPointer.null() # InkPointer
+	var current_pointer = InkPointer.new_null() # InkPointer
 
 	var in_expression_evaluation = false # bool
 	var temporary_variables = null # Dictionary<String, InkObject>
@@ -60,7 +60,7 @@ class InkThread extends InkBase:
 	
 	var callstack = null # Array<Element>
 	var thread_index = 0 # int
-	var previous_pointer = InkPointer.null() # InkPointer
+	var previous_pointer = InkPointer.new_null() # InkPointer
 
 	func _init():
 		get_static_json()
@@ -75,7 +75,7 @@ class InkThread extends InkBase:
 			var jelement_obj = jel_tok
 			var push_pop_type = int(jelement_obj["type"])
 
-			var pointer = InkPointer.null()
+			var pointer = InkPointer.new_null()
 			var current_container_path_str = null
 			var current_container_path_str_token = null
 
@@ -410,7 +410,7 @@ func get_callstack_trace():
 
 var _threads = null # Array<InkThread>
 var _thread_counter = 0 # int
-var _start_of_root = InkPointer.null() # InkPointer
+var _start_of_root = InkPointer.new_null() # InkPointer
 
 # ############################################################################ #
 # GDScript extra methods

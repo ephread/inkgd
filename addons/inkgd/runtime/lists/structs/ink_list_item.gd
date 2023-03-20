@@ -46,7 +46,7 @@ func _init_with_full_name(full_name):
 	self._origin_name = name_parts[0]
 	self._item_name = name_parts[1]
 
-static func null() -> InkListItem:
+static func new_null() -> InkListItem:
 	return InkListItem.new_with_origin_name(null, null)
 
 # ############################################################################ #
@@ -128,7 +128,7 @@ static func from_serialized_key(key: String) -> InkListItem:
 	test_json_conv.parse(key).result
 	var obj = test_json_conv.get_data()
 	if !InkListItem._is_like_ink_list_item(obj):
-		return InkListItem.null()
+		return InkListItem.new_null()
 
 	return InkListItem.new_with_origin_name(obj["originName"], obj["itemName"])
 

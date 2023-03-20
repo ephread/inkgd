@@ -505,7 +505,7 @@ func knot_container_with_name(name: String) -> InkContainer:
 
 func pointer_at_path(path: InkPath) -> InkPointer:
 	if (path.length == 0):
-		return InkPointer.null()
+		return InkPointer.new_null()
 
 	var p = InkPointer.new()
 
@@ -1011,7 +1011,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 					self.state.callstack.pop_thread()
 				else:
 					self.state.did_safe_exit = true
-					self.state.current_pointer = InkPointer.null()
+					self.state.current_pointer = InkPointer.new_null()
 
 			InkControlCommand.CommandType.END:
 				self.state.force_end()
@@ -1584,7 +1584,7 @@ func next_content() -> void:
 	if !self.state.diverted_pointer.is_null:
 
 		self.state.current_pointer = self.state.diverted_pointer
-		self.state.diverted_pointer = InkPointer.null()
+		self.state.diverted_pointer = InkPointer.new_null()
 
 		self.visit_changed_containers_due_to_divert()
 
@@ -1637,7 +1637,7 @@ func increment_content_pointer() -> bool:
 
 		successful_increment = true
 
-	if !successful_increment: pointer = InkPointer.null()
+	if !successful_increment: pointer = InkPointer.new_null()
 
 	var current_element = self.state.callstack.current_element
 	current_element.current_pointer = pointer
@@ -1892,7 +1892,7 @@ func _add_error_with_metadata(
 	is_warning: bool = false,
 	use_end_line_number: bool = false,
 	dm = null,
-	current_pointer = InkPointer.null()
+	current_pointer = InkPointer.new_null()
 ) -> void:
 	var error_type_str = "WARNING" if is_warning else "ERROR"
 
