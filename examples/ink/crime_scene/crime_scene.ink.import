@@ -2,12 +2,13 @@
 
 importer="inkgd.ink"
 type="Resource"
-path="res://.import/crime_scene.ink-d23408247328262b91338c538eda77b4.res"
+uid="uid://6xwlve0ew4fc"
+path="res://.godot/imported/crime_scene.ink-d23408247328262b91338c538eda77b4.res"
 
 [deps]
 
 source_file="res://examples/ink/crime_scene/crime_scene.ink"
-dest_files=[ "res://.import/crime_scene.ink-d23408247328262b91338c538eda77b4.res" ]
+dest_files=["res://.godot/imported/crime_scene.ink-d23408247328262b91338c538eda77b4.res"]
 
 [params]
 

@@ -2,12 +2,13 @@
 
 importer="inkgd.ink.json"
 type="Resource"
-path="res://.import/not_a_halloween_game.ink.json-d901917e9d05208c13c92292b34747e2.res"
+uid="uid://brxk7cqoxm3nl"
+path="res://.godot/imported/not_a_halloween_game.ink.json-d901917e9d05208c13c92292b34747e2.res"
 
 [deps]
 
 source_file="res://examples/ink/not_a_halloween_game/not_a_halloween_game.ink.json"
-dest_files=[ "res://.import/not_a_halloween_game.ink.json-d901917e9d05208c13c92292b34747e2.res" ]
+dest_files=["res://.godot/imported/not_a_halloween_game.ink.json-d901917e9d05208c13c92292b34747e2.res"]
 
 [params]
 

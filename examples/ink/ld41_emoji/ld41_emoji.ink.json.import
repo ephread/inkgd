@@ -2,12 +2,13 @@
 
 importer="inkgd.ink.json"
 type="Resource"
-path="res://.import/ld41_emoji.ink.json-13fdb4ae8f6b7b82055e18ba9228b40a.res"
+uid="uid://b2byu24mh7lab"
+path="res://.godot/imported/ld41_emoji.ink.json-13fdb4ae8f6b7b82055e18ba9228b40a.res"
 
 [deps]
 
 source_file="res://examples/ink/ld41_emoji/ld41_emoji.ink.json"
-dest_files=[ "res://.import/ld41_emoji.ink.json-13fdb4ae8f6b7b82055e18ba9228b40a.res" ]
+dest_files=["res://.godot/imported/ld41_emoji.ink.json-13fdb4ae8f6b7b82055e18ba9228b40a.res"]
 
 [params]
 
