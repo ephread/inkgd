@@ -638,13 +638,13 @@ func try_splitting_head_tail_whitespace(single: InkStringValue) -> InkStringValu
 
 	if inner_str_end > inner_str_start:
 		var inner_str_text = _str.substr(inner_str_start, inner_str_end - inner_str_start)
-		list_texts.append(InkStringValue.new(inner_str_text))
+		list_texts.append(InkStringValue.new_with(inner_str_text))
 
 	if tail_last_newline_idx != -1 && tail_first_newline_idx > head_last_newline_idx:
-		list_texts.append(InkStringValue.new("\n"))
+		list_texts.append(InkStringValue.new_with("\n"))
 		if tail_last_newline_idx < _str.length() - 1:
 			var num_spaces = (_str.length() - tail_last_newline_idx) - 1
-			var trailing_spaces = InkStringValue.new(_str.substr(tail_last_newline_idx + 1, num_spaces))
+			var trailing_spaces = InkStringValue.new_with(_str.substr(tail_last_newline_idx + 1, num_spaces))
 			list_texts.append(trailing_spaces)
 
 	return list_texts
