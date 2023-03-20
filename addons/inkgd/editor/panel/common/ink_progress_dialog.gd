@@ -28,7 +28,7 @@ extends Popup
 # ############################################################################ #
 
 ## The title of the progress.
-var title: String: get = get_title, set = set_title
+var progress_title: String: get = get_title, set = set_title
 func set_title(text: String):
 	_title_label.text = text
 func get_title() -> String:
