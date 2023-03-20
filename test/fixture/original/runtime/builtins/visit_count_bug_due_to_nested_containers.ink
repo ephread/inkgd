@@ -1,3 +1,0 @@
-- (gather) {gather}
-* choice
-- {gather}
