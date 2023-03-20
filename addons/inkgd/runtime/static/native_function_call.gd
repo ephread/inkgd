@@ -154,9 +154,9 @@ func generate_native_functions_if_necessary():
 		add_list_unary_op (VALUE_OF_LIST,           "list_unary_op_value_of_list")
 
 		add_op_to_native_func(EQUALS, 2, ValueType.DIVERT_TARGET,
-							  "native_func_divert_targets_equal")
+							"native_func_divert_targets_equal")
 		add_op_to_native_func(NOT_EQUALS, 2, ValueType.DIVERT_TARGET,
-							  "native_func_divert_targets_not_equal")
+							"native_func_divert_targets_not_equal")
 
 # (String, int, ValueType, Variant)
 func add_op_to_native_func(name, args, val_type, op):

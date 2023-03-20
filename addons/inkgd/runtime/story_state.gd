@@ -843,8 +843,8 @@ func pop_evaluation_stack(number_of_objects: int = -1):
 		return []
 
 	var popped = InkUtils.get_range(self.evaluation_stack,
-								 self.evaluation_stack.size() - number_of_objects,
-								 number_of_objects)
+								self.evaluation_stack.size() - number_of_objects,
+								number_of_objects)
 
 	InkUtils.remove_range(
 		self.evaluation_stack,

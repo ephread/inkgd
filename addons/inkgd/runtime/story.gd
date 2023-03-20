@@ -735,8 +735,8 @@ func is_truthy(obj: InkObject) -> bool:
 		if InkUtils.is_ink_class(obj, "DivertTargetValue"):
 			var div_target = val
 			error(str("Shouldn't use a divert target (to ", div_target.target_path._to_string(),
-					  ") as a conditional value. Did you intend a function call 'likeThis()'",
-					  " or a read count check 'likeThis'? (no arrows)"))
+					") as a conditional value. Did you intend a function call 'likeThis()'",
+					" or a read count check 'likeThis'? (no arrows)"))
 			return false
 
 		return val.is_truthy
@@ -763,7 +763,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 
 			if var_contents == null:
 				error(str("Tried to divert using a target from a variable that could not be found (",
-						  var_name, ")"))
+						var_name, ")"))
 				return false
 			elif !InkUtils.is_ink_class(var_contents, "DivertTargetValue"):
 				var int_content = InkUtils.as_or_null(var_contents, "IntValue")
@@ -928,7 +928,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 					if InkUtils.is_ink_class(target, "IntValue"):
 						extra_note = ". Did you accidentally pass a read count ('knot_name') instead of a target ('-> knot_name')?"
 					error(str("TURNS_SINCE expected a divert target (knot, stitch, label name), but saw ",
-							  target, extra_note))
+							target, extra_note))
 					return false
 
 				var divert_target = InkUtils.as_or_null(target, "DivertTargetValue")
@@ -972,7 +972,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 					random_range = max_int.value - min_int.value + 1
 				if random_range <= 0:
 					error(str("RANDOM was called with minimum as ", min_int.value,
-							  " and maximum as ", max_int.value, ". The maximum must be larger"))
+							" and maximum as ", max_int.value, ". The maximum must be larger"))
 					return false
 
 				var result_seed = self.state.story_seed + self.state.previous_random

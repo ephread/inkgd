@@ -388,7 +388,7 @@ func get_callstack_trace():
 		var thread = _threads[t]
 		var is_current = (t == _threads.size() - 1)
 		sb += str("=== THREAD ", str(t + 1), "/", str(_threads.size()), " ",
-				 ("(current) " if is_current else "" ), "===\n")
+				("(current) " if is_current else "" ), "===\n")
 
 		var i = 0
 		while i < thread.callstack.size():
