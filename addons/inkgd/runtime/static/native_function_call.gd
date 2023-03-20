@@ -160,7 +160,7 @@ func generate_native_functions_if_necessary():
 
 # (String, int, ValueType, Variant)
 func add_op_to_native_func(name, args, val_type, op):
-	var native()_func = null # NativeFunctionCall
+	var native_func = null # NativeFunctionCall
 	if native_functions.has(name):
 		native_func = native_functions[name]
 	else:
