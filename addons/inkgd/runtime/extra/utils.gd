@@ -42,7 +42,7 @@ static func __assert__(condition: bool, message = "") -> void:
 	if !condition && message != "":
 		printerr(message)
 
-	assert(condition)
+	assert(condition, message)
 
 # ############################################################################ #
 # Type Assertion
