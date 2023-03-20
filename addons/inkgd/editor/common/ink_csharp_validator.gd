@@ -69,15 +69,15 @@ func _validate_csproj(project_name: String, runtime_path: String) -> bool:
 	return true
 
 func _scan_directory(path) -> String:
-	var directory := DirAccess.new()
-	if directory.open(path) != OK:
+	var directory := DirAccess.open(path)
+	if directory.get_open_error() != OK:
 		printerr(
 				"[inkgd] [ERROR] Could not open '%s', " % path +
 				"can't look for ink-engine-runtime.dll."
 		)
 		return ""
 
-	if directory.list_dir_begin()  != OK:# TODOGODOT4 fill missing arguments https://github.com/godotengine/godot/pull/40547
+	if directory.list_dir_begin() != OK:
 		printerr(
 				"[inkgd] [ERROR] Could not list contents of '%s', " % path +
 				"can't look for ink-engine-runtime.dll."
