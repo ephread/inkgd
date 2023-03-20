@@ -91,7 +91,7 @@ func _get_source_font():
 
 ## Gets the theme currently used by the editor.
 func _retrieve_base_theme():
-	var parent: Control = self
+	var parent = self
 
 	while(parent != null && parent.theme == null):
 		var older_parent = parent.get_parent()
