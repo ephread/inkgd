@@ -528,14 +528,14 @@ class Writer extends InkBase:
 		):
 			increment_child_count()
 
-	var state: int setget , get_state # StateElement.State
+	var state: int: get = get_state # StateElement.State
 	func get_state() -> int:
 		if _state_stack.size() > 0:
 			return _state_stack.front().type
 		else:
 			return InkStateElement.State.NONE
 
-	var child_count: int setget , get_child_count # int
+	var child_count: int: get = get_child_count # int
 	func get_child_count() -> int:
 		if _state_stack.size() > 0:
 			return _state_stack.front().child_count

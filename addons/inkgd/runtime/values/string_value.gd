@@ -23,9 +23,9 @@ func get_is_truthy():
 
 var is_newline # bool
 var is_inline_whitespace # bool
-var is_non_whitespace setget , get_is_non_whitespace # bool
-func get_is_non_whitespace():
-	return !is_newline && !is_inline_whitespace
+var is_non_whitespace:
+	get:
+		return !is_newline && !is_inline_whitespace
 
 func _init():
 	value = ""

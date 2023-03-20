@@ -153,7 +153,8 @@ func set_initial_origin_names(initial_origin_names) -> void:
 		_origin_names = initial_origin_names.duplicate()
 
 # TODO: Make inspectable
-var max_item: InkKeyValuePair setget , get_max_item # InkKeyValuePair<InkListItem, int>
+var max_item: InkKeyValuePair: # InkKeyValuePair<InkListItem, int>
+	get = get_max_item
 func get_max_item() -> InkKeyValuePair:
 	var _max_item: InkKeyValuePair = InkKeyValuePair.new_with_key_value(InkListItem.new_null(), 0)
 	for k in keys():
@@ -163,7 +164,8 @@ func get_max_item() -> InkKeyValuePair:
 	return _max_item
 
 # TODO: Make inspectable
-var min_item: InkKeyValuePair setget , get_min_item # InkKeyValuePair<InkListItem, int>
+var min_item: InkKeyValuePair: # InkKeyValuePair<InkListItem, int>
+	get = get_min_item
 func get_min_item() -> InkKeyValuePair:
 	var _min_item: InkKeyValuePair = InkKeyValuePair.new_with_key_value(InkListItem.new_null(), 0)
 	for k in keys():
@@ -324,7 +326,7 @@ func equals(other: InkList) -> bool:
 
 	return true
 
-var ordered_items: Array setget , get_ordered_items # Array<InkKeyValuePair<InkListItem, int>>
+var ordered_items: Array: get = get_ordered_items # Array<InkKeyValuePair<InkListItem, int>>
 func get_ordered_items():
 	var ordered: Array = []
 	for key in keys():

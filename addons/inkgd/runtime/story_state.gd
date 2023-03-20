@@ -125,21 +125,21 @@ func turns_since_for_container(container: InkContainer) -> int:
 	else:
 		return -1
 
-var callstack_depth: int setget , get_callstack_depth # int
+var callstack_depth: int: get = get_callstack_depth # int
 func get_callstack_depth() -> int:
 	return self.callstack.depth
 
-var output_stream: Array setget , get_output_stream # Array<InkObject>
+var output_stream: Array: get = get_output_stream # Array<InkObject>
 func get_output_stream() -> Array:
 	return self._current_flow.output_stream
 
-var current_choices: Array setget , get_current_choices # Array<Choice>
+var current_choices: Array: get = get_current_choices # Array<Choice>
 func get_current_choices() -> Array:
 	if self.can_continue:
 		return []
 	return self._current_flow.current_choices
 
-var generated_choices: Array setget , get_generated_choices # Array<Choice>
+var generated_choices: Array: get = get_generated_choices # Array<Choice>
 func get_generated_choices() -> Array:
 	return self._current_flow.current_choices
 
@@ -282,9 +282,9 @@ var current_flow_name: String: get = get_current_flow_name
 func get_current_flow_name() -> String:
 	return self._current_flow.name
 
-var in_expression_evaluation: bool setget \
-		set_in_expression_evaluation, \
-		get_in_expression_evaluation
+var in_expression_evaluation: bool:
+		set = set_in_expression_evaluation,
+		get = get_in_expression_evaluation
 func get_in_expression_evaluation() -> bool:
 	return self.callstack.current_element.in_expression_evaluation
 func set_in_expression_evaluation(value: bool):

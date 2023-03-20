@@ -23,9 +23,9 @@ signal variable_changed(variable_name, new_value)
 
 var patch: InkStatePatch # StatePatch
 
-var batch_observing_variable_changes: bool setget \
-		set_batch_observing_variable_changes, \
-		get_batch_observing_variable_changes
+var batch_observing_variable_changes: bool:
+		set = set_batch_observing_variable_changes,
+		get = get_batch_observing_variable_changes
 func get_batch_observing_variable_changes() -> bool:
 	return _batch_observing_variable_changes
 

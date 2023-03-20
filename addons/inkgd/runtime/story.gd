@@ -26,7 +26,7 @@ var ErrorType = preload("res://addons/inkgd/runtime/enums/error.gd").ErrorType
 
 # ############################################################################ #
 
-var current_choices: Array setget , get_current_choices # Array<Choice>
+var current_choices: Array: get = get_current_choices # Array<Choice>
 func get_current_choices() -> Array:
 	var choices: Array = [] # Array<Choice>
 
@@ -46,36 +46,36 @@ func get_current_text():
 	return self.state.current_text
 
 # Array?
-var current_tags setget , get_current_tags # Array<String>
+var current_tags: get = get_current_tags # Array<String>
 func get_current_tags():
 	if async_we_cant("call currentTags since it's a work in progress"):
 		return null
 
 	return self.state.current_tags
 
-var current_errors setget , get_current_errors # Array<String>
+var current_errors: get = get_current_errors # Array<String>
 func get_current_errors(): return self.state.current_errors
 
-var current_warnings setget , get_current_warnings # Array<String>
+var current_warnings: get = get_current_warnings # Array<String>
 func get_current_warnings(): return self.state.current_warnings
 
-var current_flow_name setget , get_current_flow_name # String
+var current_flow_name: get = get_current_flow_name # String
 func get_current_flow_name(): return self.state.current_flow_name
 
-var has_error setget , get_has_error # bool
+var has_error: get = get_has_error # bool
 func get_has_error(): return self.state.has_error
 
-var has_warning setget , get_has_warning # bool
+var has_warning: get = get_has_warning # bool
 func get_has_warning(): return self.state.has_warning
 
-var variables_state setget , get_variables_state # VariablesState
+var variables_state: get = get_variables_state # VariablesState
 func get_variables_state(): return self.state.variables_state
 
-var list_definitions setget , get_list_definitions # ListDefinitionsOrigin
+var list_definitions: get = get_list_definitions # ListDefinitionsOrigin
 func get_list_definitions():
 	return self._list_definitions
 
-var state: InkStoryState setget , get_state # StoryState
+var state: InkStoryState: get = get_state # StoryState
 func get_state():
 	return self._state
 
@@ -1537,7 +1537,7 @@ func variable_state_did_change_event(variable_name: String, new_value_obj: InkOb
 		observer.emit_signal("variable_changed", variable_name, val.value_object)
 
 
-var global_tags setget , get_global_tags # Array<String>
+var global_tags: get = get_global_tags # Array<String>
 func get_global_tags():
 	return self.tags_at_start_of_flow_container_with_path_string("")
 

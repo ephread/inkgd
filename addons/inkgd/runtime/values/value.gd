@@ -39,9 +39,9 @@ func get_is_truthy() -> bool:
 func cast(new_type: int) -> InkValue:
 	return null
 
-var value_object setget , get_value_object # Variant
-func get_value_object():
-	return value
+var value_object: Variant:
+	get:
+		return value
 
 # ############################################################################ #
 

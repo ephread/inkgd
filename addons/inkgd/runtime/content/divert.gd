@@ -37,7 +37,8 @@ func set_target_path(value: InkPath):
 # InkPath
 var _target_path = null
 
-var target_pointer: InkPointer setget , get_target_pointer # InkPointer
+var target_pointer: InkPointer:
+	get = get_target_pointer
 func get_target_pointer() -> InkPointer:
 	if self._target_pointer.is_null:
 		var target_obj = resolve_path(self._target_path).obj
@@ -48,7 +49,7 @@ func get_target_pointer() -> InkPointer:
 				self._target_path.last_component.index
 			)
 		else:
-			self._target_pointer = InkPointer.start_of(Utils.as_or_null(target_obj, "InkContainer"))
+			self._target_pointer = InkPointer.start_of(InkUtils.as_or_null(target_obj, "InkContainer"))
 
 	return self._target_pointer
 

@@ -312,10 +312,9 @@ func is_class(type):
 func get_class():
 	return "NativeFunctionCall"
 
-var _static_native_function_call: InkStaticNativeFunctionCall setget \
-		 , get_static_native_function_call
-func get_static_native_function_call():
-	return _weak_static_native_function_call.get_ref()
+var _static_native_function_call: InkStaticNativeFunctionCall:
+	get:
+		return _weak_static_native_function_call.get_ref()
 var _weak_static_native_function_call = WeakRef.new()
 
 func find_static_objects():

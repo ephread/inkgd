@@ -23,10 +23,10 @@ class Component extends InkBase:
 	var index = 0 # int
 	var name = null # String
 
-	var is_index setget , get_is_index # bool
+	var is_index: get = get_is_index # bool
 	func get_is_index(): return index >= 0
 
-	var is_parent setget , get_is_parent # bool
+	var is_parent: get = get_is_parent # bool
 	func get_is_parent():
 		return name == parent_id
 
@@ -86,7 +86,7 @@ func get_component(index):
 
 var is_relative = false # bool
 
-var head setget , get_head # Component
+var head: get = get_head # Component
 func get_head():
 	if _components.size() > 0:
 		return _components.front()
@@ -94,7 +94,7 @@ func get_head():
 		return null
 
 # TODO: Make inspectable
-var tail setget , get_tail # InkPath
+var tail: get = get_tail # InkPath
 func get_tail():
 	if _components.size() >= 2:
 		var tail_comps = _components.duplicate()
@@ -104,18 +104,18 @@ func get_tail():
 	else:
 		return InkPath.new_self()
 
-var length setget , get_length # int
+var length: get = get_length # int
 func get_length():
 	return _components.size()
 
-var last_component setget , get_last_component # Component
+var last_component: get = get_last_component # Component
 func get_last_component():
 	if _components.size() > 0:
 		return _components.back()
 	else:
 		return null
 
-var contains_named_component setget , get_contains_named_component # bool
+var contains_named_component: get = get_contains_named_component # bool
 func get_contains_named_component():
 	for comp in _components:
 		if !comp.is_index:
@@ -182,7 +182,7 @@ func path_by_appending_component(c):
 var components_string : get = get_components_string, set = set_components_string # String
 func get_components_string():
 	if _components_string == null:
-		_components_string = ".", _components.join(Utils)
+		_components_string = ".", _components.join(InkUtils)
 		if self.is_relative:
 			_components_string = "." + _components_string
 
