@@ -21,7 +21,7 @@ func get_path_string_on_choice() -> String:
 	return target_path._to_string()
 
 func set_path_string_on_choice(value: String):
-	target_path = InkPath().new_with_components_string(value)
+	target_path = InkPath.new_with_components_string(value)
 
 # String?
 var source_path = null

@@ -26,7 +26,7 @@ var source_name = null
 # ############################################################################ #
 
 func merge(dm: InkDebugMetadata) -> InkDebugMetadata:
-	var new_debug_metadata = DebugMetadata().new()
+	var new_debug_metadata = InkDebugMetadata.new()
 
 	new_debug_metadata.file_name = self.file_name
 	new_debug_metadata.source_name = self.source_name

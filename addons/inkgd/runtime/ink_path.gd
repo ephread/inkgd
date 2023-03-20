@@ -100,9 +100,9 @@ func get_tail():
 		var tail_comps = _components.duplicate()
 		tail_comps.pop_front()
 
-		return InkPath().new_with_components(tail_comps)
+		return InkPath.new_with_components(tail_comps)
 	else:
-		return InkPath().new_self()
+		return InkPath.new_self()
 
 var length setget , get_length # int
 func get_length():
@@ -142,13 +142,13 @@ func _init_with_components_string(components_string):
 
 # () -> InkPath
 static func new_self():
-	var path = InkPath().new()
+	var path = InkPath.new()
 	path.is_relative = true
 	return path
 
 # (InkPath) -> InkPath
 func path_by_appending_path(path_to_append):
-	var p = InkPath().new()
+	var p = InkPath.new()
 
 	var upward_moves = 0
 
@@ -174,7 +174,7 @@ func path_by_appending_path(path_to_append):
 
 # (Component) -> InkPath
 func path_by_appending_component(c):
-	var p = InkPath().new()
+	var p = InkPath.new()
 	p._components = p._components + self._components
 	p._components.append(c)
 	return p
@@ -233,17 +233,17 @@ var _components = null # Array<Component>
 # ############################################################################ #
 
 static func new_with_head_tail(head, tail):
-	var path = InkPath().new()
+	var path = InkPath.new()
 	path._init_with_head_tail(head, tail)
 	return path
 
 static func new_with_components(components, relative = false):
-	var path = InkPath().new()
+	var path = InkPath.new()
 	path._init_with_components(components, relative)
 	return path
 
 static func new_with_components_string(components_string):
-	var path = InkPath().new()
+	var path = InkPath.new()
 	path._init_with_components_string(components_string)
 	return path
 

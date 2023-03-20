@@ -32,7 +32,7 @@ func _to_string():
 # ############################################################################ #
 
 static func new_with_key_value(key, value) -> InkKeyValuePair:
-	var key_value_pair = InkKeyValuePair().new()
+	var key_value_pair = InkKeyValuePair.new()
 	key_value_pair._init_with_key_value(key, value)
 
 	return key_value_pair

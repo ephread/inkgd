@@ -51,7 +51,7 @@ func _to_string() -> String:
 	return "VariablePointerValue(" + self.variable_name + ")"
 
 func copy():
-	return VariablePointerValue().new_with_context(self.variable_name, context_index)
+	return InkVariablePointerValue.new_with_context(self.variable_name, context_index)
 
 # ######################################################################## #
 # GDScript extra methods
@@ -64,6 +64,6 @@ func get_class():
 	return "VariablePointerValue"
 
 static func new_with_context(variable_name, context_index = -1):
-	var value = VariablePointerValue().new()
+	var value = InkVariablePointerValue.new()
 	value._init_with_context(variable_name, context_index)
 	return value

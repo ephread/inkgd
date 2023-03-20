@@ -71,7 +71,7 @@ var path: InkPath: get = get_path
 func get_path() -> InkPath:
 	if _path == null:
 		if self.parent == null:
-			_path = InkPath().new()
+			_path = InkPath.new()
 		else:
 			var comps: Array = [] # Stack<Path3D.Component>
 
@@ -81,14 +81,14 @@ func get_path() -> InkPath:
 			while container:
 				var named_child = InkUtils.as_INamedContent_or_null(child)
 				if (named_child != null && named_child.has_valid_name):
-					comps.push_front(InkPath().Component.new(named_child.name))
+					comps.push_front(InkPath.Component.new(named_child.name))
 				else:
-					comps.push_front(InkPath().Component.new(container.content.find(child)))
+					comps.push_front(InkPath.Component.new(container.content.find(child)))
 
 				child = container
 				container = InkUtils.as_or_null(container.parent, "InkContainer")
 
-			_path = InkPath().new_with_components(comps)
+			_path = InkPath.new_with_components(comps)
 
 	return _path
 
@@ -142,7 +142,7 @@ func convert_path_to_relative(global_path: InkPath) -> InkPath:
 
 	var up = 0
 	while up < num_upwards_moves:
-		new_path_comps.append(InkPath().Component.to_parent())
+		new_path_comps.append(InkPath.Component.to_parent())
 		up += 1
 
 	var down = last_shared_path_comp_index + 1
@@ -150,7 +150,7 @@ func convert_path_to_relative(global_path: InkPath) -> InkPath:
 		new_path_comps.append(global_path.get_component(down))
 		down += 1
 
-	var relative_path = InkPath().new_with_components(new_path_comps, true)
+	var relative_path = InkPath.new_with_components(new_path_comps, true)
 	return relative_path
 
 # (Path) -> String

@@ -46,6 +46,6 @@ static func new_with(
 		variable_name: String,
 		is_new_declaration: bool
 ) -> InkVariableAssignment:
-	var variable_assignment = InkVariableAssignment().new()
+	var variable_assignment = InkVariableAssignment.new()
 	variable_assignment._init_with(variable_name, is_new_declaration)
 	return variable_assignment

@@ -88,13 +88,13 @@ func _to_string() -> String:
 
 # (InkContainer) -> InkPointer
 static func start_of(container: InkContainer) -> InkPointer:
-	return InkPointer().new(container, 0)
+	return InkPointer.new(container, 0)
 
 # ############################################################################ #
 
 # () -> InkPointer
 static func null():
-	return InkPointer().new(null, -1)
+	return InkPointer.new(null, -1)
 
 # ############################################################################ #
 # GDScript extra methods
@@ -107,4 +107,4 @@ func get_class() -> String:
 	return "Pointer"
 
 func duplicate() -> InkPointer:
-	return InkPointer().new(self.container, self.index)
+	return InkPointer.new(self.container, self.index)

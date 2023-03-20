@@ -28,23 +28,23 @@ func cast(new_type, metadata = null):
 	if new_type == ValueType.INT:
 		var max_item = value.max_item
 		if max_item.key.is_null:
-			return IntValue().new_with(0)
+			return InkIntValue.new_with(0)
 		else:
-			return IntValue().new_with(max_item.value)
+			return InkIntValue.new_with(max_item.value)
 
 	elif new_type == ValueType.FLOAT:
 		var max_item = value.max_item
 		if max_item.key.is_null:
-			return FloatValue().new_with(0.0)
+			return InkFloatValue.new_with(0.0)
 		else:
-			return FloatValue().new_with(float(max_item.value))
+			return InkFloatValue.new_with(float(max_item.value))
 
 	elif new_type == ValueType.STRING:
 		var max_item = value.max_item
 		if max_item.key.is_null:
-			return StringValue().new_with("")
+			return InkStringValue.new_with("")
 		else:
-			return StringValue().new_with(max_item.key._to_string())
+			return InkStringValue.new_with(max_item.key._to_string())
 
 	if new_type == self.value_type:
 		return self
@@ -82,11 +82,11 @@ func get_class():
 	return "ListValue"
 
 static func new_with(list):
-	var value = ListValue().new()
+	var value = InkListValue.new()
 	value._init_with_list(list)
 	return value
 
 static func new_with_single_item(single_item, single_value):
-	var value = ListValue().new()
+	var value = InkListValue.new()
 	value._init_with_single_item(single_item, single_value)
 	return value

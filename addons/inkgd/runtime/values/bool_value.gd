@@ -32,13 +32,13 @@ func cast(new_type, metadata = null):
 		return self
 
 	if new_type == ValueType.INT:
-		return IntValue().new_with(1 if value else 0)
+		return InkIntValue.new_with(1 if value else 0)
 
 	if new_type == ValueType.FLOAT:
-		return FloatValue().new_with(1.0 if value else 0.0)
+		return InkFloatValue.new_with(1.0 if value else 0.0)
 
 	if new_type == ValueType.STRING:
-		return StringValue().new_with("true" if value else "false")
+		return InkStringValue.new_with("true" if value else "false")
 
 	InkUtils.throw_story_exception(bad_cast_exception_message(new_type), false, metadata)
 	return null
@@ -57,6 +57,6 @@ func get_class():
 	return "BoolValue"
 
 static func new_with(val):
-	var value = BoolValue().new()
+	var value = InkBoolValue.new()
 	value._init_with(val)
 	return value

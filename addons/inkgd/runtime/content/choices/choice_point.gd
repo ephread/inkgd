@@ -46,7 +46,7 @@ var path_string_on_choice: String setget \
 func get_path_string_on_choice() -> String:
 	return compact_path_string(self.path_on_choice)
 func set_path_string_on_choice(value: String):
-	self.path_on_choice = InkPath().new_with_components_string(value)
+	self.path_on_choice = InkPath.new_with_components_string(value)
 
 # ############################################################################ #
 

@@ -66,7 +66,7 @@ func set_target_path_string(value):
 	if value == null:
 		self.target_path = null
 	else:
-		self.target_path = InkPath().new_with_components_string(value)
+		self.target_path = InkPath.new_with_components_string(value)
 
 # String
 var variable_divert_name = null

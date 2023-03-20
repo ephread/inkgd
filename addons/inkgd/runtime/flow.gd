@@ -113,12 +113,12 @@ func get_class():
 	return "Flow"
 
 static func new_with_name(name, story):
-	var flow = Flow().new()
+	var flow = InkFlow.new()
 	flow._init_with_name(name, story)
 	return flow
 
 static func new_with_name_and_jobject(name, story, jobject):
-	var flow = Flow().new()
+	var flow = InkFlow.new()
 	flow._init_with_name_and_jobject(name, story, jobject)
 	return flow
 

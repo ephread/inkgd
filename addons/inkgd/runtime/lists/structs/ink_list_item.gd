@@ -18,13 +18,6 @@ extends InkObject
 class_name InkListItem
 
 # ############################################################################ #
-# Self-reference
-# ############################################################################ #
-
-static func InkListItem():
-	return load("res://addons/inkgd/runtime/lists/structs/ink_list_item.gd")
-
-# ############################################################################ #
 
 # Originally these were simple variables, but they are turned into properties to
 # make the object "immutable". That way it can be passed around without being
@@ -54,7 +47,7 @@ func _init_with_full_name(full_name):
 	self._item_name = name_parts[1]
 
 static func null() -> InkListItem:
-	return InkListItem().new_with_origin_name(null, null)
+	return InkListItem.new_with_origin_name(null, null)
 
 # ############################################################################ #
 
@@ -92,13 +85,13 @@ func equals(obj: InkObject) -> bool:
 
 # (string, string) -> InkListItem
 static func new_with_origin_name(origin_name, item_name) -> InkListItem:
-	var list_item = InkListItem().new()
+	var list_item = InkListItem.new()
 	list_item._init_with_origin_name(origin_name, item_name)
 	return list_item
 
 # (string) -> InkListItem
 static func new_with_full_name(full_name) -> InkListItem:
-	var list_item = InkListItem().new()
+	var list_item = InkListItem.new()
 	list_item._init_with_full_name(full_name)
 	return list_item
 
@@ -134,10 +127,10 @@ static func from_serialized_key(key: String) -> InkListItem:
 	var test_json_conv = JSON.new()
 	test_json_conv.parse(key).result
 	var obj = test_json_conv.get_data()
-	if !InkListItem()._is_like_ink_list_item(obj):
-		return InkListItem().null()
+	if !InkListItem._is_like_ink_list_item(obj):
+		return InkListItem.null()
 
-	return InkListItem().new_with_origin_name(obj["originName"], obj["itemName"])
+	return InkListItem.new_with_origin_name(obj["originName"], obj["itemName"])
 
 # Determines whether the given item is sufficiently `InkListItem`-like
 # to be used as a template when reconstructing the InkListItem.

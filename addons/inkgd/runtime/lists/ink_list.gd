@@ -48,7 +48,7 @@ func _init_with_single_item(single_item: InkListItem, single_value: int):
 static func from_string(my_list_item: String, origin_story) -> InkList:
 	var list_value: InkListValue = origin_story.list_definitions.find_single_item_list_with_name(my_list_item)
 	if list_value:
-		return InkList().new_with_ink_list(list_value.value)
+		return InkList.new_with_ink_list(list_value.value)
 	else:
 		InkUtils.throw_exception(
 				"Could not find the InkListItem from the string '%s' to create an InkList because " +
@@ -175,7 +175,7 @@ func get_min_item() -> InkKeyValuePair:
 # TODO: Make inspectable
 var inverse: InkList: get = get_inverse
 func get_inverse() -> InkList:
-	var list: InkList = InkList().new()
+	var list: InkList = InkList.new()
 	if origins != null:
 		for origin in origins:
 			for serialized_item_key in origin.items:
@@ -187,7 +187,7 @@ func get_inverse() -> InkList:
 # TODO: Make inspectable
 var all: InkList: get = get_all
 func get_all() -> InkList:
-	var list: InkList = InkList().new()
+	var list: InkList = InkList.new()
 	if origins != null:
 		for origin in origins:
 			for serialized_item_key in origin.items:
@@ -197,14 +197,14 @@ func get_all() -> InkList:
 
 # TODO: Make inspectable
 func union(other_list: InkList) -> InkList:
-	var union: InkList = InkList().new_with_ink_list(self)
+	var union: InkList = InkList.new_with_ink_list(self)
 	for key in other_list._dictionary:
 		union._dictionary[key] = other_list._dictionary[key]
 	return union
 
 # TODO: Make inspectable
 func intersection(other_list: InkList) -> InkList:
-	var intersection: InkList = InkList().new()
+	var intersection: InkList = InkList.new()
 	for key in other_list._dictionary:
 		if self._dictionary.has(key):
 			intersection._dictionary[key] = other_list._dictionary[key]
@@ -212,7 +212,7 @@ func intersection(other_list: InkList) -> InkList:
 
 # TODO: Make inspectable
 func without(list_to_remove: InkList) -> InkList:
-	var result = InkList().new_with_ink_list(self)
+	var result = InkList.new_with_ink_list(self)
 	for key in list_to_remove._dictionary:
 		result._dictionary.erase(key)
 	return result
@@ -265,21 +265,21 @@ func less_than_or_equals(other_list: InkList) -> bool:
 func max_as_list() -> InkList:
 	if size() > 0:
 		var _max_item: InkKeyValuePair = self.max_item
-		return InkList().new_with_single_item(_max_item.key, _max_item.value)
+		return InkList.new_with_single_item(_max_item.key, _max_item.value)
 	else:
-		return InkList().new()
+		return InkList.new()
 
 func min_as_list() -> InkList:
 	if size() > 0:
 		var _min_item: InkKeyValuePair = self.min_item
-		return InkList().new_with_single_item(_min_item.key, _min_item.value)
+		return InkList.new_with_single_item(_min_item.key, _min_item.value)
 	else:
-		return InkList().new()
+		return InkList.new()
 
 # (Variant, Variant) -> InkList
 func list_with_sub_range(min_bound, max_bound) -> InkList:
 	if size() == 0:
-		return InkList().new()
+		return InkList.new()
 
 	var ordered: Array = self.ordered_items
 
@@ -298,7 +298,7 @@ func list_with_sub_range(min_bound, max_bound) -> InkList:
 		if min_bound.is_class("InkList") && min_bound.size() > 0:
 			max_value = max_bound.max_item.value
 
-	var sub_list = InkList().new()
+	var sub_list = InkList.new()
 	sub_list.set_initial_origin_names(self.origin_names)
 
 	for item in ordered:
@@ -349,22 +349,22 @@ func _to_string() -> String:
 	return description
 
 static func new_with_dictionary(other_dictionary: Dictionary) -> InkList:
-	var ink_list: InkList = InkList().new()
+	var ink_list: InkList = InkList.new()
 	ink_list._init_with_dictionary(other_dictionary)
 	return ink_list
 
 static func new_with_ink_list(other_list: InkList) -> InkList:
-	var ink_list: InkList = InkList().new()
+	var ink_list: InkList = InkList.new()
 	ink_list._init_with_ink_list(other_list)
 	return ink_list
 
 static func new_with_origin(single_origin_list_name: String, origin_story) -> InkList:
-	var ink_list: InkList = InkList().new()
+	var ink_list: InkList = InkList.new()
 	ink_list._init_with_origin(single_origin_list_name, origin_story)
 	return ink_list
 
 static func new_with_single_item(single_item: InkListItem, single_value: int) -> InkList:
-	var ink_list: InkList = InkList().new()
+	var ink_list: InkList = InkList.new()
 	ink_list._init_with_single_item(single_item, single_value)
 	return ink_list
 

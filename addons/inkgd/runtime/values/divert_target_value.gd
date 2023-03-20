@@ -55,6 +55,6 @@ func get_class():
 	return "DivertTargetValue"
 
 static func new_with(val):
-	var value = DivertTargetValue().new()
+	var value = InkDivertTargetValue.new()
 	value._init_with(val)
 	return value

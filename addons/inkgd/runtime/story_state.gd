@@ -367,7 +367,7 @@ func remove_flow_internal(flow_name: String) -> void:
 
 # () -> InkStoryState
 func copy_and_start_patching():
-	var copy = InkStoryState().new(self.story)
+	var copy = InkStoryState.new(self.story)
 
 	copy._patch = InkStatePatch.new(self._patch)
 

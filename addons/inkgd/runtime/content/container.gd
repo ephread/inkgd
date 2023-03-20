@@ -114,7 +114,7 @@ func get_internal_path_to_first_leaf_content() -> InkPath:
 			components.append(InkPath.Component.new(0))
 			container = InkUtils.as_or_null(container.content[0], "InkContainer")
 
-	return InkPath().new_with_components(components)
+	return InkPath.new_with_components(components)
 
 func _init():
 	self._content = [] # Array<InkObject>

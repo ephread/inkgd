@@ -23,7 +23,7 @@ const ValueType = preload("res://addons/inkgd/runtime/values/value_type.gd").Val
 
 # (String) -> NativeFunctionCall
 static func call_with_name(function_name) -> InkNativeFunctionCall:
-	return InkNativeFunctionCall().new_with_name(function_name)
+	return InkNativeFunctionCall.new_with_name(function_name)
 
 var name: String: get = get_name, set = set_name
 func get_name() -> String:
@@ -326,11 +326,11 @@ func find_static_objects():
 # ############################################################################ #
 
 static func new_with_name(name: String):
-	var native_function_call = InkNativeFunctionCall().new()
+	var native_function_call = InkNativeFunctionCall.new()
 	native_function_call._init_with_name(name)
 	return native_function_call
 
 static func new_with_name_and_number_of_parameters(name: String, number_of_parameters: int):
-	var native_function_call = InkNativeFunctionCall().new()
+	var native_function_call = InkNativeFunctionCall.new()
 	native_function_call._init_with_name_and_number_of_parameters(name, number_of_parameters)
 	return native_function_call
