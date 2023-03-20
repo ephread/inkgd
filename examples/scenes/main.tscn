@@ -1,232 +1,166 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=16 format=3 uid="uid://cfbl1mxq4sbfs"]
 
-[ext_resource path="res://examples/images/buttons/button_normal.png" type="Texture2D" id=1]
-[ext_resource path="res://examples/fonts/Vollkorn-Regular.ttf" type="FontFile" id=2]
-[ext_resource path="res://examples/images/buttons/button_focus_hover.png" type="Texture2D" id=3]
-[ext_resource path="res://examples/images/buttons/button_pressed.png" type="Texture2D" id=4]
-[ext_resource path="res://examples/images/buttons/button_disabled.png" type="Texture2D" id=5]
-[ext_resource path="res://examples/images/inkgd.png" type="Texture2D" id=6]
-[ext_resource path="res://examples/scenes/main.gd" type="Script" id=7]
-[ext_resource path="res://examples/fonts/Poppins-Medium.tres" type="FontFile" id=8]
+[ext_resource type="Texture2D" uid="uid://cqgv843i6p541" path="res://examples/images/buttons/button_normal.png" id="1"]
+[ext_resource type="FontFile" uid="uid://dj8utbidbcv7w" path="res://examples/fonts/Vollkorn-Regular.ttf" id="2"]
+[ext_resource type="Texture2D" uid="uid://rqcp6k4w16aq" path="res://examples/images/buttons/button_focus_hover.png" id="3"]
+[ext_resource type="Texture2D" uid="uid://byeohoxg20gpo" path="res://examples/images/buttons/button_pressed.png" id="4"]
+[ext_resource type="Texture2D" uid="uid://cfj8enuetqyne" path="res://examples/images/buttons/button_disabled.png" id="5"]
+[ext_resource type="Texture2D" uid="uid://dlan7f54o1mky" path="res://examples/images/inkgd.png" id="6"]
+[ext_resource type="Script" path="res://examples/scenes/main.gd" id="7"]
+[ext_resource type="FontFile" path="res://examples/fonts/Poppins-Medium.tres" id="8"]
 
-[sub_resource type="FontFile" id=7]
-size = 40
-font_data = ExtResource( 2 )
+[sub_resource type="FontFile" id="7"]
+fallbacks = Array[Font]([ExtResource("2")])
+face_index = null
+embolden = null
+transform = null
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
 
-[sub_resource type="Theme" id=8]
-Label/colors/font_color = Color( 0, 0, 0, 1 )
-Label/fonts/font = SubResource( 7 )
+[sub_resource type="Theme" id="8"]
+Label/colors/font_color = Color(0, 0, 0, 1)
+Label/fonts/font = SubResource("7")
 
-[sub_resource type="StyleBoxTexture" id=4]
+[sub_resource type="StyleBoxTexture" id="4"]
 content_margin_left = 35.0
-content_margin_right = 35.0
 content_margin_top = 25.0
+content_margin_right = 35.0
 content_margin_bottom = 25.0
-texture = ExtResource( 5 )
-region_rect = Rect2( 0, 0, 32, 32 )
-offset_left = 3.0
-offset_right = 3.0
-offset_top = 3.0
-offset_bottom = 3.0
+texture = ExtResource("5")
+region_rect = Rect2(0, 0, 32, 32)
 
-[sub_resource type="StyleBoxTexture" id=2]
+[sub_resource type="StyleBoxTexture" id="2"]
 content_margin_left = 35.0
-content_margin_right = 35.0
 content_margin_top = 25.0
+content_margin_right = 35.0
 content_margin_bottom = 25.0
-texture = ExtResource( 1 )
-region_rect = Rect2( 0, 0, 32, 32 )
-offset_left = 3.0
-offset_right = 3.0
-offset_top = 3.0
-offset_bottom = 3.0
+texture = ExtResource("1")
+region_rect = Rect2(0, 0, 32, 32)
 
-[sub_resource type="StyleBoxTexture" id=5]
+[sub_resource type="StyleBoxTexture" id="5"]
 content_margin_left = 35.0
-content_margin_right = 35.0
 content_margin_top = 25.0
+content_margin_right = 35.0
 content_margin_bottom = 25.0
-texture = ExtResource( 3 )
-region_rect = Rect2( 0, 0, 32, 32 )
-offset_left = 3.0
-offset_right = 3.0
-offset_top = 3.0
-offset_bottom = 3.0
+texture = ExtResource("3")
+region_rect = Rect2(0, 0, 32, 32)
 
-[sub_resource type="StyleBoxTexture" id=6]
+[sub_resource type="StyleBoxTexture" id="6"]
 content_margin_left = 35.0
-content_margin_right = 35.0
 content_margin_top = 25.0
+content_margin_right = 35.0
 content_margin_bottom = 25.0
-texture = ExtResource( 4 )
-region_rect = Rect2( 0, 0, 32, 32 )
-offset_left = 3.0
-offset_right = 3.0
-offset_top = 3.0
-offset_bottom = 3.0
+texture = ExtResource("4")
+region_rect = Rect2(0, 0, 32, 32)
 
-[sub_resource type="Theme" id=3]
-Button/colors/font_color = Color( 0, 0, 0, 0.498039 )
-Button/colors/font_color_disabled = Color( 0, 0, 0, 0.25098 )
-Button/colors/font_color_focus = Color( 0, 0, 0, 0.498039 )
-Button/colors/font_color_hover = Color( 0, 0, 0, 1 )
-Button/colors/font_color_pressed = Color( 0, 0, 0, 1 )
-Button/fonts/font = ExtResource( 8 )
-Button/styles/disabled = SubResource( 4 )
-Button/styles/focus = SubResource( 2 )
-Button/styles/hover = SubResource( 5 )
-Button/styles/normal = SubResource( 2 )
-Button/styles/pressed = SubResource( 6 )
+[sub_resource type="Theme" id="3"]
+Button/colors/font_color = Color(0, 0, 0, 0.498039)
+Button/colors/font_color_disabled = Color(0, 0, 0, 0.25098)
+Button/colors/font_color_focus = Color(0, 0, 0, 0.498039)
+Button/colors/font_color_hover = Color(0, 0, 0, 1)
+Button/colors/font_color_pressed = Color(0, 0, 0, 1)
+Button/fonts/font = ExtResource("8")
+Button/styles/disabled = SubResource("4")
+Button/styles/focus = SubResource("2")
+Button/styles/hover = SubResource("5")
+Button/styles/normal = SubResource("2")
+Button/styles/pressed = SubResource("6")
 
 [node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-script = ExtResource( 7 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+script = ExtResource("7")
 
 [node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color( 0.929412, 0.898039, 0.854902, 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+color = Color(0.929412, 0.898039, 0.854902, 1)
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-theme_override_constants/margin_right = 75
-theme_override_constants/margin_top = 75
 theme_override_constants/margin_left = 75
+theme_override_constants/margin_top = 75
+theme_override_constants/margin_right = 75
 theme_override_constants/margin_bottom = 75
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="CenterContainer" type="CenterContainer" parent="MarginContainer"]
-offset_left = 75.0
-offset_top = 75.0
-offset_right = 1845.0
-offset_bottom = 1005.0
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
-offset_left = 75.0
-offset_top = 75.0
-offset_right = 1845.0
-offset_bottom = 1005.0
+layout_mode = 2
 theme_override_constants/separation = 150
 alignment = 1
 
 [node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer"]
-offset_top = 221.0
-offset_right = 1770.0
-offset_bottom = 402.0
-texture = ExtResource( 6 )
+layout_mode = 2
+texture = ExtResource("6")
 stretch_mode = 6
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
-offset_top = 552.0
-offset_right = 1770.0
-offset_bottom = 708.0
+layout_mode = 2
 theme_override_constants/separation = 75
 alignment = 1
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="ExampleVBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
-offset_left = 222.0
-offset_right = 847.0
-offset_bottom = 156.0
+layout_mode = 2
 theme_override_constants/separation = 20
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="ExampleLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/ExampleVBoxContainer"]
-offset_right = 625.0
-offset_bottom = 40.0
-pivot_offset = Vector2( -815, -44 )
-theme = SubResource( 8 )
+layout_mode = 2
+theme = SubResource("8")
 text = "Examples"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/ExampleVBoxContainer"]
-offset_top = 60.0
-offset_right = 625.0
-offset_bottom = 156.0
+layout_mode = 2
 theme_override_constants/separation = 25
 
 [node name="TheIntercept" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/ExampleVBoxContainer/HBoxContainer"]
-offset_right = 300.0
-offset_bottom = 96.0
-custom_minimum_size = Vector2( 300, 0 )
-theme = SubResource( 3 )
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme = SubResource("3")
 text = "The Intercept"
-align = 0
 
 [node name="CrimeScene" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/ExampleVBoxContainer/HBoxContainer"]
-offset_left = 325.0
-offset_right = 625.0
-offset_bottom = 96.0
-custom_minimum_size = Vector2( 300, 0 )
-theme = SubResource( 3 )
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme = SubResource("3")
 text = "Crime Scene"
-align = 0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="TestVBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
-offset_left = 922.0
-offset_right = 1547.0
-offset_bottom = 156.0
+layout_mode = 2
 theme_override_constants/separation = 20
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="TestLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/TestVBoxContainer"]
-offset_right = 625.0
-offset_bottom = 40.0
-pivot_offset = Vector2( -815, -44 )
-theme = SubResource( 8 )
+layout_mode = 2
+theme = SubResource("8")
 text = "Tests"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/TestVBoxContainer"]
-offset_top = 60.0
-offset_right = 625.0
-offset_bottom = 156.0
+layout_mode = 2
 theme_override_constants/separation = 25
 
 [node name="Test" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/TestVBoxContainer/HBoxContainer"]
-offset_right = 300.0
-offset_bottom = 96.0
-custom_minimum_size = Vector2( 300, 0 )
-theme = SubResource( 3 )
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme = SubResource("3")
 text = "GUT"
-align = 0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Performance" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/TestVBoxContainer/HBoxContainer"]
-offset_left = 325.0
-offset_right = 625.0
-offset_bottom = 96.0
-custom_minimum_size = Vector2( 300, 0 )
-theme = SubResource( 3 )
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme = SubResource("3")
 text = "Performance"
-align = 0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [connection signal="button_up" from="MarginContainer/VBoxContainer/HBoxContainer/ExampleVBoxContainer/HBoxContainer/TheIntercept" to="." method="_switch_to_the_intercept"]
 [connection signal="button_up" from="MarginContainer/VBoxContainer/HBoxContainer/ExampleVBoxContainer/HBoxContainer/CrimeScene" to="." method="_switch_to_crime_scene"]
