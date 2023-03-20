@@ -182,7 +182,7 @@ func path_by_appending_component(c):
 var components_string : get = get_components_string, set = set_components_string # String
 func get_components_string():
 	if _components_string == null:
-		_components_string = ".", _components.join(InkUtils)
+		_components_string = InkUtils.join(", ", _components)
 		if self.is_relative:
 			_components_string = "." + _components_string
 
