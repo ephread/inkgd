@@ -341,15 +341,13 @@ func _connect_signals():
 	if configuration != null:
 		var is_connected = configuration.is_connected(
 				"story_configuration_changed",
-				self,
-				"_configuration_changed"
+				_configuration_changed
 		)
 
 		if !is_connected:
 			configuration.connect(
 					"story_configuration_changed",
-					self,
-					"_configuration_changed"
+					_configuration_changed
 			)
 
 	_ink_player.connect("loaded", Callable(self, "_story_loaded"))
