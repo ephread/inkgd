@@ -30,12 +30,12 @@ static func InkListItem():
 # make the object "immutable". That way it can be passed around without being
 # duplicated.
 
-var origin_name setget , get_origin_name
+var origin_name : get = get_origin_name
 func get_origin_name():
 	return _origin_name
 var _origin_name = null # String
 
-var item_name setget , get_item_name
+var item_name : get = get_item_name
 func get_item_name():
 	return _item_name
 var _item_name = null # String
@@ -58,12 +58,12 @@ static func null() -> InkListItem:
 
 # ############################################################################ #
 
-var is_null: bool setget , get_is_null
+var is_null: bool: get = get_is_null
 func get_is_null() -> bool:
 	return self.origin_name == null && self.item_name == null
 
 # String
-var full_name setget , get_full_name
+var full_name : get = get_full_name
 func get_full_name():
 	# In C#, concatenating null produce nothing, in GDScript, it appends "Null".
 	return (
@@ -107,7 +107,7 @@ static func new_with_full_name(full_name) -> InkListItem:
 # ############################################################################ #
 
 func is_class(type: String) -> bool:
-	return type == "InkListItem" || .is_class(type)
+	return type == "InkListItem" || super.is_class(type)
 
 func get_class() -> String:
 	return "InkListItem"
@@ -122,7 +122,7 @@ func get_class() -> String:
 # instance. The result is intended to be used as a key inside a Map.
 func serialized() -> String:
 	# We are simply using a JSON representation as a value-typed key.
-	var json_print = JSON.print(
+	var json_print = JSON.stringify(
 			{ "originName": self.origin_name, "itemName": self.item_name }
 	)
 	return json_print
@@ -131,7 +131,9 @@ func serialized() -> String:
 #
 # (String) -> InkListItem
 static func from_serialized_key(key: String) -> InkListItem:
-	var obj = JSON.parse(key).result
+	var test_json_conv = JSON.new()
+	test_json_conv.parse(key).result
+	var obj = test_json_conv.get_data()
 	if !InkListItem()._is_like_ink_list_item(obj):
 		return InkListItem().null()
 

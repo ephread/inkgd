@@ -22,12 +22,12 @@ var name = null
 var path_for_count = null
 
 # Container?
-var container_for_count setget , get_container_for_count
+var container_for_count : get = get_container_for_count
 func get_container_for_count():
 	return self.resolve_path(path_for_count).container
 
 # String?
-var path_string_for_count setget set_path_string_for_count , get_path_string_for_count
+var path_string_for_count : get = get_path_string_for_count, set = set_path_string_for_count
 func get_path_string_for_count():
 	if path_for_count == null:
 		return null
@@ -60,7 +60,7 @@ func _to_string() -> String:
 # ############################################################################ #
 
 func is_class(type: String) -> bool:
-	return type == "VariableReference" || .is_class(type)
+	return type == "VariableReference" || super.is_class(type)
 
 func get_class() -> String:
 	return "VariableReference"

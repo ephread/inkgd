@@ -57,11 +57,11 @@ static func ListValue():
 var value # Variant
 
 # ValueType
-var value_type: int setget , get_value_type
+var value_type: int: get = get_value_type
 func get_value_type() -> int:
 	return -1
 
-var is_truthy: bool setget , get_is_truthy
+var is_truthy: bool: get = get_is_truthy
 func get_is_truthy() -> bool:
 	return false
 
@@ -120,7 +120,7 @@ func _to_string() -> String:
 # ############################################################################ #
 
 func is_class(type) -> bool:
-	return type == "Value" || .is_class(type)
+	return type == "Value" || super.is_class(type)
 
 func get_class() -> String:
 	return "Value"

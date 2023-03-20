@@ -33,7 +33,7 @@ static func InkNativeFunctionCall() -> GDScript:
 static func call_with_name(function_name) -> InkNativeFunctionCall:
 	return InkNativeFunctionCall().new_with_name(function_name)
 
-var name: String setget set_name, get_name
+var name: String: get = get_name, set = set_name
 func get_name() -> String:
 	return _name
 
@@ -43,7 +43,7 @@ func set_name(value: String):
 		_prototype = self._static_native_function_call.native_functions[_name]
 var _name
 
-var number_of_parameters: int setget set_number_of_parameters, get_number_of_parameters
+var number_of_parameters: int: get = get_number_of_parameters, set = set_number_of_parameters
 func get_number_of_parameters() -> int:
 	if _prototype:
 		return _prototype.number_of_parameters
@@ -315,7 +315,7 @@ var _operation_funcs: Dictionary = {}
 # ############################################################################ #
 
 func is_class(type):
-	return type == "NativeFunctionCall" || .is_class(type)
+	return type == "NativeFunctionCall" || super.is_class(type)
 
 func get_class():
 	return "NativeFunctionCall"

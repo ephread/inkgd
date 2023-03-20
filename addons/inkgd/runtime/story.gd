@@ -65,7 +65,7 @@ func get_current_choices() -> Array:
 	return choices
 
 # String?
-var current_text setget , get_current_text
+var current_text : get = get_current_text
 func get_current_text():
 	if async_we_cant("call currentText since it's a work in progress"):
 		return null
@@ -193,7 +193,7 @@ func _init(json_string: String):
 
 
 # () -> String
-func to_json() -> String:
+func JSON.new().stringify() -> String:
 	var writer: InkSimpleJSON.Writer = InkSimpleJSON.Writer.new()
 	to_json_with_writer(writer)
 	return writer._to_string()
@@ -238,7 +238,7 @@ func reset_state() -> void:
 		return
 
 	self._state = InkStoryState.new(self)
-	self._state.variables_state.connect("variable_changed", self, "variable_state_did_change_event")
+	self._state.variables_state.connect("variable_changed", Callable(self, "variable_state_did_change_event"))
 
 	self.reset_globals()
 
@@ -293,12 +293,12 @@ func continue_story() -> String:
 	return self.current_text
 
 
-var can_continue: bool setget , get_continue
+var can_continue: bool: get = get_continue
 func get_continue() -> bool:
 	return self.state.can_continue
 
 
-var async_continue_complete: bool setget , get_async_continue_complete
+var async_continue_complete: bool: get = get_async_continue_complete
 func get_async_continue_complete() -> bool:
 	return !self._async_continue_active
 
@@ -396,7 +396,7 @@ func continue_internal(millisecs_limit_async: float = 0) -> void:
 		_profiler.post_continue()
 
 	if self.state.has_error || self.state.has_warning:
-		if !self.get_signal_connection_list("on_error").empty():
+		if !self.get_signal_connection_list("on_error").is_empty():
 			if self.state.has_error:
 				for err in self.state.current_errors:
 					emit_signal("on_error", err, ErrorType.ERROR)
@@ -1433,7 +1433,7 @@ func validate_external_bindings() -> void:
 	else:
 		var message: String = "ERROR: Missing function binding for external %s: '%s' %s" % [
 			"s" if missing_externals.size() > 1 else "",
-			Utils.join("', '", missing_externals.to_array()),
+			"', '", missing_externals.to_array(.join(Utils)),
 			", and no fallback ink function found." if allow_external_function_fallbacks else " (ink fallbacks disabled)"
 		]
 
@@ -1484,10 +1484,10 @@ func observe_variable(variable_name: String, object, method_name: String) -> voi
 		return
 
 	if _variable_observers.has(variable_name):
-		_variable_observers[variable_name].connect("variable_changed", object, method_name)
+		_variable_observers[variable_name].connect("variable_changed", Callable(object, method_name))
 	else:
 		var new_observer = VariableObserver.new(variable_name)
-		new_observer.connect("variable_changed", object, method_name)
+		new_observer.connect("variable_changed", Callable(object, method_name))
 
 		_variable_observers[variable_name] = new_observer
 
@@ -1523,14 +1523,14 @@ func remove_variable_observer(object = null, method_name = null, specific_variab
 		if _variable_observers.has(specific_variable_name):
 			var observer = _variable_observers[specific_variable_name]
 			if object != null && method_name != null:
-				observer.disconnect("variable_changed", object, method_name)
+				observer.disconnect("variable_changed", Callable(object, method_name))
 
-				if observer.get_signal_connection_list("variable_changed").empty():
+				if observer.get_signal_connection_list("variable_changed").is_empty():
 					_variable_observers.erase(specific_variable_name)
 			else:
 				var connections = observer.get_signal_connection_list("variable_changed");
 				for connection in connections:
-					observer.disconnect(connection.signal, connection.target, connection.method)
+					observer.disconnect(connection.signal, Callable(connection.target, connection.method))
 
 				_variable_observers.erase(specific_variable_name)
 
@@ -1538,10 +1538,10 @@ func remove_variable_observer(object = null, method_name = null, specific_variab
 		var keys_to_remove = []
 		for observer_key in _variable_observers:
 			var observer = _variable_observers[observer_key]
-			if observer.is_connected("variable_changed", object, method_name):
-				observer.disconnect("variable_changed", object, method_name)
+			if observer.is_connected("variable_changed", Callable(object, method_name)):
+				observer.disconnect("variable_changed", Callable(object, method_name))
 
-			if observer.get_signal_connection_list("variable_changed").empty():
+			if observer.get_signal_connection_list("variable_changed").is_empty():
 				keys_to_remove.append(observer_key)
 
 		for key in keys_to_remove:
@@ -1794,7 +1794,7 @@ func __assert__(condition: bool, message = null, format_params = null) -> void:
 			Utils.throw_exception(message)
 
 
-var current_debug_metadata: InkDebugMetadata setget , get_current_debug_metadata
+var current_debug_metadata: InkDebugMetadata: get = get_current_debug_metadata
 func get_current_debug_metadata() -> InkDebugMetadata:
 	var dm # DebugMetadata
 
@@ -1826,7 +1826,7 @@ func get_current_debug_metadata() -> InkDebugMetadata:
 	return null
 
 
-var current_line_number: int setget , get_current_line_number
+var current_line_number: int: get = get_current_line_number
 func get_current_line_number() -> int:
 	var dm = self.current_debug_metadata
 	if dm != null:
@@ -1836,7 +1836,7 @@ func get_current_line_number() -> int:
 
 
 # InkContainer?
-var main_content_container setget , get_main_content_container
+var main_content_container : get = get_main_content_container
 func get_main_content_container():
 	if _temporary_evaluation_container:
 		return _temporary_evaluation_container
@@ -1879,7 +1879,7 @@ var _profiler = null
 # ############################################################################ #
 
 func is_class(type: String) -> bool:
-	return type == "Story" || .is_class(type)
+	return type == "Story" || super.is_class(type)
 
 
 func get_class() -> String:
@@ -1891,10 +1891,10 @@ func connect_exception(target: Object, method: String, binds = [], flags = 0) ->
 	if runtime == null:
 		return ERR_UNAVAILABLE
 
-	if runtime.is_connected("exception_raised", target, method):
+	if runtime.is_connected("exception_raised", Callable(target, method)):
 		return OK
 
-	return runtime.connect("exception_raised", target, method, binds, flags)
+	return runtime.connect("exception_raised", Callable(target, method).bind(binds), flags)
 
 
 func _enable_story_exception_recording(enable: bool) -> void:
@@ -1951,7 +1951,7 @@ func _make_story_error_metadata():
 
 # ############################################################################ #
 
-var Json setget , get_Json
+var Json : get = get_Json
 func get_Json():
 	return _Json.get_ref()
 var _Json = WeakRef.new()
@@ -1974,7 +1974,7 @@ func _get_runtime():
 
 # ############################################################################ #
 
-class VariableObserver extends Reference:
+class VariableObserver extends RefCounted:
 	var variable_name: String
 
 	signal variable_changed(variable_name, new_value)

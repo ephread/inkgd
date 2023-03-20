@@ -4,7 +4,7 @@
 # See LICENSE in the project root for license information.
 # ############################################################################ #
 
-extends Reference
+extends RefCounted
 
 class_name InkConfiguration
 
@@ -66,7 +66,7 @@ var use_mono: bool = false
 var mono_path: String = ""
 var inklecate_path: String = ""
 
-var compilation_mode: int = BuildMode.MANUAL setget set_compilation_mode
+var compilation_mode: int = BuildMode.MANUAL: set = set_compilation_mode
 func set_compilation_mode(new_value: int):
 	compilation_mode = new_value
 	emit_signal("compilation_mode_changed", compilation_mode)

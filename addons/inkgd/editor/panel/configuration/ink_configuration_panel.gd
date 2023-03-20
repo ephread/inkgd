@@ -1,10 +1,10 @@
+@tool
 # ############################################################################ #
 # Copyright © 2019-2022 Frédéric Maquin <fred@ephread.com>
 # Licensed under the MIT License.
 # See LICENSE in the project root for license information.
 # ############################################################################ #
 
-tool
 extends Control
 
 # Hiding this type to prevent registration of "private" nodes.
@@ -66,25 +66,25 @@ var _file_dialog_selection = FileDialogSelection.UNKNOWN
 # Nodes
 # ############################################################################ #
 
-onready var _test_button = find_node("TestButton")
+@onready var _test_button = find_child("TestButton")
 
-onready var _use_mono_label = find_node("UseMonoLabel")
-onready var _use_mono_checkbox = find_node("UseMonoCheckBox")
+@onready var _use_mono_label = find_child("UseMonoLabel")
+@onready var _use_mono_checkbox = find_child("UseMonoCheckBox")
 
-onready var _mono_label = find_node("MonoLabel")
-onready var _mono_container = find_node("MonoH")
-onready var _mono_line_edit = find_node("MonoLineEdit")
-onready var _mono_dialog_button = find_node("MonoDialogButton")
+@onready var _mono_label = find_child("MonoLabel")
+@onready var _mono_container = find_child("MonoH")
+@onready var _mono_line_edit = find_child("MonoLineEdit")
+@onready var _mono_dialog_button = find_child("MonoDialogButton")
 
-onready var _executable_line_edit = find_node("ExecutableLineEdit")
-onready var _executable_dialog_button = find_node("ExecutableDialogButton")
+@onready var _executable_line_edit = find_child("ExecutableLineEdit")
+@onready var _executable_dialog_button = find_child("ExecutableDialogButton")
 
-onready var _recompilation_mode_button = find_node("RecompilationModeOptionButton")
+@onready var _recompilation_mode_button = find_child("RecompilationModeOptionButton")
 
-onready var _mono_support_container = find_node("MonoSupportV")
-onready var _mono_support_documentation_button = find_node("DocumentationButton")
-onready var _mono_support_presence_label = _mono_support_container.find_node("PresenceLabel")
-onready var _mono_support_refresh_button = _mono_support_container.find_node("RefreshButton")
+@onready var _mono_support_container = find_child("MonoSupportV")
+@onready var _mono_support_documentation_button = find_child("DocumentationButton")
+@onready var _mono_support_presence_label = _mono_support_container.find_child("PresenceLabel")
+@onready var _mono_support_refresh_button = _mono_support_container.find_child("RefreshButton")
 
 
 # ############################################################################ #
@@ -139,7 +139,7 @@ func _mono_button_pressed():
 	_file_dialog.current_path = configuration.mono_path
 	_file_dialog.current_dir = configuration.mono_path.get_base_dir()
 	_file_dialog.current_file = configuration.mono_path.get_file()
-	_file_dialog.set_mode(FileDialog.MODE_OPEN_FILE)
+	_file_dialog.set_mode(FileDialog.FILE_MODE_OPEN_FILE)
 	_file_dialog.set_access(FileDialog.ACCESS_FILESYSTEM)
 	_file_dialog.popup_centered(Vector2(1280, 800) * editor_interface.scale)
 
@@ -151,7 +151,7 @@ func _executable_button_pressed():
 	_file_dialog.current_file = configuration.inklecate_path
 	_file_dialog.current_dir = configuration.inklecate_path.get_base_dir()
 	_file_dialog.current_file = configuration.inklecate_path.get_file()
-	_file_dialog.set_mode(FileDialog.MODE_OPEN_FILE)
+	_file_dialog.set_mode(FileDialog.FILE_MODE_OPEN_FILE)
 	_file_dialog.set_access(FileDialog.ACCESS_FILESYSTEM)
 	_file_dialog.popup_centered(Vector2(1280, 800) * editor_interface.scale)
 
@@ -178,7 +178,7 @@ func _test_button_pressed():
 
 		dialog.popup_centered()
 	else:
-		var dialog = InkRichDialog.instance()
+		var dialog = InkRichDialog.instantiate()
 		add_child(dialog)
 
 
@@ -208,13 +208,13 @@ func _on_file_selected(path: String):
 
 func _check_runtime_presence():
 	var ink_engine_runtime = InkCSharpValidator.new().get_runtime_path()
-	var is_present = !ink_engine_runtime.empty()
+	var is_present = !ink_engine_runtime.is_empty()
 
 	if is_present:
-		_mono_support_presence_label.add_color_override("font_color", Color.green)
+		_mono_support_presence_label.add_theme_color_override("font_color", Color.GREEN)
 		_mono_support_presence_label.text = "PRESENT"
 	else:
-		_mono_support_presence_label.add_color_override("font_color", Color.red)
+		_mono_support_presence_label.add_theme_color_override("font_color", Color.RED)
 		_mono_support_presence_label.text = "MISSING"
 
 
@@ -280,26 +280,26 @@ func _set_button_icons():
 
 
 func _connect_signals():
-	editor_interface.editor_filesystem.connect("filesystem_changed", self, "_check_runtime_presence")
+	editor_interface.editor_filesystem.connect("filesystem_changed", Callable(self, "_check_runtime_presence"))
 
-	_test_button.connect("pressed", self, "_test_button_pressed")
-	_use_mono_checkbox.connect("toggled", self, "_use_mono_toggled")
+	_test_button.connect("pressed", Callable(self, "_test_button_pressed"))
+	_use_mono_checkbox.connect("toggled", Callable(self, "_use_mono_toggled"))
 
-	_mono_line_edit.connect("text_entered", self, "_configuration_entered")
-	_executable_line_edit.connect("text_entered", self, "_configuration_entered")
+	_mono_line_edit.connect("text_submitted", Callable(self, "_configuration_entered"))
+	_executable_line_edit.connect("text_submitted", Callable(self, "_configuration_entered"))
 
-	_mono_line_edit.connect("focus_exited", self, "_configuration_focus_exited")
-	_executable_line_edit.connect("focus_exited", self, "_configuration_focus_exited")
+	_mono_line_edit.connect("focus_exited", Callable(self, "_configuration_focus_exited"))
+	_executable_line_edit.connect("focus_exited", Callable(self, "_configuration_focus_exited"))
 
-	_mono_dialog_button.connect("pressed", self, "_mono_button_pressed")
-	_executable_dialog_button.connect("pressed", self, "_executable_button_pressed")
+	_mono_dialog_button.connect("pressed", Callable(self, "_mono_button_pressed"))
+	_executable_dialog_button.connect("pressed", Callable(self, "_executable_button_pressed"))
 
-	_recompilation_mode_button.connect("item_selected", self, "_recompilation_mode_button_selected")
+	_recompilation_mode_button.connect("item_selected", Callable(self, "_recompilation_mode_button_selected"))
 
-	_mono_support_documentation_button.connect("pressed", self, "_mono_support_documentation_pressed")
-	_mono_support_refresh_button.connect("pressed", self, "_check_runtime_presence")
+	_mono_support_documentation_button.connect("pressed", Callable(self, "_mono_support_documentation_pressed"))
+	_mono_support_refresh_button.connect("pressed", Callable(self, "_check_runtime_presence"))
 
-	_file_dialog.connect("file_selected", self, "_on_file_selected")
+	_file_dialog.connect("file_selected", Callable(self, "_on_file_selected"))
 
 
 func _can_run_mono():

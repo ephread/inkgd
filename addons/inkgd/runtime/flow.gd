@@ -120,7 +120,7 @@ func _to_string() -> String:
 # ############################################################################ #
 
 func is_class(type):
-	return type == "Flow" || .is_class(type)
+	return type == "Flow" || super.is_class(type)
 
 func get_class():
 	return "Flow"
@@ -136,7 +136,7 @@ static func new_with_name_and_jobject(name, story, jobject):
 	return flow
 
 # ############################################################################ #
-var Json setget , get_Json
+var Json : get = get_Json
 func get_Json():
 	return _Json.get_ref()
 

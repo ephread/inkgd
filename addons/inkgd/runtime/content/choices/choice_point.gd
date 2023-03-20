@@ -17,7 +17,7 @@ class_name InkChoicePoint
 
 # () -> InkPath
 # (InkPath) -> void
-var path_on_choice: InkPath setget set_path_on_choice, get_path_on_choice
+var path_on_choice: InkPath: get = get_path_on_choice, set = set_path_on_choice
 func get_path_on_choice() -> InkPath:
 	if self._path_on_choice != null && self._path_on_choice.is_relative:
 		var choice_target_obj = self.choice_target
@@ -33,7 +33,7 @@ var _path_on_choice = null
 
 # ############################################################################ #
 
-var choice_target: InkContainer setget , get_choice_target
+var choice_target: InkContainer: get = get_choice_target
 func get_choice_target() -> InkContainer:
 	var cont = resolve_path(self._path_on_choice).container
 	return cont
@@ -58,7 +58,7 @@ var is_invisible_default: bool
 
 # ############################################################################ #
 
-var flags: int setget set_flags, get_flags
+var flags: int: get = get_flags, set = set_flags
 func get_flags() -> int:
 	var flags: int = 0
 
@@ -100,7 +100,7 @@ func _to_string() -> String:
 # ############################################################################ #
 
 func is_class(type: String) -> bool:
-	return type == "ChoicePoint" || .is_class(type)
+	return type == "ChoicePoint" || super.is_class(type)
 
 func get_class() -> String:
 	return "ChoicePoint"

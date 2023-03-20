@@ -44,14 +44,14 @@ class Reader extends InkBase:
 		if c.length() > 1:
 			return false
 
-		return c.is_valid_integer() || c == "." || c == "-" || c == "+" || c == 'E' || c == 'e'
+		return c.is_valid_int() || c == "." || c == "-" || c == "+" || c == 'E' || c == 'e'
 
 	# (String) -> bool
 	func is_first_number_char(c: String) -> bool:
 		if c.length() > 1:
 			return false
 
-		return c.is_valid_integer() || c == "-" || c == "+"
+		return c.is_valid_int() || c == "-" || c == "+"
 
 	# () -> Variant
 	func read_object():
@@ -183,7 +183,9 @@ class Reader extends InkBase:
 							return null
 						var digits = _text.substr(_offset + 1, 4)
 
-						var json_parse_result = JSON.parse("\"\\u" + digits + "\"")
+						var test_json_conv = JSON.new()
+						test_json_conv.parse("\"\\u" + digits + "\"")
+						var json_parse_result = test_json_conv.get_data()
 						if json_parse_result.error != OK:
 							Utils.throw_exception("Invalid Unicode escape character at offset %d" % (_offset - 1))
 							return null
@@ -229,7 +231,7 @@ class Reader extends InkBase:
 			if num_str.is_valid_float():
 				return float(num_str)
 		else:
-			if num_str.is_valid_integer():
+			if num_str.is_valid_int():
 				return int(num_str)
 
 		Utils.throw_exception("Failed to parse number value: " + num_str)
@@ -292,7 +294,7 @@ class Reader extends InkBase:
 	# ######################################################################## #
 
 	func is_class(type: String) -> bool:
-		return type == "InkSimpleJSON.Reader" || .is_class(type)
+		return type == "InkSimpleJSON.Reader" || super.is_class(type)
 
 	func get_class() -> String:
 		return "InkSimpleJSON.Reader"
@@ -575,7 +577,7 @@ class Writer extends InkBase:
 	# ######################################################################## #
 
 	func is_class(type: String) -> bool:
-		return type == "InkSimpleJSON.Writer" || .is_class(type)
+		return type == "InkSimpleJSON.Writer" || super.is_class(type)
 
 	func get_class() -> String:
 		return "InkSimpleJSON.Writer"

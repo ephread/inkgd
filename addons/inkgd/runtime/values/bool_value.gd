@@ -51,7 +51,7 @@ func _to_string() -> String:
 # ######################################################################## #
 
 func is_class(type):
-	return type == "BoolValue" || .is_class(type)
+	return type == "BoolValue" || super.is_class(type)
 
 func get_class():
 	return "BoolValue"

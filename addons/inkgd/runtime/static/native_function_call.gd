@@ -8,7 +8,7 @@
 # inkgd is licensed under the terms of the MIT license.
 # ############################################################################ #
 
-extends Reference
+extends RefCounted
 
 class_name InkStaticNativeFunctionCall
 
@@ -163,7 +163,7 @@ func generate_native_functions_if_necessary():
 
 # (String, int, ValueType, Variant)
 func add_op_to_native_func(name, args, val_type, op):
-	var native_func = null # NativeFunctionCall
+	var native()_func = null # NativeFunctionCall
 	if native_functions.has(name):
 		native_func = native_functions[name]
 	else:

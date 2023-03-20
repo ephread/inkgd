@@ -7,7 +7,7 @@
 # inkgd is licensed under the terms of the MIT license.
 # ############################################################################ #
 
-extends Reference
+extends RefCounted
 
 class_name InkUtils
 
@@ -118,30 +118,30 @@ static func typename_of(variant) -> String:
 		TYPE_NIL: return "null"
 		TYPE_BOOL: return "bool"
 		TYPE_INT: return "int"
-		TYPE_REAL: return "float"
+		TYPE_FLOAT: return "float"
 		TYPE_STRING: return "String"
 		TYPE_VECTOR2: return "Vector2"
 		TYPE_RECT2: return "Rect2"
 		TYPE_VECTOR3: return "Vector3"
 		TYPE_TRANSFORM2D: return "Transform2D"
 		TYPE_PLANE: return "Plane"
-		TYPE_QUAT: return "Quat"
+		TYPE_QUATERNION: return "Quaternion"
 		TYPE_AABB: return "AABB"
 		TYPE_BASIS: return "Basis"
-		TYPE_TRANSFORM: return "Transform"
+		TYPE_TRANSFORM3D: return "Transform3D"
 		TYPE_COLOR: return "Color"
 		TYPE_NODE_PATH: return "NodePath"
 		TYPE_RID: return "RID"
 		TYPE_OBJECT: return variant.get_class()
 		TYPE_DICTIONARY: return "Dictionary"
 		TYPE_ARRAY: return "Array"
-		TYPE_RAW_ARRAY: return "PoolByteArray"
-		TYPE_INT_ARRAY: return "PoolIntArray"
-		TYPE_REAL_ARRAY: return "PoolRealArray"
-		TYPE_STRING_ARRAY: return "PoolStringArray"
-		TYPE_VECTOR2_ARRAY: return "PoolVector2Array"
-		TYPE_VECTOR3_ARRAY: return "PoolVector3Array"
-		TYPE_COLOR_ARRAY: return "PoolColorArray"
+		TYPE_PACKED_BYTE_ARRAY: return "PackedByteArray"
+		TYPE_PACKED_INT32_ARRAY: return "PackedInt32Array"
+		TYPE_PACKED_FLOAT32_ARRAY: return "PackedFloat32Array"
+		TYPE_PACKED_STRING_ARRAY: return "PackedStringArray"
+		TYPE_PACKED_VECTOR2_ARRAY: return "PackedVector2Array"
+		TYPE_PACKED_VECTOR3_ARRAY: return "PackedVector3Array"
+		TYPE_PACKED_COLOR_ARRAY: return "PackedColorArray"
 		_: return "unknown"
 
 # ############################################################################ #
@@ -149,7 +149,7 @@ static func typename_of(variant) -> String:
 # ############################################################################ #
 
 static func trim(string_to_trim: String, characters = []) -> String:
-	if characters.empty():
+	if characters.is_empty():
 		return string_to_trim.strip_edges()
 
 	var length = string_to_trim.length()

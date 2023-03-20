@@ -67,7 +67,7 @@ func _to_string() -> String:
 # ############################################################################ #
 
 func is_class(type: String) -> bool:
-	return type == "DebugMetadata" || .is_class(type)
+	return type == "DebugMetadata" || super.is_class(type)
 
 func get_class() -> String:
 	return "DebugMetadata"

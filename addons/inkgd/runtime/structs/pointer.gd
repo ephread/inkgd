@@ -34,16 +34,16 @@ static func InkPointer() -> GDScript:
 
 # InkContainer
 # Encapsulating container into a weak ref.
-var container: InkContainer setget set_container, get_container
+var container: InkContainer: get = get_container, set = set_container
 func set_container(value: InkContainer) -> void:
-	assert(false, "Pointer is immutable, cannot set container.")
+	assert(false) #,"Pointer is immutable, cannot set container.")
 func get_container() -> InkContainer:
 	return self._container.get_ref()
 var _container: WeakRef = WeakRef.new()
 
-var index: int setget set_index, get_index
+var index: int: get = get_index, set = set_index
 func set_index(value: int):
-	assert(false, "Pointer is immutable, cannot set index.")
+	assert(false) #,"Pointer is immutable, cannot set index.")
 func get_index() -> int:
 	return _index
 var _index: int = 0 # int
@@ -69,7 +69,7 @@ func resolve():
 # ############################################################################ #
 
 # () -> bool
-var is_null: bool setget , get_is_null
+var is_null: bool: get = get_is_null
 func get_is_null() -> bool:
 	return self.container == null
 
@@ -77,7 +77,7 @@ func get_is_null() -> bool:
 
 # TODO: Make inspectable
 # () -> InkPath
-var path: InkPath setget , get_path
+var path: InkPath: get = get_path
 func get_path() -> InkPath:
 	if self.is_null:
 		return null
@@ -112,7 +112,7 @@ static func null():
 # ############################################################################ #
 
 func is_class(type: String) -> bool:
-	return type == "Pointer" || .is_class(type)
+	return type == "Pointer" || super.is_class(type)
 
 func get_class() -> String:
 	return "Pointer"

@@ -9,7 +9,7 @@
 # inkgd is licensed under the terms of the MIT license.
 # ############################################################################ #
 
-extends Reference
+extends RefCounted
 
 class_name InkBase
 
@@ -30,7 +30,7 @@ func equals(ink_base) -> bool:
 # ############################################################################ #
 
 func is_class(type: String) -> bool:
-	return type == "InkBase" || .is_class(type)
+	return type == "InkBase" || super.is_class(type)
 
 func get_class() -> String:
 	return "InkBase"

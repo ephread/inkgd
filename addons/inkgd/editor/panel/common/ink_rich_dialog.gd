@@ -1,11 +1,11 @@
+@tool
 # ############################################################################ #
 # Copyright © 2019-2022 Frédéric Maquin <fred@ephread.com>
 # Licensed under the MIT License.
 # See LICENSE in the project root for license information.
 # ############################################################################ #
 
-tool
-extends WindowDialog
+extends Window
 
 # A custom dialog showing a message and, optionally, a command output.
 
@@ -17,19 +17,19 @@ extends WindowDialog
 # Nodes
 # ############################################################################ #
 
-onready var _margin_container = $MarginContainer
-onready var _vbox_container = $MarginContainer/VBoxContainer
-onready var _message_label = $MarginContainer/VBoxContainer/MessageLabel
-onready var _accept_button = $MarginContainer/VBoxContainer/AcceptButton
-onready var _output_panel = $MarginContainer/VBoxContainer/OutputPanel
-onready var _output_label = find_node("OutputLabel")
+@onready var _margin_container = $MarginContainer
+@onready var _vbox_container = $MarginContainer/VBoxContainer
+@onready var _message_label = $MarginContainer/VBoxContainer/MessageLabel
+@onready var _accept_button = $MarginContainer/VBoxContainer/AcceptButton
+@onready var _output_panel = $MarginContainer/VBoxContainer/OutputPanel
+@onready var _output_label = find_child("OutputLabel")
 
 # ############################################################################ #
 # Properties
 # ############################################################################ #
 
 ## The message displayed in the dialog.
-var message_text: String setget set_message_text, get_message_text
+var message_text: String: get = get_message_text, set = set_message_text
 func set_message_text(text: String):
 	_message_label.text = text
 func get_message_text() -> String:
@@ -39,7 +39,7 @@ func get_message_text() -> String:
 ## in the dialog.
 ##
 ## Setting this property to null hides the corresponding panel in the dialog.
-var output_text: String setget set_output_text, get_output_text
+var output_text: String: get = get_output_text, set = set_output_text
 func set_output_text(text: String):
 	_output_label.text = text
 	_output_label.visible = !(text == null || text.length() == 0)
@@ -51,22 +51,22 @@ func get_output_text() -> String:
 # ############################################################################ #
 
 func _ready():
-	_accept_button.connect("pressed", self, "_accept_button_pressed")
+	_accept_button.connect("pressed", Callable(self, "_accept_button_pressed"))
 
 	var font = _get_source_font()
 	if font != null:
-		_output_panel.add_font_override("font", font)
+		_output_panel.add_theme_font_override("font", font)
 
 # ############################################################################ #
 # Methods
 # ############################################################################ #
 
 func update_layout(scale: float) -> void:
-	_margin_container.add_constant_override("margin_right", 10 * scale)
-	_margin_container.add_constant_override("margin_top", 10 * scale)
-	_margin_container.add_constant_override("margin_left", 10 * scale)
-	_margin_container.add_constant_override("margin_bottom", 10 * scale)
-	_vbox_container.add_constant_override("separation", 10 * scale)
+	_margin_container.add_theme_constant_override("offset_right", 10 * scale)
+	_margin_container.add_theme_constant_override("offset_top", 10 * scale)
+	_margin_container.add_theme_constant_override("offset_left", 10 * scale)
+	_margin_container.add_theme_constant_override("offset_bottom", 10 * scale)
+	_vbox_container.add_theme_constant_override("separation", 10 * scale)
 
 
 # ############################################################################ #

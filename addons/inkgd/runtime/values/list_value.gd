@@ -76,7 +76,7 @@ static func retain_list_origins_for_assignment(old_value, new_value):
 # ############################################################################ #
 
 func is_class(type):
-	return type == "ListValue" || .is_class(type)
+	return type == "ListValue" || super.is_class(type)
 
 func get_class():
 	return "ListValue"

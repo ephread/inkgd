@@ -61,7 +61,7 @@ class Element extends InkBase:
 	# ######################################################################## #
 
 	func is_class(type):
-		return type == "CallStack.Element" || .is_class(type)
+		return type == "CallStack.Element" || super.is_class(type)
 
 	func get_class():
 		return "CallStack.Element"
@@ -184,7 +184,7 @@ class InkThread extends InkBase:
 	# ######################################################################## #
 
 	func is_class(type):
-		return type == "CallStack.InkThread" || .is_class(type)
+		return type == "CallStack.InkThread" || super.is_class(type)
 
 	func get_class():
 		return "CallStack.InkThread"
@@ -197,7 +197,7 @@ class InkThread extends InkBase:
 		return thread
 
 	# ######################################################################## #
-	var Json setget , get_Json
+	var Json : get = get_Json
 	func get_Json():
 		return _Json.get_ref()
 
@@ -212,30 +212,30 @@ class InkThread extends InkBase:
 		_Json = weakref(InkRuntime.json)
 
 # () -> Array<InkElement>
-var elements setget , get_elements
+var elements : get = get_elements
 func get_elements():
 	return self.callstack
 
 # () -> int
-var depth setget , get_depth
+var depth : get = get_depth
 func get_depth():
 	return self.elements.size()
 
 # () -> InkElement
-var current_element setget , get_current_element
+var current_element : get = get_current_element
 func get_current_element():
 	var thread = self._threads.back()
 	var cs = thread.callstack
 	return cs.back()
 
 # () -> int
-var current_element_index setget , get_current_element_index
+var current_element_index : get = get_current_element_index
 func get_current_element_index():
 	return self.callstack.size() - 1
 
 # () -> InkThread
 # (InkThread) -> void
-var current_thread setget set_current_thread, get_current_thread
+var current_thread : get = get_current_thread, set = set_current_thread
 func get_current_thread():
 	return self._threads.back()
 
@@ -246,7 +246,7 @@ func set_current_thread(value):
 	self._threads.append(value)
 
 # () -> bool
-var can_pop setget , get_can_pop
+var can_pop : get = get_can_pop
 func get_can_pop():
 	return self.callstack.size() > 1
 
@@ -310,12 +310,12 @@ func pop_thread():
 		Utils.throw_exception("Can't pop thread")
 
 # () -> bool
-var can_pop_thread setget , get_can_pop_thread
+var can_pop_thread : get = get_can_pop_thread
 func get_can_pop_thread():
 	return _threads.size() > 1 && !self.element_is_evaluate_from_game
 
 # () -> bool
-var element_is_evaluate_from_game setget , get_element_is_evaluate_from_game
+var element_is_evaluate_from_game : get = get_element_is_evaluate_from_game
 func get_element_is_evaluate_from_game():
 	return self.current_element.type == PushPopType.FUNCTION_EVALUATION_FROM_GAME
 
@@ -394,11 +394,11 @@ func thread_with_index(index):
 
 	return null
 
-var callstack setget , get_callstack
+var callstack : get = get_callstack
 func get_callstack():
 	return self.current_thread.callstack
 
-var callstack_trace setget , get_callstack_trace
+var callstack_trace : get = get_callstack_trace
 func get_callstack_trace():
 	var sb = ""
 	var t = 0
@@ -435,7 +435,7 @@ var _start_of_root = InkPointer.null() # Pointer
 # ############################################################################ #
 
 func is_class(type):
-	return type == "CallStack" || .is_class(type)
+	return type == "CallStack" || super.is_class(type)
 
 func get_class():
 	return "CallStack"

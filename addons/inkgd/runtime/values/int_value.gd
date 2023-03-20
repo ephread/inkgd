@@ -48,7 +48,7 @@ func cast(new_type, metadata = null):
 # ######################################################################## #
 
 func is_class(type):
-	return type == "IntValue" || .is_class(type)
+	return type == "IntValue" || super.is_class(type)
 
 func get_class():
 	return "IntValue"

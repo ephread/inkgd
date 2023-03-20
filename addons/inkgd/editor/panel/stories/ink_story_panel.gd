@@ -1,10 +1,10 @@
+@tool
 # ############################################################################ #
 # Copyright © 2019-2022 Frédéric Maquin <fred@ephread.com>
 # Licensed under the MIT License.
 # See LICENSE in the project root for license information.
 # ############################################################################ #
 
-tool
 extends Control
 
 # Hiding this type to prevent registration of "private" nodes.
@@ -81,13 +81,13 @@ var _progress_dialog = null
 # Nodes
 # ############################################################################ #
 
-onready var _empty_state_container = EmptyStateContainerScene.instance()
+@onready var _empty_state_container = EmptyStateContainerScene.instantiate()
 
-onready var _build_all_button = find_node("BuildAllButton")
-onready var _add_new_story_button = find_node("AddNewStoryButton")
+@onready var _build_all_button = find_child("BuildAllButton")
+@onready var _add_new_story_button = find_child("AddNewStoryButton")
 
-onready var _story_configuration_container = find_node("StoryConfigurationVBoxContainer")
-onready var _scroll_container = find_node("ScrollContainer")
+@onready var _story_configuration_container = find_child("StoryConfigurationVBoxContainer")
+@onready var _scroll_container = find_child("ScrollContainer")
 
 
 # ############################################################################ #
@@ -103,9 +103,9 @@ func _ready():
 		print("[inkgd] [INFO] Ink Stories Tab: dependencies not met, ignoring.")
 		return
 
-	configuration.connect("compilation_mode_changed", self, "_compilation_mode_changed")
+	configuration.connect("compilation_mode_changed", Callable(self, "_compilation_mode_changed"))
 
-	editor_interface.editor_filesystem.connect("resources_reimported", self, "_resources_reimported")
+	editor_interface.editor_filesystem.connect("resources_reimported", Callable(self, "_resources_reimported"))
 
 	_story_configuration_container.add_child(_empty_state_container)
 	add_child(_file_dialog)
@@ -147,7 +147,7 @@ func _source_file_button_pressed(node):
 	_file_dialog.current_dir = path.get_base_dir()
 	_file_dialog.current_file = path.get_file()
 
-	_file_dialog.set_mode(FileDialog.MODE_OPEN_FILE)
+	_file_dialog.set_mode(FileDialog.FILE_MODE_OPEN_FILE)
 	_file_dialog.set_access(FileDialog.ACCESS_FILESYSTEM)
 	_file_dialog.add_filter("*.ink;Ink source file")
 	_file_dialog.popup_centered(Vector2(1280, 800) * editor_interface.scale)
@@ -168,7 +168,7 @@ func _target_file_button_pressed(node):
 	_file_dialog.current_dir = path.get_base_dir()
 	_file_dialog.current_file = path.get_file()
 
-	_file_dialog.set_mode(FileDialog.MODE_SAVE_FILE)
+	_file_dialog.set_mode(FileDialog.FILE_MODE_SAVE_FILE)
 	_file_dialog.set_access(FileDialog.ACCESS_FILESYSTEM)
 	_file_dialog.add_filter("*.json;Compiled Ink story")
 	_file_dialog.popup_centered(Vector2(1280, 800) * editor_interface.scale)
@@ -188,7 +188,7 @@ func _watched_folder_button_pressed(node):
 	_file_dialog.current_dir = path.get_base_dir()
 	_file_dialog.current_file = path.get_file()
 
-	_file_dialog.set_mode(FileDialog.MODE_OPEN_DIR)
+	_file_dialog.set_mode(FileDialog.FILE_MODE_OPEN_DIR)
 	_file_dialog.set_access(FileDialog.ACCESS_FILESYSTEM)
 	_file_dialog.popup_centered(Vector2(1280, 800) * editor_interface.scale)
 
@@ -247,7 +247,7 @@ func _compile_all_stories():
 	var number_of_stories = configuration.stories.size()
 	var current_story_index = 0
 
-	_progress_dialog = InkProgressDialog.instance()
+	_progress_dialog = InkProgressDialog.instantiate()
 	add_child(_progress_dialog)
 
 	_progress_dialog.update_layout(editor_interface.scale)
@@ -258,7 +258,7 @@ func _compile_all_stories():
 		_progress_dialog.current_step_name = source_file_path.get_file()
 
 		_compile_story(story_configuration)
-		yield(self, "_compiled")
+		await self._compiled
 
 		_progress_dialog.progress = float(100 * (current_story_index + 1) / number_of_stories)
 		current_story_index += 1
@@ -288,7 +288,7 @@ func _compile_story(story_configuration, node = null):
 	var compiler = InkCompiler.new(compiler_configuration)
 
 	_compilers[compiler.identifier] = compiler
-	compiler.connect("story_compiled", self, "_handle_compilation")
+	compiler.connect("story_compiled", Callable(self, "_handle_compilation"))
 	compiler.compile_story()
 
 
@@ -301,8 +301,8 @@ func _handle_compilation(result):
 
 	if result.user_triggered:
 		if result.success:
-			if result.output && !result.output.empty():
-				var dialog = InkRichDialog.instance()
+			if result.output && !result.output.is_empty():
+				var dialog = InkRichDialog.instantiate()
 				add_child(dialog)
 
 				dialog.window_title = "Success!"
@@ -322,7 +322,7 @@ func _handle_compilation(result):
 
 			_reimport_compiled_stories()
 		else:
-			var dialog = InkRichDialog.instance()
+			var dialog = InkRichDialog.instantiate()
 			add_child(dialog)
 
 			dialog.window_title = "Error"
@@ -355,12 +355,12 @@ func _on_file_selected(path: String):
 			source_line_edit.text = localized_path
 			source_line_edit.update()
 
-			if story_configuration.target_file_line_edit.text.empty():
+			if story_configuration.target_file_line_edit.text.is_empty():
 				var target_line_edit = story_configuration.target_file_line_edit
 				target_line_edit.text = localized_path + ".json"
 				target_line_edit.update()
 
-			if story_configuration.watched_folder_line_edit.text.empty():
+			if story_configuration.watched_folder_line_edit.text.is_empty():
 				var watched_folder_line_edit = story_configuration.watched_folder_line_edit
 				watched_folder_line_edit.text = localized_path.get_base_dir()
 				watched_folder_line_edit.update()
@@ -398,7 +398,7 @@ func _on_file_selected(path: String):
 
 
 func _scrollbar_changed():
-	var max_value = _scroll_container.get_v_scrollbar().max_value
+	var max_value = _scroll_container.get_v_scroll_bar().max_value
 
 	if _scrollbar_max_value == max_value && _scrollbar_max_value != -1:
 		return
@@ -450,16 +450,16 @@ func _load_story_configurations():
 
 
 func _add_new_story_configuration():
-	var story_configuration = InkStoryConfigurationScene.instance()
+	var story_configuration = InkStoryConfigurationScene.instantiate()
 
 	story_configuration.editor_interface = editor_interface
 
-	story_configuration.connect("configuration_changed", self, "_configuration_changed")
-	story_configuration.connect("remove_button_pressed", self, "_remove_button_pressed")
-	story_configuration.connect("build_button_pressed", self, "_build_button_pressed")
-	story_configuration.connect("source_file_button_pressed", self, "_source_file_button_pressed")
-	story_configuration.connect("target_file_button_pressed", self, "_target_file_button_pressed")
-	story_configuration.connect("watched_folder_button_pressed", self, "_watched_folder_button_pressed")
+	story_configuration.connect("configuration_changed", Callable(self, "_configuration_changed"))
+	story_configuration.connect("remove_button_pressed", Callable(self, "_remove_button_pressed"))
+	story_configuration.connect("build_button_pressed", Callable(self, "_build_button_pressed"))
+	story_configuration.connect("source_file_button_pressed", Callable(self, "_source_file_button_pressed"))
+	story_configuration.connect("target_file_button_pressed", Callable(self, "_target_file_button_pressed"))
+	story_configuration.connect("watched_folder_button_pressed", Callable(self, "_watched_folder_button_pressed"))
 
 	if _empty_state_container.get_parent() != null:
 		_story_configuration_container.remove_child(_empty_state_container)
@@ -490,14 +490,14 @@ func _get_story_configuration_at_index(index: int):
 	return null
 
 
-func _recompile_if_necessary(resources: PoolStringArray):
+func _recompile_if_necessary(resources: PackedStringArray):
 	# Making sure the resources have been imported before recompiling.
-	yield(get_tree().create_timer(0.5), "timeout")
+	await get_tree().create_timer(0.5).timeout
 
 	for story_configuration in configuration.stories:
 		var watched_folder_path: String = configuration.get_watched_folder_path(story_configuration)
 
-		if watched_folder_path.empty():
+		if watched_folder_path.is_empty():
 			return
 
 		for resource in resources:
@@ -514,10 +514,10 @@ func _disable_all_buttons(disable: bool):
 
 
 func _connect_signals():
-	_build_all_button.connect("pressed", self, "_build_all_button_pressed")
-	_add_new_story_button.connect("pressed", self, "_add_new_story_button_pressed")
+	_build_all_button.connect("pressed", Callable(self, "_build_all_button_pressed"))
+	_add_new_story_button.connect("pressed", Callable(self, "_add_new_story_button_pressed"))
 
-	_file_dialog.connect("file_selected", self, "_on_file_selected")
-	_file_dialog.connect("dir_selected", self, "_on_file_selected")
+	_file_dialog.connect("file_selected", Callable(self, "_on_file_selected"))
+	_file_dialog.connect("dir_selected", Callable(self, "_on_file_selected"))
 
-	_scroll_container.get_v_scrollbar().connect("changed", self, "_scrollbar_changed")
+	_scroll_container.get_v_scroll_bar().connect("changed", Callable(self, "_scrollbar_changed"))

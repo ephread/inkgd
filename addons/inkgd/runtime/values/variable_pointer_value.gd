@@ -15,7 +15,7 @@ class_name InkVariablePointerValue
 
 # ############################################################################ #
 
-var variable_name setget set_variable_name, get_variable_name # InkPath
+var variable_name : get = get_variable_name, set = set_variable_name # InkPath
 func get_variable_name():
 	return value
 func set_variable_name(value):
@@ -31,7 +31,7 @@ func get_is_truthy():
 var context_index = 0 # int
 
 func _init_with_context(variable_name, context_index = -1):
-	._init_with(variable_name)
+	super._init_with(variable_name)
 	self.context_index = context_index
 
 func _init():
@@ -58,7 +58,7 @@ func copy():
 # ######################################################################## #
 
 func is_class(type):
-	return type == "VariablePointerValue" || .is_class(type)
+	return type == "VariablePointerValue" || super.is_class(type)
 
 func get_class():
 	return "VariablePointerValue"

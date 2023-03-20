@@ -43,7 +43,7 @@ func _to_string() -> String:
 # ############################################################################ #
 
 func is_class(type: String) -> bool:
-	return type == "VariableAssignment" || .is_class(type)
+	return type == "VariableAssignment" || super.is_class(type)
 
 func get_class() -> String:
 	return "VariableAssignment"

@@ -127,7 +127,7 @@ func contains_item_named(item_name: String) -> bool:
 
 # Array<ListDefinition>
 var origins = null
-var origin_of_max_item: InkListDefinition setget , get_origin_of_max_item
+var origin_of_max_item: InkListDefinition: get = get_origin_of_max_item
 func get_origin_of_max_item() -> InkListDefinition:
 	if origins == null:
 		return null
@@ -140,7 +140,7 @@ func get_origin_of_max_item() -> InkListDefinition:
 	return null
 
 # Array<String>
-var origin_names setget , get_origin_names
+var origin_names : get = get_origin_names
 func get_origin_names():
 	if self.size() > 0:
 		if _origin_names == null && self.size() > 0:
@@ -186,7 +186,7 @@ func get_min_item() -> InkKeyValuePair:
 	return _min_item
 
 # TODO: Make inspectable
-var inverse: InkList setget , get_inverse
+var inverse: InkList: get = get_inverse
 func get_inverse() -> InkList:
 	var list: InkList = InkList().new()
 	if origins != null:
@@ -198,7 +198,7 @@ func get_inverse() -> InkList:
 	return list
 
 # TODO: Make inspectable
-var all: InkList setget , get_all
+var all: InkList: get = get_all
 func get_all() -> InkList:
 	var list: InkList = InkList().new()
 	if origins != null:
@@ -343,7 +343,7 @@ func get_ordered_items():
 	for key in keys():
 		ordered.append(InkKeyValuePair.new_with_key_value(key, get_item(key)))
 
-	ordered.sort_custom(KeyValueInkListItemSorter, "sort")
+	ordered.sort_custom(Callable(KeyValueInkListItemSorter, "sort"))
 	return ordered
 
 func _to_string() -> String:
@@ -457,7 +457,7 @@ func raw_keys() -> Array:
 # ############################################################################ #
 
 func is_class(type: String) -> bool:
-	return type == "InkList" || .is_class(type)
+	return type == "InkList" || super.is_class(type)
 
 func get_class() -> String:
 	return "InkList"

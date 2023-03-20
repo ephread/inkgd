@@ -13,7 +13,7 @@
 
 # This simple set is designed to hold Strings only.
 
-extends Reference
+extends RefCounted
 
 class_name InkStringSet
 
@@ -41,8 +41,8 @@ func duplicate() -> InkStringSet:
 func enumerate() -> Array:
 	return _dictionary.keys()
 
-func empty() -> bool:
-	return _dictionary.empty()
+func is_empty() -> bool:
+	return _dictionary.is_empty()
 
 func contains(element: String) -> bool:
 	return _dictionary.has(element)

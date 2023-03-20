@@ -54,7 +54,7 @@ signal on_did_load_state()
 
 # ############################################################################ #
 
-func to_json() -> String:
+func JSON.new().stringify() -> String:
 	var writer: InkSimpleJSON.Writer = InkSimpleJSON.Writer.new()
 	write_json(writer)
 	return writer._to_string()
@@ -175,7 +175,7 @@ var current_warnings = null
 # InkVariablesState
 var variables_state
 
-var callstack: InkCallStack setget , get_callstack
+var callstack: InkCallStack: get = get_callstack
 func get_callstack() -> InkCallStack:
 	return self._current_flow.callstack
 
@@ -190,13 +190,13 @@ var story_seed: int = 0
 var previous_random: int = 0
 var did_safe_exit: bool = false
 
-var story setget , get_story
+var story : get = get_story
 func get_story():
 	return _story.get_ref()
 var _story = WeakRef.new()
 
 # String?
-var current_path_string setget , get_current_path_string
+var current_path_string : get = get_current_path_string
 func get_current_path_string():
 	var pointer = self.current_pointer
 	if pointer.is_null:
@@ -204,7 +204,7 @@ func get_current_path_string():
 	else:
 		return pointer.path._to_string()
 
-var current_pointer: InkPointer setget set_current_pointer, get_current_pointer
+var current_pointer: InkPointer: get = get_current_pointer, set = set_current_pointer
 func get_current_pointer() -> InkPointer:
 	var pointer = self.callstack.current_element.current_pointer
 	return self.callstack.current_element.current_pointer
@@ -213,7 +213,7 @@ func set_current_pointer(value: InkPointer):
 	var current_element = self.callstack.current_element
 	current_element.current_pointer = value
 
-var previous_pointer: InkPointer setget set_previous_pointer, get_previous_pointer
+var previous_pointer: InkPointer: get = get_previous_pointer, set = set_previous_pointer
 func get_previous_pointer() -> InkPointer:
 	return self.callstack.current_thread.previous_pointer
 
@@ -221,19 +221,19 @@ func set_previous_pointer(value: InkPointer):
 	var current_thread = self.callstack.current_thread
 	current_thread.previous_pointer = value
 
-var can_continue: bool setget , get_can_continue
+var can_continue: bool: get = get_can_continue
 func get_can_continue() -> bool:
 	return !self.current_pointer.is_null && !self.has_error
 
-var has_error: bool setget , get_has_error
+var has_error: bool: get = get_has_error
 func get_has_error() -> bool:
 	return self.current_errors != null && self.current_errors.size() > 0
 
-var has_warning: bool setget , get_has_warning
+var has_warning: bool: get = get_has_warning
 func get_has_warning() -> bool:
 	return self.current_warnings != null && self.current_warnings.size() > 0
 
-var current_text: String setget , get_current_text
+var current_text: String: get = get_current_text
 func get_current_text():
 	if self._output_stream_text_dirty:
 		var _str = ""
@@ -284,7 +284,7 @@ func clean_output_whitespace(str_to_clean: String) -> String:
 	return _str
 
 # Array<String>
-var current_tags: Array setget , get_current_tags
+var current_tags: Array: get = get_current_tags
 func get_current_tags():
 	if self._output_stream_tags_dirty:
 		self._current_tags = []
@@ -301,7 +301,7 @@ func get_current_tags():
 # Array<String>
 var _current_tags: Array = []
 
-var current_flow_name: String setget , get_current_flow_name
+var current_flow_name: String: get = get_current_flow_name
 func get_current_flow_name() -> String:
 	return self._current_flow.name
 
@@ -784,7 +784,7 @@ func remove_existing_glue() -> void:
 	self.output_stream_dirty()
 
 
-var output_stream_ends_in_newline: bool setget , get_output_stream_ends_in_newline
+var output_stream_ends_in_newline: bool: get = get_output_stream_ends_in_newline
 func get_output_stream_ends_in_newline() -> bool:
 	if self.output_stream.size() > 0:
 		var i = self.output_stream.size() - 1
@@ -804,7 +804,7 @@ func get_output_stream_ends_in_newline() -> bool:
 	return false
 
 
-var output_stream_contains_content: bool setget , get_output_stream_contains_content
+var output_stream_contains_content: bool: get = get_output_stream_contains_content
 func get_output_stream_contains_content() -> bool:
 	for content in self.output_stream:
 		if Utils.is_ink_class(content, "StringValue"):
@@ -813,7 +813,7 @@ func get_output_stream_contains_content() -> bool:
 	return false
 
 
-var in_string_evaluation: bool setget , get_in_string_evaluation
+var in_string_evaluation: bool: get = get_in_string_evaluation
 func get_in_string_evaluation() -> bool:
 	var i = self.output_stream.size() - 1
 
@@ -1059,7 +1059,7 @@ func _anonymous_write_property_turn_indices(writer) -> void:
 # ############################################################################ #
 
 func is_class(type: String) -> bool:
-	return type == "StoryState" || .is_class(type)
+	return type == "StoryState" || super.is_class(type)
 
 func get_class() -> String:
 	return "StoryState"
@@ -1067,7 +1067,7 @@ func get_class() -> String:
 
 # ############################################################################ #
 
-var Json setget , get_Json
+var Json : get = get_Json
 func get_Json():
 	return _Json.get_ref()
 var _Json: WeakRef = WeakRef.new()

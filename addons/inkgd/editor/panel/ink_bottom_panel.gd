@@ -1,3 +1,4 @@
+@tool
 # warning-ignore-all:return_value_discarded
 
 # ############################################################################ #
@@ -6,7 +7,6 @@
 # See LICENSE in the project root for license information.
 # ############################################################################ #
 
-tool
 extends Control
 
 # Hiding this type to prevent registration of "private" nodes.
@@ -38,12 +38,12 @@ var _progress_texture: AnimatedTexture
 # Hierarchy Nodes
 # ############################################################################ #
 
-onready var _tab_container: TabContainer = $TabContainer
-onready var _beta_button: LinkButton = $MarginContainer/LinkButton
+@onready var _tab_container: TabContainer = $TabContainer
+@onready var _beta_button: LinkButton = $MarginContainer/LinkButton
 
-onready var _story_panel = InkStoryPanelScene.instance()
-onready var _preview_panel = InkPreviewPanelScene.instance()
-onready var _configuration_panel = InkConfigurationPanelScene.instance()
+@onready var _story_panel = InkStoryPanelScene.instantiate()
+@onready var _preview_panel = InkPreviewPanelScene.instantiate()
+@onready var _configuration_panel = InkConfigurationPanelScene.instantiate()
 
 # ############################################################################ #
 # Overrides
@@ -75,7 +75,7 @@ func _ready():
 	_tab_container.add_child(_preview_panel)
 	_tab_container.add_child(_configuration_panel)
 
-	_beta_button.connect("pressed", self, "_open_github_issues")
+	_beta_button.connect("pressed", Callable(self, "_open_github_issues"))
 
 	_set_minimum_panel_size()
 
@@ -103,4 +103,4 @@ func _create_progress_texture() -> AnimatedTexture:
 
 func _set_minimum_panel_size():
 	# Adapting the minimum size of the panel to the scale of the editor.
-	rect_min_size = Vector2(900, 245) * editor_interface.scale
+	custom_minimum_size = Vector2(900, 245) * editor_interface.scale

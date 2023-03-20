@@ -73,7 +73,7 @@ class Component extends InkBase:
 	# ######################################################################## #
 
 	func is_class(type):
-		return type == "InkPath.Component" || .is_class(type)
+		return type == "InkPath.Component" || super.is_class(type)
 
 	func get_class():
 		return "InkPath.Component"
@@ -179,10 +179,10 @@ func path_by_appending_component(c):
 	p._components.append(c)
 	return p
 
-var components_string setget set_components_string, get_components_string # String
+var components_string : get = get_components_string, set = set_components_string # String
 func get_components_string():
 	if _components_string == null:
-		_components_string = Utils.join(".", _components)
+		_components_string = ".", _components.join(Utils)
 		if self.is_relative:
 			_components_string = "." + _components_string
 
@@ -203,7 +203,7 @@ func set_components_string(value):
 
 	var components_strings = _components_string.split(".")
 	for _str in components_strings:
-		if _str.is_valid_integer():
+		if _str.is_valid_int():
 			_components.append(Component.new(int(_str)))
 		else:
 			_components.append(Component.new(_str))
@@ -252,7 +252,7 @@ static func new_with_components_string(components_string):
 # ############################################################################ #
 
 func is_class(type):
-	return type == "InkPath" || .is_class(type)
+	return type == "InkPath" || super.is_class(type)
 
 func get_class():
 	return "InkPath"

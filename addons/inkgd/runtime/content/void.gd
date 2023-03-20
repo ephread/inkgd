@@ -16,7 +16,7 @@ class_name InkVoid
 # ############################################################################ #
 
 func is_class(type: String) -> bool:
-	return type == "Void" || .is_class(type)
+	return type == "Void" || super.is_class(type)
 
 func get_class() -> String:
 	return "Void"

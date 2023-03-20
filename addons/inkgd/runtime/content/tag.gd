@@ -24,7 +24,7 @@ func _to_string() -> String:
 # ############################################################################ #
 
 func is_class(type: String) -> bool:
-	return type == "Tag" || .is_class(type)
+	return type == "Tag" || super.is_class(type)
 
 func get_class() -> String:
 	return "Tag"

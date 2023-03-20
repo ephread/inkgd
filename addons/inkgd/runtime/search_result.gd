@@ -44,7 +44,7 @@ func get_container():
 # ############################################################################ #
 
 func is_class(type: String) -> bool:
-	return type == "SearchResult" || .is_class(type)
+	return type == "SearchResult" || super.is_class(type)
 
 func get_class() -> String:
 	return "SearchResult"

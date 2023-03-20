@@ -4,7 +4,7 @@
 # See LICENSE in the project root for license information.
 # ############################################################################ #
 
-extends Reference
+extends RefCounted
 
 class_name InkExternalCommandExecutor
 
@@ -13,7 +13,7 @@ class_name InkExternalCommandExecutor
 # ############################################################################ #
 
 ## The identifier of this compiler.
-var identifier: int setget , get_identifier
+var identifier: int: get = get_identifier
 func get_identifier() -> int:
 	return get_instance_id()
 

@@ -22,7 +22,7 @@ var InkPointer := load("res://addons/inkgd/runtime/structs/pointer.gd") as GDScr
 
 # ############################################################################ #
 
-var target_path: InkPath setget set_target_path, get_target_path
+var target_path: InkPath: get = get_target_path, set = set_target_path
 func get_target_path() -> InkPath:
 	if self._target_path != null && self._target_path.is_relative:
 		var target_obj: InkObject = self.target_pointer.resolve()
@@ -56,7 +56,7 @@ func get_target_pointer() -> InkPointer:
 var _target_pointer: InkPointer = InkPointer.null()
 
 # String?
-var target_path_string setget set_target_path_string, get_target_path_string
+var target_path_string : get = get_target_path_string, set = set_target_path_string
 func get_target_path_string():
 	if self.target_path == null:
 		return null
@@ -71,7 +71,7 @@ func set_target_path_string(value):
 
 # String
 var variable_divert_name = null
-var has_variable_target: bool setget , get_has_variable_target
+var has_variable_target: bool: get = get_has_variable_target
 func get_has_variable_target() -> bool:
 	return self.variable_divert_name != null
 
@@ -142,7 +142,7 @@ func _to_string() -> String:
 # ############################################################################ #
 
 func is_class(type: String) -> bool:
-	return type == "Divert" || .is_class(type)
+	return type == "Divert" || super.is_class(type)
 
 func get_class() -> String:
 	return "Divert"

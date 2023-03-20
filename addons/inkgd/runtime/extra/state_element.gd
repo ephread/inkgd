@@ -44,7 +44,7 @@ func _init(type: int):
 # ############################################################################ #
 
 func is_class(type) -> bool:
-	return type == "StateElement" || .is_class(type)
+	return type == "StateElement" || super.is_class(type)
 
 func get_class() -> String:
 	return "StateElement"

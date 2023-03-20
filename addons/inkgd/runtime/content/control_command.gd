@@ -173,7 +173,7 @@ func _to_string() -> String:
 # ############################################################################ #
 
 func is_class(type: String) -> bool:
-	return type == "ControlCommand" || .is_class(type)
+	return type == "ControlCommand" || super.is_class(type)
 
 func get_class() -> String:
 	return "ControlCommand"

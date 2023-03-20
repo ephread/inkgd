@@ -22,14 +22,14 @@ var InkListItem = preload("res://addons/inkgd/runtime/lists/structs/ink_list_ite
 
 # ############################################################################ #
 
-var name: String setget , get_name
+var name: String: get = get_name
 func get_name() -> String:
 	return _name
 
 # Dictionary<InkListItem, int> => Dictionary<String, int>
 # Note: 'InkListItem' should actually be serialized into a String, because it
 # needs to be a value type.
-var items: Dictionary setget , get_items
+var items: Dictionary: get = get_items
 func get_items() -> Dictionary:
 	if _items == null:
 		_items = {}
@@ -94,7 +94,7 @@ var _item_name_to_values: Dictionary # Dictionary<String, int>
 # ############################################################################ #
 
 func is_class(type: String) -> bool:
-	return type == "InkListDefinition" || .is_class(type)
+	return type == "InkListDefinition" || super.is_class(type)
 
 func get_class() -> String:
 	return "InkListDefinition"

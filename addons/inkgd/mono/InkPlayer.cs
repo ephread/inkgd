@@ -13,7 +13,7 @@ using System.Diagnostics;
 
 [Tool]
 
-public class InkPlayer : Node
+public partial class InkPlayer : Node
 {
 	#region Signals
 	[Signal] public delegate void exception_raised(string message, Godot.Collections.Array<string> stack_trace);
@@ -672,7 +672,7 @@ public class InkPlayer : Node
 		}
 
 		file.Seek(0);
-		if (file.GetLen() > 0) {
+		if (file.GetLength() > 0) {
 			story.state.LoadJson(file.GetAsText());
 		}
 	}
@@ -696,7 +696,7 @@ public class InkPlayer : Node
 				return inkBridger.MakeGDInkList(inkList);
 			}
 
-			if (variable is Ink.Runtime.Path path)
+			if (variable is Ink.Runtime.Path3D path)
 			{
 				return inkBridger.MakeGDInkPath(path);
 			}

@@ -1,10 +1,10 @@
+@tool
 # ############################################################################ #
 # Copyright © 2019-2022 Frédéric Maquin <fred@ephread.com>
 # Licensed under the MIT License.
 # See LICENSE in the project root for license information.
 # ############################################################################ #
 
-tool
 extends VBoxContainer
 
 # Hiding this type to prevent registration of "private" nodes.
@@ -37,23 +37,23 @@ var editor_interface: InkEditorInterface = null
 # Nodes
 # ############################################################################ #
 
-onready var story_label = find_node("StoryLabel")
+@onready var story_label = find_child("StoryLabel")
 
-onready var remove_button = find_node("RemoveButton")
-onready var build_button = find_node("BuildButton")
+@onready var remove_button = find_child("RemoveButton")
+@onready var build_button = find_child("BuildButton")
 
-onready var source_file_line_edit = find_node("SourceFileLineEdit")
-onready var source_file_dialog_button = find_node("SourceFileDialogButton")
+@onready var source_file_line_edit = find_child("SourceFileLineEdit")
+@onready var source_file_dialog_button = find_child("SourceFileDialogButton")
 
-onready var target_file_line_edit = find_node("TargetFileLineEdit")
-onready var target_file_dialog_button = find_node("TargetFileDialogButton")
+@onready var target_file_line_edit = find_child("TargetFileLineEdit")
+@onready var target_file_dialog_button = find_child("TargetFileDialogButton")
 
-onready var watched_folder_label = find_node("WatchedFolderLabel")
-onready var watched_folder_container = find_node("WatchedFolderHBoxContainer")
-onready var watched_folder_line_edit = find_node("WatchedFolderLineEdit")
-onready var watched_folder_dialog_button = find_node("WatchedFolderDialogButton")
+@onready var watched_folder_label = find_child("WatchedFolderLabel")
+@onready var watched_folder_container = find_child("WatchedFolderHBoxContainer")
+@onready var watched_folder_line_edit = find_child("WatchedFolderLineEdit")
+@onready var watched_folder_dialog_button = find_child("WatchedFolderDialogButton")
 
-onready var background_color_rect = find_node("BackgroundColorRect")
+@onready var background_color_rect = find_child("BackgroundColorRect")
 
 # ############################################################################ #
 # Overrides
@@ -123,7 +123,7 @@ func disable_all_buttons(disable: bool):
 
 func _apply_custom_header_color():
 	var header_color = editor_interface.get_custom_header_color()
-	if header_color != Color.transparent:
+	if header_color != Color.TRANSPARENT:
 		background_color_rect.color = header_color
 
 
@@ -138,15 +138,15 @@ func _set_button_icons():
 
 
 func _connect_signals():
-	source_file_line_edit.connect("text_entered", self, "_configuration_entered")
-	source_file_line_edit.connect("focus_exited", self, "_configuration_focus_exited")
+	source_file_line_edit.connect("text_submitted", Callable(self, "_configuration_entered"))
+	source_file_line_edit.connect("focus_exited", Callable(self, "_configuration_focus_exited"))
 
-	target_file_line_edit.connect("text_entered", self, "_configuration_entered")
-	target_file_line_edit.connect("focus_exited", self, "_configuration_focus_exited")
+	target_file_line_edit.connect("text_submitted", Callable(self, "_configuration_entered"))
+	target_file_line_edit.connect("focus_exited", Callable(self, "_configuration_focus_exited"))
 
-	source_file_dialog_button.connect("pressed", self, "_source_file_button_pressed")
-	target_file_dialog_button.connect("pressed", self, "_target_file_button_pressed")
-	watched_folder_dialog_button.connect("pressed", self, "_watched_folder_button_pressed")
+	source_file_dialog_button.connect("pressed", Callable(self, "_source_file_button_pressed"))
+	target_file_dialog_button.connect("pressed", Callable(self, "_target_file_button_pressed"))
+	watched_folder_dialog_button.connect("pressed", Callable(self, "_watched_folder_button_pressed"))
 
-	remove_button.connect("pressed", self, "_remove_button_pressed")
-	build_button.connect("pressed", self, "_build_button_pressed")
+	remove_button.connect("pressed", Callable(self, "_remove_button_pressed"))
+	build_button.connect("pressed", Callable(self, "_build_button_pressed"))

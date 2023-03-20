@@ -1,11 +1,11 @@
+@tool
 # ############################################################################ #
 # Copyright © 2019-2022 Frédéric Maquin <fred@ephread.com>
 # Licensed under the MIT License.
 # See LICENSE in the project root for license information.
 # ############################################################################ #
 
-tool
-extends Reference
+extends RefCounted
 
 ## Contains all the configuration settings necessary to perform an execution.
 class_name InkExecutionConfiguration
