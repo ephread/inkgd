@@ -74,10 +74,10 @@ func _test_availability(config: InkExecutionConfiguration):
 
 	if config.use_mono:
 		var args = [config.inklecate_path]
-		return_code = OS.execute(config.mono_path, args, true, output, true)
+		return_code = OS.execute(config.mono_path, args, output, true, true)
 
 	else:
-		return_code = OS.execute(config.inklecate_path, [], true, output, true)
+		return_code = OS.execute(config.inklecate_path, [], output, true, true)
 
 	var end_time = Time.get_ticks_msec()
 

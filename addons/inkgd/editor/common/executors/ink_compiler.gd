@@ -80,10 +80,10 @@ func _compile_story(config: InkCompilationConfiguration) -> bool:
 
 	if config.use_mono:
 		var args = [config.inklecate_path, '-o', config.target_file_path, config.source_file_path]
-		return_code = OS.execute(config.mono_path, args, true, output, true)
+		return_code = OS.execute(config.mono_path, args, output, true, true)
 	else:
 		var args = ['-o', config.target_file_path, config.source_file_path]
-		return_code = OS.execute(config.inklecate_path, args, true, output, true)
+		return_code = OS.execute(config.inklecate_path, args, output, true, true)
 
 	var end_time = Time.get_ticks_msec()
 
