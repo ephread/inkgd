@@ -15,11 +15,6 @@ extends Control
 # Imports
 # ############################################################################ #
 
-var InkConfiguration = load("res://addons/inkgd/editor/common/ink_configuration.gd")
-
-var InkCompilationConfiguration = load("res://addons/inkgd/editor/common/executors/structures/ink_compilation_configuration.gd")
-var InkCompiler = load("res://addons/inkgd/editor/common/executors/ink_compiler.gd")
-
 var InkRichDialog = load("res://addons/inkgd/editor/panel/common/ink_rich_dialog.tscn")
 var InkProgressDialog = load("res://addons/inkgd/editor/panel/common/ink_progress_dialog.tscn")
 var InkStoryConfigurationScene = load("res://addons/inkgd/editor/panel/stories/ink_story_configuration.tscn")

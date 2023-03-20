@@ -18,9 +18,6 @@ class_name InkStaticNativeFunctionCall
 
 const ValueType = preload("res://addons/inkgd/runtime/values/value_type.gd").ValueType
 
-static func InkNativeFunctionCall():
-	return load("res://addons/inkgd/runtime/content/native_function_call.gd")
-
 # ############################################################################ #
 
 const ADD                    = "+"

@@ -14,13 +14,6 @@ extends InkBase
 class_name InkStatePatch
 
 # ############################################################################ #
-# Imports
-# ############################################################################ #
-
-var InkTryGetResult := preload("res://addons/inkgd/runtime/extra/try_get_result.gd") as GDScript
-var InkStringSet := preload("res://addons/inkgd/runtime/extra/string_set.gd") as GDScript
-
-# ############################################################################ #
 
 # Dictionary<String, InkObject>
 var globals: Dictionary: get = get_globals

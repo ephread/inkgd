@@ -15,18 +15,7 @@ extends EditorPlugin
 # Imports
 # ############################################################################ #
 
-var InkJsonImportPlugin = preload("res://addons/inkgd/editor/import_plugins/ink_json_import_plugin.gd")
-var InkSourceImportPlugin = preload("res://addons/inkgd/editor/import_plugins/ink_source_import_plugin.gd")
-
 var InkBottomPanel = preload("res://addons/inkgd/editor/panel/ink_bottom_panel.tscn")
-
-var InkCSharpValidator = preload("res://addons/inkgd/editor/common/ink_csharp_validator.gd")
-
-var InkEditorInterface = load("res://addons/inkgd/editor/common/ink_editor_interface.gd")
-var InkConfiguration = load("res://addons/inkgd/editor/common/ink_configuration.gd")
-
-var InkCompilationConfiguration = load("res://addons/inkgd/editor/common/executors/structures/ink_compilation_configuration.gd")
-var InkCompiler = load("res://addons/inkgd/editor/common/executors/ink_compiler.gd")
 
 # ############################################################################ #
 # Constant

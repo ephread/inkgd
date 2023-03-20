@@ -20,13 +20,6 @@ extends InkBase
 class_name InkSearchResult
 
 # ############################################################################ #
-# Self-reference
-# ############################################################################ #
-
-static func SearchResult() -> GDScript:
-	return load("res://addons/inkgd/runtime/search_result.gd") as GDScript
-
-# ############################################################################ #
 
 var obj = null # InkObject
 var approximate = false # bool
@@ -37,7 +30,7 @@ func get_correct_obj():
 
 var container setget , get_container # Container
 func get_container():
-	return Utils.as_or_null(obj, "InkContainer")
+	return InkUtils.as_or_null(obj, "InkContainer")
 
 # ############################################################################ #
 # GDScript extra methods

@@ -40,7 +40,7 @@ func cast(new_type, metadata = null):
 	if new_type == ValueType.STRING:
 		return StringValue().new_with("true" if value else "false")
 
-	Utils.throw_story_exception(bad_cast_exception_message(new_type), false, metadata)
+	InkUtils.throw_story_exception(bad_cast_exception_message(new_type), false, metadata)
 	return null
 
 func _to_string() -> String:

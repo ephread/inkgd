@@ -12,13 +12,7 @@ extends Node
 # ############################################################################ #
 
 var ErrorType := preload("res://addons/inkgd/runtime/enums/error.gd").ErrorType
-var InkPlayerFactory := preload("res://addons/inkgd/ink_player_factory.gd") as GDScript
-var InkList := preload("res://addons/inkgd/runtime/lists/ink_list.gd") as GDScript
-
-var ChoiceContainer := load("res://examples/scenes/common/choice_container.tscn") as PackedScene
 var LineLabel := load("res://examples/scenes/common/label.tscn") as PackedScene
-
-var InkGDProfiler := load("res://examples/scenes/common/profiler.gd") as GDScript
 
 
 # ############################################################################ #

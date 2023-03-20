@@ -54,7 +54,7 @@ func cast(new_type, metadata = null):
 		else:
 			return null
 
-	Utils.throw_story_exception(bad_cast_exception_message(new_type), false, metadata)
+	InkUtils.throw_story_exception(bad_cast_exception_message(new_type), false, metadata)
 	return null
 
 # ######################################################################## #

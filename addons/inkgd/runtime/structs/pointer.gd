@@ -21,17 +21,6 @@ extends InkBase
 
 class_name InkPointer
 
-# ############################################################################ #
-# Imports
-# ############################################################################ #
-
-var InkPath := preload("res://addons/inkgd/runtime/ink_path.gd") as GDScript
-
-static func InkPointer() -> GDScript:
-	return load("res://addons/inkgd/runtime/structs/pointer.gd") as GDScript
-
-# ############################################################################ #
-
 # InkContainer
 # Encapsulating container into a weak ref.
 var container: InkContainer: get = get_container, set = set_container

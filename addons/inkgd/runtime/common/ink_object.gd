@@ -14,13 +14,6 @@ extends InkBase
 class_name InkObject
 
 # ############################################################################ #
-# Imports
-# ############################################################################ #
-
-static func InkPath() -> GDScript:
-	return load("res://addons/inkgd/runtime/ink_path.gd") as GDScript
-
-# ############################################################################ #
 
 # () -> InkObject
 # Encapsulating parent into a weak ref.
@@ -83,17 +76,17 @@ func get_path() -> InkPath:
 			var comps: Array = [] # Stack<Path3D.Component>
 
 			var child = self
-			var container = Utils.as_or_null(child.parent, "InkContainer")
+			var container = InkUtils.as_or_null(child.parent, "InkContainer")
 
 			while container:
-				var named_child = Utils.as_INamedContent_or_null(child)
+				var named_child = InkUtils.as_INamedContent_or_null(child)
 				if (named_child != null && named_child.has_valid_name):
 					comps.push_front(InkPath().Component.new(named_child.name))
 				else:
 					comps.push_front(InkPath().Component.new(container.content.find(child)))
 
 				child = container
-				container = Utils.as_or_null(container.parent, "InkContainer")
+				container = InkUtils.as_or_null(container.parent, "InkContainer")
 
 			_path = InkPath().new_with_components(comps)
 
@@ -104,17 +97,17 @@ var _path = null # InkPath
 # (InkPath) -> SearchResult
 func resolve_path(path: InkPath) -> InkSearchResult:
 	if path.is_relative:
-		var nearest_container = Utils.as_or_null(self, "InkContainer")
+		var nearest_container = InkUtils.as_or_null(self, "InkContainer")
 		if !nearest_container:
-			Utils.__assert__(
+			InkUtils.__assert__(
 					self.parent != null,
 					"Can't resolve relative path because we don't have a parent"
 			)
 
-			nearest_container = Utils.as_or_null(self.parent, "InkContainer")
+			nearest_container = InkUtils.as_or_null(self.parent, "InkContainer")
 
-			Utils.__assert__(nearest_container != null, "Expected parent to be a container")
-			Utils.__assert__(path.get_component(0).is_parent)
+			InkUtils.__assert__(nearest_container != null, "Expected parent to be a container")
+			InkUtils.__assert__(path.get_component(0).is_parent)
 
 			path = path.tail
 
@@ -185,11 +178,11 @@ func get_root_content_container():
 	while (ancestor.parent):
 		ancestor = ancestor.parent
 
-	return Utils.as_or_null(ancestor, "InkContainer")
+	return InkUtils.as_or_null(ancestor, "InkContainer")
 
 # () -> InkObject
 func copy():
-	Utils.throw_exception("Not Implemented: Doesn't support copying")
+	InkUtils.throw_exception("Not Implemented: Doesn't support copying")
 	return null
 
 # (InkObject, InkObject) -> void

@@ -13,13 +13,6 @@ extends InkObject
 class_name InkControlCommand
 
 # ############################################################################ #
-# Imports
-# ############################################################################ #
-
-static func ControlCommand() -> GDScript:
-	return load("res://addons/inkgd/runtime/control_command.gd") as GDScript
-
-# ############################################################################ #
 
 enum CommandType {
 	NOT_SET = -1,
@@ -64,76 +57,76 @@ func _init(command_type: int = CommandType.NOT_SET):
 # ############################################################################ #
 
 func copy() -> InkControlCommand:
-	return ControlCommand().new(self.command_type)
+	return InkControlCommand.new(self.command_type)
 
 static func eval_start() -> InkControlCommand:
-	return ControlCommand().new(CommandType.EVAL_START)
+	return InkControlCommand.new(CommandType.EVAL_START)
 
 static func eval_output() -> InkControlCommand:
-	return ControlCommand().new(CommandType.EVAL_OUTPUT)
+	return InkControlCommand.new(CommandType.EVAL_OUTPUT)
 
 static func eval_end() -> InkControlCommand:
-	return ControlCommand().new(CommandType.EVAL_END)
+	return InkControlCommand.new(CommandType.EVAL_END)
 
 static func duplicate() -> InkControlCommand:
-	return ControlCommand().new(CommandType.DUPLICATE)
+	return InkControlCommand.new(CommandType.DUPLICATE)
 
 static func pop_evaluated_value() -> InkControlCommand:
-	return ControlCommand().new(CommandType.POP_EVALUATED_VALUE)
+	return InkControlCommand.new(CommandType.POP_EVALUATED_VALUE)
 
 static func pop_function() -> InkControlCommand:
-	return ControlCommand().new(CommandType.POP_FUNCTION)
+	return InkControlCommand.new(CommandType.POP_FUNCTION)
 
 static func pop_tunnel() -> InkControlCommand:
-	return ControlCommand().new(CommandType.POP_TUNNEL)
+	return InkControlCommand.new(CommandType.POP_TUNNEL)
 
 static func begin_string() -> InkControlCommand:
-	return ControlCommand().new(CommandType.BEGIN_STRING)
+	return InkControlCommand.new(CommandType.BEGIN_STRING)
 
 static func end_string() -> InkControlCommand:
-	return ControlCommand().new(CommandType.END_STRING)
+	return InkControlCommand.new(CommandType.END_STRING)
 
 static func no_op() -> InkControlCommand:
-	return ControlCommand().new(CommandType.NO_OP)
+	return InkControlCommand.new(CommandType.NO_OP)
 
 static func choice_count() -> InkControlCommand:
-	return ControlCommand().new(CommandType.CHOICE_COUNT)
+	return InkControlCommand.new(CommandType.CHOICE_COUNT)
 
 static func turns() -> InkControlCommand:
-	return ControlCommand().new(CommandType.TURNS)
+	return InkControlCommand.new(CommandType.TURNS)
 
 static func turns_since() -> InkControlCommand:
-	return ControlCommand().new(CommandType.TURNS_SINCE)
+	return InkControlCommand.new(CommandType.TURNS_SINCE)
 
 static func read_count() -> InkControlCommand:
-	return ControlCommand().new(CommandType.READ_COUNT)
+	return InkControlCommand.new(CommandType.READ_COUNT)
 
 static func random() -> InkControlCommand:
-	return ControlCommand().new(CommandType.RANDOM)
+	return InkControlCommand.new(CommandType.RANDOM)
 
 static func seed_random() -> InkControlCommand:
-	return ControlCommand().new(CommandType.SEED_RANDOM)
+	return InkControlCommand.new(CommandType.SEED_RANDOM)
 
 static func visit_index() -> InkControlCommand:
-	return ControlCommand().new(CommandType.VISIT_INDEX)
+	return InkControlCommand.new(CommandType.VISIT_INDEX)
 
 static func sequence_shuffle_index() -> InkControlCommand:
-	return ControlCommand().new(CommandType.SEQUENCE_SHUFFLE_INDEX)
+	return InkControlCommand.new(CommandType.SEQUENCE_SHUFFLE_INDEX)
 
 static func done() -> InkControlCommand:
-	return ControlCommand().new(CommandType.DONE)
+	return InkControlCommand.new(CommandType.DONE)
 
 static func end() -> InkControlCommand:
-	return ControlCommand().new(CommandType.END)
+	return InkControlCommand.new(CommandType.END)
 
 static func list_from_int() -> InkControlCommand:
-	return ControlCommand().new(CommandType.LIST_FROM_INT)
+	return InkControlCommand.new(CommandType.LIST_FROM_INT)
 
 static func list_range() -> InkControlCommand:
-	return ControlCommand().new(CommandType.LIST_RANGE)
+	return InkControlCommand.new(CommandType.LIST_RANGE)
 
 static func list_random() -> InkControlCommand:
-	return ControlCommand().new(CommandType.LIST_RANDOM)
+	return InkControlCommand.new(CommandType.LIST_RANDOM)
 
 # () -> String
 func _to_string() -> String:

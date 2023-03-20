@@ -10,13 +10,6 @@ extends EditorImportPlugin
 class_name InkJsonImportPlugin
 
 # ############################################################################ #
-# Imports
-# ############################################################################ #
-
-var InkConfiguration = load("res://addons/inkgd/editor/common/ink_configuration.gd")
-var InkResource = load("res://addons/inkgd/editor/import_plugins/ink_resource.gd")
-
-# ############################################################################ #
 # Properties
 # ############################################################################ #
 

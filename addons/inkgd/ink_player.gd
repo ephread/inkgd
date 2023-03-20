@@ -15,11 +15,7 @@ class_name InkPlayer
 
 var ErrorType = preload("res://addons/inkgd/runtime/enums/error.gd").ErrorType
 
-var InkRuntime = load("res://addons/inkgd/runtime.gd")
-var InkResource = load("res://addons/inkgd/editor/import_plugins/ink_resource.gd")
-var InkStory = load("res://addons/inkgd/runtime/story.gd")
-var InkFunctionResult = load("res://addons/inkgd/runtime/extra/function_result.gd")
-
+const InkRuntime = preload("res://addons/inkgd/runtime.gd")
 
 # ############################################################################ #
 # Signals

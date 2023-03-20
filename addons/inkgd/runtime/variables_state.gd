@@ -15,17 +15,6 @@ extends InkBase
 class_name InkVariablesState
 
 # ############################################################################ #
-# Imports
-# ############################################################################ #
-
-var InkTryGetResult := preload("res://addons/inkgd/runtime/extra/try_get_result.gd") as GDScript
-var InkStringSet := preload("res://addons/inkgd/runtime/extra/string_set.gd") as GDScript
-
-var InkValue := load("res://addons/inkgd/runtime/values/value.gd") as GDScript
-var InkListValue := load("res://addons/inkgd/runtime/values/list_value.gd") as GDScript
-var InkVariablePointerValue := load("res://addons/inkgd/runtime/values/variable_pointer_value.gd") as GDScript
-
-# ############################################################################ #
 
 # (String, InkObject)
 signal variable_changed(variable_name, new_value)
@@ -78,7 +67,7 @@ func get(variable_name: String):
 # (String, Variant) -> void
 func set(variable_name: String, value) -> void:
 	if !_default_global_variables.has(variable_name):
-		Utils.throw_story_exception(
+		InkUtils.throw_story_exception(
 				"Cannot assign to a variable (%s) that hasn't been declared in the story" \
 				% variable_name
 		)
@@ -87,9 +76,9 @@ func set(variable_name: String, value) -> void:
 	var val: InkValue = InkValue.create(value)
 	if val == null:
 		if value == null:
-			Utils.throw_exception("Cannot pass null to VariableState")
+			InkUtils.throw_exception("Cannot pass null to VariableState")
 		else:
-			Utils.throw_exception("Invalid value passed to VariableState: %s" % str(value))
+			InkUtils.throw_exception("Invalid value passed to VariableState: %s" % str(value))
 		return
 
 	set_global(variable_name, val)
@@ -143,23 +132,23 @@ func write_json(writer: InkSimpleJSON.Writer) -> void:
 	writer.write_object_end()
 
 func runtime_objects_equal(obj1: InkObject, obj2: InkObject) -> bool:
-	if !Utils.are_of_same_type(obj1, obj2):
+	if !InkUtils.are_of_same_type(obj1, obj2):
 		return false
 
-	var bool_val: InkBoolValue = Utils.as_or_null(obj1, "BoolValue")
+	var bool_val: InkBoolValue = InkUtils.as_or_null(obj1, "BoolValue")
 	if bool_val != null:
-		return bool_val.value == Utils.cast(obj2, "BoolValue").value
+		return bool_val.value == InkUtils.cast(obj2, "BoolValue").value
 
-	var int_val: InkIntValue = Utils.as_or_null(obj1, "IntValue")
+	var int_val: InkIntValue = InkUtils.as_or_null(obj1, "IntValue")
 	if int_val != null:
-		return int_val.value == Utils.cast(obj2, "IntValue").value
+		return int_val.value == InkUtils.cast(obj2, "IntValue").value
 
-	var float_val: InkFloatValue = Utils.as_or_null(obj1, "FloatValue")
+	var float_val: InkFloatValue = InkUtils.as_or_null(obj1, "FloatValue")
 	if float_val != null:
-		return float_val.value == Utils.cast(obj2, "FloatValue").value
+		return float_val.value == InkUtils.cast(obj2, "FloatValue").value
 
-	var val1: InkValue = Utils.as_or_null(obj1, "Value")
-	var val2: InkValue = Utils.as_or_null(obj2, "Value")
+	var val1: InkValue = InkUtils.as_or_null(obj1, "Value")
+	var val2: InkValue = InkUtils.as_or_null(obj2, "Value")
 
 	if val1 != null:
 		if val1.value_object is Object && val2.value_object is Object:
@@ -167,7 +156,7 @@ func runtime_objects_equal(obj1: InkObject, obj2: InkObject) -> bool:
 		else:
 			return val1.value_object == val2.value_object
 
-	Utils.throw_exception(
+	InkUtils.throw_exception(
 			"FastRoughDefinitelyEquals: Unsupported runtime object type: %s" \
 			% obj1.get_class()
 	)
@@ -177,7 +166,7 @@ func runtime_objects_equal(obj1: InkObject, obj2: InkObject) -> bool:
 func get_variable_with_name(name: String, context_index = -1) -> InkObject:
 	var var_value: InkObject = get_raw_variable_with_name(name, context_index)
 
-	var var_pointer: InkVariablePointerValue = Utils.as_or_null(var_value, "VariablePointerValue")
+	var var_pointer: InkVariablePointerValue = InkUtils.as_or_null(var_value, "VariablePointerValue")
 	if var_pointer:
 		var_value = value_at_variable_pointer(var_pointer)
 
@@ -236,7 +225,7 @@ func assign(var_ass: InkVariableAssignment, value: InkObject) -> void:
 		set_global = global_variable_exists_with_name(name)
 
 	if var_ass.is_new_declaration:
-		var var_pointer: InkVariablePointerValue = Utils.as_or_null(value, "VariablePointerValue")
+		var var_pointer: InkVariablePointerValue = InkUtils.as_or_null(value, "VariablePointerValue")
 		if var_pointer:
 			var fully_resolved_variable_pointer: InkObject = resolve_variable_pointer(var_pointer)
 			value = fully_resolved_variable_pointer
@@ -245,7 +234,7 @@ func assign(var_ass: InkVariableAssignment, value: InkObject) -> void:
 		var first_time: bool = true
 		while existing_pointer || first_time:
 			first_time = false
-			existing_pointer = Utils.as_or_null(
+			existing_pointer = InkUtils.as_or_null(
 				get_raw_variable_with_name(name, context_index),
 				"VariablePointerValue"
 			)
@@ -265,8 +254,8 @@ func snapshot_default_globals():
 
 # (InkObject, InkObject) -> void
 func retain_list_origins_for_assignment(old_value, new_value) -> void:
-	var old_list: InkListValue = Utils.as_or_null(old_value, "ListValue")
-	var new_list: InkListValue = Utils.as_or_null(new_value, "ListValue")
+	var old_list: InkListValue = InkUtils.as_or_null(old_value, "ListValue")
+	var new_list: InkListValue = InkUtils.as_or_null(new_value, "ListValue")
 
 	if old_list && new_list && new_list.value.size() == 0:
 		new_list.value.set_initial_origin_names(old_list.value.origin_names)
@@ -313,7 +302,7 @@ func resolve_variable_pointer(var_pointer: InkVariablePointerValue) -> InkVariab
 		var_pointer.variable_name, context_index
 	)
 
-	var double_redirection_pointer: InkVariablePointerValue = Utils.as_or_null(
+	var double_redirection_pointer: InkVariablePointerValue = InkUtils.as_or_null(
 			value_of_variable_pointed_to, "VariablePointerValue"
 	)
 
@@ -365,7 +354,7 @@ var _weak_ink_runtime: WeakRef
 func find_static_objects():
 	var ink_runtime = Engine.get_main_loop().root.get_node("__InkRuntime")
 
-	Utils.__assert__(
+	InkUtils.__assert__(
 			ink_runtime != null,
 			"Could not retrieve 'InkRuntime' singleton from the scene tree."
 	)

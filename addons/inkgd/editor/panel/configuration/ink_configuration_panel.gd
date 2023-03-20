@@ -15,13 +15,7 @@ extends Control
 # Imports
 # ############################################################################ #
 
-var InkExecutionConfiguration = load("res://addons/inkgd/editor/common/executors/structures/ink_execution_configuration.gd")
-var InkConfigurationTester = load("res://addons/inkgd/editor/common/executors/ink_configuration_tester.gd")
-
-var InkCSharpValidator = preload("res://addons/inkgd/editor/common/ink_csharp_validator.gd")
-
 var InkRichDialog = load("res://addons/inkgd/editor/panel/common/ink_rich_dialog.tscn")
-
 
 # ############################################################################ #
 # Enums

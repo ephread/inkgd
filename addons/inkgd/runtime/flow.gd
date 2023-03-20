@@ -13,22 +13,9 @@ extends InkBase
 class_name InkFlow
 
 # ############################################################################ #
-# Imports
-# ############################################################################ #
-
-var CallStack = load("res://addons/inkgd/runtime/callstack.gd")
-
-# ############################################################################ #
-# Self-reference
-# ############################################################################ #
-
-static func Flow():
-	return load("res://addons/inkgd/runtime/flow.gd")
-
-# ############################################################################ #
 
 var name # string
-var callstack # CallStack
+var callstack # InkCallStack
 var output_stream # Array<InkObject>
 var current_choices # Array<Choice>
 
@@ -38,14 +25,14 @@ func _init():
 # (String, Story) -> Flow
 func _init_with_name(name, story):
 	self.name = name
-	self.callstack = CallStack.new(story)
+	self.callstack = InkCallStack.new(story)
 	self.output_stream = []
 	self.current_choices = []
 
 # (String, Story, Dictionary<String, Variant>) -> Flow
 func _init_with_name_and_jobject(name, story, jobject):
 	self.name = name
-	self.callstack = CallStack.new(story)
+	self.callstack = InkCallStack.new(story)
 	self.callstack.set_json_token(jobject["callstack"], story)
 	self.output_stream = self.Json.jarray_to_runtime_obj_list(jobject["outputStream"])
 	self.current_choices = self.Json.jarray_to_runtime_obj_list(jobject["currentChoices"])
@@ -96,7 +83,7 @@ func load_flow_choice_threads(jchoice_threads, story):
 			choice.thread_at_generation = found_active_thread.copy()
 		else:
 			var jsaved_choice_thread = jchoice_threads[str(choice.original_thread_index)]
-			choice.thread_at_generation = CallStack.InkThread.new_with(jsaved_choice_thread, story)
+			choice.thread_at_generation = InkCallStack.InkThread.new_with(jsaved_choice_thread, story)
 
 # (SimpleJson.Writer) -> void
 func _anonymous_write_property_output_stream(w):
@@ -145,7 +132,7 @@ var _Json = WeakRef.new()
 func get_static_json():
 	var InkRuntime = Engine.get_main_loop().root.get_node("__InkRuntime")
 
-	Utils.__assert__(InkRuntime != null,
-				 str("Could not retrieve 'InkRuntime' singleton from the scene tree."))
+	InkUtils.__assert__(InkRuntime != null,
+				str("Could not retrieve 'InkRuntime' singleton from the scene tree."))
 
 	_Json = weakref(InkRuntime.json)

@@ -18,7 +18,6 @@ class_name InkDivert
 # ############################################################################ #
 
 const PushPopType = preload("res://addons/inkgd/runtime/enums/push_pop.gd").PushPopType
-var InkPointer := load("res://addons/inkgd/runtime/structs/pointer.gd") as GDScript
 
 # ############################################################################ #
 
@@ -45,7 +44,7 @@ func get_target_pointer() -> InkPointer:
 
 		if self._target_path.last_component.is_index:
 			self._target_pointer = InkPointer.new(
-				Utils.as_or_null(target_obj.parent, "InkContainer"),
+				InkUtils.as_or_null(target_obj.parent, "InkContainer"),
 				self._target_path.last_component.index
 			)
 		else:
@@ -96,7 +95,7 @@ func _init_with(stack_push_type = null):
 
 # (InkBase) -> bool
 func equals(obj) -> bool:
-	var other_divert: InkDivert = Utils.as_or_null(obj, "Divert")
+	var other_divert: InkDivert = InkUtils.as_or_null(obj, "Divert")
 	if other_divert:
 		if self.has_variable_target == other_divert.has_variable_target:
 			if self.has_variable_target:

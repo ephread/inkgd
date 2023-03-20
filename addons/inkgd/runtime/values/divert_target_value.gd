@@ -25,7 +25,7 @@ func get_value_type():
 	return ValueType.DIVERT_TARGET
 
 func get_is_truthy():
-	Utils.throw_exception("Shouldn't be checking the truthiness of a divert target")
+	InkUtils.throw_exception("Shouldn't be checking the truthiness of a divert target")
 	return false
 
 func _init():
@@ -38,7 +38,7 @@ func cast(new_type, metadata = null):
 	if new_type == self.value_type:
 		return self
 
-	Utils.throw_story_exception(bad_cast_exception_message(new_type), false, metadata)
+	InkUtils.throw_story_exception(bad_cast_exception_message(new_type), false, metadata)
 	return null
 
 func _to_string() -> String:

@@ -9,12 +9,6 @@ extends InkExternalCommandExecutor
 class_name InkConfigurationTester
 
 # ############################################################################ #
-# Imports
-# ############################################################################ #
-
-var InkExecutionResult = load("res://addons/inkgd/editor/common/executors/structures/ink_execution_result.gd")
-
-# ############################################################################ #
 # Private Properties
 # ############################################################################ #
 

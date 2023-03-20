@@ -78,7 +78,7 @@ class Reader extends InkBase:
 		elif try_read("null"):
 			return null
 
-		Utils.throw_exception("Unhandled object type in JSON: %s" % _text.substr(_offset, 30))
+		InkUtils.throw_exception("Unhandled object type in JSON: %s" % _text.substr(_offset, 30))
 		return JsonError.new()
 
 	# () -> Dictionary<String, Variant>?
@@ -165,7 +165,7 @@ class Reader extends InkBase:
 			if c == "\\":
 				_offset += 1
 				if _offset >= _text.length():
-					Utils.throw_exception("Unexpected EOF while reading string")
+					InkUtils.throw_exception("Unexpected EOF while reading string")
 					return null
 				c = _text[_offset]
 				match c:
@@ -179,7 +179,7 @@ class Reader extends InkBase:
 						pass
 					"u":
 						if _offset + 4 >= _text.length():
-							Utils.throw_exception("Unexpected EOF while reading string")
+							InkUtils.throw_exception("Unexpected EOF while reading string")
 							return null
 						var digits = _text.substr(_offset + 1, 4)
 
@@ -187,7 +187,7 @@ class Reader extends InkBase:
 						test_json_conv.parse("\"\\u" + digits + "\"")
 						var json_parse_result = test_json_conv.get_data()
 						if json_parse_result.error != OK:
-							Utils.throw_exception("Invalid Unicode escape character at offset %d" % (_offset - 1))
+							InkUtils.throw_exception("Invalid Unicode escape character at offset %d" % (_offset - 1))
 							return null
 
 						sb += json_parse_result.result
@@ -195,7 +195,7 @@ class Reader extends InkBase:
 
 						break
 					_:
-						Utils.throw_exception("Invalid Unicode escape character at offset %d " % (_offset - 1))
+						InkUtils.throw_exception("Invalid Unicode escape character at offset %d " % (_offset - 1))
 						return null
 			elif c == "\"":
 				break
@@ -234,7 +234,7 @@ class Reader extends InkBase:
 			if num_str.is_valid_int():
 				return int(num_str)
 
-		Utils.throw_exception("Failed to parse number value: " + num_str)
+		InkUtils.throw_exception("Failed to parse number value: " + num_str)
 		return JsonError.new()
 
 	# (String) -> bool
@@ -271,7 +271,7 @@ class Reader extends InkBase:
 
 			message += str(" at offset ", _offset)
 
-			Utils.throw_exception(message)
+			InkUtils.throw_exception(message)
 			return false
 
 		return true
@@ -300,13 +300,6 @@ class Reader extends InkBase:
 		return "InkSimpleJSON.Reader"
 
 class Writer extends InkBase:
-	# ######################################################################## #
-	# Imports
-	# ######################################################################## #
-
-	var InkStringWriter := load("res://addons/inkgd/runtime/extra/string_writer.gd") as GDScript
-	var InkStateElement := load("res://addons/inkgd/runtime/extra/state_element.gd") as GDScript
-
 	# (String) -> Writer
 	func _init():
 		self._writer = InkStringWriter.new()

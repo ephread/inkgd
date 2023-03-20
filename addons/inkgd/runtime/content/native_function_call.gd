@@ -18,14 +18,6 @@ class_name InkNativeFunctionCall
 # ############################################################################ #
 
 const ValueType = preload("res://addons/inkgd/runtime/values/value_type.gd").ValueType
-var InkList := load("res://addons/inkgd/runtime/lists/ink_list.gd") as GDScript
-
-var InkValue := load("res://addons/inkgd/runtime/values/value.gd") as GDScript
-var InkBoolValue := load("res://addons/inkgd/runtime/values/bool_value.gd") as GDScript
-var InkListValue := load("res://addons/inkgd/runtime/values/list_value.gd") as GDScript
-
-static func InkNativeFunctionCall() -> GDScript:
-	return load("res://addons/inkgd/runtime/content/native_function_call.gd") as GDScript
 
 # ############################################################################ #
 
@@ -67,20 +59,20 @@ func call_with_parameters(parameters: Array, metadata: StoryErrorMetadata) -> In
 		return _prototype.call_with_parameters(parameters, metadata)
 
 	if self.number_of_parameters != parameters.size():
-		Utils.throw_exception("Unexpected number of parameters")
+		InkUtils.throw_exception("Unexpected number of parameters")
 		return null
 
 	var has_list = false
 	for p in parameters:
-		if Utils.is_ink_class(p, "Void"):
-			Utils.throw_story_exception(
+		if InkUtils.is_ink_class(p, "Void"):
+			InkUtils.throw_story_exception(
 					"Attempting to perform operation on a void value. Did you forget to " +
 					"'return' a value from a function you called here?",
 					false,
 					metadata
 			)
 			return null
-		if Utils.is_ink_class(p, "ListValue"):
+		if InkUtils.is_ink_class(p, "ListValue"):
 			has_list = true
 
 	if parameters.size() == 2 && has_list:
@@ -118,8 +110,8 @@ func call_coerced(parameters_of_single_type: Array, metadata: StoryErrorMetadata
 		if _operation_funcs.has(val_type):
 			op_for_type = _operation_funcs[val_type]
 		else:
-			var type_name = Utils.value_type_name(val_type)
-			Utils.throw_story_exception(
+			var type_name = InkUtils.value_type_name(val_type)
+			InkUtils.throw_story_exception(
 					"Cannot perform operation '%s' on value of type (%d)" \
 					% [self.name, type_name],
 					false,
@@ -138,7 +130,7 @@ func call_coerced(parameters_of_single_type: Array, metadata: StoryErrorMetadata
 
 			return InkValue.create(result_val)
 	else:
-		Utils.throw_exception(
+		InkUtils.throw_exception(
 				"Unexpected number of parameters to NativeFunctionCall: %d" % \
 				parameters_of_single_type.size()
 		)
@@ -151,13 +143,13 @@ func call_coerced(parameters_of_single_type: Array, metadata: StoryErrorMetadata
 # is raised. For more information, see story.gd.
 func call_binary_list_operation(parameters: Array, metadata) -> InkValue:
 	if ((self.name == "+" || self.name == "-") &&
-		Utils.is_ink_class(parameters[0], "ListValue") &&
-		Utils.is_ink_class(parameters [1], "IntValue")
+		InkUtils.is_ink_class(parameters[0], "ListValue") &&
+		InkUtils.is_ink_class(parameters [1], "IntValue")
 	):
 		return call_list_increment_operation(parameters)
 
-	var v1 = Utils.as_or_null(parameters[0], "Value")
-	var v2 = Utils.as_or_null(parameters[1], "Value")
+	var v1 = InkUtils.as_or_null(parameters[0], "Value")
+	var v2 = InkUtils.as_or_null(parameters[1], "Value")
 
 	if ((self.name == "&&" || self.name == "||") &&
 		(v1.value_type != ValueType.LIST || v2.value_type != ValueType.LIST)
@@ -174,9 +166,9 @@ func call_binary_list_operation(parameters: Array, metadata) -> InkValue:
 	if v1.value_type == ValueType.LIST && v2.value_type == ValueType.LIST:
 		return call_coerced([v1, v2], metadata)
 
-	var v1_type_name = Utils.value_type_name(v1.value_type)
-	var v2_type_name = Utils.value_type_name(v2.value_type)
-	Utils.throw_story_exception(
+	var v1_type_name = InkUtils.value_type_name(v1.value_type)
+	var v2_type_name = InkUtils.value_type_name(v2.value_type)
+	InkUtils.throw_story_exception(
 			"Can not call use '%s' operation on %s and %s" % \
 			[self.name, v1_type_name, v2_type_name],
 			false,
@@ -187,8 +179,8 @@ func call_binary_list_operation(parameters: Array, metadata) -> InkValue:
 
 # (Array<InkObject>) -> Value
 func call_list_increment_operation(list_int_params: Array) -> InkValue:
-	var list_val: InkListValue = Utils.cast(list_int_params[0], "ListValue")
-	var int_val: InkIntValue = Utils.cast(list_int_params [1], "IntValue")
+	var list_val: InkListValue = InkUtils.cast(list_int_params[0], "ListValue")
+	var int_val: InkIntValue = InkUtils.cast(list_int_params [1], "IntValue")
 
 	var result_raw_list = InkList.new()
 
@@ -234,7 +226,7 @@ func coerce_values_to_single_type(parameters_in: Array, metadata):
 			val_type = val.value_type
 
 		if val.value_type == ValueType.LIST:
-			special_case_list = Utils.as_or_null(val, "ListValue")
+			special_case_list = InkUtils.as_or_null(val, "ListValue")
 
 	var parameters_out: Array = [] # Array<Value>
 
@@ -251,7 +243,7 @@ func coerce_values_to_single_type(parameters_in: Array, metadata):
 					var casted_value = InkListValue.new_with_single_item(item.result, int_val)
 					parameters_out.append(casted_value)
 				else:
-					Utils.throw_story_exception(
+					InkUtils.throw_story_exception(
 							"Could not find List item with the value %d in %s" \
 							% [int_val, list.name],
 							false,
@@ -260,8 +252,8 @@ func coerce_values_to_single_type(parameters_in: Array, metadata):
 
 					return null
 			else:
-				var type_name = Utils.value_type_name(val.value_type)
-				Utils.throw_story_exception(
+				var type_name = InkUtils.value_type_name(val.value_type)
+				InkUtils.throw_story_exception(
 						"Cannot mix Lists and %s values in this operation" % type_name,
 						false,
 						metadata

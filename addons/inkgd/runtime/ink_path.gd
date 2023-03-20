@@ -224,7 +224,7 @@ func equals(other_path):
 	if other_path.is_relative != self.is_relative:
 		return false
 
-	return Utils.array_equal(other_path._components, self._components, true)
+	return InkUtils.array_equal(other_path._components, self._components, true)
 
 var _components = null # Array<Component>
 

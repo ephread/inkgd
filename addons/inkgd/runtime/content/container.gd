@@ -13,12 +13,6 @@ extends InkObject
 class_name InkContainer
 
 # ############################################################################ #
-# Imports
-# ############################################################################ #
-
-var InkSearchResult := load("res://addons/inkgd/runtime/search_result.gd") as GDScript
-
-# ############################################################################ #
 
 # String
 var name = null
@@ -44,7 +38,7 @@ func get_named_only_content():
 		named_only_content_dict[key] = self.named_content[key]
 
 	for c in self.content:
-		var named = Utils.as_INamedContent_or_null(c)
+		var named = InkUtils.as_INamedContent_or_null(c)
 		if named != null && named.has_valid_name:
 			named_only_content_dict.erase(named.name)
 
@@ -62,7 +56,7 @@ func set_named_only_content(value):
 		return
 
 	for key in value:
-		var named = Utils.as_INamedContent_or_null(value[key])
+		var named = InkUtils.as_INamedContent_or_null(value[key])
 		if named != null:
 			add_to_named_content_only(named)
 
@@ -117,8 +111,8 @@ func get_internal_path_to_first_leaf_content() -> InkPath:
 	var container: InkContainer = self
 	while container != null:
 		if container.content.size() > 0:
-			components.append(InkPath().Component.new(0))
-			container = Utils.as_or_null(container.content[0], "InkContainer")
+			components.append(InkPath.Component.new(0))
+			container = InkUtils.as_or_null(container.content[0], "InkContainer")
 
 	return InkPath().new_with_components(components)
 
@@ -127,12 +121,12 @@ func _init():
 	self.named_content = {} # Dictionary<string, INamedContent>
 
 func add_content(content_obj_or_content_list) -> void:
-	if Utils.is_ink_class(content_obj_or_content_list, "InkObject"):
+	if InkUtils.is_ink_class(content_obj_or_content_list, "InkObject"):
 		var content_obj = content_obj_or_content_list
 		self.content.append(content_obj)
 
 		if content_obj.parent:
-			Utils.throw_exception("content is already in %s" % content_obj.parent._to_string())
+			InkUtils.throw_exception("content is already in %s" % content_obj.parent._to_string())
 			return
 
 		content_obj.parent = self
@@ -147,7 +141,7 @@ func insert_content(content_obj: InkObject, index: int) -> void:
 	self.content.insert(index, content_obj)
 
 	if content_obj.parent:
-		Utils.throw_exception("content is already in %s" % content_obj.parent._to_string())
+		InkUtils.throw_exception("content is already in %s" % content_obj.parent._to_string())
 		return
 
 	content_obj.parent = self
@@ -155,14 +149,14 @@ func insert_content(content_obj: InkObject, index: int) -> void:
 	try_add_named_content(content_obj)
 
 func try_add_named_content(content_obj: InkObject) -> void:
-	var named_content_obj = Utils.as_INamedContent_or_null(content_obj)
+	var named_content_obj = InkUtils.as_INamedContent_or_null(content_obj)
 	if (named_content_obj != null && named_content_obj.has_valid_name):
 		add_to_named_content_only(named_content_obj)
 
 
 # (INamedContent) -> void
 func add_to_named_content_only(named_content_obj: InkObject) -> void:
-	Utils.__assert__(named_content_obj.is_class("InkObject"), "Can only add Runtime.Objects to a Runtime.Container")
+	InkUtils.__assert__(named_content_obj.is_class("InkObject"), "Can only add Runtime.Objects to a Runtime.Container")
 	var runtime_obj = named_content_obj
 	runtime_obj.parent = self
 
@@ -219,7 +213,7 @@ func content_at_path(
 			break
 
 		current_obj = found_obj
-		current_container = Utils.as_or_null(found_obj, "InkContainer")
+		current_container = InkUtils.as_or_null(found_obj, "InkContainer")
 
 		i += 1
 
@@ -250,11 +244,11 @@ func build_string_of_hierarchy(
 	while i < self.content.size():
 		var obj = self.content[i]
 
-		if Utils.is_ink_class(obj, "InkContainer"):
+		if InkUtils.is_ink_class(obj, "InkContainer"):
 			existing_hierarchy = obj.build_string_of_hierarchy(existing_hierarchy, indentation, pointed_obj)
 		else:
 			existing_hierarchy = _append_indentation(existing_hierarchy, indentation)
-			if Utils.is_ink_class(obj, "StringValue"):
+			if InkUtils.is_ink_class(obj, "StringValue"):
 				existing_hierarchy += "\""
 				existing_hierarchy += obj._to_string().replace("\n", "\\n")
 				existing_hierarchy += "\""
@@ -264,7 +258,7 @@ func build_string_of_hierarchy(
 		if i != self.content.size() - 1:
 			existing_hierarchy += ","
 
-		if !Utils.is_ink_class(obj, "InkContainer") && obj == pointed_obj:
+		if !InkUtils.is_ink_class(obj, "InkContainer") && obj == pointed_obj:
 			existing_hierarchy += "  <---"
 
 		existing_hierarchy += "\n"
@@ -285,7 +279,7 @@ func build_string_of_hierarchy(
 
 		for object_key in only_named:
 			var value = only_named[object_key]
-			Utils.__assert__(Utils.is_ink_class(value, "InkContainer"), "Can only print out named Containers")
+			InkUtils.__assert__(InkUtils.is_ink_class(value, "InkContainer"), "Can only print out named Containers")
 			var container = value
 			existing_hierarchy = container.build_string_of_hierarchy(existing_hierarchy, indentation, pointed_obj)
 			existing_hierarchy += "\n"
