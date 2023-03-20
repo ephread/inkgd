@@ -166,7 +166,7 @@ func _init(json_string: String):
 
 
 # () -> String
-func JSON.new().stringify() -> String:
+func to_json() -> String:
 	var writer: InkSimpleJSON.Writer = InkSimpleJSON.Writer.new()
 	to_json_with_writer(writer)
 	return writer._to_string()

@@ -31,7 +31,7 @@ signal on_did_load_state()
 
 # ############################################################################ #
 
-func JSON.new().stringify() -> String:
+func to_json() -> String:
 	var writer: InkSimpleJSON.Writer = InkSimpleJSON.Writer.new()
 	write_json(writer)
 	return writer._to_string()
