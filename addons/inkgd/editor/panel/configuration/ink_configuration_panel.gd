@@ -262,9 +262,9 @@ func _update_mono_availability(updates_checkbox = false):
 
 
 func _set_button_icons():
-	var folder_icon = get_icon("Folder", "EditorIcons")
-	var reload_icon = get_icon("Reload", "EditorIcons")
-	var instance_icon = get_icon("Instance", "EditorIcons")
+	var folder_icon = get_theme_icon("Folder", "EditorIcons")
+	var reload_icon = get_theme_icon("Reload", "EditorIcons")
+	var instance_icon = get_theme_icon("Instance", "EditorIcons")
 
 	_mono_dialog_button.icon = folder_icon
 	_executable_dialog_button.icon = folder_icon

@@ -55,7 +55,7 @@ var _ink_player = InkPlayerFactory.create()
 # On Ready | Private Properties
 # ############################################################################ #
 
-@onready var _play_icon = get_icon("Play", "EditorIcons")
+@onready var _play_icon = get_theme_icon("Play", "EditorIcons")
 
 # ############################################################################ #
 # On Ready | Private Nodes
@@ -94,9 +94,9 @@ func _ready():
 	_apply_configuration()
 	_update_story_picker()
 
-	var load_icon = get_icon("Load", "EditorIcons")
-	var stop_icon = get_icon("Stop", "EditorIcons")
-	var clear_icon = get_icon("Clear", "EditorIcons")
+	var load_icon = get_theme_icon("Load", "EditorIcons")
+	var stop_icon = get_theme_icon("Stop", "EditorIcons")
+	var clear_icon = get_theme_icon("Clear", "EditorIcons")
 
 	_start_button.icon = _play_icon
 	_load_story_button.icon = load_icon

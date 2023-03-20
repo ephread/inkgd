@@ -105,7 +105,7 @@ func _ready():
 	_story_configuration_container.add_child(_empty_state_container)
 	add_child(_file_dialog)
 
-	var add_icon = get_icon("Add", "EditorIcons")
+	var add_icon = get_theme_icon("Add", "EditorIcons")
 	_add_new_story_button.icon = add_icon
 
 	_load_story_configurations()

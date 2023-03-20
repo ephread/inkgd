@@ -128,12 +128,12 @@ func _apply_custom_header_color():
 
 
 func _set_button_icons():
-	var folder_icon = get_icon("Folder", "EditorIcons")
+	var folder_icon = get_theme_icon("Folder", "EditorIcons")
 	source_file_dialog_button.icon = folder_icon
 	target_file_dialog_button.icon = folder_icon
 	watched_folder_dialog_button.icon = folder_icon
 
-	var trash_icon = get_icon("Remove", "EditorIcons")
+	var trash_icon = get_theme_icon("Remove", "EditorIcons")
 	remove_button.icon = trash_icon
 
 

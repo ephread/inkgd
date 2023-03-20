@@ -96,7 +96,7 @@ func _create_progress_texture() -> AnimatedTexture:
 	animated_texture.frames = 8
 
 	for index in range(8):
-		var texture = get_icon(str("Progress", (index + 1)), "EditorIcons")
+		var texture = get_theme_icon(str("Progress", (index + 1)), "EditorIcons")
 		animated_texture.set_frame_texture(index, texture)
 
 	return animated_texture
