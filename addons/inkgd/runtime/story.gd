@@ -1503,7 +1503,7 @@ func remove_variable_observer(object = null, method_name = null, specific_variab
 			else:
 				var connections = observer.get_signal_connection_list("variable_changed");
 				for connection in connections:
-					observer.disconnect(connection.signal, Callable(connection.target, connection.method))
+					observer.disconnect(connection["signal"], Callable(connection.target, connection.method))
 
 				_variable_observers.erase(specific_variable_name)
 
