@@ -1156,9 +1156,9 @@ func choose_path_string(path, reset_callstack = true, arguments = null):
 				func_detail = "(" + container.path._to_string() + ") "
 
 			InkUtils.throw_exception(
-					"Story was running a function %s" % func_detail,
-					"when you called ChoosePathString(%s) " % path,
-					"- this is almost certainly not not what you want! Full stack trace: \n" +
+					"Story was running a function %s" % func_detail +
+					" when you called ChoosePathString(%s) " % path +
+					" - this is almost certainly not not what you want! Full stack trace: \n" +
 					self.state.callstack.callstack_trace
 			)
 
