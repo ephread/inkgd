@@ -35,8 +35,7 @@ func get_runtime_path() -> String:
 func _validate_csproj(project_name: String, runtime_path: String) -> bool:
 	var csproj_path = "res://%s.csproj" % project_name
 
-	var file = File.new()
-	if !file.file_exists(csproj_path):
+	if !FileAccess.file_exists(csproj_path):
 		printerr(
 				("[inkgd] [ERROR] The C# project (%s.csproj) doesn't exist. " % project_name) +
 				"You can create a new C# project through " +
@@ -46,7 +45,8 @@ func _validate_csproj(project_name: String, runtime_path: String) -> bool:
 		)
 		return false
 
-	var error = file.open(csproj_path, File.READ)
+	var file = FileAccess.open(csproj_path, FileAccess.READ)
+	var error = file.get_open_error()
 	if error != OK:
 		printerr(
 				"[inkgd] [ERROR] The C# project (%s.csproj) exists but it could not be opened." +

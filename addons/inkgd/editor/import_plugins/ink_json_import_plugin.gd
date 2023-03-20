@@ -54,7 +54,7 @@ func _get_import_order() -> int:
 func _import(source_file, save_path, options, r_platform_variants, r_gen_files):
 	_configuration.retrieve()
 
-	var raw_json = _get_file_content(source_file)
+	var raw_json = FileAccess.get_file_as_string(source_file)
 
 	var test_json_conv = JSON.new()
 	test_json_conv.parse(raw_json)
@@ -67,18 +67,3 @@ func _import(source_file, save_path, options, r_platform_variants, r_gen_files):
 
 	var flags = ResourceSaver.FLAG_COMPRESS if options["compress"] else 0
 	return ResourceSaver.save(resource, "%s.%s" % [save_path, _get_save_extension()], flags)
-
-# ############################################################################ #
-# Private Helpers
-# ############################################################################ #
-
-func _get_file_content(source_file):
-	var file = File.new()
-	var err = file.open(source_file, File.READ)
-	if err != OK:
-		return err
-
-	var text_content = file.get_as_text()
-
-	file.close()
-	return text_content

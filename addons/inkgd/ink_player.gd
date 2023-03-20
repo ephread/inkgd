@@ -545,14 +545,13 @@ func save_state_to_path(path: String):
 	if !path.begins_with("res://") && !path.begins_with("user://"):
 		path = "user://%s" % path
 
-	var file = File.new()
-	file.open(path, File.WRITE)
+	var file = FileAccess.open(path, FileAccess.WRITE)
 	save_state_to_file(file)
 	file.close()
 
 
 ## Saves the current state to the file.
-func save_state_to_file(file: File):
+func save_state_to_file(file: FileAccess):
 	if _story == null:
 		_push_null_story_error()
 		return
@@ -571,14 +570,13 @@ func load_state_from_path(path: String):
 	if !path.begins_with("res://") && !path.begins_with("user://"):
 		path = "user://%s" % path
 
-	var file = File.new()
-	file.open(path, File.READ)
+	var file = FileAccess.open(path, FileAccess.READ)
 	load_state_from_file(file)
 	file.close()
 
 
 ## Loads the state from the given file.
-func load_state_from_file(file: File):
+func load_state_from_file(file: FileAccess):
 	if _story == null:
 		_push_null_story_error()
 		return
