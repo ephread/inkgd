@@ -237,7 +237,7 @@ static func remove_range(array: Array, index: int, count: int) -> void:
 	var c = 0
 
 	while (c < count):
-		array.remove(i)
+		array.remove_at(i)
 		c += 1
 
 static func array_equal(a1: Array, a2: Array, use_equals = false) -> bool:

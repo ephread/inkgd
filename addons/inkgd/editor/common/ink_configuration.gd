@@ -116,7 +116,7 @@ func append_new_story_configuration(
 
 func remove_story_configuration_at_index(index: int):
 	if index >= 0 && index < stories.size():
-		stories.remove(index)
+		stories.remove_at(index)
 
 		emit_signal("story_configuration_changed")
 

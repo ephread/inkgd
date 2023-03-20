@@ -740,7 +740,7 @@ func trim_newlines_from_output_stream() -> void:
 		while i < self.output_stream.size():
 			var text = InkUtils.as_or_null(self.output_stream[i], "StringValue")
 			if text:
-				self.output_stream.remove(i)
+				self.output_stream.remove_at(i)
 			else:
 				i += 1
 
@@ -752,7 +752,7 @@ func remove_existing_glue() -> void:
 	while (i >= 0):
 		var c = self.output_stream[i]
 		if InkUtils.is_ink_class(c, "Glue"):
-			self.output_stream.remove(i)
+			self.output_stream.remove_at(i)
 		elif InkUtils.is_ink_class(c, "ControlCommand"):
 			break
 
@@ -884,7 +884,7 @@ func trim_whitespace_from_function_end() -> void:
 		if cmd: break
 
 		if txt.is_newline || txt.is_inline_whitespace:
-			self.output_stream.remove(i)
+			self.output_stream.remove_at(i)
 			self.output_stream_dirty()
 		else:
 			break

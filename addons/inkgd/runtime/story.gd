@@ -1702,7 +1702,7 @@ func next_sequence_shuffle_index() -> int:
 	while (i <= iteration_index):
 		var chosen = randi() % unpicked_indices.size()
 		var chosen_index = unpicked_indices[chosen]
-		unpicked_indices.remove(chosen)
+		unpicked_indices.remove_at(chosen)
 
 		if i == iteration_index:
 			return chosen_index
