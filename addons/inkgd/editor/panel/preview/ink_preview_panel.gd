@@ -164,8 +164,8 @@ func _pick_story_button_selected(index):
 
 
 func _load_story_button_pressed():
-	_file_dialog.set_mode(FileDialog.FILE_MODE_OPEN_FILE)
-	_file_dialog.set_access(FileDialog.ACCESS_RESOURCES)
+	_file_dialog.set_file_mode(EditorFileDialog.FILE_MODE_OPEN_FILE)
+	_file_dialog.set_access(EditorFileDialog.ACCESS_RESOURCES)
 	_file_dialog.add_filter("*.json;Compiled Ink story")
 	_file_dialog.popup_centered(Vector2(1280, 800) * editor_interface.scale)
 

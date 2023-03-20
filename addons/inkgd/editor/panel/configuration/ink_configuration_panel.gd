@@ -133,8 +133,8 @@ func _mono_button_pressed():
 	_file_dialog.current_path = configuration.mono_path
 	_file_dialog.current_dir = configuration.mono_path.get_base_dir()
 	_file_dialog.current_file = configuration.mono_path.get_file()
-	_file_dialog.set_mode(FileDialog.FILE_MODE_OPEN_FILE)
-	_file_dialog.set_access(FileDialog.ACCESS_FILESYSTEM)
+	_file_dialog.set_file_mode(EditorFileDialog.FILE_MODE_OPEN_FILE)
+	_file_dialog.set_access(EditorFileDialog.ACCESS_FILESYSTEM)
 	_file_dialog.popup_centered(Vector2(1280, 800) * editor_interface.scale)
 
 
@@ -145,8 +145,8 @@ func _executable_button_pressed():
 	_file_dialog.current_file = configuration.inklecate_path
 	_file_dialog.current_dir = configuration.inklecate_path.get_base_dir()
 	_file_dialog.current_file = configuration.inklecate_path.get_file()
-	_file_dialog.set_mode(FileDialog.FILE_MODE_OPEN_FILE)
-	_file_dialog.set_access(FileDialog.ACCESS_FILESYSTEM)
+	_file_dialog.set_file_mode(EditorFileDialog.FILE_MODE_OPEN_FILE)
+	_file_dialog.set_access(EditorFileDialog.ACCESS_FILESYSTEM)
 	_file_dialog.popup_centered(Vector2(1280, 800) * editor_interface.scale)
 
 

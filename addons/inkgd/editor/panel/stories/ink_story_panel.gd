@@ -142,8 +142,8 @@ func _source_file_button_pressed(node):
 	_file_dialog.current_dir = path.get_base_dir()
 	_file_dialog.current_file = path.get_file()
 
-	_file_dialog.set_mode(FileDialog.FILE_MODE_OPEN_FILE)
-	_file_dialog.set_access(FileDialog.ACCESS_FILESYSTEM)
+	_file_dialog.set_file_mode(EditorFileDialog.FILE_MODE_OPEN_FILE)
+	_file_dialog.set_access(EditorFileDialog.ACCESS_FILESYSTEM)
 	_file_dialog.add_filter("*.ink;Ink source file")
 	_file_dialog.popup_centered(Vector2(1280, 800) * editor_interface.scale)
 
@@ -163,8 +163,8 @@ func _target_file_button_pressed(node):
 	_file_dialog.current_dir = path.get_base_dir()
 	_file_dialog.current_file = path.get_file()
 
-	_file_dialog.set_mode(FileDialog.FILE_MODE_SAVE_FILE)
-	_file_dialog.set_access(FileDialog.ACCESS_FILESYSTEM)
+	_file_dialog.set_file_mode(EditorFileDialog.FILE_MODE_SAVE_FILE)
+	_file_dialog.set_access(EditorFileDialog.ACCESS_FILESYSTEM)
 	_file_dialog.add_filter("*.json;Compiled Ink story")
 	_file_dialog.popup_centered(Vector2(1280, 800) * editor_interface.scale)
 
@@ -183,8 +183,8 @@ func _watched_folder_button_pressed(node):
 	_file_dialog.current_dir = path.get_base_dir()
 	_file_dialog.current_file = path.get_file()
 
-	_file_dialog.set_mode(FileDialog.FILE_MODE_OPEN_DIR)
-	_file_dialog.set_access(FileDialog.ACCESS_FILESYSTEM)
+	_file_dialog.set_file_mode(EditorFileDialog.FILE_MODE_OPEN_DIR)
+	_file_dialog.set_access(EditorFileDialog.ACCESS_FILESYSTEM)
 	_file_dialog.popup_centered(Vector2(1280, 800) * editor_interface.scale)
 
 
