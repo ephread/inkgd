@@ -50,8 +50,7 @@ func get_callstack() -> InkCallStack:
 func set_callstack(value: InkCallStack):
 		_callstack = value
 
-# (String) -> Variant
-func get(variable_name: String):
+func _get(variable_name: StringName) -> Variant:
 	if self.patch != null:
 		var global: InkTryGetResult = patch.try_get_global(variable_name)
 		if global.exists:
@@ -64,14 +63,13 @@ func get(variable_name: String):
 	else:
 		return null
 
-# (String, Variant) -> void
-func set(variable_name: String, value) -> void:
+func _set(variable_name: StringName, value: Variant) -> bool:
 	if !_default_global_variables.has(variable_name):
 		InkUtils.throw_story_exception(
 				"Cannot assign to a variable (%s) that hasn't been declared in the story" \
 				% variable_name
 		)
-		return
+		return true
 
 	var val: InkValue = InkValue.create(value)
 	if val == null:
@@ -79,9 +77,10 @@ func set(variable_name: String, value) -> void:
 			InkUtils.throw_exception("Cannot pass null to VariableState")
 		else:
 			InkUtils.throw_exception("Invalid value passed to VariableState: %s" % str(value))
-		return
+		return true
 
 	set_global(variable_name, val)
+	return true
 
 func enumerate() -> Array:
 	return _global_variables.keys()
