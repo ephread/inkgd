@@ -66,7 +66,7 @@ func _import(source_file, save_path, options, r_platform_variants, r_gen_files):
 	resource.json = raw_json
 
 	var flags = ResourceSaver.FLAG_COMPRESS if options["compress"] else 0
-	return ResourceSaver.save("%s.%s" % [save_path, _get_save_extension()], resource, flags)
+	return ResourceSaver.save(resource, "%s.%s" % [save_path, _get_save_extension()], flags)
 
 # ############################################################################ #
 # Private Helpers

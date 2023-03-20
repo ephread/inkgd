@@ -42,7 +42,7 @@ func _get_import_order() -> int:
 
 func _import(source_file, save_path, options, r_platform_variants, r_gen_files):
 	return ResourceSaver.save(
-			"%s.%s" % [save_path, _get_save_extension()],
 			Resource.new(),
+			"%s.%s" % [save_path, _get_save_extension()],
 			ResourceSaver.FLAG_COMPRESS
 	)
