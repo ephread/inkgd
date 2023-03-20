@@ -580,7 +580,7 @@ func pop_from_output_stream(count: int) -> void:
 	self.output_stream_dirty()
 
 
-func try_splitting_head_tail_whitespace(single: InkStringValue) -> InkStringValue:
+func try_splitting_head_tail_whitespace(single: InkStringValue):
 	var _str = single.value
 
 	var head_first_newline_idx = -1

@@ -1413,9 +1413,8 @@ func validate_external_bindings() -> void:
 		error(message)
 
 
-func validate_external_bindings_with(o: InkContainer, missing_externals: InkStringSet) -> void:
-	var container = InkUtils.as_or_null(o, "InkContainer")
-	if container:
+func validate_external_bindings_with(o, missing_externals: InkStringSet) -> void:
+	if o is InkContainer:
 		for inner_content in o.content:
 			var inner_container = InkUtils.as_or_null(inner_content, "InkContainer")
 			if inner_container == null || !inner_container.has_valid_name:
@@ -1428,9 +1427,8 @@ func validate_external_bindings_with(o: InkContainer, missing_externals: InkStri
 			)
 		return
 
-	var divert = InkUtils.as_or_null(o, "Divert")
-	if divert && divert.is_external:
-		var name = divert.target_path_string
+	if o is InkDivert && o.is_external:
+		var name = o.target_path_string
 
 		if !_externals.has(name):
 			if allow_external_function_fallbacks:

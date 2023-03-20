@@ -156,7 +156,7 @@ func try_add_named_content(content_obj: InkObject) -> void:
 
 # (INamedContent) -> void
 func add_to_named_content_only(named_content_obj: InkObject) -> void:
-	InkUtils.__assert__(named_content_obj.is_class("InkObject"), "Can only add Runtime.Objects to a Runtime.Container")
+	InkUtils.__assert__(named_content_obj != null, "Can only add Runtime.Objects to a Runtime.Container")
 	var runtime_obj = named_content_obj
 	runtime_obj.parent = self
 

@@ -90,10 +90,10 @@ static func as_INamedContent_or_null(variant):
 
 	return null
 
-static func is_ink_class(object: Object, name_of_class: String) -> bool:
+static func is_ink_class(object, name_of_class: String) -> bool:
 	return (object is Object) && object.is_class(name_of_class)
 
-static func are_of_same_type(object1: Object, object2: Object) -> bool:
+static func are_of_same_type(object1, object2) -> bool:
 	if (object1 is Object) && (object2 is Object):
 		return object1.get_class() == object2.get_class()
 

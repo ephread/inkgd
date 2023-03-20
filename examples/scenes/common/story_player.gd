@@ -13,6 +13,7 @@ extends Node
 
 var ErrorType := preload("res://addons/inkgd/runtime/enums/error.gd").ErrorType
 var LineLabel := load("res://examples/scenes/common/label.tscn") as PackedScene
+const ChoiceContainerScene = preload("res://examples/scenes/common/choice_container.tscn")
 
 
 # ############################################################################ #
@@ -130,7 +131,7 @@ func _add_label(text):
 
 func _prompt_choices(choices):
 	if !choices.is_empty():
-		_current_choice_container = ChoiceContainer.instantiate()
+		_current_choice_container = ChoiceContainerScene.instantiate()
 		_story_vbox_container.add_child(_current_choice_container)
 
 		_current_choice_container.create_choices(choices)
