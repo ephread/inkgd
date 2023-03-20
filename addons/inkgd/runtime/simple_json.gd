@@ -304,10 +304,10 @@ class Writer extends InkBase:
 	func _init():
 		self._writer = InkStringWriter.new()
 
-	# (FuncRef) -> void
-	func write_object(inner: FuncRef) -> void:
+	# (Callable) -> void
+	func write_object(inner: Callable) -> void:
 		write_object_start()
-		inner.call_func(self)
+		inner.call(self)
 		write_object_end()
 
 	func write_object_start() -> void:
@@ -333,9 +333,9 @@ class Writer extends InkBase:
 			write_property_start(name)
 			write(content)
 			write_property_end()
-		elif content is FuncRef:
+		elif content is Callable:
 			write_property_start(name)
-			content.call_func(self)
+			content.call(self)
 			write_property_end()
 		else:
 			push_error("Wrong type for 'content': %s" % str(content))

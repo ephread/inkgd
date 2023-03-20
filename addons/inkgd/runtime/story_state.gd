@@ -448,22 +448,22 @@ func write_json(writer: InkSimpleJSON.Writer) -> void:
 	if self._named_flows != null:
 		for named_flow_key in self._named_flows.keys():
 			var named_flow_value = self._named_flows[named_flow_key]
-			writer.write_property(named_flow_key, funcref(named_flow_value, "write_json"))
+			writer.write_property(named_flow_key, named_flow_value.write_json)
 	else:
-		writer.write_property(self._current_flow.name, funcref(self._current_flow, "write_json"))
+		writer.write_property(self._current_flow.name, _current_flow.write_json)
 
 	writer.write_object_end()
 	writer.write_property_end()
 
 	writer.write_property("currentFlowName", self._current_flow.name)
-	writer.write_property("variablesState", funcref(self.variables_state, "write_json"))
-	writer.write_property("evalStack", funcref(self, "_anonymous_write_property_eval_stack"))
+	writer.write_property("variablesState", variables_state.write_json)
+	writer.write_property("evalStack", _anonymous_write_property_eval_stack)
 
 	if !self.diverted_pointer.is_null:
 		writer.write_property("currentDivertTarget", self.diverted_pointer.path.components_string)
 
-	writer.write_property("visitCounts", funcref(self, "_anonymous_write_property_visit_counts"))
-	writer.write_property("turnIndices", funcref(self, "_anonymous_write_property_turn_indices"))
+	writer.write_property("visitCounts", _anonymous_write_property_visit_counts)
+	writer.write_property("turnIndices", _anonymous_write_property_turn_indices)
 
 	writer.write_property("turnIdx", self.current_turn_index)
 	writer.write_property("storySeed", self.story_seed)

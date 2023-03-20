@@ -44,10 +44,10 @@ func _init_with_name_and_jobject(name, story, jobject):
 # (SimpleJson.Writer) -> void
 func write_json(writer):
 	writer.write_object_start()
-	writer.write_property("callstack", funcref(self.callstack, "write_json"))
+	writer.write_property("callstack", callstack.write_json)
 	writer.write_property(
 		"outputStream",
-		funcref(self, "_anonymous_write_property_output_stream")
+		_anonymous_write_property_output_stream
 	)
 
 	var has_choice_threads = false
@@ -70,7 +70,7 @@ func write_json(writer):
 
 	writer.write_property(
 		"currentChoices",
-		funcref(self, "_anonymous_write_property_current_choices")
+		_anonymous_write_property_current_choices
 	)
 
 	writer.write_object_end()

@@ -268,7 +268,7 @@ func set_json_token(jobject, story_context):
 
 # (SimpleJson.Writer) -> void
 func write_json(writer):
-	writer.write_object(funcref(self, "_anonymous_write_json"))
+	writer.write_object(_anonymous_write_json)
 
 # () -> void
 func push_thread():

@@ -181,7 +181,7 @@ func to_json_with_writer(writer: InkSimpleJSON.Writer) -> void:
 
 	writer.write_property("inkVersion", INK_VERSION_CURRENT)
 
-	writer.write_property("root", funcref(self, "write_root_property"))
+	writer.write_property("root", write_root_property)
 
 	if self._list_definitions != null:
 		writer.write_property_start("listDefs")
