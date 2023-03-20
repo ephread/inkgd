@@ -124,9 +124,7 @@ func serialized() -> String:
 #
 # (String) -> InkListItem
 static func from_serialized_key(key: String) -> InkListItem:
-	var test_json_conv = JSON.new()
-	test_json_conv.parse(key).result
-	var obj = test_json_conv.get_data()
+	var obj = JSON.parse_string(key)
 	if !InkListItem._is_like_ink_list_item(obj):
 		return InkListItem.new_null()
 
