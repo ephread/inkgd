@@ -256,6 +256,3 @@ func is_class(type):
 
 func get_class():
 	return "InkPath"
-
-static func InkPath():
-	return load("res://addons/inkgd/runtime/ink_path.gd")
