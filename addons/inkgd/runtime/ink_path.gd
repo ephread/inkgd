@@ -102,7 +102,7 @@ func get_tail():
 
 		return InkPath().new_with_components(tail_comps)
 	else:
-		return InkPath().self()
+		return InkPath().new_self()
 
 var length setget , get_length # int
 func get_length():
@@ -141,7 +141,7 @@ func _init_with_components_string(components_string):
 	self.components_string = components_string
 
 # () -> InkPath
-static func self():
+static func new_self():
 	var path = InkPath().new()
 	path.is_relative = true
 	return path
