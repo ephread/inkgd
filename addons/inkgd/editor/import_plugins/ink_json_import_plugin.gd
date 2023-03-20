@@ -34,7 +34,7 @@ func _get_save_extension():
 func _get_resource_type():
 	return "Resource";
 
-func _get_import_options(preset):
+func _get_import_options(path: String, preset_index: int) -> Array:
 	return [
 		{
 			"name": "compress",
@@ -42,13 +42,16 @@ func _get_import_options(preset):
 		}
 	]
 
-func _get_option_visibility(option, options):
+func _get_option_visibility(path: String, option_name: StringName, options: Dictionary) -> bool:
 	return true
 
 func _get_preset_count():
 	return 0
 
-func import(source_file, save_path, options, r_platform_variants, r_gen_files):
+func _get_import_order() -> int:
+	return 0
+
+func _import(source_file, save_path, options, r_platform_variants, r_gen_files):
 	_configuration.retrieve()
 
 	var raw_json = _get_file_content(source_file)
