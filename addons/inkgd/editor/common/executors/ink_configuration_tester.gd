@@ -43,7 +43,7 @@ func _init(configuration: InkExecutionConfiguration):
 ## an instance of `InkExecutionResult`, otherwise, it will return `null`.
 func test_availability():
 	if _configuration.use_threads:
-		var error = _thread.start(_test_availablity.bind(_configuration), Thread.PRIORITY_HIGH)
+		var error = _thread.start(_test_availability.bind(_configuration), Thread.PRIORITY_HIGH)
 		if error != OK:
 			var result = InkExecutionResult.new(
 				identifier,
