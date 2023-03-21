@@ -1330,7 +1330,7 @@ func call_external_function(func_name: String, number_of_arguments: int) -> void
 
 		i += 1
 
-	arguments.invert()
+	arguments.reverse()
 
 	var func_result = _func_def.execute(arguments)
 
