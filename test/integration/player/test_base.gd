@@ -30,7 +30,7 @@ func before_each():
 func after_each():
 	_exception_messages_raised = []
 	get_tree().root.remove_child(_ink_player)
-	_ink_player.disconnect("exception_raised", _exception_raised)
+	_ink_player.exception_raised.disconnect(_exception_raised)
 	_ink_player = null
 
 	super.after_each()

@@ -1490,7 +1490,7 @@ func remove_variable_observer(object = null, method_name = null, specific_variab
 		if _variable_observers.has(specific_variable_name):
 			var observer = _variable_observers[specific_variable_name]
 			if object != null && method_name != null:
-				observer.disconnect("variable_changed", Callable(object, method_name))
+				observer.variable_changed.disconnect(Callable(object, method_name))
 
 				if observer.get_signal_connection_list("variable_changed").is_empty():
 					_variable_observers.erase(specific_variable_name)
@@ -1506,7 +1506,7 @@ func remove_variable_observer(object = null, method_name = null, specific_variab
 		for observer_key in _variable_observers:
 			var observer = _variable_observers[observer_key]
 			if observer.is_connected("variable_changed", Callable(object, method_name)):
-				observer.disconnect("variable_changed", Callable(object, method_name))
+				observer.variable_changed.disconnect(Callable(object, method_name))
 
 			if observer.get_signal_connection_list("variable_changed").is_empty():
 				keys_to_remove.append(observer_key)

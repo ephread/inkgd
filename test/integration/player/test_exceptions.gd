@@ -25,7 +25,7 @@ func before_each():
 
 func after_each():
 	_error_messages_encountered = []
-	_ink_player.disconnect("error_encountered", _error_encountered)
+	_ink_player.error_encountered.disconnect(_error_encountered)
 	super.after_each()
 
 # ############################################################################ #

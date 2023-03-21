@@ -28,7 +28,7 @@ func after_each():
 
 	_exception_raised_count = 0
 
-	ink_runtime.disconnect("exception_raised", _exception_raised)
+	ink_runtime.exception_raised.disconnect(_exception_raised)
 	super.after_each()
 
 # ############################################################################ #
