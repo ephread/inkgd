@@ -216,7 +216,7 @@ func get_current_text():
 		var _str = ""
 
 		for output_obj in output_stream:
-			var text_content: InkStringValue = InkUtils.as_or_null(output_obj, "StringValue")
+			var text_content: InkStringValue = output_obj as InkStringValue
 			if text_content != null:
 				_str += text_content.value
 
@@ -267,7 +267,7 @@ func get_current_tags():
 		_current_tags = []
 
 		for output_obj in output_stream:
-			var tag = InkUtils.as_or_null(output_obj, "Tag")
+			var tag = output_obj as InkTag
 			if tag != null:
 				_current_tags.append(tag.text)
 
@@ -561,7 +561,7 @@ func reset_output(objs = null) -> void:
 
 
 func push_to_output_stream(obj: InkObject) -> void:
-	var text = InkUtils.as_or_null(obj, "StringValue")
+	var text = obj as InkStringValue
 	if text:
 		var list_text = try_splitting_head_tail_whitespace(text)
 		if list_text != null:
@@ -651,8 +651,8 @@ func try_splitting_head_tail_whitespace(single: InkStringValue):
 
 
 func push_to_output_stream_individual(obj: InkObject) -> void:
-	var glue = InkUtils.as_or_null(obj, "Glue")
-	var text = InkUtils.as_or_null(obj, "StringValue")
+	var glue = obj as InkGlue
+	var text = obj as InkStringValue
 
 	var include_in_output = true
 
@@ -669,8 +669,8 @@ func push_to_output_stream_individual(obj: InkObject) -> void:
 		var i = output_stream.size() - 1
 		while (i >= 0):
 			var o = output_stream[i]
-			var c = InkUtils.as_or_null(o, "ControlCommand")
-			var g = InkUtils.as_or_null(o, "Glue")
+			var c = o as InkControlCommand
+			var g = o as InkGlue
 
 			if g:
 				glue_trim_index = i
@@ -725,8 +725,8 @@ func trim_newlines_from_output_stream() -> void:
 	var i = output_stream.size() - 1
 	while i >= 0:
 		var obj = output_stream[i]
-		var cmd = InkUtils.as_or_null(obj, "ControlCommand")
-		var txt = InkUtils.as_or_null(obj, "StringValue")
+		var cmd = obj as InkControlCommand
+		var txt = obj as InkStringValue
 
 		if cmd || (txt && txt.is_non_whitespace):
 			break
@@ -738,7 +738,7 @@ func trim_newlines_from_output_stream() -> void:
 	if remove_whitespace_from >= 0:
 		i = remove_whitespace_from
 		while i < output_stream.size():
-			var text = InkUtils.as_or_null(output_stream[i], "StringValue")
+			var text = output_stream[i] as InkStringValue
 			if text:
 				output_stream.remove_at(i)
 			else:
@@ -769,7 +769,7 @@ func get_output_stream_ends_in_newline() -> bool:
 			var obj = output_stream[i]
 			if InkUtils.is_ink_class(obj, "ControlCommand"):
 				break
-			var text = InkUtils.as_or_null(output_stream[i], "StringValue")
+			var text = output_stream[i] as InkStringValue
 			if text:
 				if text.is_newline:
 					return true
@@ -795,7 +795,7 @@ func get_in_string_evaluation() -> bool:
 	var i = output_stream.size() - 1
 
 	while (i >= 0):
-		var cmd = InkUtils.as_or_null(output_stream[i], "ControlCommand")
+		var cmd = output_stream[i] as InkControlCommand
 		if cmd && cmd.command_type == InkControlCommand.CommandType.BEGIN_STRING:
 			return true
 
@@ -806,7 +806,7 @@ func get_in_string_evaluation() -> bool:
 
 # (InkObject) -> void
 func push_evaluation_stack(obj: InkObject) -> void:
-	var list_value = InkUtils.as_or_null(obj, "ListValue")
+	var list_value = obj as InkListValue
 	if list_value:
 		var raw_list = list_value.value
 		if raw_list.origin_names != null:
@@ -876,8 +876,8 @@ func trim_whitespace_from_function_end() -> void:
 	var i = output_stream.size() - 1
 	while (i >= function_start_point):
 		var obj = output_stream[i]
-		var txt = InkUtils.as_or_null(obj, "StringValue")
-		var cmd = InkUtils.as_or_null(obj, "ControlCommand")
+		var txt = obj as InkStringValue
+		var cmd = obj as InkControlCommand
 		if !txt:
 			i -= 1
 			continue
@@ -976,7 +976,7 @@ func complete_function_evaluation_from_game():
 		if InkUtils.is_ink_class(returned_obj, "Void"):
 			return null
 
-		var return_val = InkUtils.as_or_null(returned_obj, "Value")
+		var return_val = returned_obj as InkValue
 
 		if return_val.value_type == ValueType.DIVERT_TARGET:
 			return return_val.value_object._to_string()

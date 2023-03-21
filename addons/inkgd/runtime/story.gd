@@ -157,10 +157,7 @@ func _init(json_string: String):
 	if root_object.has("listDefs"):
 		_list_definitions = Json.jtoken_to_list_definitions(root_object["listDefs"])
 
-	_main_content_container = InkUtils.as_or_null(
-			Json.jtoken_to_runtime_object(root_token),
-			"InkContainer"
-	)
+	_main_content_container = Json.jtoken_to_runtime_object(root_token) as InkContainer
 
 	reset_state()
 
@@ -498,7 +495,7 @@ func content_at_path(path: InkPath) -> InkSearchResult:
 
 func knot_container_with_name(name: String) -> InkContainer:
 	if main_content_container.named_content.has(name):
-		return InkUtils.as_or_null(main_content_container.named_content[name], "InkContainer")
+		return main_content_container.named_content[name] as InkContainer
 
 	return null
 
@@ -588,7 +585,7 @@ func step() -> void:
 	if pointer.is_null:
 		return
 
-	var container_to_enter = InkUtils.as_or_null(pointer.resolve(), "InkContainer")
+	var container_to_enter = pointer.resolve() as InkContainer
 	while (container_to_enter):
 		visit_container(container_to_enter, true)
 
@@ -596,7 +593,7 @@ func step() -> void:
 			break
 
 		pointer = InkPointer.start_of(container_to_enter)
-		container_to_enter = InkUtils.as_or_null(pointer.resolve(), "InkContainer")
+		container_to_enter = pointer.resolve() as InkContainer
 
 	state.current_pointer = pointer
 
@@ -612,7 +609,7 @@ func step() -> void:
 	if is_logic_or_flow_control:
 		should_add_to_stream = false
 
-	var choice_point = InkUtils.as_or_null(current_content_obj, "ChoicePoint")
+	var choice_point = current_content_obj as InkChoicePoint
 	if choice_point:
 		var choice = process_choice(choice_point)
 		if choice:
@@ -625,7 +622,7 @@ func step() -> void:
 		should_add_to_stream = false
 
 	if should_add_to_stream:
-		var var_pointer = InkUtils.as_or_null(current_content_obj, "VariablePointerValue")
+		var var_pointer = current_content_obj as InkVariablePointerValue
 		if var_pointer && var_pointer.context_index == -1:
 			var context_idx = state.callstack.context_for_variable_named(var_pointer.variable_name)
 			current_content_obj = InkVariablePointerValue.new_with_context(var_pointer.variable_name, context_idx)
@@ -637,7 +634,7 @@ func step() -> void:
 
 	next_content()
 
-	var control_cmd = InkUtils.as_or_null(current_content_obj, "ControlCommand")
+	var control_cmd = current_content_obj as InkControlCommand
 	if control_cmd && control_cmd.command_type == InkControlCommand.CommandType.START_THREAD:
 		state.callstack.push_thread()
 
@@ -661,17 +658,17 @@ func visit_changed_containers_due_to_divert() -> void:
 
 	_prev_containers.clear()
 	if !previous_pointer.is_null:
-		var prev_ancestor = InkUtils.as_or_null(previous_pointer.resolve(), "InkContainer")
-		prev_ancestor = prev_ancestor if prev_ancestor else InkUtils.as_or_null(previous_pointer.container, "InkContainer")
+		var prev_ancestor = previous_pointer.resolve() as InkContainer
+		prev_ancestor = prev_ancestor if prev_ancestor else previous_pointer.container as InkContainer
 		while prev_ancestor:
 			_prev_containers.append(prev_ancestor)
-			prev_ancestor = InkUtils.as_or_null(prev_ancestor.parent, "InkContainer")
+			prev_ancestor = prev_ancestor.parent as InkContainer
 
 	var current_child_of_container = pointer.resolve()
 
 	if current_child_of_container == null: return
 
-	var current_container_ancestor = InkUtils.as_or_null(current_child_of_container.parent, "InkContainer")
+	var current_container_ancestor = current_child_of_container.parent as InkContainer
 
 	var all_children_entered_at_start = true
 	while current_container_ancestor && (_prev_containers.find(current_container_ancestor) < 0 || current_container_ancestor.counting_at_start_only):
@@ -686,7 +683,7 @@ func visit_changed_containers_due_to_divert() -> void:
 		visit_container(current_container_ancestor, entering_at_start)
 
 		current_child_of_container = current_container_ancestor
-		current_container_ancestor = InkUtils.as_or_null(current_container_ancestor.parent, "InkContainer")
+		current_container_ancestor = current_container_ancestor.parent as InkContainer
 
 
 func process_choice(choice_point: InkChoicePoint) -> InkChoice:
@@ -701,11 +698,11 @@ func process_choice(choice_point: InkChoicePoint) -> InkChoice:
 	var choice_only_text = ""
 
 	if choice_point.has_choice_only_content:
-		var choice_only_str_val = InkUtils.as_or_null(state.pop_evaluation_stack(), "StringValue")
+		var choice_only_str_val = state.pop_evaluation_stack() as InkStringValue
 		choice_only_text = choice_only_str_val.value
 
 	if choice_point.has_start_content:
-		var start_str_val = InkUtils.as_or_null(state.pop_evaluation_stack(), "StringValue")
+		var start_str_val = state.pop_evaluation_stack() as InkStringValue
 		start_text = start_str_val.value
 
 	if choice_point.once_only:
@@ -766,7 +763,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 						var_name, ")"))
 				return false
 			elif !InkUtils.is_ink_class(var_contents, "DivertTargetValue"):
-				var int_content = InkUtils.as_or_null(var_contents, "IntValue")
+				var int_content = var_contents as InkIntValue
 
 				var error_message = str("Tried to divert to a target from a variable,",
 										"but the variable (", var_name,
@@ -827,7 +824,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 				if state.evaluation_stack.size() > 0:
 					var output = state.pop_evaluation_stack()
 
-					if !InkUtils.as_or_null(output, "Void"):
+					if !(output is InkVoid):
 						var text = InkStringValue.new_with(output._to_string())
 						state.push_to_output_stream(text)
 
@@ -849,7 +846,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 				var override_tunnel_return_target = null # DivertTargetValue
 				if pop_type == PushPopType.TUNNEL:
 					var popped = state.pop_evaluation_stack()
-					override_tunnel_return_target = InkUtils.as_or_null(popped, "DivertTargetValue")
+					override_tunnel_return_target = popped as InkDivertTargetValue
 					if override_tunnel_return_target == null:
 						__assert__(
 								InkUtils.is_ink_class(popped, "Void"),
@@ -895,7 +892,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 
 					output_count_consumed += 1
 
-					var command = InkUtils.as_or_null(obj, "ControlCommand")
+					var command = obj as InkControlCommand
 					if (command != null &&
 						command.command_type == InkControlCommand.CommandType.BEGIN_STRING):
 						break
@@ -931,8 +928,8 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 							target, extra_note))
 					return false
 
-				var divert_target = InkUtils.as_or_null(target, "DivertTargetValue")
-				var container = InkUtils.as_or_null(content_at_path(divert_target.target_path).correct_obj, "InkContainer")
+				var divert_target = target as InkDivertTargetValue
+				var container = content_at_path(divert_target.target_path).correct_obj as InkContainer
 
 				var either_count = 0
 				if container != null:
@@ -952,8 +949,8 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 				state.push_evaluation_stack(InkIntValue.new_with(either_count))
 
 			InkControlCommand.CommandType.RANDOM:
-				var max_int = InkUtils.as_or_null(state.pop_evaluation_stack(), "IntValue")
-				var min_int = InkUtils.as_or_null(state.pop_evaluation_stack(), "IntValue")
+				var max_int = state.pop_evaluation_stack() as InkIntValue
+				var min_int = state.pop_evaluation_stack() as InkIntValue
 
 				if min_int == null:
 					error("Invalid value for minimum parameter of RANDOM(min, max)")
@@ -985,7 +982,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 				state.previous_random = next_random
 
 			InkControlCommand.CommandType.SEED_RANDOM:
-				var _seed = InkUtils.as_or_null(state.pop_evaluation_stack(), "IntValue")
+				var _seed = state.pop_evaluation_stack() as InkIntValue
 				if _seed == null:
 					error("Invalid value passed to SEED_RANDOM")
 					return false
@@ -1017,8 +1014,8 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 				state.force_end()
 
 			InkControlCommand.CommandType.LIST_FROM_INT:
-				var int_val = InkUtils.as_or_null(state.pop_evaluation_stack(), "IntValue")
-				var list_name_val = InkUtils.as_or_null(state.pop_evaluation_stack(), "StringValue")
+				var int_val = state.pop_evaluation_stack() as InkIntValue
+				var list_name_val = state.pop_evaluation_stack() as InkStringValue
 
 				if int_val == null:
 					_throw_story_exception(
@@ -1046,10 +1043,10 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 				state.push_evaluation_stack(generated_list_value)
 
 			InkControlCommand.CommandType.LIST_RANGE:
-				var max_value = InkUtils.as_or_null(state.pop_evaluation_stack(), "Value")
-				var min_value = InkUtils.as_or_null(state.pop_evaluation_stack(), "Value")
+				var max_value = state.pop_evaluation_stack() as InkValue
+				var min_value = state.pop_evaluation_stack() as InkValue
 
-				var target_list = InkUtils.as_or_null(state.pop_evaluation_stack(), "ListValue")
+				var target_list = state.pop_evaluation_stack() as InkListValue
 
 				if target_list == null || min_value == null || max_value == null:
 					_throw_story_exception("Expected list, minimum and maximum for LIST_RANGE")
@@ -1061,7 +1058,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 
 			InkControlCommand.CommandType.LIST_RANDOM:
 
-				var list_val = InkUtils.as_or_null(state.pop_evaluation_stack(), "ListValue")
+				var list_val = state.pop_evaluation_stack() as InkListValue
 				if list_val == null:
 					_throw_story_exception("Expected list for LIST_RANDOM")
 					return false
@@ -1100,7 +1097,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 
 		return true
 
-	elif InkUtils.as_or_null(content_obj, "VariableAssignment"):
+	elif content_obj as InkVariableAssignment:
 		var var_ass = content_obj
 		var assigned_val = state.pop_evaluation_stack()
 		if assigned_val is Array:
@@ -1110,7 +1107,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 
 		return true
 
-	elif InkUtils.as_or_null(content_obj, "VariableReference"):
+	elif content_obj as InkVariableReference:
 		var var_ref = content_obj
 		var found_value = null # InkValue
 
@@ -1132,7 +1129,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 		state.push_evaluation_stack(found_value)
 		return true
 
-	elif InkUtils.as_or_null(content_obj, "NativeFunctionCall"):
+	elif content_obj as InkNativeFunctionCall:
 		var function = content_obj
 		var func_params = state.pop_evaluation_stack(function.number_of_parameters)
 		var result = function.call_with_parameters(func_params, _make_story_error_metadata())
@@ -1326,7 +1323,7 @@ func call_external_function(func_name: String, number_of_arguments: int) -> void
 	var arguments = [] # Array<Variant>
 	var i = 0
 	while i < number_of_arguments:
-		var popped_obj = InkUtils.as_or_null(state.pop_evaluation_stack(), "Value")
+		var popped_obj = state.pop_evaluation_stack() as InkValue
 		var value_obj = popped_obj.value_object
 		arguments.append(value_obj)
 
@@ -1418,13 +1415,13 @@ func validate_external_bindings() -> void:
 func validate_external_bindings_with(o, missing_externals: InkStringSet) -> void:
 	if o is InkContainer:
 		for inner_content in o.content:
-			var inner_container = InkUtils.as_or_null(inner_content, "InkContainer")
+			var inner_container = inner_content as InkContainer
 			if inner_container == null || !inner_container.has_valid_name:
 				validate_external_bindings_with(inner_content, missing_externals)
 
 		for inner_key in o.named_content:
 			validate_external_bindings_with(
-				InkUtils.as_or_null(o.named_content[inner_key], "InkObject"),
+				o.named_content[inner_key] as InkObject,
 				missing_externals
 			)
 		return
@@ -1558,7 +1555,7 @@ func tags_at_start_of_flow_container_with_path_string(path_string: String):
 
 	var tags = null # Array<String>
 	for c in flow_container.content:
-		var tag = InkUtils.as_or_null(c , "Tag")
+		var tag = c  as InkTag
 		if tag:
 			if tags == null: tags = [] # Array<String> ()
 			tags.append(tag.text)
@@ -1625,7 +1622,7 @@ func increment_content_pointer() -> bool:
 
 		successful_increment = false
 
-		var next_ancestor = InkUtils.as_or_null(pointer.container.parent, "InkContainer")
+		var next_ancestor = pointer.container.parent as InkContainer
 		if !next_ancestor:
 			break
 
@@ -1670,7 +1667,7 @@ func try_follow_default_invisible_choice() -> bool:
 
 
 func next_sequence_shuffle_index() -> int:
-	var num_elements_int_val = InkUtils.as_or_null(state.pop_evaluation_stack(), "IntValue")
+	var num_elements_int_val = state.pop_evaluation_stack() as InkIntValue
 	if num_elements_int_val == null:
 		error("expected number of elements in sequence for shuffle index")
 		return 0
@@ -1679,7 +1676,7 @@ func next_sequence_shuffle_index() -> int:
 
 	var num_elements = num_elements_int_val.value
 
-	var seq_count_val = InkUtils.as_or_null(state.pop_evaluation_stack(), "IntValue")
+	var seq_count_val = state.pop_evaluation_stack() as InkIntValue
 	var seq_count = seq_count_val.value
 	var loop_index = seq_count / num_elements
 	var iteration_index = seq_count % num_elements

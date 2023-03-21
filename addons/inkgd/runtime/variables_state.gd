@@ -134,20 +134,20 @@ func runtime_objects_equal(obj1: InkObject, obj2: InkObject) -> bool:
 	if !InkUtils.are_of_same_type(obj1, obj2):
 		return false
 
-	var bool_val: InkBoolValue = InkUtils.as_or_null(obj1, "BoolValue")
+	var bool_val: InkBoolValue = obj1 as InkBoolValue
 	if bool_val != null:
 		return bool_val.value == InkUtils.cast(obj2, "BoolValue").value
 
-	var int_val: InkIntValue = InkUtils.as_or_null(obj1, "IntValue")
+	var int_val: InkIntValue = obj1 as InkIntValue
 	if int_val != null:
 		return int_val.value == InkUtils.cast(obj2, "IntValue").value
 
-	var float_val: InkFloatValue = InkUtils.as_or_null(obj1, "FloatValue")
+	var float_val: InkFloatValue = obj1 as InkFloatValue
 	if float_val != null:
 		return float_val.value == InkUtils.cast(obj2, "FloatValue").value
 
-	var val1: InkValue = InkUtils.as_or_null(obj1, "Value")
-	var val2: InkValue = InkUtils.as_or_null(obj2, "Value")
+	var val1: InkValue = obj1 as InkValue
+	var val2: InkValue = obj2 as InkValue
 
 	if val1 != null:
 		if val1.value_object is Object && val2.value_object is Object:
@@ -165,7 +165,7 @@ func runtime_objects_equal(obj1: InkObject, obj2: InkObject) -> bool:
 func get_variable_with_name(name: String, context_index = -1) -> InkObject:
 	var var_value: InkObject = get_raw_variable_with_name(name, context_index)
 
-	var var_pointer: InkVariablePointerValue = InkUtils.as_or_null(var_value, "VariablePointerValue")
+	var var_pointer: InkVariablePointerValue = var_value as InkVariablePointerValue
 	if var_pointer:
 		var_value = value_at_variable_pointer(var_pointer)
 
@@ -224,7 +224,7 @@ func assign(var_ass: InkVariableAssignment, value: InkObject) -> void:
 		set_global = global_variable_exists_with_name(name)
 
 	if var_ass.is_new_declaration:
-		var var_pointer: InkVariablePointerValue = InkUtils.as_or_null(value, "VariablePointerValue")
+		var var_pointer: InkVariablePointerValue = value as InkVariablePointerValue
 		if var_pointer:
 			var fully_resolved_variable_pointer: InkObject = resolve_variable_pointer(var_pointer)
 			value = fully_resolved_variable_pointer
@@ -233,10 +233,7 @@ func assign(var_ass: InkVariableAssignment, value: InkObject) -> void:
 		var first_time: bool = true
 		while existing_pointer || first_time:
 			first_time = false
-			existing_pointer = InkUtils.as_or_null(
-				get_raw_variable_with_name(name, context_index),
-				"VariablePointerValue"
-			)
+			existing_pointer = get_raw_variable_with_name(name, context_index) as InkVariablePointerValue
 			if existing_pointer:
 				name = existing_pointer.variable_name
 				context_index = existing_pointer.context_index
@@ -253,8 +250,8 @@ func snapshot_default_globals():
 
 # (InkObject, InkObject) -> void
 func retain_list_origins_for_assignment(old_value, new_value) -> void:
-	var old_list: InkListValue = InkUtils.as_or_null(old_value, "ListValue")
-	var new_list: InkListValue = InkUtils.as_or_null(new_value, "ListValue")
+	var old_list: InkListValue = old_value as InkListValue
+	var new_list: InkListValue = new_value as InkListValue
 
 	if old_list && new_list && new_list.value.size() == 0:
 		new_list.value.set_initial_origin_names(old_list.value.origin_names)
@@ -301,9 +298,7 @@ func resolve_variable_pointer(var_pointer: InkVariablePointerValue) -> InkVariab
 		var_pointer.variable_name, context_index
 	)
 
-	var double_redirection_pointer: InkVariablePointerValue = InkUtils.as_or_null(
-			value_of_variable_pointed_to, "VariablePointerValue"
-	)
+	var double_redirection_pointer: InkVariablePointerValue = value_of_variable_pointed_to as InkVariablePointerValue
 
 	if double_redirection_pointer:
 		return double_redirection_pointer

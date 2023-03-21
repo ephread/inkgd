@@ -65,8 +65,8 @@ func _init_with_single_item(single_item, single_value):
 static func retain_list_origins_for_assignment(old_value, new_value):
 	var InkUtils = load("res://addons/inkgd/runtime/extra/utils.gd")
 
-	var old_list = InkUtils.as_or_null(old_value, "ListValue")
-	var new_list = InkUtils.as_or_null(new_value, "ListValue")
+	var old_list = old_value as InkListValue
+	var new_list = new_value as InkListValue
 
 	if old_list && new_list && new_list.value.size() == 0:
 		new_list.value.set_initial_origin_names(old_list.value.origin_names)

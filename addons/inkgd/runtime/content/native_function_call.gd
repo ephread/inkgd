@@ -148,8 +148,8 @@ func call_binary_list_operation(parameters: Array, metadata) -> InkValue:
 	):
 		return call_list_increment_operation(parameters)
 
-	var v1 = InkUtils.as_or_null(parameters[0], "Value")
-	var v2 = InkUtils.as_or_null(parameters[1], "Value")
+	var v1 = parameters[0] as InkValue
+	var v2 = parameters[1] as InkValue
 
 	if ((name == "&&" || name == "||") &&
 		(v1.value_type != ValueType.LIST || v2.value_type != ValueType.LIST)
@@ -226,7 +226,7 @@ func coerce_values_to_single_type(parameters_in: Array, metadata):
 			val_type = val.value_type
 
 		if val.value_type == ValueType.LIST:
-			special_case_list = InkUtils.as_or_null(val, "ListValue")
+			special_case_list = val as InkListValue
 
 	var parameters_out: Array = [] # Array<Value>
 

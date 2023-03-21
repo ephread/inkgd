@@ -30,7 +30,7 @@ func get_correct_obj():
 
 var container: get = get_container # Container
 func get_container():
-	return InkUtils.as_or_null(obj, "InkContainer")
+	return obj as InkContainer
 
 # ############################################################################ #
 # GDScript extra methods

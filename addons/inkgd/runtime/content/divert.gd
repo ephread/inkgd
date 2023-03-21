@@ -45,11 +45,11 @@ func get_target_pointer() -> InkPointer:
 
 		if _target_path.last_component.is_index:
 			_target_pointer = InkPointer.new(
-				InkUtils.as_or_null(target_obj.parent, "InkContainer"),
+				target_obj.parent as InkContainer,
 				_target_path.last_component.index
 			)
 		else:
-			_target_pointer = InkPointer.start_of(InkUtils.as_or_null(target_obj, "InkContainer"))
+			_target_pointer = InkPointer.start_of(target_obj as InkContainer)
 
 	return _target_pointer
 
@@ -96,7 +96,7 @@ func _init_with(stack_push_type = null):
 
 # (InkBase) -> bool
 func equals(obj) -> bool:
-	var other_divert: InkDivert = InkUtils.as_or_null(obj, "Divert")
+	var other_divert: InkDivert = obj as InkDivert
 	if other_divert:
 		if has_variable_target == other_divert.has_variable_target:
 			if has_variable_target:

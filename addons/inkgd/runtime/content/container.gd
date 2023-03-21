@@ -112,7 +112,7 @@ func get_internal_path_to_first_leaf_content() -> InkPath:
 	while container != null:
 		if container.content.size() > 0:
 			components.append(InkPath.Component.new(0))
-			container = InkUtils.as_or_null(container.content[0], "InkContainer")
+			container = container.content[0] as InkContainer
 
 	return InkPath.new_with_components(components)
 
@@ -213,7 +213,7 @@ func content_at_path(
 			break
 
 		current_obj = found_obj
-		current_container = InkUtils.as_or_null(found_obj, "InkContainer")
+		current_container = found_obj as InkContainer
 
 		i += 1
 

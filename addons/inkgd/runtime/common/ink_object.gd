@@ -76,7 +76,7 @@ func get_path() -> InkPath:
 			var comps: Array = [] # Stack<Path3D.Component>
 
 			var child = self
-			var container = InkUtils.as_or_null(child.parent, "InkContainer")
+			var container = child.parent as InkContainer
 
 			while container:
 				var named_child = InkUtils.as_INamedContent_or_null(child)
@@ -86,7 +86,7 @@ func get_path() -> InkPath:
 					comps.push_front(InkPath.Component.new(container.content.find(child)))
 
 				child = container
-				container = InkUtils.as_or_null(container.parent, "InkContainer")
+				container = container.parent as InkContainer
 
 			_path = InkPath.new_with_components(comps)
 
@@ -97,14 +97,14 @@ var _path = null # InkPath
 # (InkPath) -> SearchResult
 func resolve_path(path: InkPath) -> InkSearchResult:
 	if path.is_relative:
-		var nearest_container = InkUtils.as_or_null(self, "InkContainer")
+		var nearest_container = self as InkContainer
 		if !nearest_container:
 			InkUtils.__assert__(
 					parent != null,
 					"Can't resolve relative path because we don't have a parent"
 			)
 
-			nearest_container = InkUtils.as_or_null(parent, "InkContainer")
+			nearest_container = parent as InkContainer
 
 			InkUtils.__assert__(nearest_container != null, "Expected parent to be a container")
 			InkUtils.__assert__(path.get_component(0).is_parent)
@@ -178,7 +178,7 @@ func get_root_content_container():
 	while (ancestor.parent):
 		ancestor = ancestor.parent
 
-	return InkUtils.as_or_null(ancestor, "InkContainer")
+	return ancestor as InkContainer
 
 # () -> InkObject
 func copy():

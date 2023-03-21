@@ -48,16 +48,6 @@ static func __assert__(condition: bool, message = "") -> void:
 # Type Assertion
 # ############################################################################ #
 
-static func as_or_null(variant, name_of_class: String):
-	if (
-			is_ink_class(variant, name_of_class) ||
-			name_of_class == "Dictionary" && variant is Dictionary ||
-			name_of_class == "Array" && variant is Array
-	):
-		return variant
-	else:
-		return null
-
 static func cast(variant, name_of_class: String):
 	if is_ink_class(variant, name_of_class):
 		return variant
