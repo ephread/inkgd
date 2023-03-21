@@ -1,5 +1,4 @@
 @tool
-# warning-ignore-all:return_value_discarded
 
 # ############################################################################ #
 # Copyright © 2019-2022 Frédéric Maquin <fred@ephread.com>
