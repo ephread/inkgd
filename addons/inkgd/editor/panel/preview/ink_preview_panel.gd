@@ -108,7 +108,7 @@ func _ready():
 	_choice_area_container.custom_minimum_size = Vector2(200, 0) * editor_interface.scale
 	_choice_area_container.visible = false
 
-	_file_dialog.connect("file_selected", Callable(self, "_on_file_selected"))
+	_file_dialog.connect("file_selected", _on_file_selected)
 	add_child(_file_dialog)
 
 # ############################################################################ #
@@ -296,7 +296,7 @@ func _continue_story():
 		for choice in _ink_player.current_choices:
 			var button = Button.new()
 			button.text = choice
-			button.connect("pressed", Callable(self, "_choice_button_pressed").bind(i))
+			button.connect("pressed", _choice_button_pressed.bind(i))
 
 			_choices_container.add_child(button)
 			i += 1
@@ -350,11 +350,11 @@ func _connect_signals():
 					_configuration_changed
 			)
 
-	_ink_player.connect("loaded", Callable(self, "_story_loaded"))
-	_pick_story_button.connect("item_selected", Callable(self, "_pick_story_button_selected"))
-	_load_story_button.connect("pressed", Callable(self, "_load_story_button_pressed"))
-	_start_button.connect("pressed", Callable(self, "_start_button_pressed"))
-	_stop_button.connect("pressed", Callable(self, "_stop_button_pressed"))
-	_clear_button.connect("pressed", Callable(self, "_clear_content"))
+	_ink_player.connect("loaded", _story_loaded)
+	_pick_story_button.connect("item_selected", _pick_story_button_selected)
+	_load_story_button.connect("pressed", _load_story_button_pressed)
+	_start_button.connect("pressed", _start_button_pressed)
+	_stop_button.connect("pressed", _stop_button_pressed)
+	_clear_button.connect("pressed", _clear_content)
 
-	_scroll_container.get_v_scroll_bar().connect("changed", Callable(self, "_scrollbar_changed"))
+	_scroll_container.get_v_scroll_bar().connect("changed", _scrollbar_changed)

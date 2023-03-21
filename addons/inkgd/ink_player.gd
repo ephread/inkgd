@@ -317,7 +317,7 @@ func create_story() -> int:
 
 	if loads_in_background && _current_platform_supports_threads():
 		_thread = Thread.new()
-		var error = _thread.start(Callable(self, "_async_create_story").bind(ink_file.json))
+		var error = _thread.start(_async_create_story.bind(ink_file.json))
 		if error != OK:
 			printerr("[inkgd] [ERROR] Could not start the thread: error code %d", error)
 			call_deferred("emit_signal", "loaded", false)
@@ -788,12 +788,12 @@ func _create_and_finalize_story(json_story) -> void:
 
 
 func _finalise_story_creation() -> void:
-	_story.connect("on_error", Callable(self, "_on_error"))
-	_story.connect("on_did_continue", Callable(self, "_on_did_continue"))
-	_story.connect("on_make_choice", Callable(self, "_on_make_choice"))
-	_story.connect("on_evaluate_function", Callable(self, "_on_evaluate_function"))
-	_story.connect("on_complete_evaluate_function", Callable(self, "_on_complete_evaluate_function"))
-	_story.connect("on_choose_path_string", Callable(self, "_on_choose_path_string"))
+	_story.connect("on_error", _on_error)
+	_story.connect("on_did_continue", _on_did_continue)
+	_story.connect("on_make_choice", _on_make_choice)
+	_story.connect("on_evaluate_function", _on_evaluate_function)
+	_story.connect("on_complete_evaluate_function", _on_complete_evaluate_function)
+	_story.connect("on_choose_path_string", _on_choose_path_string)
 
 	var ink_runtime = _ink_runtime.get_ref()
 	if ink_runtime == null:
@@ -814,7 +814,7 @@ func _add_runtime() -> void:
 		_manages_runtime = true
 		runtime = InkRuntime.init(get_tree().root)
 
-	runtime.connect("exception_raised", Callable(self, "_exception_raised"))
+	runtime.connect("exception_raised", _exception_raised)
 
 	_ink_runtime = weakref(runtime)
 

@@ -34,7 +34,7 @@ func create_choices(choices):
 	for choice in choices:
 		var button = ChoiceButton.instantiate()
 		button.text = choice
-		button.connect("pressed", Callable(self, "_button_pressed").bind(button))
+		button.connect("pressed", _button_pressed.bind(button))
 
 		_buttons.append(button)
 		$ChoiceVBoxContainer.add_child(button)

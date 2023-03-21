@@ -45,7 +45,7 @@ func _init(configuration: InkCompilationConfiguration):
 ## always returns `true`.
 func compile_story() -> bool:
 	if _configuration.use_threads:
-		var error = _thread.start(Callable(self, "_compile_story").bind(_configuration), Thread.PRIORITY_HIGH)
+		var error = _thread.start(_compile_story.bind(_configuration), Thread.PRIORITY_HIGH)
 
 		if error != OK:
 			var result = InkExecutionResult.new(

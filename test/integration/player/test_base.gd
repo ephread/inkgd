@@ -24,13 +24,13 @@ func before_each():
 
 	_ink_player = InkPlayerFactory.create()
 	get_tree().root.add_child(_ink_player)
-	_ink_player.connect("exception_raised", Callable(self, "_exception_raised"))
+	_ink_player.connect("exception_raised", _exception_raised)
 
 
 func after_each():
 	_exception_messages_raised = []
 	get_tree().root.remove_child(_ink_player)
-	_ink_player.disconnect("exception_raised", Callable(self, "_exception_raised"))
+	_ink_player.disconnect("exception_raised", _exception_raised)
 	_ink_player = null
 
 	super.after_each()

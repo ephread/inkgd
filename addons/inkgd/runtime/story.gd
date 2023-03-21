@@ -205,7 +205,7 @@ func reset_state() -> void:
 		return
 
 	_state = InkStoryState.new(self)
-	_state.variables_state.connect("variable_changed", Callable(self, "variable_state_did_change_event"))
+	_state.variables_state.connect("variable_changed", variable_state_did_change_event)
 
 	reset_globals()
 

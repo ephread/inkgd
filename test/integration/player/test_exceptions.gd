@@ -20,12 +20,12 @@ var _error_messages_encountered := []
 
 func before_each():
 	super.before_each()
-	_ink_player.connect("error_encountered", Callable(self, "_error_encountered"))
+	_ink_player.connect("error_encountered", _error_encountered)
 
 
 func after_each():
 	_error_messages_encountered = []
-	_ink_player.disconnect("error_encountered", Callable(self, "_error_encountered"))
+	_ink_player.disconnect("error_encountered", _error_encountered)
 	super.after_each()
 
 # ############################################################################ #

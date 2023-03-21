@@ -98,9 +98,9 @@ func _ready():
 		print("[inkgd] [INFO] Ink Stories Tab: dependencies not met, ignoring.")
 		return
 
-	configuration.connect("compilation_mode_changed", Callable(self, "_compilation_mode_changed"))
+	configuration.connect("compilation_mode_changed", _compilation_mode_changed)
 
-	editor_interface.editor_filesystem.connect("resources_reimported", Callable(self, "_resources_reimported"))
+	editor_interface.editor_filesystem.connect("resources_reimported", _resources_reimported)
 
 	_story_configuration_container.add_child(_empty_state_container)
 	add_child(_file_dialog)
@@ -283,7 +283,7 @@ func _compile_story(story_configuration, node = null):
 	var compiler = InkCompiler.new(compiler_configuration)
 
 	_compilers[compiler.identifier] = compiler
-	compiler.connect("story_compiled", Callable(self, "_handle_compilation"))
+	compiler.connect("story_compiled", _handle_compilation)
 	compiler.compile_story()
 
 
@@ -449,12 +449,12 @@ func _add_new_story_configuration():
 
 	story_configuration.editor_interface = editor_interface
 
-	story_configuration.connect("configuration_changed", Callable(self, "_configuration_changed"))
-	story_configuration.connect("remove_button_pressed", Callable(self, "_remove_button_pressed"))
-	story_configuration.connect("build_button_pressed", Callable(self, "_build_button_pressed"))
-	story_configuration.connect("source_file_button_pressed", Callable(self, "_source_file_button_pressed"))
-	story_configuration.connect("target_file_button_pressed", Callable(self, "_target_file_button_pressed"))
-	story_configuration.connect("watched_folder_button_pressed", Callable(self, "_watched_folder_button_pressed"))
+	story_configuration.connect("configuration_changed", _configuration_changed)
+	story_configuration.connect("remove_button_pressed", _remove_button_pressed)
+	story_configuration.connect("build_button_pressed", _build_button_pressed)
+	story_configuration.connect("source_file_button_pressed", _source_file_button_pressed)
+	story_configuration.connect("target_file_button_pressed", _target_file_button_pressed)
+	story_configuration.connect("watched_folder_button_pressed", _watched_folder_button_pressed)
 
 	if _empty_state_container.get_parent() != null:
 		_story_configuration_container.remove_child(_empty_state_container)
@@ -509,10 +509,10 @@ func _disable_all_buttons(disable: bool):
 
 
 func _connect_signals():
-	_build_all_button.connect("pressed", Callable(self, "_build_all_button_pressed"))
-	_add_new_story_button.connect("pressed", Callable(self, "_add_new_story_button_pressed"))
+	_build_all_button.connect("pressed", _build_all_button_pressed)
+	_add_new_story_button.connect("pressed", _add_new_story_button_pressed)
 
-	_file_dialog.connect("file_selected", Callable(self, "_on_file_selected"))
-	_file_dialog.connect("dir_selected", Callable(self, "_on_file_selected"))
+	_file_dialog.connect("file_selected", _on_file_selected)
+	_file_dialog.connect("dir_selected", _on_file_selected)
 
-	_scroll_container.get_v_scroll_bar().connect("changed", Callable(self, "_scrollbar_changed"))
+	_scroll_container.get_v_scroll_bar().connect("changed", _scrollbar_changed)

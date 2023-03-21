@@ -47,7 +47,7 @@ var _stories: Array = [
 func _ready():
 	add_child(_ink_player)
 
-	_ink_player.connect("loaded", Callable(self, "_loaded"))
+	_ink_player.connect("loaded", _loaded)
 	_current_story_index = 0
 
 	_create_story()
