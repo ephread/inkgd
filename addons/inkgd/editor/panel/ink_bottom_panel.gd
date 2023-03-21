@@ -38,7 +38,7 @@ var _progress_texture: AnimatedTexture
 # ############################################################################ #
 
 @onready var _tab_container: TabContainer = $TabContainer
-@onready var _beta_button: LinkButton = $MarginContainer/LinkButton
+@onready var _beta_button: LinkButton = $Control/LinkButton
 
 @onready var _story_panel = InkStoryPanelScene.instantiate()
 @onready var _preview_panel = InkPreviewPanelScene.instantiate()
