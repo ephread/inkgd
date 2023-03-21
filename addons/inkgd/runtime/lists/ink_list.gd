@@ -25,7 +25,7 @@ func _init_with_ink_list(other_list: InkList):
 	_dictionary = other_list._dictionary.duplicate()
 	_origin_names = other_list.origin_names
 	if other_list.origins != null:
-		self.origins = other_list.origins.duplicate()
+		origins = other_list.origins.duplicate()
 
 # (string, Story) -> InkList
 func _init_with_origin(single_origin_list_name: String, origin_story):
@@ -119,7 +119,7 @@ func get_origin_of_max_item() -> InkListDefinition:
 	if origins == null:
 		return null
 
-	var max_origin_name = self.max_item.key.origin_name
+	var max_origin_name = max_item.key.origin_name
 	for origin in origins:
 		if origin.name == max_origin_name:
 			return origin
@@ -129,8 +129,8 @@ func get_origin_of_max_item() -> InkListDefinition:
 # Array<String>
 var origin_names : get = get_origin_names
 func get_origin_names():
-	if self.size() > 0:
-		if _origin_names == null && self.size() > 0:
+	if size() > 0:
+		if _origin_names == null && size() > 0:
 			_origin_names = []
 		else:
 			_origin_names.clear()
@@ -208,7 +208,7 @@ func union(other_list: InkList) -> InkList:
 func intersection(other_list: InkList) -> InkList:
 	var intersection: InkList = InkList.new()
 	for key in other_list._dictionary:
-		if self._dictionary.has(key):
+		if _dictionary.has(key):
 			intersection._dictionary[key] = other_list._dictionary[key]
 	return intersection
 
@@ -232,7 +232,7 @@ func greater_than(other_list: InkList) -> bool:
 	if other_list.size() == 0:
 		return true
 
-	return self.min_item.value > other_list.max_item.value
+	return min_item.value > other_list.max_item.value
 
 func greater_than_or_equals(other_list: InkList) -> bool:
 	if size() == 0:
@@ -241,8 +241,8 @@ func greater_than_or_equals(other_list: InkList) -> bool:
 		return true
 
 	return (
-			self.min_item.value >= other_list.min_item.value &&
-			self.max_item.value >= other_list.max_item.value
+			min_item.value >= other_list.min_item.value &&
+			max_item.value >= other_list.max_item.value
 	)
 
 func less_than(other_list: InkList) -> bool:
@@ -251,7 +251,7 @@ func less_than(other_list: InkList) -> bool:
 	if size() == 0:
 		return true
 
-	return self.max_item.value < other_list.min_item.value
+	return max_item.value < other_list.min_item.value
 
 func less_than_or_equals(other_list: InkList) -> bool:
 	if other_list.size() == 0:
@@ -260,20 +260,20 @@ func less_than_or_equals(other_list: InkList) -> bool:
 		return true
 
 	return (
-			self.max_item.value <= other_list.max_item.value &&
-			self.min_item.value <= other_list.min_item.value
+			max_item.value <= other_list.max_item.value &&
+			min_item.value <= other_list.min_item.value
 	)
 
 func max_as_list() -> InkList:
 	if size() > 0:
-		var _max_item: InkKeyValuePair = self.max_item
+		var _max_item: InkKeyValuePair = max_item
 		return InkList.new_with_single_item(_max_item.key, _max_item.value)
 	else:
 		return InkList.new()
 
 func min_as_list() -> InkList:
 	if size() > 0:
-		var _min_item: InkKeyValuePair = self.min_item
+		var _min_item: InkKeyValuePair = min_item
 		return InkList.new_with_single_item(_min_item.key, _min_item.value)
 	else:
 		return InkList.new()
@@ -283,7 +283,7 @@ func list_with_sub_range(min_bound, max_bound) -> InkList:
 	if size() == 0:
 		return InkList.new()
 
-	var ordered: Array = self.ordered_items
+	var ordered: Array = ordered_items
 
 	var min_value: int = 0
 	var max_value: int = 9_223_372_036_854_775_807 # MAX_INT
@@ -301,7 +301,7 @@ func list_with_sub_range(min_bound, max_bound) -> InkList:
 			max_value = max_bound.max_item.value
 
 	var sub_list = InkList.new()
-	sub_list.set_initial_origin_names(self.origin_names)
+	sub_list.set_initial_origin_names(origin_names)
 
 	for item in ordered:
 		if item.value >= min_value && item.value <= max_value:
@@ -317,7 +317,7 @@ func equals(other: InkList) -> bool:
 	if !(other_raw_list.is_class("InkList")):
 		return false
 
-	if other_raw_list.size() != self.size():
+	if other_raw_list.size() != size():
 		return false
 
 	for key in keys():
@@ -336,7 +336,7 @@ func get_ordered_items():
 	return ordered
 
 func _to_string() -> String:
-	var ordered: Array = self.ordered_items
+	var ordered: Array = ordered_items
 
 	var description: String = ""
 	var i: int = 0

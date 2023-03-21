@@ -20,7 +20,7 @@ var name = null
 # Array<InkObject>
 var content: Array: get = get_content, set = set_content
 func get_content() -> Array:
-	return self._content
+	return _content
 func set_content(value: Array):
 	add_content(value)
 
@@ -34,10 +34,10 @@ var named_content: Dictionary
 var named_only_content : get = get_named_only_content, set = set_named_only_content
 func get_named_only_content():
 	var named_only_content_dict = {} # Dictionary<string, InkObject>
-	for key in self.named_content:
-		named_only_content_dict[key] = self.named_content[key]
+	for key in named_content:
+		named_only_content_dict[key] = named_content[key]
 
-	for c in self.content:
+	for c in content:
 		var named = InkUtils.as_INamedContent_or_null(c)
 		if named != null && named.has_valid_name:
 			named_only_content_dict.erase(named.name)
@@ -50,7 +50,7 @@ func set_named_only_content(value):
 	var existing_named_only = named_only_content
 	if existing_named_only != null:
 		for key in existing_named_only:
-			self.named_content.erase(key)
+			named_content.erase(key)
 
 	if value == null:
 		return
@@ -92,14 +92,14 @@ func set_count_flags(value: int):
 
 var has_valid_name: bool: get = get_has_valid_name
 func get_has_valid_name() -> bool:
-	return self.name != null && self.name.length() > 0
+	return name != null && name.length() > 0
 
 var path_to_first_leaf_content: InkPath: get = get_path_to_first_leaf_content
 func get_path_to_first_leaf_content() -> InkPath:
-	if self._path_to_first_leaf_content == null:
-		self._path_to_first_leaf_content = self.path.path_by_appending_path(self.internal_path_to_first_leaf_content)
+	if _path_to_first_leaf_content == null:
+		_path_to_first_leaf_content = path.path_by_appending_path(internal_path_to_first_leaf_content)
 
-	return self._path_to_first_leaf_content
+	return _path_to_first_leaf_content
 
 # InkPath?
 var _path_to_first_leaf_content = null
@@ -117,13 +117,13 @@ func get_internal_path_to_first_leaf_content() -> InkPath:
 	return InkPath.new_with_components(components)
 
 func _init():
-	self._content = [] # Array<InkObject>
-	self.named_content = {} # Dictionary<string, INamedContent>
+	_content = [] # Array<InkObject>
+	named_content = {} # Dictionary<string, INamedContent>
 
 func add_content(content_obj_or_content_list) -> void:
 	if InkUtils.is_ink_class(content_obj_or_content_list, "InkObject"):
 		var content_obj = content_obj_or_content_list
-		self.content.append(content_obj)
+		content.append(content_obj)
 
 		if content_obj.parent:
 			InkUtils.throw_exception("content is already in %s" % content_obj.parent._to_string())
@@ -138,7 +138,7 @@ func add_content(content_obj_or_content_list) -> void:
 			add_content(c)
 
 func insert_content(content_obj: InkObject, index: int) -> void:
-	self.content.insert(index, content_obj)
+	content.insert(index, content_obj)
 
 	if content_obj.parent:
 		InkUtils.throw_exception("content is already in %s" % content_obj.parent._to_string())
@@ -163,19 +163,19 @@ func add_to_named_content_only(named_content_obj: InkObject) -> void:
 	named_content[named_content_obj.name] = named_content_obj
 
 func add_contents_of_container(other_container: InkContainer) -> void:
-	self.content = self.content + other_container.content
+	content = content + other_container.content
 	for obj in other_container.content:
 		obj.parent = self
 		try_add_named_content(obj)
 
 func content_with_path_component(component: InkPath.Component) -> InkObject:
 	if component.is_index:
-		if component.index >= 0 && component.index < self.content.size():
-			return self.content[component.index]
+		if component.index >= 0 && component.index < content.size():
+			return content[component.index]
 		else:
 			return null
 	elif component.is_parent:
-		return self.parent
+		return parent
 	else:
 		if named_content.has(component.name):
 			var found_content = named_content[component.name]
@@ -230,8 +230,8 @@ func build_string_of_hierarchy(
 	existing_hierarchy = _append_indentation(existing_hierarchy, indentation)
 	existing_hierarchy += "["
 
-	if self.has_valid_name:
-		existing_hierarchy += str(" (%s) " % self.name)
+	if has_valid_name:
+		existing_hierarchy += str(" (%s) " % name)
 
 	if self == pointed_obj:
 		existing_hierarchy += "  <---"
@@ -241,8 +241,8 @@ func build_string_of_hierarchy(
 	indentation += 1
 
 	var i = 0
-	while i < self.content.size():
-		var obj = self.content[i]
+	while i < content.size():
+		var obj = content[i]
 
 		if InkUtils.is_ink_class(obj, "InkContainer"):
 			existing_hierarchy = obj.build_string_of_hierarchy(existing_hierarchy, indentation, pointed_obj)
@@ -255,7 +255,7 @@ func build_string_of_hierarchy(
 			else:
 				existing_hierarchy += obj._to_string()
 
-		if i != self.content.size() - 1:
+		if i != content.size() - 1:
 			existing_hierarchy += ","
 
 		if !InkUtils.is_ink_class(obj, "InkContainer") && obj == pointed_obj:
@@ -266,9 +266,9 @@ func build_string_of_hierarchy(
 
 	var only_named: Dictionary = {} # Dictionary<String, INamedContent>
 
-	for obj_key in self.named_content:
-		var value = self.named_content[obj_key]
-		if self.content.find(value) != -1:
+	for obj_key in named_content:
+		var value = named_content[obj_key]
+		if content.find(value) != -1:
 			continue
 		else:
 			only_named[obj_key] = value

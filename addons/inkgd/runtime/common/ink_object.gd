@@ -19,9 +19,9 @@ class_name InkObject
 # Encapsulating parent into a weak ref.
 var parent: InkObject: get = get_parent, set = set_parent
 func set_parent(value: InkObject):
-	self._parent = weakref(value)
+	_parent = weakref(value)
 func get_parent() -> InkObject:
-	return self._parent.get_ref()
+	return _parent.get_ref()
 
 var _parent: WeakRef = WeakRef.new() # InkObject
 
@@ -31,8 +31,8 @@ var _parent: WeakRef = WeakRef.new() # InkObject
 var debug_metadata : get = get_debug_metadata, set = set_debug_metadata
 func get_debug_metadata():
 	if _debug_metadata == null:
-		if self.parent:
-			return self.parent.debug_metadata
+		if parent:
+			return parent.debug_metadata
 
 	return _debug_metadata
 
@@ -55,7 +55,7 @@ func debug_line_number_of_path(path: InkPath):
 	if path == null:
 		return null
 
-	var root = self.root_content_container
+	var root = root_content_container
 	if root != null:
 		var target_content = root.content_at_path(path).obj
 		if target_content:
@@ -70,7 +70,7 @@ func debug_line_number_of_path(path: InkPath):
 var path: InkPath: get = get_path
 func get_path() -> InkPath:
 	if _path == null:
-		if self.parent == null:
+		if parent == null:
 			_path = InkPath.new()
 		else:
 			var comps: Array = [] # Stack<Path3D.Component>
@@ -100,11 +100,11 @@ func resolve_path(path: InkPath) -> InkSearchResult:
 		var nearest_container = InkUtils.as_or_null(self, "InkContainer")
 		if !nearest_container:
 			InkUtils.__assert__(
-					self.parent != null,
+					parent != null,
 					"Can't resolve relative path because we don't have a parent"
 			)
 
-			nearest_container = InkUtils.as_or_null(self.parent, "InkContainer")
+			nearest_container = InkUtils.as_or_null(parent, "InkContainer")
 
 			InkUtils.__assert__(nearest_container != null, "Expected parent to be a container")
 			InkUtils.__assert__(path.get_component(0).is_parent)
@@ -113,10 +113,10 @@ func resolve_path(path: InkPath) -> InkSearchResult:
 
 		return nearest_container.content_at_path(path)
 	else:
-		return self.root_content_container.content_at_path(path)
+		return root_content_container.content_at_path(path)
 
 func convert_path_to_relative(global_path: InkPath) -> InkPath:
-	var own_path = self.path
+	var own_path = path
 
 	var min_path_length = min(global_path.length, own_path.length)
 	var last_shared_path_comp_index = -1
@@ -160,7 +160,7 @@ func compact_path_string(other_path: InkPath) -> String:
 
 	if other_path.is_relative:
 		relative_path_str = other_path.components_string
-		global_path_str = self.path.path_by_appending_path(other_path).components_string
+		global_path_str = path.path_by_appending_path(other_path).components_string
 	else:
 		var relative_path = convert_path_to_relative(other_path)
 		relative_path_str = relative_path.components_string

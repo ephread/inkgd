@@ -70,11 +70,11 @@ static func create(val) -> InkValue:
 	return null
 
 func copy() -> InkValue:
-	return create(self.value_object)
+	return create(value_object)
 
 # (Ink.ValueType) -> StoryException
 func bad_cast_exception_message(target_class) -> String:
-	return "Can't cast " + self.value_object + " from " + self.value_type + " to " + target_class
+	return "Can't cast " + value_object + " from " + value_type + " to " + target_class
 
 # () -> String
 func _to_string() -> String:

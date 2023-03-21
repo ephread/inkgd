@@ -24,7 +24,7 @@ var path_for_count = null
 # Container?
 var container_for_count : get = get_container_for_count
 func get_container_for_count():
-	return self.resolve_path(path_for_count).container
+	return resolve_path(path_for_count).container
 
 # String?
 var path_string_for_count : get = get_path_string_for_count, set = set_path_string_for_count
@@ -52,7 +52,7 @@ func _to_string() -> String:
 	if name != null:
 		return "var(%s)" % name
 	else:
-		var path_str = self.path_string_for_count
+		var path_str = path_string_for_count
 		return "read_count(%s)" % path_str
 
 # ############################################################################ #

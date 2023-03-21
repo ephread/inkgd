@@ -28,7 +28,7 @@ func _init():
 # doesn't exist in upstream. The metadat are used in case an 'exception'
 # is raised. For more information, see story.gd.
 func cast(new_type, metadata = null):
-	if new_type == self.value_type:
+	if new_type == value_type:
 		return self
 
 	if new_type == ValueType.BOOL:

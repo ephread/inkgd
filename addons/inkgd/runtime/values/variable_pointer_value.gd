@@ -41,17 +41,17 @@ func _init():
 # doesn't exist in upstream. The metadat are used in case an 'exception'
 # is raised. For more information, see story.gd.
 func cast(new_type, metadata = null):
-	if new_type == self.value_type:
+	if new_type == value_type:
 		return self
 
 	InkUtils.throw_story_exception(bad_cast_exception_message(new_type), false, metadata)
 	return null
 
 func _to_string() -> String:
-	return "VariablePointerValue(" + self.variable_name + ")"
+	return "VariablePointerValue(" + variable_name + ")"
 
 func copy():
-	return InkVariablePointerValue.new_with_context(self.variable_name, context_index)
+	return InkVariablePointerValue.new_with_context(variable_name, context_index)
 
 # ######################################################################## #
 # GDScript extra methods

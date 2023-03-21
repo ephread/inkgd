@@ -31,13 +31,13 @@ func _init(
 	use_threads: bool,
 	user_triggered: bool
 ):
-	self.use_threads = use_threads
-	self.user_triggered = user_triggered
+	use_threads = use_threads
+	user_triggered = user_triggered
 
-	self.use_mono = !_is_running_on_windows() && configuration.use_mono
+	use_mono = !_is_running_on_windows() && configuration.use_mono
 
-	self.mono_path = configuration.mono_path
-	self.inklecate_path = configuration.inklecate_path
+	mono_path = configuration.mono_path
+	inklecate_path = configuration.inklecate_path
 
 # ############################################################################ #
 # Private Methods

@@ -302,7 +302,7 @@ class Reader extends InkBase:
 class Writer extends InkBase:
 	# (String) -> Writer
 	func _init():
-		self._writer = InkStringWriter.new()
+		_writer = InkStringWriter.new()
 
 	# (Callable) -> void
 	func write_object(inner: Callable) -> void:
@@ -312,13 +312,13 @@ class Writer extends InkBase:
 
 	func write_object_start() -> void:
 		start_new_object(true)
-		self._state_stack.push_front(InkStateElement.new(InkStateElement.State.OBJECT))
-		self._writer.write("{")
+		_state_stack.push_front(InkStateElement.new(InkStateElement.State.OBJECT))
+		_writer.write("{")
 
 	func write_object_end() -> void:
-		assert_that(self.state == InkStateElement.State.OBJECT)
-		self._writer.write("}")
-		self._state_stack.pop_front()
+		assert_that(state == InkStateElement.State.OBJECT)
+		_writer.write("}")
+		_state_stack.pop_front()
 
 	# These two methods don't need to be implemented in GDScript.
 	#
@@ -347,47 +347,47 @@ class Writer extends InkBase:
 
 	# () -> void
 	func write_property_end() -> void:
-		assert_that(self.state == InkStateElement.State.PROPERTY)
-		assert_that(self.child_count == 1)
-		self._state_stack.pop_front()
+		assert_that(state == InkStateElement.State.PROPERTY)
+		assert_that(child_count == 1)
+		_state_stack.pop_front()
 
 	# (String) -> void
 	func write_property_name_start() -> void:
-		assert_that(self.state == InkStateElement.State.OBJECT)
+		assert_that(state == InkStateElement.State.OBJECT)
 
-		if self.child_count > 0:
-			self._writer.write(',')
+		if child_count > 0:
+			_writer.write(',')
 
-		self._writer.write('"')
+		_writer.write('"')
 
 		increment_child_count()
 
-		self._state_stack.push_front(InkStateElement.new(InkStateElement.State.PROPERTY))
-		self._state_stack.push_front(InkStateElement.new(InkStateElement.State.PROPERTY_NAME))
+		_state_stack.push_front(InkStateElement.new(InkStateElement.State.PROPERTY))
+		_state_stack.push_front(InkStateElement.new(InkStateElement.State.PROPERTY_NAME))
 
 	# () -> void
 	func write_property_name_end() -> void:
-		assert_that(self.state == InkStateElement.State.PROPERTY_NAME)
+		assert_that(state == InkStateElement.State.PROPERTY_NAME)
 
-		self._writer.write('":')
+		_writer.write('":')
 
-		self._state_stack.pop_front()
+		_state_stack.pop_front()
 
 	# (String) -> void
 	func write_property_name_inner(string: String) -> void:
-		assert_that(self.state == InkStateElement.State.PROPERTY_NAME)
-		self._writer.write(string)
+		assert_that(state == InkStateElement.State.PROPERTY_NAME)
+		_writer.write(string)
 
 	# (Variant) -> void
 	func write_property_start(name) -> void:
-		assert_that(self.state == InkStateElement.State.OBJECT)
+		assert_that(state == InkStateElement.State.OBJECT)
 
-		if self.child_count > 0:
-			self._writer.write(',')
+		if child_count > 0:
+			_writer.write(',')
 
-		self._writer.write('"')
-		self._writer.write(str(name))
-		self._writer.write('":')
+		_writer.write('"')
+		_writer.write(str(name))
+		_writer.write('":')
 
 		increment_child_count()
 
@@ -401,7 +401,7 @@ class Writer extends InkBase:
 
 	# () -> void
 	func write_array_end() -> void:
-		assert_that(self.state == InkStateElement.State.ARRAY)
+		assert_that(state == InkStateElement.State.ARRAY)
 		_writer.write("]")
 		_state_stack.pop_front()
 
@@ -479,7 +479,7 @@ class Writer extends InkBase:
 
 	# (string, bool) -> void
 	func write_string_inner(string: String, escape: bool = true) -> void:
-		assert_that(self.state == InkStateElement.State.STRING)
+		assert_that(state == InkStateElement.State.STRING)
 		if escape:
 			write_escaped_string(string)
 		else:
@@ -506,25 +506,25 @@ class Writer extends InkBase:
 	func start_new_object(container: bool) -> void:
 		if container:
 			assert_that(
-					self.state == InkStateElement.State.NONE ||
-					self.state == InkStateElement.State.PROPERTY ||
-					self.state == InkStateElement.State.ARRAY
+					state == InkStateElement.State.NONE ||
+					state == InkStateElement.State.PROPERTY ||
+					state == InkStateElement.State.ARRAY
 			)
 		else:
 			assert_that(
-					self.state == InkStateElement.State.PROPERTY ||
-					self.state == InkStateElement.State.ARRAY
+					state == InkStateElement.State.PROPERTY ||
+					state == InkStateElement.State.ARRAY
 			)
 
-		if self.state == InkStateElement.State.ARRAY && self.child_count > 0:
+		if state == InkStateElement.State.ARRAY && child_count > 0:
 			_writer.write(",")
 
-		if self.state == InkStateElement.State.PROPERTY:
-			assert_that(self.child_count == 0)
+		if state == InkStateElement.State.PROPERTY:
+			assert_that(child_count == 0)
 
 		if (
-			self.state == InkStateElement.State.ARRAY ||
-			self.state == InkStateElement.State.PROPERTY
+			state == InkStateElement.State.ARRAY ||
+			state == InkStateElement.State.PROPERTY
 		):
 			increment_child_count()
 

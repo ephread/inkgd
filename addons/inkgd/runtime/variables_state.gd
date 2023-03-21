@@ -51,7 +51,7 @@ func set_callstack(value: InkCallStack):
 		_callstack = value
 
 func _get(variable_name: StringName) -> Variant:
-	if self.patch != null:
+	if patch != null:
 		var global: InkTryGetResult = patch.try_get_global(variable_name)
 		if global.exists:
 			return global.result.value_object
@@ -94,11 +94,11 @@ func _init(callstack: InkCallStack, list_defs_origin: InkListDefinitionsOrigin):
 
 # () -> void
 func apply_patch() -> void:
-	for named_var_key in self.patch.globals:
-		_global_variables[named_var_key] = self.patch.globals[named_var_key]
+	for named_var_key in patch.globals:
+		_global_variables[named_var_key] = patch.globals[named_var_key]
 
 	if _changed_variables_for_batch_obs != null:
-		for name in self.patch.changed_variables.enumerate():
+		for name in patch.changed_variables.enumerate():
 			_changed_variables_for_batch_obs.append(name)
 
 	patch = null
@@ -110,7 +110,7 @@ func set_json_token(jtoken: Dictionary) -> void:
 	for var_val_key in _default_global_variables:
 		if jtoken.has(var_val_key):
 			var loaded_token = jtoken[var_val_key]
-			_global_variables[var_val_key] = self._json.jtoken_to_runtime_object(loaded_token)
+			_global_variables[var_val_key] = _json.jtoken_to_runtime_object(loaded_token)
 		else:
 			_global_variables[var_val_key] = _default_global_variables[var_val_key]
 
@@ -120,13 +120,13 @@ func write_json(writer: InkSimpleJSON.Writer) -> void:
 		var name: String = key
 		var val: InkObject = _global_variables[key]
 
-		if self._ink_runtime.dont_save_default_values:
-			if self._default_global_variables.has(name):
-				if runtime_objects_equal(val, self._default_global_variables[name]):
+		if _ink_runtime.dont_save_default_values:
+			if _default_global_variables.has(name):
+				if runtime_objects_equal(val, _default_global_variables[name]):
 					continue
 
 		writer.write_property_start(name)
-		self._json.write_runtime_object(writer, val)
+		_json.write_runtime_object(writer, val)
 		writer.write_property_end()
 	writer.write_object_end()
 
@@ -188,16 +188,16 @@ func get_raw_variable_with_name(name: String, context_index: int) -> InkObject:
 	var var_value: InkObject = null
 
 	if context_index == 0 || context_index == -1:
-		if self.patch != null:
-			var try_result: InkTryGetResult = self.patch.try_get_global(name)
+		if patch != null:
+			var try_result: InkTryGetResult = patch.try_get_global(name)
 			if try_result.exists: return try_result.result
 
 		if _global_variables.has(name):
 			return _global_variables[name]
 
-		if self._default_global_variables != null:
-			if self._default_global_variables.has(name):
-				return self._default_global_variables[name]
+		if _default_global_variables != null:
+			if _default_global_variables.has(name):
+				return _default_global_variables[name]
 
 		var list_item_value: InkListValue = _list_defs_origin.find_single_item_list_with_name(name)
 
@@ -271,21 +271,21 @@ func set_global(variable_name: String, value: InkObject) -> void:
 			old_value = patch_value.result
 
 	if old_value == null:
-		if self._global_variables.has(variable_name):
-			old_value = self._global_variables[variable_name]
+		if _global_variables.has(variable_name):
+			old_value = _global_variables[variable_name]
 
 	InkListValue.retain_list_origins_for_assignment(old_value, value)
 
 	if patch != null:
-		self.patch.set_global(variable_name, value)
+		patch.set_global(variable_name, value)
 	else:
-		self._global_variables[variable_name] = value
+		_global_variables[variable_name] = value
 
 	if !value.equals(old_value):
 		if _batch_observing_variable_changes:
 			if patch != null:
 				patch.add_changed_variable(variable_name)
-			elif self._changed_variables_for_batch_obs != null:
+			elif _changed_variables_for_batch_obs != null:
 				_changed_variables_for_batch_obs.append(variable_name)
 		else:
 			emit_signal("variable_changed", variable_name, value)
@@ -343,7 +343,7 @@ func get_class() -> String:
 
 var _json: InkStaticJSON: get = get_json
 func get_json():
-	return self._ink_runtime.json
+	return _ink_runtime.json
 
 var _ink_runtime : get = get_ink_runtime
 func get_ink_runtime():

@@ -39,7 +39,7 @@ func jarray_to_runtime_obj_list(jarray: Array, skip_last = false) -> Array:
 
 	return list
 
-# (self.Json.Writer, Dictionary<String, InkObject>) -> void
+# (Json.Writer, Dictionary<String, InkObject>) -> void
 func write_dictionary_runtime_objs(writer, dictionary: Dictionary) -> void:
 	writer.write_object_start()
 	for key in dictionary:
@@ -48,21 +48,21 @@ func write_dictionary_runtime_objs(writer, dictionary: Dictionary) -> void:
 		writer.write_property_end()
 	writer.write_object_end()
 
-# (self.Json.Writer, Array<InkObject>) -> void
+# (Json.Writer, Array<InkObject>) -> void
 func write_list_runtime_objs(writer, list: Array) -> void:
 	writer.write_array_start()
 	for val in list:
 		write_runtime_object(writer, val)
 	writer.write_array_end()
 
-# (self.Json.Writer, Array<Int>) -> void
+# (Json.Writer, Array<Int>) -> void
 func write_int_dictionary(writer, dict: Dictionary) -> void:
 	writer.write_object_start()
 	for key in dict:
 		writer.write_property(key, dict[key])
 	writer.write_object_end()
 
-# (self.Json.Writer, InkObject) -> void
+# (Json.Writer, InkObject) -> void
 func write_runtime_object(writer, obj: InkObject) -> void:
 	var container = InkUtils.as_or_null(obj, "InkContainer")
 	if container:
@@ -163,7 +163,7 @@ func write_runtime_object(writer, obj: InkObject) -> void:
 
 	var control_cmd = InkUtils.as_or_null(obj, "ControlCommand")
 	if control_cmd:
-		writer.write(self._control_command_names[control_cmd.command_type])
+		writer.write(_control_command_names[control_cmd.command_type])
 		return
 
 	var native_func = InkUtils.as_or_null(obj, "NativeFunctionCall")
@@ -413,7 +413,7 @@ func jtoken_to_runtime_object(token) -> InkObject:
 	InkUtils.throw_exception("Failed to convert token to runtime object: %s" % str(token))
 	return null
 
-# (self.Json.Writer, InkContainer, Bool) -> void
+# (Json.Writer, InkContainer, Bool) -> void
 func write_runtime_container(writer, container: InkContainer, without_name = false) -> void:
 	writer.write_array_start()
 
@@ -485,7 +485,7 @@ func jobject_to_choice(jobj: Dictionary) -> InkChoice:
 	choice.path_string_on_choice = str(jobj["targetPath"])
 	return choice
 
-# (self.Json.Writer, Choice) -> Void
+# (Json.Writer, Choice) -> Void
 func write_choice(writer, choice: InkChoice) -> void:
 	writer.write_object_start()
 	writer.write_property("text", choice.text)
@@ -495,7 +495,7 @@ func write_choice(writer, choice: InkChoice) -> void:
 	writer.write_property("targetPath", choice.path_string_on_choice)
 	writer.write_object_end()
 
-# (self.Json.Writer, ListValue) -> Void
+# (Json.Writer, ListValue) -> Void
 func write_ink_list(writer, list_val):
 	var raw_list = list_val.value
 

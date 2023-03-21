@@ -37,14 +37,14 @@ var _item_name = null # String
 
 # (string, string) -> InkListItem
 func _init_with_origin_name(origin_name, item_name):
-	self._origin_name = origin_name
-	self._item_name = item_name
+	_origin_name = origin_name
+	_item_name = item_name
 
 # (string) -> InkListItem
 func _init_with_full_name(full_name):
 	var name_parts = full_name.split(".")
-	self._origin_name = name_parts[0]
-	self._item_name = name_parts[1]
+	_origin_name = name_parts[0]
+	_item_name = name_parts[1]
 
 static func new_null() -> InkListItem:
 	return InkListItem.new_with_origin_name(null, null)
@@ -53,30 +53,30 @@ static func new_null() -> InkListItem:
 
 var is_null: bool: get = get_is_null
 func get_is_null() -> bool:
-	return self.origin_name == null && self.item_name == null
+	return origin_name == null && item_name == null
 
 # String
 var full_name : get = get_full_name
 func get_full_name():
 	# In C#, concatenating null produce nothing, in GDScript, it appends "Null".
 	return (
-			(self.origin_name if self.origin_name else "?") + "." +
-			(self.item_name if self.item_name else "")
+			(origin_name if origin_name else "?") + "." +
+			(item_name if item_name else "")
 	)
 
 # ############################################################################ #
 
 # () -> String
 func _to_string() -> String:
-	return self.full_name
+	return full_name
 
 # (InkObject) -> bool
 func equals(obj: InkObject) -> bool:
 	if obj.is_class("InkListItem"):
 		var other_item = obj
 		return (
-			other_item.item_name == self.item_name &&
-			self.other_item.origin_name == self.origin_name
+			other_item.item_name == item_name &&
+			other_item.origin_name == origin_name
 		)
 
 	return false
@@ -116,7 +116,7 @@ func get_class() -> String:
 func serialized() -> String:
 	# We are simply using a JSON representation as a value-typed key.
 	var json_print = JSON.stringify(
-			{ "originName": self.origin_name, "itemName": self.item_name }
+			{ "originName": origin_name, "itemName": item_name }
 	)
 	return json_print
 

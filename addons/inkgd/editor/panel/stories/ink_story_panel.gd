@@ -253,7 +253,7 @@ func _compile_all_stories():
 		_progress_dialog.current_step_name = source_file_path.get_file()
 
 		_compile_story(story_configuration)
-		await self._compiled
+		await _compiled
 
 		_progress_dialog.progress = float(100 * (current_story_index + 1) / number_of_stories)
 		current_story_index += 1

@@ -74,8 +74,8 @@ func update_layout(scale: float) -> void:
 # ############################################################################ #
 
 func _accept_button_pressed():
-	self.get_parent().remove_child(self)
-	self.queue_free()
+	get_parent().remove_child(self)
+	queue_free()
 
 # ############################################################################ #
 # Private helpers

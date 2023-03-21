@@ -23,16 +23,16 @@ const PushPopType = preload("res://addons/inkgd/runtime/enums/push_pop.gd").Push
 
 var target_path: InkPath: get = get_target_path, set = set_target_path
 func get_target_path() -> InkPath:
-	if self._target_path != null && self._target_path.is_relative:
-		var target_obj: InkObject = self.target_pointer.resolve()
+	if _target_path != null && _target_path.is_relative:
+		var target_obj: InkObject = target_pointer.resolve()
 		if target_obj:
-			self._target_path = target_obj.path
+			_target_path = target_obj.path
 
-	return self._target_path
+	return _target_path
 
 func set_target_path(value: InkPath):
-	self._target_path = value
-	self._target_pointer = InkPointer.new_null()
+	_target_path = value
+	_target_pointer = InkPointer.new_null()
 
 # InkPath
 var _target_path = null
@@ -40,40 +40,40 @@ var _target_path = null
 var target_pointer: InkPointer:
 	get = get_target_pointer
 func get_target_pointer() -> InkPointer:
-	if self._target_pointer.is_null:
-		var target_obj = resolve_path(self._target_path).obj
+	if _target_pointer.is_null:
+		var target_obj = resolve_path(_target_path).obj
 
-		if self._target_path.last_component.is_index:
-			self._target_pointer = InkPointer.new(
+		if _target_path.last_component.is_index:
+			_target_pointer = InkPointer.new(
 				InkUtils.as_or_null(target_obj.parent, "InkContainer"),
-				self._target_path.last_component.index
+				_target_path.last_component.index
 			)
 		else:
-			self._target_pointer = InkPointer.start_of(InkUtils.as_or_null(target_obj, "InkContainer"))
+			_target_pointer = InkPointer.start_of(InkUtils.as_or_null(target_obj, "InkContainer"))
 
-	return self._target_pointer
+	return _target_pointer
 
 var _target_pointer: InkPointer = InkPointer.new_null()
 
 # String?
 var target_path_string : get = get_target_path_string, set = set_target_path_string
 func get_target_path_string():
-	if self.target_path == null:
+	if target_path == null:
 		return null
 
-	return self.compact_path_string(self.target_path)
+	return compact_path_string(target_path)
 
 func set_target_path_string(value):
 	if value == null:
-		self.target_path = null
+		target_path = null
 	else:
-		self.target_path = InkPath.new_with_components_string(value)
+		target_path = InkPath.new_with_components_string(value)
 
 # String
 var variable_divert_name = null
 var has_variable_target: bool: get = get_has_variable_target
 func get_has_variable_target() -> bool:
-	return self.variable_divert_name != null
+	return variable_divert_name != null
 
 var pushes_to_stack: bool = false
 
@@ -88,50 +88,50 @@ var is_conditional: bool = false
 
 # (int?) -> InkDivert
 func _init_with(stack_push_type = null):
-	self.pushes_to_stack = false
+	pushes_to_stack = false
 
 	if stack_push_type != null:
-		self.pushes_to_stack = true
+		pushes_to_stack = true
 		self.stack_push_type = stack_push_type
 
 # (InkBase) -> bool
 func equals(obj) -> bool:
 	var other_divert: InkDivert = InkUtils.as_or_null(obj, "Divert")
 	if other_divert:
-		if self.has_variable_target == other_divert.has_variable_target:
-			if self.has_variable_target:
-				return self.variable_divert_name == other_divert.variable_divert_name
+		if has_variable_target == other_divert.has_variable_target:
+			if has_variable_target:
+				return variable_divert_name == other_divert.variable_divert_name
 			else:
-				return self.target_path.equals(other_divert.target_path)
+				return target_path.equals(other_divert.target_path)
 
 	return false
 
 func _to_string() -> String:
-	if self.has_variable_target:
-		return "Divert(variable: %s)" % self.variable_divert_name
-	elif self.target_path == null:
+	if has_variable_target:
+		return "Divert(variable: %s)" % variable_divert_name
+	elif target_path == null:
 		return "Divert(null)"
 	else:
 		var _string = ""
 
-		var target_str: String = self.target_path._to_string()
-		var target_line_num = debug_line_number_of_path(self.target_path)
+		var target_str: String = target_path._to_string()
+		var target_line_num = debug_line_number_of_path(target_path)
 		if target_line_num != null:
 			target_str = "line " + target_line_num
 
 		_string += "Divert"
 
-		if self.is_conditional:
+		if is_conditional:
 			_string += "?"
 
-		if self.pushes_to_stack:
-			if self.stack_push_type == PushPopType.FUNCTION:
+		if pushes_to_stack:
+			if stack_push_type == PushPopType.FUNCTION:
 				_string += " function"
 			else:
 				_string += " tunnel"
 
 		_string += " -> "
-		_string += self.target_path_string
+		_string += target_path_string
 
 		_string += " (%s)" % target_str
 

@@ -46,7 +46,7 @@ func test_availability():
 		var error = _thread.start(Callable(self, "_test_availablity").bind(_configuration), Thread.PRIORITY_HIGH)
 		if error != OK:
 			var result = InkExecutionResult.new(
-				self.identifier,
+				identifier,
 				_configuration.use_threads,
 				_configuration.user_triggered,
 				false,
@@ -123,7 +123,7 @@ func _process_test_result(
 		printerr(output_text)
 
 	return InkExecutionResult.new(
-			self.identifier,
+			identifier,
 			config.use_threads,
 			config.user_triggered,
 			success,

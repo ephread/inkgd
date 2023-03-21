@@ -181,8 +181,8 @@ func _on_file_selected(path: String):
 	if _custom_stories.has(path):
 		return
 
-	for story_configuration in self.configuration.stories:
-		var target_file_path = self.configuration.get_target_file_path(story_configuration)
+	for story_configuration in configuration.stories:
+		var target_file_path = configuration.get_target_file_path(story_configuration)
 		if target_file_path == path:
 			return
 
@@ -220,8 +220,8 @@ func _apply_configuration():
 	_pick_story_button.selected = _current_story_index
 
 	var i = 0
-	for story_configuration in self.configuration.stories:
-		var target_file_path = self.configuration.get_target_file_path(story_configuration)
+	for story_configuration in configuration.stories:
+		var target_file_path = configuration.get_target_file_path(story_configuration)
 		if target_file_path != null && !target_file_path.is_empty():
 			_available_stories.append({
 				NAME: "Story %d - %s" % [i + 1, target_file_path.get_file()],

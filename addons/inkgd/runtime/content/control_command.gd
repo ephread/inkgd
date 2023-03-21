@@ -57,7 +57,7 @@ func _init(command_type: int = CommandType.NOT_SET):
 # ############################################################################ #
 
 func copy() -> InkControlCommand:
-	return InkControlCommand.new(self.command_type)
+	return InkControlCommand.new(command_type)
 
 static func eval_start() -> InkControlCommand:
 	return InkControlCommand.new(CommandType.EVAL_START)
@@ -131,7 +131,7 @@ static func list_random() -> InkControlCommand:
 # () -> String
 func _to_string() -> String:
 	var command_name: String = ""
-	match self.command_type:
+	match command_type:
 		CommandType.NOT_SET:                command_name = "NOT_SET"
 		CommandType.EVAL_START:             command_name = "EVAL_START"
 		CommandType.EVAL_OUTPUT:            command_name = "EVAL_OUTPUT"

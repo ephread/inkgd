@@ -31,8 +31,8 @@ func _init(
 	target_file_path: String
 ):
 	super(configuration, use_threads, user_triggered)
-	self.source_file_path = ProjectSettings.globalize_path(source_file_path)
-	self.target_file_path = ProjectSettings.globalize_path(target_file_path)
+	source_file_path = ProjectSettings.globalize_path(source_file_path)
+	target_file_path = ProjectSettings.globalize_path(target_file_path)
 
 # ############################################################################ #
 # Private Methods

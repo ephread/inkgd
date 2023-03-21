@@ -19,10 +19,10 @@ class_name InkChoicePoint
 # (InkPath) -> void
 var path_on_choice: InkPath: get = get_path_on_choice, set = set_path_on_choice
 func get_path_on_choice() -> InkPath:
-	if self._path_on_choice != null && self._path_on_choice.is_relative:
-		var choice_target_obj = self.choice_target
+	if _path_on_choice != null && _path_on_choice.is_relative:
+		var choice_target_obj = choice_target
 		if choice_target_obj:
-			self._path_on_choice = choice_target_obj.path
+			_path_on_choice = choice_target_obj.path
 
 	return _path_on_choice
 func set_path_on_choice(value: InkPath):
@@ -35,16 +35,16 @@ var _path_on_choice = null
 
 var choice_target: InkContainer: get = get_choice_target
 func get_choice_target() -> InkContainer:
-	var cont = resolve_path(self._path_on_choice).container
+	var cont = resolve_path(_path_on_choice).container
 	return cont
 
 # ############################################################################ #
 
 var path_string_on_choice: String:
 	get:
-		return compact_path_string(self.path_on_choice)
+		return compact_path_string(path_on_choice)
 	set(value):
-		self.path_on_choice = InkPath.new_with_components_string(value)
+		path_on_choice = InkPath.new_with_components_string(value)
 
 # ############################################################################ #
 
@@ -85,8 +85,8 @@ func _init(once_only: bool = true):
 	self.once_only = once_only
 
 func _to_string() -> String:
-	var target_line_num = debug_line_number_of_path(self.path_on_choice)
-	var target_string = self.path_on_choice._to_string()
+	var target_line_num = debug_line_number_of_path(path_on_choice)
+	var target_string = path_on_choice._to_string()
 
 	if target_line_num != null:
 		target_string = " line %d(%s)" % [target_line_num, target_string]

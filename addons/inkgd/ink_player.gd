@@ -239,7 +239,7 @@ func get_global_tags() -> Array:
 ## `true` if the _story currently has choices, `false` otherwise.
 var has_choices: bool: get = get_has_choices
 func get_has_choices() -> bool:
-	return !self.current_choices.is_empty()
+	return !current_choices.is_empty()
 
 
 ## The name of the current flow.
@@ -354,13 +354,13 @@ func continue_story() -> String:
 		return ""
 
 	var text: String = ""
-	if self.can_continue:
+	if can_continue:
 		_story.continue_story()
 
-		text = self.current_text
+		text = current_text
 
-	elif self.has_choices:
-		emit_signal("prompt_choices", self.current_choices)
+	elif has_choices:
+		emit_signal("prompt_choices", current_choices)
 	else:
 		emit_signal("ended")
 
@@ -381,15 +381,15 @@ func continue_story_async(millisecs_limit_async: float) -> void:
 		_push_null_story_error()
 		return
 
-	if self.can_continue:
+	if can_continue:
 		_story.continue_async(millisecs_limit_async)
 
-		if !self.async_continue_complete:
+		if !async_continue_complete:
 			emit_signal("interrupted")
 			return
 
-	elif self.has_choices:
-		emit_signal("prompt_choices", self.current_choices)
+	elif has_choices:
+		emit_signal("prompt_choices", current_choices)
 	else:
 		emit_signal("ended")
 
@@ -403,13 +403,13 @@ func continue_story_maximally() -> String:
 		return ""
 
 	var text: String = ""
-	if self.can_continue:
+	if can_continue:
 		_story.continue_maximally()
 
-		text = self.current_text
+		text = current_text
 
-	elif self.has_choices:
-		emit_signal("prompt_choices", self.current_choices)
+	elif has_choices:
+		emit_signal("prompt_choices", current_choices)
 	else:
 		emit_signal("ended")
 
@@ -422,7 +422,7 @@ func choose_choice_index(index: int) -> void:
 		_push_null_story_error()
 		return
 
-	if index >= 0 && index < self.current_choices.size():
+	if index >= 0 && index < current_choices.size():
 		_story.choose_choice_index(index);
 
 
@@ -740,7 +740,7 @@ func _on_error(message, type) -> void:
 
 
 func _on_did_continue() -> void:
-	emit_signal("continued", self.current_text, self.current_tags)
+	emit_signal("continued", current_text, current_tags)
 
 
 func _on_make_choice(choice) -> void:

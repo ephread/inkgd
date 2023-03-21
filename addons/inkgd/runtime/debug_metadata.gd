@@ -28,29 +28,29 @@ var source_name = null
 func merge(dm: InkDebugMetadata) -> InkDebugMetadata:
 	var new_debug_metadata = InkDebugMetadata.new()
 
-	new_debug_metadata.file_name = self.file_name
-	new_debug_metadata.source_name = self.source_name
+	new_debug_metadata.file_name = file_name
+	new_debug_metadata.source_name = source_name
 
-	if self.start_line_number < dm.start_line_number:
-		new_debug_metadata.start_line_number = self.start_line_number
-		new_debug_metadata.start_character_number = self.start_character_number
-	elif self.start_line_number > dm.start_line_number:
+	if start_line_number < dm.start_line_number:
+		new_debug_metadata.start_line_number = start_line_number
+		new_debug_metadata.start_character_number = start_character_number
+	elif start_line_number > dm.start_line_number:
 		new_debug_metadata.start_line_number = dm.start_line_number
 		new_debug_metadata.start_character_number = dm.start_character_number
 	else:
-		var min_scn = min(self.start_character_number, dm.start_character_number)
-		new_debug_metadata.start_line_number = self.start_line_number
+		var min_scn = min(start_character_number, dm.start_character_number)
+		new_debug_metadata.start_line_number = start_line_number
 		new_debug_metadata.start_character_number = min_scn
 
-	if self.end_line_number > dm.end_line_number:
-		new_debug_metadata.end_line_number = self.end_line_number
-		new_debug_metadata.end_character_number = self.end_character_number
-	elif self.end_line_number < dm.end_line_number:
+	if end_line_number > dm.end_line_number:
+		new_debug_metadata.end_line_number = end_line_number
+		new_debug_metadata.end_character_number = end_character_number
+	elif end_line_number < dm.end_line_number:
 		new_debug_metadata.end_line_number = dm.end_line_number
 		new_debug_metadata.end_character_number = dm.end_character_number
 	else:
-		var max_scn = min(self.end_character_number, dm.end_character_number)
-		new_debug_metadata.end_line_number = self.end_line_number
+		var max_scn = min(end_character_number, dm.end_character_number)
+		new_debug_metadata.end_line_number = end_line_number
 		new_debug_metadata.end_character_number = max_scn
 
 	return new_debug_metadata

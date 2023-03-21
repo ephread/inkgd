@@ -50,7 +50,7 @@ class Component extends InkBase:
 
 	# () -> String
 	func _to_string() -> String:
-		if self.is_index:
+		if is_index:
 			return str(index)
 		else:
 			return name
@@ -60,8 +60,8 @@ class Component extends InkBase:
 		# Simple test to make sure the object is of the right type.
 		if !(other_comp is Object && other_comp.is_class("InkPath.Component")): return false
 
-		if other_comp.is_index == self.is_index:
-			if self.is_index:
+		if other_comp.is_index == is_index:
+			if is_index:
 				return index == other_comp.index
 			else:
 				return name == other_comp.name
@@ -82,7 +82,7 @@ class Component extends InkBase:
 
 # (int) -> Component
 func get_component(index):
-	return self._components[index]
+	return _components[index]
 
 var is_relative = false # bool
 
@@ -124,20 +124,20 @@ func get_contains_named_component():
 	return false
 
 func _init():
-	self._components = []
+	_components = []
 
 func _init_with_head_tail(head, tail):
-	self._components = []
-	self._components.append(head)
-	self._components = self._components + self.tail._components
+	_components = []
+	_components.append(head)
+	_components = _components + tail._components
 
 func _init_with_components(components, relative = false):
-	self._components = []
-	self._components = self._components + components
-	self.is_relative = relative
+	_components = []
+	_components = _components + components
+	is_relative = relative
 
 func _init_with_components_string(components_string):
-	self._components = []
+	_components = []
 	self.components_string = components_string
 
 # () -> InkPath
@@ -161,8 +161,8 @@ func path_by_appending_path(path_to_append):
 		i += 1
 
 	i = 0
-	while(i < self._components.size() - upward_moves):
-		p._components.append(self._components[i])
+	while(i < _components.size() - upward_moves):
+		p._components.append(_components[i])
 		i += 1
 
 	i = upward_moves
@@ -175,7 +175,7 @@ func path_by_appending_path(path_to_append):
 # (Component) -> InkPath
 func path_by_appending_component(c):
 	var p = InkPath.new()
-	p._components = p._components + self._components
+	p._components = p._components + _components
 	p._components.append(c)
 	return p
 
@@ -183,7 +183,7 @@ var components_string : get = get_components_string, set = set_components_string
 func get_components_string():
 	if _components_string == null:
 		_components_string = InkUtils.join(", ", _components)
-		if self.is_relative:
+		if is_relative:
 			_components_string = "." + _components_string
 
 	return _components_string
@@ -196,10 +196,10 @@ func set_components_string(value):
 		return
 
 	if _components_string[0] == '.':
-		self.is_relative = true
+		is_relative = true
 		_components_string = _components_string.substr(1, _components_string.length() - 1)
 	else:
-		self.is_relative = false
+		is_relative = false
 
 	var components_strings = _components_string.split(".")
 	for _str in components_strings:
@@ -211,20 +211,20 @@ func set_components_string(value):
 var _components_string # String
 
 func _to_string() -> String:
-	return self.components_string
+	return components_string
 
 # (Component) -> bool
 func equals(other_path):
 	# Simple test to make sure the object is of the right type.
 	if !(other_path is Object && other_path.is_class("InkPath")): return false
 
-	if other_path._components.size() != self._components.size():
+	if other_path._components.size() != _components.size():
 		return false
 
-	if other_path.is_relative != self.is_relative:
+	if other_path.is_relative != is_relative:
 		return false
 
-	return InkUtils.array_equal(other_path._components, self._components, true)
+	return InkUtils.array_equal(other_path._components, _components, true)
 
 var _components = null # Array<Component>
 

@@ -27,7 +27,7 @@ func get_items() -> Dictionary:
 	if _items == null:
 		_items = {}
 		for item_name_and_value_key in _item_name_to_values:
-			var item = InkListItem.new_with_origin_name(self.name, item_name_and_value_key)
+			var item = InkListItem.new_with_origin_name(name, item_name_and_value_key)
 			_items[item.serialized()] = _item_name_to_values[item_name_and_value_key]
 
 	return _items
@@ -43,7 +43,7 @@ func value_for_item(item: InkListItem) -> int:
 		return 0
 
 func contains_item(item: InkListItem) -> bool:
-	if item.origin_name != self.name:
+	if item.origin_name != name:
 		return false
 
 	return _item_name_to_values.has(item.item_name)
@@ -57,7 +57,7 @@ func try_get_item_with_value(val: int) -> InkTryGetResult:
 		if (_item_name_to_values[named_item_key] == val):
 			return InkTryGetResult.new(
 					true,
-					InkListItem.new_with_origin_name(self.name, named_item_key)
+					InkListItem.new_with_origin_name(name, named_item_key)
 			)
 
 	return InkTryGetResult.new(false, InkListItem.new_null())

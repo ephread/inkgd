@@ -49,7 +49,7 @@ func compile_story() -> bool:
 
 		if error != OK:
 			var result = InkExecutionResult.new(
-				self.identifier,
+				identifier,
 				_configuration.use_threads,
 				_configuration.user_triggered,
 				false,
@@ -132,7 +132,7 @@ func _process_compilation_result(
 		printerr(output_text)
 
 	return InkExecutionResult.new(
-			self.identifier,
+			identifier,
 			config.use_threads,
 			config.user_triggered,
 			success,

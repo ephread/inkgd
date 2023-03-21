@@ -25,21 +25,21 @@ func _init():
 # (String, Story) -> Flow
 func _init_with_name(name, story):
 	self.name = name
-	self.callstack = InkCallStack.new(story)
-	self.output_stream = []
-	self.current_choices = []
+	callstack = InkCallStack.new(story)
+	output_stream = []
+	current_choices = []
 
 # (String, Story, Dictionary<String, Variant>) -> Flow
 func _init_with_name_and_jobject(name, story, jobject):
 	self.name = name
-	self.callstack = InkCallStack.new(story)
-	self.callstack.set_json_token(jobject["callstack"], story)
-	self.output_stream = self.Json.jarray_to_runtime_obj_list(jobject["outputStream"])
-	self.current_choices = self.Json.jarray_to_runtime_obj_list(jobject["currentChoices"])
+	callstack = InkCallStack.new(story)
+	callstack.set_json_token(jobject["callstack"], story)
+	output_stream = Json.jarray_to_runtime_obj_list(jobject["outputStream"])
+	current_choices = Json.jarray_to_runtime_obj_list(jobject["currentChoices"])
 
 	# jchoice_threads_obj is null if 'choiceThreads' doesn't exist.
 	var jchoice_threads_obj = jobject.get("choiceThreads");
-	self.load_flow_choice_threads(jchoice_threads_obj, story)
+	load_flow_choice_threads(jchoice_threads_obj, story)
 
 # (SimpleJson.Writer) -> void
 func write_json(writer):
@@ -51,10 +51,10 @@ func write_json(writer):
 	)
 
 	var has_choice_threads = false
-	for c in self.current_choices:
+	for c in current_choices:
 		c.original_thread_index = c.thread_at_generation.thread_index
 
-		if self.callstack.thread_with_index(c.original_thread_index) == null:
+		if callstack.thread_with_index(c.original_thread_index) == null:
 			if !has_choice_threads:
 				has_choice_threads = true
 				writer.write_property_start("choiceThreads")
@@ -77,8 +77,8 @@ func write_json(writer):
 
 # (Dictionary, Story) -> void
 func load_flow_choice_threads(jchoice_threads, story):
-	for choice in self.current_choices:
-		var found_active_thread = self.callstack.thread_with_index(choice.original_thread_index)
+	for choice in current_choices:
+		var found_active_thread = callstack.thread_with_index(choice.original_thread_index)
 		if found_active_thread != null:
 			choice.thread_at_generation = found_active_thread.copy()
 		else:
@@ -87,13 +87,13 @@ func load_flow_choice_threads(jchoice_threads, story):
 
 # (SimpleJson.Writer) -> void
 func _anonymous_write_property_output_stream(w):
-	self.Json.write_list_runtime_objs(w, self.output_stream)
+	Json.write_list_runtime_objs(w, output_stream)
 
 # (SimpleJson.Writer) -> void
 func _anonymous_write_property_current_choices(w):
 	w.write_array_start()
-	for c in self.current_choices:
-		self.Json.write_choice(w, c)
+	for c in current_choices:
+		Json.write_choice(w, c)
 	w.write_array_end()
 
 func equals(ink_base) -> bool:

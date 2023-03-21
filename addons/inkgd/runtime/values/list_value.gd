@@ -46,7 +46,7 @@ func cast(new_type, metadata = null):
 		else:
 			return InkStringValue.new_with(max_item.key._to_string())
 
-	if new_type == self.value_type:
+	if new_type == value_type:
 		return self
 
 	InkUtils.throw_story_exception(bad_cast_exception_message(new_type), false, metadata)

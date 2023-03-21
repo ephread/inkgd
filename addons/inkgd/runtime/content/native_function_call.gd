@@ -32,7 +32,7 @@ func get_name() -> String:
 func set_name(value: String):
 	_name = value
 	if !_is_prototype:
-		_prototype = self._static_native_function_call.native_functions[_name]
+		_prototype = _static_native_function_call.native_functions[_name]
 var _name
 
 var number_of_parameters: int: get = get_number_of_parameters, set = set_number_of_parameters
@@ -58,7 +58,7 @@ func call_with_parameters(parameters: Array, metadata: StoryErrorMetadata) -> In
 	if _prototype:
 		return _prototype.call_with_parameters(parameters, metadata)
 
-	if self.number_of_parameters != parameters.size():
+	if number_of_parameters != parameters.size():
 		InkUtils.throw_exception("Unexpected number of parameters")
 		return null
 
@@ -113,7 +113,7 @@ func call_coerced(parameters_of_single_type: Array, metadata: StoryErrorMetadata
 			var type_name = InkUtils.value_type_name(val_type)
 			InkUtils.throw_story_exception(
 					"Cannot perform operation '%s' on value of type (%d)" \
-					% [self.name, type_name],
+					% [name, type_name],
 					false,
 					metadata
 			)
@@ -122,11 +122,11 @@ func call_coerced(parameters_of_single_type: Array, metadata: StoryErrorMetadata
 		if param_count == 2:
 			var param2 = parameters_of_single_type[1]
 
-			var result_val = self._static_native_function_call.call(op_for_type, param1.value, param2.value)
+			var result_val = _static_native_function_call.call(op_for_type, param1.value, param2.value)
 
 			return InkValue.create(result_val)
 		else:
-			var result_val = self._static_native_function_call.call(op_for_type, param1.value)
+			var result_val = _static_native_function_call.call(op_for_type, param1.value)
 
 			return InkValue.create(result_val)
 	else:
@@ -142,7 +142,7 @@ func call_coerced(parameters_of_single_type: Array, metadata: StoryErrorMetadata
 # doesn't exist in upstream. The metadat are used in case an 'exception'
 # is raised. For more information, see story.gd.
 func call_binary_list_operation(parameters: Array, metadata) -> InkValue:
-	if ((self.name == "+" || self.name == "-") &&
+	if ((name == "+" || name == "-") &&
 		InkUtils.is_ink_class(parameters[0], "ListValue") &&
 		InkUtils.is_ink_class(parameters [1], "IntValue")
 	):
@@ -151,11 +151,11 @@ func call_binary_list_operation(parameters: Array, metadata) -> InkValue:
 	var v1 = InkUtils.as_or_null(parameters[0], "Value")
 	var v2 = InkUtils.as_or_null(parameters[1], "Value")
 
-	if ((self.name == "&&" || self.name == "||") &&
+	if ((name == "&&" || name == "||") &&
 		(v1.value_type != ValueType.LIST || v2.value_type != ValueType.LIST)
 	):
 		var op: String = _operation_funcs[ValueType.INT]
-		var result = bool(self._static_native_function_call.call(
+		var result = bool(_static_native_function_call.call(
 			"op_for_type",
 			1 if v1.is_truthy else 0,
 			1 if v2.is_truthy else 0
@@ -170,7 +170,7 @@ func call_binary_list_operation(parameters: Array, metadata) -> InkValue:
 	var v2_type_name = InkUtils.value_type_name(v2.value_type)
 	InkUtils.throw_story_exception(
 			"Can not call use '%s' operation on %s and %s" % \
-			[self.name, v1_type_name, v2_type_name],
+			[name, v1_type_name, v2_type_name],
 			false,
 			metadata
 	)
@@ -190,7 +190,7 @@ func call_list_increment_operation(list_int_params: Array) -> InkValue:
 		var int_op: String = _operation_funcs[ValueType.INT]
 
 		var target_int = int(
-				self._static_native_function_call.call(
+				_static_native_function_call.call(
 						int_op,
 						list_item_value,
 						int_val.value
@@ -282,7 +282,7 @@ func _init_with_name_and_number_of_parameters(name: String, number_of_parameters
 
 func generate_native_functions_if_necessary() -> void:
 	find_static_objects()
-	self._static_native_function_call.generate_native_functions_if_necessary()
+	_static_native_function_call.generate_native_functions_if_necessary()
 
 # (ValueType, String) -> void
 func add_op_func_for_type(val_type: int, op: String) -> void:
@@ -292,7 +292,7 @@ func add_op_func_for_type(val_type: int, op: String) -> void:
 	_operation_funcs[val_type] = op
 
 func _to_string() -> String:
-	return "Native '%s'" % self.name
+	return "Native '%s'" % name
 
 # NativeFunctionCall
 var _prototype = null

@@ -35,14 +35,14 @@ func _init():
 # doesn't exist in upstream. The metadat are used in case an 'exception'
 # is raised. For more information, see story.gd.
 func cast(new_type, metadata = null):
-	if new_type == self.value_type:
+	if new_type == value_type:
 		return self
 
 	InkUtils.throw_story_exception(bad_cast_exception_message(new_type), false, metadata)
 	return null
 
 func _to_string() -> String:
-	return "DivertTargetValue(" + self.target_path._to_string() + ")"
+	return "DivertTargetValue(" + target_path._to_string() + ")"
 
 # ######################################################################## #
 # GDScript extra methods
