@@ -136,13 +136,3 @@ func _to_string() -> String:
 		_string += " (%s)" % target_str
 
 		return _string
-
-# ############################################################################ #
-# GDScript extra methods
-# ############################################################################ #
-
-func is_class(type: String) -> bool:
-	return type == "Divert" || super.is_class(type)
-
-func get_class() -> String:
-	return "Divert"

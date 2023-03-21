@@ -72,7 +72,7 @@ func _to_string() -> String:
 
 # (InkObject) -> bool
 func equals(obj: InkObject) -> bool:
-	if obj.is_class("InkListItem"):
+	if obj is InkListItem:
 		var other_item = obj
 		return (
 			other_item.item_name == item_name &&
@@ -94,16 +94,6 @@ static func new_with_full_name(full_name) -> InkListItem:
 	var list_item = InkListItem.new()
 	list_item._init_with_full_name(full_name)
 	return list_item
-
-# ############################################################################ #
-# GDScript extra methods
-# ############################################################################ #
-
-func is_class(type: String) -> bool:
-	return type == "InkListItem" || super.is_class(type)
-
-func get_class() -> String:
-	return "InkListItem"
 
 # ############################################################################ #
 # These methods did not exist in the original C# code. Their purpose is to

@@ -66,11 +66,5 @@ func _to_string() -> String:
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type: String) -> bool:
-	return type == "DebugMetadata" || super.is_class(type)
-
-func get_class() -> String:
-	return "DebugMetadata"
-
 static func DebugMetadata():
 	return load("res://addons/inkgd/runtime/debug_metadata.gd")

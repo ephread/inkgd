@@ -18,13 +18,3 @@ func _init(tag_text: String):
 
 func _to_string() -> String:
 	return '# ' + text
-
-# ############################################################################ #
-# GDScript extra methods
-# ############################################################################ #
-
-func is_class(type: String) -> bool:
-	return type == "Tag" || super.is_class(type)
-
-func get_class() -> String:
-	return "Tag"

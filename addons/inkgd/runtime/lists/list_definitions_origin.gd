@@ -66,13 +66,3 @@ func find_single_item_list_with_name(name: String) -> InkListValue:
 
 var _lists: Dictionary # Dictionary<String, InkListDefinition>
 var _all_unambiguous_list_value_cache: Dictionary # Dictionary<String, InkListValue>
-
-# ############################################################################ #
-# GDScript extra methods
-# ############################################################################ #
-
-func is_class(type: String) -> bool:
-	return type == "InkListDefinitionsOrigin" || super.is_class(type)
-
-func get_class() -> String:
-	return "InkListDefinitionsOrigin"

@@ -37,13 +37,3 @@ var thread_at_generation = null
 var original_thread_index: int = 0
 
 var is_invisible_default: bool = false
-
-# ############################################################################ #
-# GDScript extra methods
-# ############################################################################ #
-
-func is_class(type):
-	return type == "Choice" || super.is_class(type)
-
-func get_class():
-	return "Choice"

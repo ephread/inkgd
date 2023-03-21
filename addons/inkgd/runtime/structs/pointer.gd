@@ -100,11 +100,5 @@ static func new_null():
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type: String) -> bool:
-	return type == "Pointer" || super.is_class(type)
-
-func get_class() -> String:
-	return "Pointer"
-
 func duplicate() -> InkPointer:
 	return InkPointer.new(container, index)

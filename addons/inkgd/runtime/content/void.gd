@@ -15,11 +15,5 @@ class_name InkVoid
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type: String) -> bool:
-	return type == "Void" || super.is_class(type)
-
-func get_class() -> String:
-	return "Void"
-
 func _to_string() -> String:
 	return "Void"

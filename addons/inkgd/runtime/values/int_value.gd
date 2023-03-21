@@ -47,12 +47,6 @@ func cast(new_type, metadata = null):
 # GDScript extra methods
 # ######################################################################## #
 
-func is_class(type):
-	return type == "IntValue" || super.is_class(type)
-
-func get_class():
-	return "IntValue"
-
 static func new_with(val):
 	var value = InkIntValue.new()
 	value._init_with(val)

@@ -106,12 +106,6 @@ func _to_string() -> String:
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type):
-	return type == "Flow" || super.is_class(type)
-
-func get_class():
-	return "Flow"
-
 static func new_with_name(name, story):
 	var flow = InkFlow.new()
 	flow._init_with_name(name, story)

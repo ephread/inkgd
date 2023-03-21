@@ -160,13 +160,3 @@ func _to_string() -> String:
 		CommandType.TOTAL_VALUES:           command_name = "TOTAL_VALUES"
 
 	return "Command(%s)" % command_name
-
-# ############################################################################ #
-# GDScript extra methods
-# ############################################################################ #
-
-func is_class(type: String) -> bool:
-	return type == "ControlCommand" || super.is_class(type)
-
-func get_class() -> String:
-	return "ControlCommand"

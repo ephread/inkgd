@@ -86,13 +86,3 @@ var _globals: Dictionary
 var _changed_variables: InkStringSet
 var _visit_counts: Dictionary
 var _turn_indices: Dictionary
-
-# ############################################################################ #
-# GDScript extra methods
-# ############################################################################ #
-
-func is_class(type: String) -> bool:
-	return type == "StatePatch" || super.is_class(type)
-
-func get_class() -> String:
-	return "StatePatch"

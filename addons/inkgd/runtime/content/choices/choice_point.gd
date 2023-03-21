@@ -92,13 +92,3 @@ func _to_string() -> String:
 		target_string = " line %d(%s)" % [target_line_num, target_string]
 
 	return "Choice: -> %s" % target_string
-
-# ############################################################################ #
-# GDScript extra methods
-# ############################################################################ #
-
-func is_class(type: String) -> bool:
-	return type == "ChoicePoint" || super.is_class(type)
-
-func get_class() -> String:
-	return "ChoicePoint"

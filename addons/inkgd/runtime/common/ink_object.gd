@@ -194,13 +194,3 @@ func set_child(obj: InkObject, value: InkObject):
 
 	if obj:
 		obj.parent = self
-
-# ############################################################################ #
-# GDScript extra methods
-# ############################################################################ #
-
-func is_class(type: String) -> bool:
-	return type == "InkObject" || super.is_class(type)
-
-func get_class() -> String:
-	return "InkObject"

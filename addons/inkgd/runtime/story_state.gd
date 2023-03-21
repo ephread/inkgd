@@ -929,7 +929,7 @@ func pass_arguments_to_evaluation_stack(arguments) -> void:
 	if arguments != null:
 		var i = 0
 		while (i < arguments.size()):
-			if !(arguments[i] is int || arguments[i] is float || arguments[i] is String || ((arguments[i] is Object) && arguments[i].is_class("InkList"))):
+			if !(arguments[i] is int || arguments[i] is float || arguments[i] is String || ((arguments[i] is Object) && arguments[i] is InkList)):
 				InkUtils.throw_argument_exception(
 						"ink arguments when calling EvaluateFunction / " +
 						"ChoosePathStringWithParameters must be int, " +
@@ -1029,17 +1029,6 @@ func _anonymous_write_property_visit_counts(writer) -> void:
 
 func _anonymous_write_property_turn_indices(writer) -> void:
 	Json.write_int_dictionary(writer, _turn_indices)
-
-
-# ############################################################################ #
-# GDScript extra methods
-# ############################################################################ #
-
-func is_class(type: String) -> bool:
-	return type == "StoryState" || super.is_class(type)
-
-func get_class() -> String:
-	return "StoryState"
 
 
 # ############################################################################ #

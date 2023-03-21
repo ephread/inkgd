@@ -291,13 +291,13 @@ func list_with_sub_range(min_bound, max_bound) -> InkList:
 	if min_bound is int:
 		min_value = min_bound
 	else:
-		if min_bound.is_class("InkList") && min_bound.size() > 0:
+		if min_bound is InkList && min_bound.size() > 0:
 			min_value = min_bound.min_item.value
 
 	if max_bound is int:
 		max_value = max_bound
 	else:
-		if min_bound.is_class("InkList") && min_bound.size() > 0:
+		if min_bound is InkList && min_bound.size() > 0:
 			max_value = max_bound.max_item.value
 
 	var sub_list = InkList.new()
@@ -314,7 +314,7 @@ func equals(other: InkList) -> bool:
 	# Simple test to make sure the object is of the right type.
 	if !(other_raw_list is Object):
 		return false
-	if !(other_raw_list.is_class("InkList")):
+	if !(other_raw_list is InkList):
 		return false
 
 	if other_raw_list.size() != size():
@@ -440,13 +440,3 @@ func has_all_raw(keys: Array) -> bool:
 
 func raw_keys() -> Array:
 	return _dictionary.keys()
-
-# ############################################################################ #
-# GDScript extra methods
-# ############################################################################ #
-
-func is_class(type: String) -> bool:
-	return type == "InkList" || super.is_class(type)
-
-func get_class() -> String:
-	return "InkList"

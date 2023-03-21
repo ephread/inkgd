@@ -35,12 +35,6 @@ func _to_string() -> String:
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type: String) -> bool:
-	return type == "VariableAssignment" || super.is_class(type)
-
-func get_class() -> String:
-	return "VariableAssignment"
-
 # (String?, bool) -> InkVariableAssignment
 static func new_with(
 		variable_name: String,

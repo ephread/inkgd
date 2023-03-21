@@ -75,12 +75,6 @@ static func retain_list_origins_for_assignment(old_value, new_value):
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type):
-	return type == "ListValue" || super.is_class(type)
-
-func get_class():
-	return "ListValue"
-
 static func new_with(list):
 	var value = InkListValue.new()
 	value._init_with_list(list)

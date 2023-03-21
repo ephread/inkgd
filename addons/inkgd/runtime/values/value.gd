@@ -87,12 +87,6 @@ func _to_string() -> String:
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type) -> bool:
-	return type == "Value" || super.is_class(type)
-
-func get_class() -> String:
-	return "Value"
-
 static func new_with(val) -> InkValue:
 	var value = InkValue.new()
 	value._init_with(val)

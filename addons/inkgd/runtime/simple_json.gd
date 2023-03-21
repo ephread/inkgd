@@ -289,15 +289,6 @@ class Reader extends InkBase:
 
 	var _root_object # Variant
 
-	# ######################################################################## #
-	# GDScript extra methods
-	# ######################################################################## #
-
-	func is_class(type: String) -> bool:
-		return type == "InkSimpleJSON.Reader" || super.is_class(type)
-
-	func get_class() -> String:
-		return "InkSimpleJSON.Reader"
 
 class Writer extends InkBase:
 	# (String) -> Writer
@@ -564,16 +555,6 @@ class Writer extends InkBase:
 
 	var _state_stack: Array = [] # Array<StateElement>
 	var _writer: InkStringWriter
-
-	# ######################################################################## #
-	# GDScript extra methods
-	# ######################################################################## #
-
-	func is_class(type: String) -> bool:
-		return type == "InkSimpleJSON.Writer" || super.is_class(type)
-
-	func get_class() -> String:
-		return "InkSimpleJSON.Writer"
 
 
 class JsonError:

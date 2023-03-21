@@ -302,14 +302,3 @@ func _append_indentation(string: String, indentation: int) -> String:
 		i += 1
 
 	return string
-
-
-# ############################################################################ #
-# GDScript extra methods
-# ############################################################################ #
-
-func is_class(type: String) -> bool:
-	return type == "InkContainer" || super.is_class(type)
-
-func get_class() -> String:
-	return "InkContainer"

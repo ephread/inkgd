@@ -57,12 +57,6 @@ func copy():
 # GDScript extra methods
 # ######################################################################## #
 
-func is_class(type):
-	return type == "VariablePointerValue" || super.is_class(type)
-
-func get_class():
-	return "VariablePointerValue"
-
 static func new_with_context(variable_name, context_index = -1):
 	var value = InkVariablePointerValue.new()
 	value._init_with_context(variable_name, context_index)

@@ -54,13 +54,3 @@ func _to_string() -> String:
 	else:
 		var path_str = path_string_for_count
 		return "read_count(%s)" % path_str
-
-# ############################################################################ #
-# GDScript extra methods
-# ############################################################################ #
-
-func is_class(type: String) -> bool:
-	return type == "VariableReference" || super.is_class(type)
-
-func get_class() -> String:
-	return "VariableReference"

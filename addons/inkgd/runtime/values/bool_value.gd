@@ -50,12 +50,6 @@ func _to_string() -> String:
 # GDScript extra methods
 # ######################################################################## #
 
-func is_class(type):
-	return type == "BoolValue" || super.is_class(type)
-
-func get_class():
-	return "BoolValue"
-
 static func new_with(val):
 	var value = InkBoolValue.new()
 	value._init_with(val)

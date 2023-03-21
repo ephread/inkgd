@@ -1844,18 +1844,6 @@ var _async_saving: bool = false
 # Profiler?
 var _profiler = null
 
-# ############################################################################ #
-# GDScript extra methods
-# ############################################################################ #
-
-func is_class(type: String) -> bool:
-	return type == "Story" || super.is_class(type)
-
-
-func get_class() -> String:
-	return "Story"
-
-
 func connect_exception(target: Object, method: String, binds = [], flags = 0) -> int:
 	var runtime = _get_runtime()
 	if runtime == null:

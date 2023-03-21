@@ -86,11 +86,5 @@ var _item_name_to_values: Dictionary # Dictionary<String, int>
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type: String) -> bool:
-	return type == "InkListDefinition" || super.is_class(type)
-
-func get_class() -> String:
-	return "InkListDefinition"
-
 func _to_string() -> String:
 	return "[InkListDefinition \"%s\"]" % get_name()

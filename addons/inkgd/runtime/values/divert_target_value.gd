@@ -48,12 +48,6 @@ func _to_string() -> String:
 # GDScript extra methods
 # ######################################################################## #
 
-func is_class(type):
-	return type == "DivertTargetValue" || super.is_class(type)
-
-func get_class():
-	return "DivertTargetValue"
-
 static func new_with(val):
 	var value = InkDivertTargetValue.new()
 	value._init_with(val)

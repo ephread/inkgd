@@ -306,12 +306,6 @@ var _operation_funcs: Dictionary = {}
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type):
-	return type == "NativeFunctionCall" || super.is_class(type)
-
-func get_class():
-	return "NativeFunctionCall"
-
 var _static_native_function_call: InkStaticNativeFunctionCall:
 	get:
 		return _weak_static_native_function_call.get_ref()

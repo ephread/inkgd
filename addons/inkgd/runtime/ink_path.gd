@@ -58,7 +58,7 @@ class Component extends InkBase:
 	# (Component) -> bool
 	func equals(other_comp):
 		# Simple test to make sure the object is of the right type.
-		if !(other_comp is Object && other_comp.is_class("InkPath.Component")): return false
+		if !(other_comp is Object && other_comp is InkPath.Component): return false
 
 		if other_comp.is_index == is_index:
 			if is_index:
@@ -67,16 +67,6 @@ class Component extends InkBase:
 				return name == other_comp.name
 
 		return false
-
-	# ######################################################################## #
-	# GDScript extra methods
-	# ######################################################################## #
-
-	func is_class(type):
-		return type == "InkPath.Component" || super.is_class(type)
-
-	func get_class():
-		return "InkPath.Component"
 
 # ############################################################################ #
 
@@ -216,7 +206,7 @@ func _to_string() -> String:
 # (Component) -> bool
 func equals(other_path):
 	# Simple test to make sure the object is of the right type.
-	if !(other_path is Object && other_path.is_class("InkPath")): return false
+	if !(other_path is Object && other_path is InkPath): return false
 
 	if other_path._components.size() != _components.size():
 		return false
@@ -246,13 +236,3 @@ static func new_with_components_string(components_string):
 	var path = InkPath.new()
 	path._init_with_components_string(components_string)
 	return path
-
-# ############################################################################ #
-# GDScript extra methods
-# ############################################################################ #
-
-func is_class(type):
-	return type == "InkPath" || super.is_class(type)
-
-func get_class():
-	return "InkPath"

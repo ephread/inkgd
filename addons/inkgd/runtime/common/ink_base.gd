@@ -17,14 +17,3 @@ class_name InkBase
 
 func equals(ink_base) -> bool:
 	return false
-
-
-# ############################################################################ #
-# GDScript extra methods
-# ############################################################################ #
-
-func is_class(type: String) -> bool:
-	return type == "InkBase" || super.is_class(type)
-
-func get_class() -> String:
-	return "InkBase"

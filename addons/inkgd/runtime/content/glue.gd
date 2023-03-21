@@ -15,13 +15,3 @@ class_name InkGlue
 
 func _to_string() -> String:
 	return "Glue"
-
-# ############################################################################ #
-# GDScript extra methods
-# ############################################################################ #
-
-func is_class(type: String) -> bool:
-	return type == "Glue" || super.is_class(type)
-
-func get_class() -> String:
-	return "Glue"

@@ -31,13 +31,3 @@ func get_correct_obj():
 var container: get = get_container # Container
 func get_container():
 	return obj as InkContainer
-
-# ############################################################################ #
-# GDScript extra methods
-# ############################################################################ #
-
-func is_class(type: String) -> bool:
-	return type == "SearchResult" || super.is_class(type)
-
-func get_class() -> String:
-	return "SearchResult"

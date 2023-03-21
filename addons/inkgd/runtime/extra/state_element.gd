@@ -38,13 +38,3 @@ var child_count: int = 0
 
 func _init(type: int):
 	self.type = type
-
-# ############################################################################ #
-# GDScript extra methods
-# ############################################################################ #
-
-func is_class(type) -> bool:
-	return type == "StateElement" || super.is_class(type)
-
-func get_class() -> String:
-	return "StateElement"

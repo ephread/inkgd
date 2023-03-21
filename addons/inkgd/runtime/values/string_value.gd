@@ -61,12 +61,6 @@ func cast(new_type, metadata = null):
 # GDScript extra methods
 # ######################################################################## #
 
-func is_class(type):
-	return type == "StringValue" || super.is_class(type)
-
-func get_class():
-	return "StringValue"
-
 func _sanitize_value():
 	is_newline = (value == "\n")
 	is_inline_whitespace = true

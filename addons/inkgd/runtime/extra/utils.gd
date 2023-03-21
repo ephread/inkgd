@@ -70,7 +70,7 @@ static func as_INamedContent_or_null(variant):
 
 static func are_of_same_type(object1, object2) -> bool:
 	if (object1 is Object) && (object2 is Object):
-		return object1.get_class() == object2.get_class()
+		return object1.get_script() == object2.get_script()
 
 	return typeof(object1) == typeof(object2)
 

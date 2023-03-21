@@ -323,16 +323,6 @@ var _changed_variables_for_batch_obs: InkStringSet = null
 var _list_defs_origin: InkListDefinitionsOrigin
 
 # ############################################################################ #
-# GDScript extra methods
-# ############################################################################ #
-
-func is_class(type: String) -> bool:
-	return type == "VariableState" || super.is_class(type)
-
-func get_class() -> String:
-	return "VariableState"
-
-# ############################################################################ #
 # Static Properties
 # ############################################################################ #
 

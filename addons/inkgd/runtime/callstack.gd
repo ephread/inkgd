@@ -46,16 +46,6 @@ class Element extends InkBase:
 		copy.function_start_in_ouput_stream = function_start_in_ouput_stream
 		return copy
 
-	# ######################################################################## #
-	# GDScript extra methods
-	# ######################################################################## #
-
-	func is_class(type):
-		return type == "CallStack.Element" || super.is_class(type)
-
-	func get_class():
-		return "CallStack.Element"
-
 class InkThread extends InkBase:
 	
 	var callstack = null # Array<Element>
@@ -162,16 +152,6 @@ class InkThread extends InkBase:
 		writer.write_object_end()
 
 	# ######################################################################## #
-	# GDScript extra methods
-	# ######################################################################## #
-
-	func is_class(type):
-		return type == "CallStack.InkThread" || super.is_class(type)
-
-	func get_class():
-		return "CallStack.InkThread"
-
-	# ######################################################################## #
 
 	static func new_with(jthread_obj, story_context):
 		var thread = InkThread.new()
@@ -234,11 +214,11 @@ func get_can_pop():
 
 # (InkStory | CallStack) -> CallStack
 func _init(story_context_or_to_copy):
-	if story_context_or_to_copy.is_class("Story"):
+	if story_context_or_to_copy is InkStory:
 		var story_context = story_context_or_to_copy
 		_start_of_root = InkPointer.start_of(story_context.root_content_container)
 		reset()
-	elif story_context_or_to_copy.is_class("CallStack"):
+	elif story_context_or_to_copy is InkCallStack:
 		var to_copy = story_context_or_to_copy
 		_threads = []
 		for other_thread in to_copy._threads:
@@ -411,16 +391,6 @@ func get_callstack_trace():
 var _threads = null # Array<InkThread>
 var _thread_counter = 0 # int
 var _start_of_root = InkPointer.new_null() # InkPointer
-
-# ############################################################################ #
-# GDScript extra methods
-# ############################################################################ #
-
-func is_class(type):
-	return type == "CallStack" || super.is_class(type)
-
-func get_class():
-	return "CallStack"
 
 # C# Actions & Delegates ##################################################### #
 
