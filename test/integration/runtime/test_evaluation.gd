@@ -12,7 +12,7 @@ extends "res://test/integration/runtime/test_base.gd"
 
 func test_arithmetic():
 	var story = InkStory.new(load_file("arithmetic"))
-	assert_eq(story.continue_maximally(), "36\n2\n3\n2\n2.333333\n8\n8\n")
+	assert_eq(story.continue_maximally(), "36\n2\n3\n2\n2.33333333333333\n8\n8\n")
 
 func test_basic_string_literals():
 	var story = InkStory.new(load_file("basic_string_literals"))

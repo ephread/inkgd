@@ -13,7 +13,7 @@ extends "res://test/integration/runtime/test_base.gd"
 func test_floor_ceiling_and_casts():
 	var story = InkStory.new(load_file("floor_ceiling_and_casts"))
 
-	assert_eq(story.continue_maximally(), "1\n1\n2\n0.666667\n0\n1\n")
+	assert_eq(story.continue_maximally(), "1\n1\n2\n0.66666666666667\n0\n1\n")
 
 func test_read_count_across_callstack():
 	var story = InkStory.new(load_file("read_count_across_callstack"))
