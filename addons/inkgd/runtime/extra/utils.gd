@@ -48,18 +48,6 @@ static func __assert__(condition: bool, message = "") -> void:
 # Type Assertion
 # ############################################################################ #
 
-static func cast(variant, name_of_class: String):
-	if is_ink_class(variant, name_of_class):
-		return variant
-	else:
-		push_error(
-				"Original implementation threw a RuntimeException here, because of a " +
-				"cast issue. Undefined behaviors should be expected."
-		)
-
-		assert(false)
-		return null
-
 static func as_INamedContent_or_null(variant):
 	var properties = variant.get_property_list()
 
@@ -79,9 +67,6 @@ static func as_INamedContent_or_null(variant):
 				return variant
 
 	return null
-
-static func is_ink_class(object, name_of_class: String) -> bool:
-	return (object is Object) && object.is_class(name_of_class)
 
 static func are_of_same_type(object1, object2) -> bool:
 	if (object1 is Object) && (object2 is Object):

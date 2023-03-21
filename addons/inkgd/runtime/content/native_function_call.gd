@@ -179,8 +179,8 @@ func call_binary_list_operation(parameters: Array, metadata) -> InkValue:
 
 # (Array<InkObject>) -> Value
 func call_list_increment_operation(list_int_params: Array) -> InkValue:
-	var list_val: InkListValue = InkUtils.cast(list_int_params[0], "ListValue")
-	var int_val: InkIntValue = InkUtils.cast(list_int_params [1], "IntValue")
+	var list_val: InkListValue = list_int_params[0]
+	var int_val: InkIntValue = list_int_params[1]
 
 	var result_raw_list = InkList.new()
 

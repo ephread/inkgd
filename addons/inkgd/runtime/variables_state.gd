@@ -136,15 +136,15 @@ func runtime_objects_equal(obj1: InkObject, obj2: InkObject) -> bool:
 
 	var bool_val: InkBoolValue = obj1 as InkBoolValue
 	if bool_val != null:
-		return bool_val.value == InkUtils.cast(obj2, "BoolValue").value
+		return bool_val.value == obj2.value
 
 	var int_val: InkIntValue = obj1 as InkIntValue
 	if int_val != null:
-		return int_val.value == InkUtils.cast(obj2, "IntValue").value
+		return int_val.value == obj2.value
 
 	var float_val: InkFloatValue = obj1 as InkFloatValue
 	if float_val != null:
-		return float_val.value == InkUtils.cast(obj2, "FloatValue").value
+		return float_val.value == obj2.value
 
 	var val1: InkValue = obj1 as InkValue
 	var val2: InkValue = obj2 as InkValue
