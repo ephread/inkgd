@@ -339,16 +339,12 @@ func _disable_command_strip(disabled: bool):
 
 func _connect_signals():
 	if configuration != null:
-		var is_connected = configuration.is_connected(
-				"story_configuration_changed",
-				_configuration_changed
+		var is_connected = configuration.story_configuration_changed.is_connected(
+			_configuration_changed
 		)
 
 		if !is_connected:
-			configuration.connect(
-					"story_configuration_changed",
-					_configuration_changed
-			)
+			configuration.story_configuration_changed.connect(_configuration_changed)
 
 	_ink_player.loaded.connect(_story_loaded)
 	_pick_story_button.item_selected.connect(_pick_story_button_selected)

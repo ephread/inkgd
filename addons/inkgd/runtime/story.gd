@@ -1505,7 +1505,7 @@ func remove_variable_observer(object = null, method_name = null, specific_variab
 		var keys_to_remove = []
 		for observer_key in _variable_observers:
 			var observer = _variable_observers[observer_key]
-			if observer.is_connected("variable_changed", Callable(object, method_name)):
+			if observer.variable_changed.is_connected(Callable(object, method_name)):
 				observer.variable_changed.disconnect(Callable(object, method_name))
 
 			if observer.get_signal_connection_list("variable_changed").is_empty():
@@ -1846,7 +1846,7 @@ func connect_exception(target: Object, method: String, binds = [], flags = 0) ->
 	if runtime == null:
 		return ERR_UNAVAILABLE
 
-	if runtime.is_connected("exception_raised", Callable(target, method)):
+	if runtime.exception_raised.is_connected(Callable(target, method)):
 		return OK
 
 	return runtime.exception_raised.connect(Callable(target, method).bind(binds), flags)
