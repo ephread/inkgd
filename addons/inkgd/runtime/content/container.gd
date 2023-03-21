@@ -121,7 +121,7 @@ func _init():
 	named_content = {} # Dictionary<string, INamedContent>
 
 func add_content(content_obj_or_content_list) -> void:
-	if InkUtils.is_ink_class(content_obj_or_content_list, "InkObject"):
+	if content_obj_or_content_list is InkObject:
 		var content_obj = content_obj_or_content_list
 		content.append(content_obj)
 
@@ -244,11 +244,11 @@ func build_string_of_hierarchy(
 	while i < content.size():
 		var obj = content[i]
 
-		if InkUtils.is_ink_class(obj, "InkContainer"):
+		if obj is InkContainer:
 			existing_hierarchy = obj.build_string_of_hierarchy(existing_hierarchy, indentation, pointed_obj)
 		else:
 			existing_hierarchy = _append_indentation(existing_hierarchy, indentation)
-			if InkUtils.is_ink_class(obj, "StringValue"):
+			if obj is InkStringValue:
 				existing_hierarchy += "\""
 				existing_hierarchy += obj._to_string().replace("\n", "\\n")
 				existing_hierarchy += "\""
@@ -258,7 +258,7 @@ func build_string_of_hierarchy(
 		if i != content.size() - 1:
 			existing_hierarchy += ","
 
-		if !InkUtils.is_ink_class(obj, "InkContainer") && obj == pointed_obj:
+		if !obj is InkContainer && obj == pointed_obj:
 			existing_hierarchy += "  <---"
 
 		existing_hierarchy += "\n"
@@ -279,7 +279,7 @@ func build_string_of_hierarchy(
 
 		for object_key in only_named:
 			var value = only_named[object_key]
-			InkUtils.__assert__(InkUtils.is_ink_class(value, "InkContainer"), "Can only print out named Containers")
+			InkUtils.__assert__(value is InkContainer, "Can only print out named Containers")
 			var container = value
 			existing_hierarchy = container.build_string_of_hierarchy(existing_hierarchy, indentation, pointed_obj)
 			existing_hierarchy += "\n"

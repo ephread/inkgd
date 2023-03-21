@@ -751,9 +751,9 @@ func remove_existing_glue() -> void:
 	var i = output_stream.size() - 1
 	while (i >= 0):
 		var c = output_stream[i]
-		if InkUtils.is_ink_class(c, "Glue"):
+		if c is InkGlue:
 			output_stream.remove_at(i)
-		elif InkUtils.is_ink_class(c, "ControlCommand"):
+		elif c is InkControlCommand:
 			break
 
 		i -= 1
@@ -767,7 +767,7 @@ func get_output_stream_ends_in_newline() -> bool:
 		var i = output_stream.size() - 1
 		while (i >= 0):
 			var obj = output_stream[i]
-			if InkUtils.is_ink_class(obj, "ControlCommand"):
+			if obj is InkControlCommand:
 				break
 			var text = output_stream[i] as InkStringValue
 			if text:
@@ -784,7 +784,7 @@ func get_output_stream_ends_in_newline() -> bool:
 var output_stream_contains_content: bool: get = get_output_stream_contains_content
 func get_output_stream_contains_content() -> bool:
 	for content in output_stream:
-		if InkUtils.is_ink_class(content, "StringValue"):
+		if content is InkStringValue:
 			return true
 
 	return false
@@ -973,7 +973,7 @@ func complete_function_evaluation_from_game():
 	pop_callstack(PushPopType.FUNCTION_EVALUATION_FROM_GAME)
 
 	if returned_obj:
-		if InkUtils.is_ink_class(returned_obj, "Void"):
+		if returned_obj is InkVoid:
 			return null
 
 		var return_val = returned_obj as InkValue

@@ -618,7 +618,7 @@ func step() -> void:
 		current_content_obj = null
 		should_add_to_stream = false
 
-	if InkUtils.is_ink_class(current_content_obj, "InkContainer"):
+	if current_content_obj is InkContainer:
 		should_add_to_stream = false
 
 	if should_add_to_stream:
@@ -726,10 +726,10 @@ func process_choice(choice_point: InkChoicePoint) -> InkChoice:
 
 func is_truthy(obj: InkObject) -> bool:
 	var truthy = false
-	if InkUtils.is_ink_class(obj, "Value"):
+	if obj is InkValue:
 		var val = obj
 
-		if InkUtils.is_ink_class(obj, "DivertTargetValue"):
+		if obj is InkDivertTargetValue:
 			var div_target = val
 			error(str("Shouldn't use a divert target (to ", div_target.target_path._to_string(),
 					") as a conditional value. Did you intend a function call 'likeThis()'",
@@ -745,7 +745,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 	if (content_obj == null):
 		return false
 
-	if InkUtils.is_ink_class(content_obj, "Divert"):
+	if content_obj is InkDivert:
 		var current_divert = content_obj
 
 		if current_divert.is_conditional:
@@ -762,7 +762,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 				error(str("Tried to divert using a target from a variable that could not be found (",
 						var_name, ")"))
 				return false
-			elif !InkUtils.is_ink_class(var_contents, "DivertTargetValue"):
+			elif !var_contents is InkDivertTargetValue:
 				var int_content = var_contents as InkIntValue
 
 				var error_message = str("Tried to divert to a target from a variable,",
@@ -801,7 +801,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 				return false
 
 		return true
-	elif InkUtils.is_ink_class(content_obj, "ControlCommand"):
+	elif content_obj is InkControlCommand:
 		var eval_command = content_obj
 
 		match eval_command.command_type:
@@ -849,7 +849,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 					override_tunnel_return_target = popped as InkDivertTargetValue
 					if override_tunnel_return_target == null:
 						__assert__(
-								InkUtils.is_ink_class(popped, "Void"),
+								popped is InkVoid,
 								"Expected void if ->-> doesn't override target"
 						)
 
@@ -897,7 +897,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 						command.command_type == InkControlCommand.CommandType.BEGIN_STRING):
 						break
 
-					if InkUtils.is_ink_class(obj, "StringValue"):
+					if obj is InkStringValue:
 						content_stack_for_string.push_front(obj)
 
 					i -= 1
@@ -920,9 +920,9 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 
 			InkControlCommand.CommandType.TURNS_SINCE, InkControlCommand.CommandType.READ_COUNT:
 				var target = state.pop_evaluation_stack()
-				if !InkUtils.is_ink_class(target, "DivertTargetValue"):
+				if !target is InkDivertTargetValue:
 					var extra_note = ""
-					if InkUtils.is_ink_class(target, "IntValue"):
+					if target is InkIntValue:
 						extra_note = ". Did you accidentally pass a read count ('knot_name') instead of a target ('-> knot_name')?"
 					error(str("TURNS_SINCE expected a divert target (knot, stitch, label name), but saw ",
 							target, extra_note))
@@ -1525,7 +1525,7 @@ func variable_state_did_change_event(variable_name: String, new_value_obj: InkOb
 	if _variable_observers.has(variable_name):
 		var observer = _variable_observers[variable_name]
 
-		if !InkUtils.is_ink_class(new_value_obj, "Value"):
+		if !new_value_obj is InkValue:
 			InkUtils.throw_exception("Tried to get the value of a variable that isn't a standard type")
 			return
 
@@ -1549,7 +1549,7 @@ func tags_at_start_of_flow_container_with_path_string(path_string: String):
 	var flow_container = content_at_path(path).container
 	while (true):
 		var first_content = flow_container.content[0]
-		if InkUtils.is_ink_class(first_content, "InkContainer"):
+		if first_content is InkContainer:
 			flow_container = first_content
 		else: break
 

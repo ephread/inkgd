@@ -64,7 +64,7 @@ func call_with_parameters(parameters: Array, metadata: StoryErrorMetadata) -> In
 
 	var has_list = false
 	for p in parameters:
-		if InkUtils.is_ink_class(p, "Void"):
+		if p is InkVoid:
 			InkUtils.throw_story_exception(
 					"Attempting to perform operation on a void value. Did you forget to " +
 					"'return' a value from a function you called here?",
@@ -72,7 +72,7 @@ func call_with_parameters(parameters: Array, metadata: StoryErrorMetadata) -> In
 					metadata
 			)
 			return null
-		if InkUtils.is_ink_class(p, "ListValue"):
+		if p is InkListValue:
 			has_list = true
 
 	if parameters.size() == 2 && has_list:
@@ -143,8 +143,8 @@ func call_coerced(parameters_of_single_type: Array, metadata: StoryErrorMetadata
 # is raised. For more information, see story.gd.
 func call_binary_list_operation(parameters: Array, metadata) -> InkValue:
 	if ((name == "+" || name == "-") &&
-		InkUtils.is_ink_class(parameters[0], "ListValue") &&
-		InkUtils.is_ink_class(parameters [1], "IntValue")
+		parameters[0] is InkListValue &&
+		parameters [1] is InkIntValue
 	):
 		return call_list_increment_operation(parameters)
 

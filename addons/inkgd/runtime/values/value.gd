@@ -62,9 +62,9 @@ static func create(val) -> InkValue:
 		return InkFloatValue.new_with(val)
 	elif val is String:
 		return InkStringValue.new_with(val)
-	elif InkUtils.is_ink_class(val, "InkPath"):
+	elif val is InkPath:
 		return InkDivertTargetValue.new_with(val)
-	elif InkUtils.is_ink_class(val, "InkList"):
+	elif val is InkList:
 		return InkListValue.new_with(val)
 
 	return null

@@ -181,7 +181,7 @@ static func join(joiner: String, array: Array) -> String:
 	var i = 0
 	for element in array:
 		var element_string
-		if is_ink_class(element, "InkBase"):
+		if element is InkBase:
 			element_string = element._to_string()
 		else:
 			element_string = str(element)

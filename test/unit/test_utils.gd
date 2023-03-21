@@ -10,9 +10,6 @@ extends "res://addons/gut/test.gd"
 
 # ############################################################################ #
 
-func test_is_ink_class():
-	assert_true(InkUtils.is_ink_class(InkBaseObject.new("Ink"), "InkBaseObject"))
-
 func test_valid_as_INamedContent():
 	var name_content_like = INamedContentLike.new()
 
