@@ -39,7 +39,7 @@ window/stretch/aspect="expand"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/inkgd/plugin.cfg")
+enabled=PackedStringArray("res://addons/inkgd/plugin.cfg", "res://addons/gut/plugin.cfg")
 
 [inkgd]
 

@@ -1,5 +1,6 @@
 {
  "background_color": "ff262626",
+ "compact_mode": false,
  "config_file": "res://.gutconfig.json",
  "dirs": [
   "res://test/unit",
@@ -11,6 +12,7 @@
  "font_color": "ffcccccc",
  "font_name": "AnonymousPro",
  "font_size": 30,
+ "gut_on_top": true,
  "hide_orphans": false,
  "ignore_pause": false,
  "include_subdirs": false,
@@ -19,17 +21,24 @@
  "junit_xml_timestamp": false,
  "log_level": 1,
  "opacity": 100,
+ "paint_after": 0.1,
+ "panel_options": {
+  "font_name": "CourierPrime",
+  "font_size": 30,
+  "hide_output_text": false,
+  "hide_result_tree": false,
+  "hide_settings": false,
+  "use_colors": false
+ },
  "post_run_script": "",
  "pre_run_script": "",
  "prefix": "test_",
  "selected": null,
- "should_exit": true,
+ "should_exit": false,
  "should_exit_on_success": true,
  "should_maximize": false,
  "show_help": false,
  "suffix": ".gd",
- "tests": [
-
- ],
+ "tests": [],
  "unit_test_name": null
 }

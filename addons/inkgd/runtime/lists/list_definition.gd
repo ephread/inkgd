@@ -64,12 +64,12 @@ func try_get_item_with_value(val: int) -> InkTryGetResult:
 
 # (InkListItem) -> { result: InkListItem, exists: bool }
 func try_get_value_for_item(item: InkListItem) -> InkTryGetResult:
-	if !item.item_name:
+	if item == null:
 		return InkTryGetResult.new(false, 0)
 
 	var value = _item_name_to_values.get(item.item_name)
 
-	if (!value):
+	if value == null:
 		InkTryGetResult.new(false, 0)
 
 	return InkTryGetResult.new(true, value)

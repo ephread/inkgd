@@ -500,7 +500,7 @@ func get_state() -> String:
 		_push_null_story_error()
 		return ""
 
-	return _story.state.JSON.new().stringify()
+	return _story.state.to_json()
 
 
 ## If you have a large story, and saving state to JSON takes too long for your
@@ -514,7 +514,7 @@ func copy_state_for_background_thread_save() -> String:
 		_push_null_story_error()
 		return ""
 
-	return _story.copy_state_for_background_thread_save().JSON.new().stringify()
+	return _story.copy_state_for_background_thread_save().to_json()
 
 
 ## See `copy_state_for_background_thread_save`. This method releases the

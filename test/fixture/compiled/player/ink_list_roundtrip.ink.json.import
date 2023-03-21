@@ -1,0 +1,15 @@
+[remap]
+
+importer="inkgd.ink.json"
+type="Resource"
+uid="uid://dw6rjwwq6vfjg"
+path="res://.godot/imported/ink_list_roundtrip.ink.json-05ad298627a7834232efa33357f8a1be.res"
+
+[deps]
+
+source_file="res://test/fixture/compiled/player/ink_list_roundtrip.ink.json"
+dest_files=["res://.godot/imported/ink_list_roundtrip.ink.json-05ad298627a7834232efa33357f8a1be.res"]
+
+[params]
+
+compress=true

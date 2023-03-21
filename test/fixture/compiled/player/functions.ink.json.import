@@ -1,0 +1,15 @@
+[remap]
+
+importer="inkgd.ink.json"
+type="Resource"
+uid="uid://chsx4xleq3asi"
+path="res://.godot/imported/functions.ink.json-f2a16cc9d0ae4be051135d81ccabe138.res"
+
+[deps]
+
+source_file="res://test/fixture/compiled/player/functions.ink.json"
+dest_files=["res://.godot/imported/functions.ink.json-f2a16cc9d0ae4be051135d81ccabe138.res"]
+
+[params]
+
+compress=true

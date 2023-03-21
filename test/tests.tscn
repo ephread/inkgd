@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://addons/gut/plugin_control.gd" type="Script" id=1]
+
+[node name="Gut" type="Control"]
+offset_right = 1920.0
+offset_bottom = 1080.0
+custom_minimum_size = Vector2( 740, 250 )
+size_flags_horizontal = 3
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+_font_size = 30
+_directory1 = "res://test/unit"
+_directory2 = "res://test/integration/runtime"
+_directory3 = "res://test/integration/player"

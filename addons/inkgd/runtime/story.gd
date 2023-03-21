@@ -1103,6 +1103,8 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 	elif InkUtils.as_or_null(content_obj, "VariableAssignment"):
 		var var_ass = content_obj
 		var assigned_val = state.pop_evaluation_stack()
+		if assigned_val is Array:
+			assigned_val = assigned_val.front()
 
 		state.variables_state.assign(var_ass, assigned_val)
 
@@ -1501,7 +1503,7 @@ func remove_variable_observer(object = null, method_name = null, specific_variab
 			else:
 				var connections = observer.get_signal_connection_list("variable_changed");
 				for connection in connections:
-					observer.disconnect(connection["signal"], Callable(connection.target, connection.method))
+					observer.disconnect(connection["signal"].get_name(), connection.callable)
 
 				_variable_observers.erase(specific_variable_name)
 
@@ -1770,7 +1772,7 @@ func get_current_debug_metadata() -> InkDebugMetadata:
 	var dm # DebugMetadata
 
 	var pointer = state.current_pointer
-	if !pointer.is_null:
+	if !pointer.is_null && pointer.resolve():
 		dm = pointer.resolve().debug_metadata
 		if dm != null:
 			return dm
