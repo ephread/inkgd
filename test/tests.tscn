@@ -1,17 +1,12 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://hvyvhg177tf4"]
 
-[ext_resource path="res://addons/gut/plugin_control.gd" type="Script" id=1]
+[ext_resource type="Script" path="res://addons/gut/gut_plugin.gd" id="1_36cmd"]
 
 [node name="Gut" type="Control"]
+custom_minimum_size = Vector2(740, 250)
+layout_mode = 3
+anchors_preset = 0
 offset_right = 1920.0
 offset_bottom = 1080.0
-custom_minimum_size = Vector2( 740, 250 )
 size_flags_horizontal = 3
-script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-_font_size = 30
-_directory1 = "res://test/unit"
-_directory2 = "res://test/integration/runtime"
-_directory3 = "res://test/integration/player"
+script = ExtResource("1_36cmd")

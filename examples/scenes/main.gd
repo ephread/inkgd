@@ -19,4 +19,4 @@ func _switch_to_performance():
 	get_tree().change_scene_to_file("res://test/performance/performance_test.tscn")
 
 func _switch_to_gut():
-	get_tree().change_scene_to_file("res://test/tests.tscn")
+	get_tree().change_scene_to_file("res://addons/gut/gui/GutRunner.tscn")
