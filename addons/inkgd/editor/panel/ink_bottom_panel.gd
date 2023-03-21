@@ -74,7 +74,7 @@ func _ready():
 	_tab_container.add_child(_preview_panel)
 	_tab_container.add_child(_configuration_panel)
 
-	_beta_button.connect("pressed", _open_github_issues)
+	_beta_button.pressed.connect(_open_github_issues)
 
 	_set_minimum_panel_size()
 

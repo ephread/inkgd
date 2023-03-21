@@ -274,26 +274,26 @@ func _set_button_icons():
 
 
 func _connect_signals():
-	editor_interface.editor_filesystem.connect("filesystem_changed", _check_runtime_presence)
+	editor_interface.editor_filesystem.filesystem_changed.connect(_check_runtime_presence)
 
-	_test_button.connect("pressed", _test_button_pressed)
-	_use_mono_checkbox.connect("toggled", _use_mono_toggled)
+	_test_button.pressed.connect(_test_button_pressed)
+	_use_mono_checkbox.toggled.connect(_use_mono_toggled)
 
-	_mono_line_edit.connect("text_submitted", _configuration_entered)
-	_executable_line_edit.connect("text_submitted", _configuration_entered)
+	_mono_line_edit.text_submitted.connect(_configuration_entered)
+	_executable_line_edit.text_submitted.connect(_configuration_entered)
 
-	_mono_line_edit.connect("focus_exited", _configuration_focus_exited)
-	_executable_line_edit.connect("focus_exited", _configuration_focus_exited)
+	_mono_line_edit.focus_exited.connect(_configuration_focus_exited)
+	_executable_line_edit.focus_exited.connect(_configuration_focus_exited)
 
-	_mono_dialog_button.connect("pressed", _mono_button_pressed)
-	_executable_dialog_button.connect("pressed", _executable_button_pressed)
+	_mono_dialog_button.pressed.connect(_mono_button_pressed)
+	_executable_dialog_button.pressed.connect(_executable_button_pressed)
 
-	_recompilation_mode_button.connect("item_selected", _recompilation_mode_button_selected)
+	_recompilation_mode_button.item_selected.connect(_recompilation_mode_button_selected)
 
-	_mono_support_documentation_button.connect("pressed", _mono_support_documentation_pressed)
-	_mono_support_refresh_button.connect("pressed", _check_runtime_presence)
+	_mono_support_documentation_button.pressed.connect(_mono_support_documentation_pressed)
+	_mono_support_refresh_button.pressed.connect(_check_runtime_presence)
 
-	_file_dialog.connect("file_selected", _on_file_selected)
+	_file_dialog.file_selected.connect(_on_file_selected)
 
 
 func _can_run_mono():

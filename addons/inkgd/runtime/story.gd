@@ -205,7 +205,7 @@ func reset_state() -> void:
 		return
 
 	_state = InkStoryState.new(self)
-	_state.variables_state.connect("variable_changed", variable_state_did_change_event)
+	_state.variables_state.variable_changed.connect(variable_state_did_change_event)
 
 	reset_globals()
 
@@ -1451,10 +1451,10 @@ func observe_variable(variable_name: String, object, method_name: String) -> voi
 		return
 
 	if _variable_observers.has(variable_name):
-		_variable_observers[variable_name].connect("variable_changed", Callable(object, method_name))
+		_variable_observers[variable_name].variable_changed.connect(Callable(object, method_name))
 	else:
 		var new_observer = VariableObserver.new(variable_name)
-		new_observer.connect("variable_changed", Callable(object, method_name))
+		new_observer.variable_changed.connect(Callable(object, method_name))
 
 		_variable_observers[variable_name] = new_observer
 
@@ -1849,7 +1849,7 @@ func connect_exception(target: Object, method: String, binds = [], flags = 0) ->
 	if runtime.is_connected("exception_raised", Callable(target, method)):
 		return OK
 
-	return runtime.connect("exception_raised", Callable(target, method).bind(binds), flags)
+	return runtime.exception_raised.connect(Callable(target, method).bind(binds), flags)
 
 
 func _enable_story_exception_recording(enable: bool) -> void:

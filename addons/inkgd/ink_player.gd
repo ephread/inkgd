@@ -788,12 +788,12 @@ func _create_and_finalize_story(json_story) -> void:
 
 
 func _finalise_story_creation() -> void:
-	_story.connect("on_error", _on_error)
-	_story.connect("on_did_continue", _on_did_continue)
-	_story.connect("on_make_choice", _on_make_choice)
-	_story.connect("on_evaluate_function", _on_evaluate_function)
-	_story.connect("on_complete_evaluate_function", _on_complete_evaluate_function)
-	_story.connect("on_choose_path_string", _on_choose_path_string)
+	_story.on_error.connect(_on_error)
+	_story.on_did_continue.connect(_on_did_continue)
+	_story.on_make_choice.connect(_on_make_choice)
+	_story.on_evaluate_function.connect(_on_evaluate_function)
+	_story.on_complete_evaluate_function.connect(_on_complete_evaluate_function)
+	_story.on_choose_path_string.connect(_on_choose_path_string)
 
 	var ink_runtime = _ink_runtime.get_ref()
 	if ink_runtime == null:
@@ -814,7 +814,7 @@ func _add_runtime() -> void:
 		_manages_runtime = true
 		runtime = InkRuntime.init(get_tree().root)
 
-	runtime.connect("exception_raised", _exception_raised)
+	runtime.exception_raised.connect(_exception_raised)
 
 	_ink_runtime = weakref(runtime)
 

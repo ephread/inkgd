@@ -134,7 +134,7 @@ func _prompt_choices(choices):
 		_story_vbox_container.add_child(_current_choice_container)
 
 		_current_choice_container.create_choices(choices)
-		_current_choice_container.connect("choice_selected", _choice_selected)
+		_current_choice_container.choice_selected.connect(_choice_selected)
 
 
 func _ended():
@@ -233,13 +233,13 @@ func _remove_loading_overlay():
 
 
 func _connect_signals():
-	_ink_player.connect("loaded", _loaded)
+	_ink_player.loaded.connect(_loaded)
 
 
 func _connect_optional_signals():
-	_ink_player.connect("continued", _continued)
-	_ink_player.connect("prompt_choices", _prompt_choices)
-	_ink_player.connect("ended", _ended)
+	_ink_player.continued.connect(_continued)
+	_ink_player.prompt_choices.connect(_prompt_choices)
+	_ink_player.ended.connect(_ended)
 
-	_ink_player.connect("exception_raised", _exception_raised)
-	_ink_player.connect("error_encountered", _error_encountered)
+	_ink_player.exception_raised.connect(_exception_raised)
+	_ink_player.error_encountered.connect(_error_encountered)

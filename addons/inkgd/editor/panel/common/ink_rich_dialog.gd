@@ -51,7 +51,7 @@ func get_output_text() -> String:
 # ############################################################################ #
 
 func _ready():
-	_accept_button.connect("pressed", _accept_button_pressed)
+	_accept_button.pressed.connect(_accept_button_pressed)
 
 	var font = _get_source_font()
 	if font != null:

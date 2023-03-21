@@ -138,15 +138,15 @@ func _set_button_icons():
 
 
 func _connect_signals():
-	source_file_line_edit.connect("text_submitted", _configuration_entered)
-	source_file_line_edit.connect("focus_exited", _configuration_focus_exited)
+	source_file_line_edit.text_submitted.connect(_configuration_entered)
+	source_file_line_edit.focus_exited.connect(_configuration_focus_exited)
 
-	target_file_line_edit.connect("text_submitted", _configuration_entered)
-	target_file_line_edit.connect("focus_exited", _configuration_focus_exited)
+	target_file_line_edit.text_submitted.connect(_configuration_entered)
+	target_file_line_edit.focus_exited.connect(_configuration_focus_exited)
 
-	source_file_dialog_button.connect("pressed", _source_file_button_pressed)
-	target_file_dialog_button.connect("pressed", _target_file_button_pressed)
-	watched_folder_dialog_button.connect("pressed", _watched_folder_button_pressed)
+	source_file_dialog_button.pressed.connect(_source_file_button_pressed)
+	target_file_dialog_button.pressed.connect(_target_file_button_pressed)
+	watched_folder_dialog_button.pressed.connect(_watched_folder_button_pressed)
 
-	remove_button.connect("pressed", _remove_button_pressed)
-	build_button.connect("pressed", _build_button_pressed)
+	remove_button.pressed.connect(_remove_button_pressed)
+	build_button.pressed.connect(_build_button_pressed)
