@@ -145,7 +145,8 @@ func _handle_generic_exception(
 ) -> void:
 	if OS.is_debug_build():
 		if should_pause_execution:
-			assert(false) #,message)
+			@warning_ignore("assert_always_false")
+			assert(false, message)
 		elif Engine.is_editor_hint():
 			printerr(message)
 			if stack_trace.size() > 0:

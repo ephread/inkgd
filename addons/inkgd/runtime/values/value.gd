@@ -34,7 +34,7 @@ func get_is_truthy() -> bool:
 # ############################################################################ #
 
 # (ValueType) -> ValueType
-func cast(new_type: int) -> InkValue:
+func cast(_new_type: int) -> InkValue:
 	return null
 
 var value_object: Variant:
@@ -68,7 +68,7 @@ static func create(val) -> InkValue:
 	return null
 
 func copy() -> InkValue:
-	return create(value_object)
+	return InkValue.create(value_object)
 
 # (Ink.ValueType) -> StoryException
 func bad_cast_exception_message(target_class) -> String:

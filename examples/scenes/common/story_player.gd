@@ -115,7 +115,7 @@ func _loaded(successfully: bool):
 	_remove_loading_overlay()
 
 
-func _continued(text, tags):
+func _continued(text, _tags):
 	_add_label(text)
 
 	_ink_player.continue_story()

@@ -31,7 +31,7 @@ func pre_step() -> void:
 	pass
 
 # (CallStack) -> void
-func step(callstack: InkCallStack) -> void:
+func step(_callstack: InkCallStack) -> void:
 	pass
 
 # () -> void
@@ -50,8 +50,8 @@ func pre_snapshot() -> void:
 func post_snapshot() -> void:
 	pass
 
-func millisecs(watch: InkStopWatch) -> float:
+func millisecs(_watch: InkStopWatch) -> float:
 	return 0.0
 
-static func format_millisecs(num: float) -> String:
+static func format_millisecs(_num: float) -> String:
 	return ""

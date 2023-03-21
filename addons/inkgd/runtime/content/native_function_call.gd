@@ -221,7 +221,7 @@ func coerce_values_to_single_type(parameters_in: Array, metadata):
 	for obj in parameters_in:
 		var val: InkValue = obj
 		if val.value_type > val_type:
-			val_type = val.value_type
+			val_type = val.value_type as ValueType
 
 		if val.value_type == ValueType.LIST:
 			special_case_list = val as InkListValue

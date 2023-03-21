@@ -95,7 +95,7 @@ func _anonymous_write_property_current_choices(w):
 		Json.write_choice(w, c)
 	w.write_array_end()
 
-func equals(ink_base) -> bool:
+func equals(_ink_base) -> bool:
 	return false
 
 func _to_string() -> String:

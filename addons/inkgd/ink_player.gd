@@ -594,6 +594,7 @@ func load_state_from_file(file: FileAccess):
 # ############################################################################ #
 
 ## Returns the value of variable named 'name' or 'null' if it doesn't exist.
+@warning_ignore("shadowed_variable_base_class")
 func get_variable(name: String):
 	if _story == null:
 		_push_null_story_error()
@@ -603,6 +604,7 @@ func get_variable(name: String):
 
 
 ## Sets the value of variable named 'name'.
+@warning_ignore("shadowed_variable_base_class")
 func set_variable(name: String, value):
 	if _story == null:
 		_push_null_story_error()

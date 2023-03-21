@@ -13,5 +13,5 @@ class_name InkBase
 
 # ############################################################################ #
 
-func equals(ink_base) -> bool:
+func equals(_ink_base) -> bool:
 	return false

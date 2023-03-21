@@ -22,15 +22,17 @@ class_name InkPointer
 # InkContainer
 # Encapsulating container into a weak ref.
 var container: InkContainer: get = get_container, set = set_container
-func set_container(value: InkContainer) -> void:
-	assert(false) #,"Pointer is immutable, cannot set container.")
+func set_container(_value: InkContainer) -> void:
+	@warning_ignore("assert_always_false")
+	assert(false, "Pointer is immutable, cannot set container.")
 func get_container() -> InkContainer:
 	return _container.get_ref()
 var _container: WeakRef = WeakRef.new()
 
 var index: int: get = get_index, set = set_index
-func set_index(value: int):
-	assert(false) #,"Pointer is immutable, cannot set index.")
+func set_index(_value: int):
+	@warning_ignore("assert_always_false")
+	assert(false, "Pointer is immutable, cannot set index.")
 func get_index() -> int:
 	return _index
 var _index: int = 0 # int

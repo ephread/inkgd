@@ -1566,7 +1566,7 @@ func build_string_of_container() -> String:
 	return ""
 
 
-func build_string_of_container_with(container: InkContainer) -> String:
+func build_string_of_container_with(_container: InkContainer) -> String:
 	# TODO: Implement
 	return ""
 
@@ -1910,8 +1910,6 @@ var Json : get = get_Json
 func get_Json():
 	return _Json.get_ref()
 var _Json = WeakRef.new()
-
-var _error_raised_during_step = []
 
 func _initialize_runtime():
 	var ink_runtime = _get_runtime()
