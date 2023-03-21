@@ -1,51 +1,37 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://dkd1tmchvvh8j"]
 
-[ext_resource path="res://addons/inkgd/editor/panel/ink_bottom_panel.gd" type="Script" id=1]
+[ext_resource type="Script" path="res://addons/inkgd/editor/panel/ink_bottom_panel.gd" id="1"]
 
-[node name="Control" type="Control"]
+[node name="InkBottomPanel" type="PanelContainer"]
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1")
 
 [node name="TabContainer" type="TabContainer" parent="."]
-anchor_right = 1.0
-anchor_bottom = 1.0
-custom_minimum_size = Vector2( 0, 428.75 )
+custom_minimum_size = Vector2(0, 428.75)
+layout_mode = 2
 size_flags_vertical = 3
-tab_alignment = 0
 drag_to_rearrange_enabled = true
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
-anchor_right = 1.0
-offset_bottom = 24.0
-clip_contents = true
+[node name="Control" type="Control" parent="."]
+layout_mode = 2
 mouse_filter = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_bottom = 5
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
-[node name="LinkButton" type="LinkButton" parent="MarginContainer"]
-self_modulate = Color( 1, 1, 1, 0.647059 )
-offset_left = 1887.0
+[node name="LinkButton" type="LinkButton" parent="Control"]
+self_modulate = Color(1, 1, 1, 0.647059)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -43.0
 offset_top = 5.0
-offset_right = 1915.0
-offset_bottom = 19.0
-tooltip_text = "Open a new issue on Github to report a problem!"
+offset_right = -8.0
+offset_bottom = 28.0
+grow_horizontal = 0
 size_flags_horizontal = 8
+tooltip_text = "Open a new issue on Github to report a problem!"
 text = "beta"
 underline = 1
-__meta__ = {
-"_edit_use_anchors_": false
-}
