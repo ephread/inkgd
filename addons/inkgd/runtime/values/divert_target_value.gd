@@ -13,7 +13,7 @@ class_name InkDivertTargetValue
 
 # ############################################################################ #
 
-var target_path : get = get_target_path, set = set_target_path # InkPath
+var target_path: InkPath : get = get_target_path, set = set_target_path
 func get_target_path():
 	return value
 func set_target_path(value):

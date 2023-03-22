@@ -100,8 +100,7 @@ func get_path_to_first_leaf_content() -> InkPath:
 
 	return _path_to_first_leaf_content
 
-# InkPath?
-var _path_to_first_leaf_content = null
+var _path_to_first_leaf_content: InkPath = null
 
 # TODO: Make inspectable
 var internal_path_to_first_leaf_content: InkPath: get = get_internal_path_to_first_leaf_content

@@ -27,11 +27,9 @@ var source_path = null
 
 var index: int = 0
 
-# InkPath?
-var target_path = null
+var target_path: InkPath = null
 
-# CallStack.InkThread?
-var thread_at_generation = null
+var thread_at_generation: InkCallStack.InkThread = null
 
 var original_thread_index: int = 0
 

@@ -14,7 +14,7 @@ class_name InkFlow
 # ############################################################################ #
 
 var name # string
-var callstack # InkCallStack
+var callstack: InkCallStack
 var output_stream # Array<InkObject>
 var current_choices # Array<Choice>
 

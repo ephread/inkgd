@@ -26,8 +26,7 @@ func get_path_on_choice() -> InkPath:
 func set_path_on_choice(value: InkPath):
 	_path_on_choice = value
 
-# InkPath?
-var _path_on_choice = null
+var _path_on_choice: InkPath = null
 
 # ############################################################################ #
 

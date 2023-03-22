@@ -20,13 +20,13 @@ class_name InkSearchResult
 
 # ############################################################################ #
 
-var obj = null # InkObject
+var obj: InkObject = null
 var approximate = false # bool
 
-var correct_obj: get = get_correct_obj # InkObject
+var correct_obj: InkObject: get = get_correct_obj
 func get_correct_obj():
 	return null if approximate else obj
 
-var container: get = get_container # Container
+var container: InkContainer: get = get_container
 func get_container():
 	return obj as InkContainer

@@ -37,13 +37,13 @@ func get_debug_metadata():
 func set_debug_metadata(value):
 	_debug_metadata = value
 
-var _debug_metadata = null # InkDebugMetadata
+var _debug_metadata: InkDebugMetadata = null
 
 # ############################################################################ #
 
 # () -> InkDebugMetadata
 var own_debug_metadata : get = get_own_debug_metadata
-func get_own_debug_metadata():
+func get_own_debug_metadata() -> InkDebugMetadata:
 	return _debug_metadata
 
 # ############################################################################ #
@@ -64,7 +64,6 @@ func debug_line_number_of_path(path: InkPath):
 	return null
 
 # TODO: Make inspectable
-# InkPath
 var path: InkPath: get = get_path
 func get_path() -> InkPath:
 	if _path == null:
@@ -90,7 +89,7 @@ func get_path() -> InkPath:
 
 	return _path
 
-var _path = null # InkPath
+var _path: InkPath = null
 
 # (InkPath) -> SearchResult
 func resolve_path(path: InkPath) -> InkSearchResult:

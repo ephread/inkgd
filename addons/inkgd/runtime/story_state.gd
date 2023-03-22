@@ -147,8 +147,7 @@ var current_errors = null
 # Array<String>
 var current_warnings = null
 
-# InkVariablesState
-var variables_state
+var variables_state: InkVariablesState
 
 var callstack: InkCallStack: get = get_callstack
 func get_callstack() -> InkCallStack:

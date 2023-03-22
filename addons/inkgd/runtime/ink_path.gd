@@ -82,7 +82,7 @@ func get_head():
 		return null
 
 # TODO: Make inspectable
-var tail: get = get_tail # InkPath
+var tail: InkPath: get = get_tail
 func get_tail():
 	if _components.size() >= 2:
 		var tail_comps = _components.duplicate()

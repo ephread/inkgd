@@ -19,7 +19,6 @@ extends InkBase
 
 class_name InkPointer
 
-# InkContainer
 # Encapsulating container into a weak ref.
 var container: InkContainer: get = get_container, set = set_container
 func set_container(_value: InkContainer) -> void:
@@ -93,7 +92,7 @@ static func start_of(container: InkContainer) -> InkPointer:
 # ############################################################################ #
 
 # () -> InkPointer
-static func new_null():
+static func new_null() -> InkPointer:
 	return InkPointer.new(null, -1)
 
 # ############################################################################ #

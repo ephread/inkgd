@@ -1062,7 +1062,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 
 				var list = list_val.value
 
-				var new_list = null # InkList
+				var new_list: InkList = null
 
 				if list.size() == 0:
 					new_list = InkList.new()
@@ -1106,7 +1106,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 
 	elif content_obj as InkVariableReference:
 		var var_ref = content_obj
-		var found_value = null # InkValue
+		var found_value: InkValue = null
 
 		if var_ref.path_for_count != null:
 			var container = var_ref.container_for_count
@@ -1282,8 +1282,8 @@ var allow_external_function_fallbacks = false # bool
 
 # (String, int) -> void
 func call_external_function(func_name: String, number_of_arguments: int) -> void:
-	var _func_def = null # ExternalFunctionDef
-	var fallback_function_container = null # InkContainer
+	var _func_def: ExternalFunctionDef = null
+	var fallback_function_container: InkContainer = null
 
 	if _externals.has(func_name):
 		_func_def = _externals.get(func_name)
@@ -1802,8 +1802,7 @@ func get_current_line_number() -> int:
 	return 0
 
 
-# InkContainer?
-var main_content_container : get = get_main_content_container
+var main_content_container: InkContainer : get = get_main_content_container
 func get_main_content_container():
 	if _temporary_evaluation_container:
 		return _temporary_evaluation_container
@@ -1811,10 +1810,8 @@ func get_main_content_container():
 		return _main_content_container
 
 
-# InkContainer?
-var _main_content_container = null
-# ListDefinitionsOrigin?
-var _list_definitions = null
+var _main_content_container: InkContainer = null
+var _list_definitions: InkListDefinitionsOrigin = null
 
 # Dictionary<String, ExternalFunctionDef>?
 var _externals = null
@@ -1823,11 +1820,9 @@ var _variable_observers = null
 
 var _has_validated_externals: bool = false
 
-# InkContainer?
-var _temporary_evaluation_container = null
+var _temporary_evaluation_container: InkContainer = null
 
-# StoryState?
-var _state = null
+var _state: InkStoryState = null
 
 var _async_continue_active: bool = false
 # StoryState?

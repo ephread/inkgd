@@ -16,11 +16,9 @@ class_name InkVariableReference
 # String
 var name = null
 
-# InkPath
-var path_for_count = null
+var path_for_count: InkPath = null
 
-# Container?
-var container_for_count : get = get_container_for_count
+var container_for_count: InkContainer : get = get_container_for_count
 func get_container_for_count():
 	return resolve_path(path_for_count).container
 

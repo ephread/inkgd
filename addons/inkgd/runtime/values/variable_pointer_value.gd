@@ -13,7 +13,7 @@ class_name InkVariablePointerValue
 
 # ############################################################################ #
 
-var variable_name : get = get_variable_name, set = set_variable_name # InkPath
+var variable_name: InkPath : get = get_variable_name, set = set_variable_name
 func get_variable_name():
 	return value
 func set_variable_name(value):
@@ -46,7 +46,7 @@ func cast(new_type, metadata = null):
 	return null
 
 func _to_string() -> String:
-	return "VariablePointerValue(" + variable_name + ")"
+	return "VariablePointerValue(" + str(variable_name) + ")"
 
 func copy():
 	return InkVariablePointerValue.new_with_context(variable_name, context_index)

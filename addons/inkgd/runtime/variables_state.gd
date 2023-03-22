@@ -207,7 +207,7 @@ func get_raw_variable_with_name(name: String, context_index: int) -> InkObject:
 
 # (InkVariablePointerValue) -> InkObject
 func value_at_variable_pointer(pointer: InkVariablePointerValue) -> InkObject:
-	return get_variable_with_name(pointer.variable_name, pointer.context_index)
+	return get_variable_with_name(str(pointer.variable_name), pointer.context_index)
 
 # (InkVariableAssignment, InkObject) -> void
 func assign(var_ass: InkVariableAssignment, value: InkObject) -> void:
@@ -232,7 +232,7 @@ func assign(var_ass: InkVariableAssignment, value: InkObject) -> void:
 			first_time = false
 			existing_pointer = get_raw_variable_with_name(name, context_index) as InkVariablePointerValue
 			if existing_pointer:
-				name = existing_pointer.variable_name
+				name = str(existing_pointer.variable_name)
 				context_index = existing_pointer.context_index
 				set_global = (context_index == 0)
 
@@ -255,7 +255,7 @@ func retain_list_origins_for_assignment(old_value, new_value) -> void:
 
 # (String, InkObject) -> void
 func set_global(variable_name: String, value: InkObject) -> void:
-	var old_value = null # InkObject
+	var old_value: InkObject = null
 
 	# Slightly different structure from upstream, since we can't use
 	# try_get_global in the conditional.
@@ -292,7 +292,7 @@ func resolve_variable_pointer(var_pointer: InkVariablePointerValue) -> InkVariab
 		context_index = get_context_index_of_variable_named(var_pointer.variable_name)
 
 	var value_of_variable_pointed_to = get_raw_variable_with_name(
-		var_pointer.variable_name, context_index
+		str(var_pointer.variable_name), context_index
 	)
 
 	var double_redirection_pointer: InkVariablePointerValue = value_of_variable_pointed_to as InkVariablePointerValue

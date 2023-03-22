@@ -23,7 +23,7 @@ const ValueType = preload("res://addons/inkgd/runtime/values/value_type.gd").Val
 var value # Variant
 
 # ValueType
-var value_type: int: get = get_value_type
+var value_type: ValueType: get = get_value_type
 func get_value_type() -> int:
 	return -1
 
@@ -34,7 +34,7 @@ func get_is_truthy() -> bool:
 # ############################################################################ #
 
 # (ValueType) -> ValueType
-func cast(_new_type: int) -> InkValue:
+func cast(_new_type: ValueType) -> InkValue:
 	return null
 
 var value_object: Variant:
@@ -72,7 +72,7 @@ func copy() -> InkValue:
 
 # (Ink.ValueType) -> StoryException
 func bad_cast_exception_message(target_class) -> String:
-	return "Can't cast " + value_object + " from " + value_type + " to " + target_class
+	return "Can't cast " + str(value_object) + " from " + str(value_type) + " to " + str(target_class)
 
 # () -> String
 func _to_string() -> String:

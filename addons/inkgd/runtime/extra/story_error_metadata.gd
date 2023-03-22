@@ -18,7 +18,7 @@ class_name StoryErrorMetadata
 # Properties
 # ############################################################################ #
 
-var debug_metadata # InkDebugMetadata | null
+var debug_metadata: InkDebugMetadata
 var pointer: InkPointer
 
 # ############################################################################ #

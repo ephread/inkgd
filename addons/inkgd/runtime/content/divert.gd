@@ -32,8 +32,7 @@ func set_target_path(value: InkPath):
 	_target_path = value
 	_target_pointer = InkPointer.new_null()
 
-# InkPath
-var _target_path = null
+var _target_path: InkPath = null
 
 var target_pointer: InkPointer:
 	get = get_target_pointer
