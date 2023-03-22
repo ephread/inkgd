@@ -331,7 +331,7 @@ func get_ordered_items():
 	for key in keys():
 		ordered.append(InkKeyValuePair.new_with_key_value(key, get_item(key)))
 
-	ordered.sort_custom(Callable(KeyValueInkListItemSorter, "sort"))
+	ordered.sort_custom(sort_key_value_ink_list_items)
 	return ordered
 
 func _to_string() -> String:
@@ -369,12 +369,11 @@ static func new_with_single_item(single_item: InkListItem, single_value: int) ->
 	ink_list._init_with_single_item(single_item, single_value)
 	return ink_list
 
-class KeyValueInkListItemSorter:
-	static func sort(a, b):
-		if a.value == b.value:
-			return a.key.origin_name.nocasecmp_to(b.key.origin_name) <= 0
-		else:
-			return a.value <= b.value
+static func sort_key_value_ink_list_items(a, b):
+	if a.value == b.value:
+		return a.key.origin_name.nocasecmp_to(b.key.origin_name) <= 0
+	else:
+		return a.value <= b.value
 
 # ############################################################################ #
 # Originally, this class would inherit Dictionary. This isn't possible in
