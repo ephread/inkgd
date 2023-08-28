@@ -47,6 +47,8 @@ enum CommandType {
 	LIST_FROM_INT,
 	LIST_RANGE,
 	LIST_RANDOM,
+	BEGIN_TAG,
+	END_TAG
 	#----
 	TOTAL_VALUES
 }
@@ -135,6 +137,12 @@ static func list_range() -> InkControlCommand:
 static func list_random() -> InkControlCommand:
 	return ControlCommand().new(CommandType.LIST_RANDOM)
 
+static func begin_tag() -> InkControlCommand:
+	return ControlCommand().new(CommandType.BEGIN_TAG)
+
+static func end_tag() -> InkControlCommand:
+	return ControlCommand().new(CommandType.END_TAG)
+
 # () -> String
 func _to_string() -> String:
 	var command_name: String = ""
@@ -164,6 +172,8 @@ func _to_string() -> String:
 		CommandType.LIST_FROM_INT:          command_name = "LIST_FROM_INT"
 		CommandType.LIST_RANGE:             command_name = "LIST_RANGE"
 		CommandType.LIST_RANDOM:            command_name = "LIST_RANDOM"
+		CommandType.BEGIN_TAG:              command_name = "BEGIN_TAG"
+		CommandType.END_TAG:                command_name = "END_TAG"
 		CommandType.TOTAL_VALUES:           command_name = "TOTAL_VALUES"
 
 	return "Command(%s)" % command_name

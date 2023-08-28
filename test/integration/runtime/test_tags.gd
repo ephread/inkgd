@@ -31,18 +31,37 @@ func test_tags():
 	assert_eq(story.continue(), "")
 	assert_eq(story.current_tags, knot_tag_when_continued_twice_tags)
 
-func test_tags_on_choice():
-	var story = Story.new(load_file("tags_on_choice"))
+
+func test_tags_in_seq():
+	var story = Story.new(load_file("tags_in_seq"))
+
+	assert_eq(story.continue(), "A red sequence.\n")
+	assert_eq(story.current_tags, ["red"])
+
+	assert_eq(story.continue(), "A white sequence.\n")
+	assert_eq(story.current_tags, ["white"])
+
+
+func test_tags_in_choice():
+	var story = Story.new(load_file("tags_in_choice"))
 
 	story.continue()
+	assert_eq(story.current_tags.size(), 0)
+	assert_eq(story.current_choices.size(), 1)
+	assert_eq(story.current_choices[0].tags, ["one", "two"])
+
 	story.choose_choice_index(0)
 
-	var txt = story.continue()
-	var tags = story.current_tags
+	assert_eq(story.continue(), "one three")
+	assert_eq(story.current_tags, ["one", "three"])
 
-	assert_eq(txt, "Hello")
-	assert_eq(tags.size(), 1)
-	assert_eq(tags[0], "hey")
+
+func test_tags_dynamic_content():
+	var story = Story.new(load_file("tags_dynamic_content"))
+
+	assert_eq(story.continue(), "tag\n")
+	assert_eq(story.current_tags, ["pic8red.jpg"])
+
 
 # ############################################################################ #
 

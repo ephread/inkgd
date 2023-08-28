@@ -207,11 +207,7 @@ func get_current_choices() -> Array:
 		_push_null_story_error()
 		return []
 
-	var text_choices = []
-	for choice in _story.current_choices:
-		text_choices.append(choice.text)
-
-	return text_choices
+	return _story.current_choices.duplicate()
 
 
 ## The current tags. Empty is there are no tags for the current line.
@@ -254,6 +250,26 @@ func get_current_flow_name() -> String:
 		return ""
 
 	return _story.state.current_flow_name
+
+
+## The names of all flows currently alive.
+var alive_flow_names: Array setget , get_alive_flow_names
+func get_alive_flow_names() -> Array:
+	if _story == null:
+		_push_null_story_error()
+		return []
+
+	return _story.alive_flow_names
+
+
+## `true` if the current flow is the default flow.
+var current_flow_is_default_flow: bool setget , get_current_flow_is_default_flow
+func get_current_flow_is_default_flow() -> bool:
+	if _story == null:
+		_push_null_story_error()
+		return false
+
+	return _story.current_flow_is_default_flow
 
 
 ## The current story path.
