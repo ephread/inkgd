@@ -2,13 +2,13 @@
 Important changes to _inkgd_ will be documented in this file.
 
 ## [0.5.0](https://github.com/ephread/inkgd/releases/tag/0.5.0)
-Released on 2023-01-XX.
+Released on 2024-08-28.
 
 ### Changed
 - Added support for inklecate 1.1.1.
 - Exposed new properties on InkPlayer (`alive_flow_names` & `current_flow_is_default_flow`).
 
-#### ⚠️ BREAKING CHANGE**
+#### ⚠️ **BREAKING CHANGE**
 - [`InkPlayer`] The `prompt_choices` and `choice_made` signals as well as the `current_choices`
   property now use instances of `InkChoice` instead of strings. Use the `text` property of `InkChoice`
   to access the text representation.
