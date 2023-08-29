@@ -24,6 +24,7 @@ var metadata # StoryErrorMetadata | null
 # Initialization
 # ############################################################################ #
 
+@warning_ignore("shadowed_variable")
 func _init(message: String, use_end_line_number: bool, metadata):
 	self.message = message
 	self.use_end_line_number = use_end_line_number

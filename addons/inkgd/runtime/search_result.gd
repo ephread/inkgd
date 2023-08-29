@@ -20,31 +20,22 @@ extends InkBase
 class_name InkSearchResult
 
 # ############################################################################ #
-# Self-reference
-# ############################################################################ #
 
-static func SearchResult() -> GDScript:
-	return load("res://addons/inkgd/runtime/search_result.gd") as GDScript
+var obj: InkObject = null
+var approximate: bool = false
 
-# ############################################################################ #
+var correct_obj: InkObject:
+	get: return null if approximate else obj
 
-var obj = null # InkObject
-var approximate = false # bool
-
-var correct_obj setget , get_correct_obj # InkObject
-func get_correct_obj():
-	return null if approximate else obj
-
-var container setget , get_container # Container
-func get_container():
-	return Utils.as_or_null(obj, "InkContainer")
+var container: InkContainer:
+	get: return InkUtils.as_or_null(obj, "InkContainer")
 
 # ############################################################################ #
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type: String) -> bool:
-	return type == "SearchResult" || .is_class(type)
+func is_ink_class(type: String) -> bool:
+	return type == "SearchResult" || super.is_ink_class(type)
 
-func get_class() -> String:
+func get_ink_class() -> String:
 	return "SearchResult"

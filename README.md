@@ -2,17 +2,17 @@
 
 [![build](https://github.com/ephread/inkgd/workflows/build/badge.svg)](https://github.com/ephread/inkgd/actions)
 [![Documentation Status](https://readthedocs.org/projects/inkgd/badge/?version=latest)](https://inkgd.readthedocs.io/en/latest/?badge=latest)
-![Version](https://img.shields.io/badge/version-0.5.0-orange.svg)
+![Version](https://img.shields.io/badge/version-0.6.0-orange.svg)
 ![Godot Version](https://img.shields.io/badge/godot-3.3+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
 Implementation of [inkle’s Ink] in pure GDScript, with editor support.
 
-⚠️ **Note:** While the implementation of the runtime is feature-complete and
-passes the test suite, it’s unlikely to ever be considered “production-ready”.
-_inkgd_ shines for rapid-prototyping in GDScript and small games, but for bigger
-projects it’s likely to be too slow. If you need a more bulletproof solution
-and don’t mind C#, you should consider using [godot-ink].
+📖 **Note:** _inkgd_ shines for rapid prototyping in GDScript and small games.
+While the runtime implementation is feature-complete and passes the
+test suite, it’s slower than the original C# implementation. It is used
+in commercial games, but if you need a faster solution and don’t mind C#,
+you should consider using [godot-ink].
 
 [inkle’s Ink]: https://github.com/inkle/ink
 [godot-ink]: https://github.com/paulloz/godot-ink
@@ -41,14 +41,14 @@ and don’t mind C#, you should consider using [godot-ink].
 	- [x] Integrated story previewer
 
 ## Requirements
-- Godot 3.3+
-- Inklecate 1.0.0+
+- Godot 4.1.1+
+- Inklecate 1.1.1+
 
 ## Asking Questions / Contributing
 
 ### Asking questions
 
-If you need help with something in particular, [start a discussion].
+If you need help with something, [start a discussion].
 If you want to report a problem, [open an issue].
 
 [start a discussion]: https://github.com/ephread/inkgd/discussions/new
@@ -83,6 +83,7 @@ hosted on [Read The Docs].
 |      0.3.0      |       1.0.0       |    3.2 – 3.4    |
 |  0.4.0 – 0.4.7  |       1.0.0       |    3.3 – 3.5    |
 |      0.5.0      |       1.1.1       |    3.3 – 3.5    |
+|      0.6.0      |       1.1.1       |      4.1.1      |
 
 ## Acknowledgement
 
@@ -116,6 +117,10 @@ hosted on [Read The Docs].
 - Nicholas O'Brien did a whole [video series] about inkgd & Godot.
 
 [video series]: https://www.youtube.com/playlist?list=PLtepyzbiiwBrHoTloHJ2B-DWQxgrseuMB
+
+## Sponsors
+
+[![WILD WITS Games](docs/source/img/wild_wits_logo.webp)](https://wildwits.games)
 
 ## License
 

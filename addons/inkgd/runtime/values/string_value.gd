@@ -21,18 +21,18 @@ func get_value_type():
 func get_is_truthy():
 	return value.length() > 0
 
-var is_newline # bool
-var is_inline_whitespace # bool
-var is_non_whitespace setget , get_is_non_whitespace # bool
-func get_is_non_whitespace():
-	return !is_newline && !is_inline_whitespace
+var is_newline: bool
+var is_inline_whitespace: bool
+var is_non_whitespace: bool:
+	get:
+		return !is_newline && !is_inline_whitespace
 
 func _init():
 	value = ""
 	self._sanitize_value()
 
 func _init_with(val):
-	._init_with(val)
+	super._init_with(val)
 	self._sanitize_value()
 
 # The method takes a `StoryErrorMetadata` object as a parameter that
@@ -43,7 +43,7 @@ func cast(new_type, metadata = null):
 		return self
 
 	if new_type == ValueType.INT:
-		if self.value.is_valid_integer():
+		if self.value.is_valid_int():
 			return IntValue().new_with(int(self.value))
 		else:
 			return null
@@ -54,17 +54,17 @@ func cast(new_type, metadata = null):
 		else:
 			return null
 
-	Utils.throw_story_exception(bad_cast_exception_message(new_type), false, metadata)
+	InkUtils.throw_story_exception(bad_cast_exception_message(new_type), false, metadata)
 	return null
 
 # ######################################################################## #
 # GDScript extra methods
 # ######################################################################## #
 
-func is_class(type):
-	return type == "StringValue" || .is_class(type)
+func is_ink_class(type):
+	return type == "StringValue" || super.is_ink_class(type)
 
-func get_class():
+func get_ink_class():
 	return "StringValue"
 
 func _sanitize_value():

@@ -15,7 +15,7 @@ class_name InkDivertTargetValue
 
 # ############################################################################ #
 
-var target_path setget set_target_path, get_target_path # InkPath
+var target_path : get = get_target_path, set = set_target_path # InkPath
 func get_target_path():
 	return value
 func set_target_path(value):
@@ -25,7 +25,7 @@ func get_value_type():
 	return ValueType.DIVERT_TARGET
 
 func get_is_truthy():
-	Utils.throw_exception("Shouldn't be checking the truthiness of a divert target")
+	InkUtils.throw_exception("Shouldn't be checking the truthiness of a divert target")
 	return false
 
 func _init():
@@ -38,7 +38,7 @@ func cast(new_type, metadata = null):
 	if new_type == self.value_type:
 		return self
 
-	Utils.throw_story_exception(bad_cast_exception_message(new_type), false, metadata)
+	InkUtils.throw_story_exception(bad_cast_exception_message(new_type), false, metadata)
 	return null
 
 func _to_string() -> String:
@@ -48,10 +48,10 @@ func _to_string() -> String:
 # GDScript extra methods
 # ######################################################################## #
 
-func is_class(type):
-	return type == "DivertTargetValue" || .is_class(type)
+func is_ink_class(type):
+	return type == "DivertTargetValue" || super.is_ink_class(type)
 
-func get_class():
+func get_ink_class():
 	return "DivertTargetValue"
 
 static func new_with(val):

@@ -8,4 +8,4 @@
 extends MarginContainer
 
 func _switch_to_main():
-	get_tree().change_scene("res://examples/scenes/main.tscn")
+	get_tree().change_scene_to_file("res://examples/scenes/main.tscn")

@@ -6,409 +6,16 @@
 ;   [section] ; section goes between []
 ;   param=value ; assign values to parameters
 
-config_version=4
-
-_global_script_classes=[ {
-"base": "MarginContainer",
-"class": "ChoiceContainer",
-"language": "GDScript",
-"path": "res://examples/scenes/common/choice_container.gd"
-}, {
-"base": "Reference",
-"class": "InkBase",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/common/ink_base.gd"
-}, {
-"base": "InkValue",
-"class": "InkBoolValue",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/values/bool_value.gd"
-}, {
-"base": "Reference",
-"class": "InkCSharpValidator",
-"language": "GDScript",
-"path": "res://addons/inkgd/editor/common/ink_csharp_validator.gd"
-}, {
-"base": "InkBase",
-"class": "InkCallStack",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/callstack.gd"
-}, {
-"base": "InkObject",
-"class": "InkChoice",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/content/choices/choice.gd"
-}, {
-"base": "InkObject",
-"class": "InkChoicePoint",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/content/choices/choice_point.gd"
-}, {
-"base": "InkExecutionConfiguration",
-"class": "InkCompilationConfiguration",
-"language": "GDScript",
-"path": "res://addons/inkgd/editor/common/executors/structures/ink_compilation_configuration.gd"
-}, {
-"base": "InkExternalCommandExecutor",
-"class": "InkCompiler",
-"language": "GDScript",
-"path": "res://addons/inkgd/editor/common/executors/ink_compiler.gd"
-}, {
-"base": "Reference",
-"class": "InkConfiguration",
-"language": "GDScript",
-"path": "res://addons/inkgd/editor/common/ink_configuration.gd"
-}, {
-"base": "InkExternalCommandExecutor",
-"class": "InkConfigurationTester",
-"language": "GDScript",
-"path": "res://addons/inkgd/editor/common/executors/ink_configuration_tester.gd"
-}, {
-"base": "InkObject",
-"class": "InkContainer",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/content/container.gd"
-}, {
-"base": "InkObject",
-"class": "InkControlCommand",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/content/control_command.gd"
-}, {
-"base": "InkBase",
-"class": "InkDebugMetadata",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/debug_metadata.gd"
-}, {
-"base": "InkObject",
-"class": "InkDivert",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/content/divert.gd"
-}, {
-"base": "InkValue",
-"class": "InkDivertTargetValue",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/values/divert_target_value.gd"
-}, {
-"base": "Reference",
-"class": "InkEditorInterface",
-"language": "GDScript",
-"path": "res://addons/inkgd/editor/common/ink_editor_interface.gd"
-}, {
-"base": "Reference",
-"class": "InkExecutionConfiguration",
-"language": "GDScript",
-"path": "res://addons/inkgd/editor/common/executors/structures/ink_execution_configuration.gd"
-}, {
-"base": "Reference",
-"class": "InkExecutionResult",
-"language": "GDScript",
-"path": "res://addons/inkgd/editor/common/executors/structures/ink_execution_result.gd"
-}, {
-"base": "Reference",
-"class": "InkExternalCommandExecutor",
-"language": "GDScript",
-"path": "res://addons/inkgd/editor/common/executors/ink_external_command_executor.gd"
-}, {
-"base": "InkValue",
-"class": "InkFloatValue",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/values/float_value.gd"
-}, {
-"base": "InkBase",
-"class": "InkFlow",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/flow.gd"
-}, {
-"base": "Reference",
-"class": "InkFunctionResult",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/extra/function_result.gd"
-}, {
-"base": "Reference",
-"class": "InkGDProfiler",
-"language": "GDScript",
-"path": "res://examples/scenes/common/profiler.gd"
-}, {
-"base": "InkObject",
-"class": "InkGlue",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/content/glue.gd"
-}, {
-"base": "InkValue",
-"class": "InkIntValue",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/values/int_value.gd"
-}, {
-"base": "EditorImportPlugin",
-"class": "InkJsonImportPlugin",
-"language": "GDScript",
-"path": "res://addons/inkgd/editor/import_plugins/ink_json_import_plugin.gd"
-}, {
-"base": "Reference",
-"class": "InkKeyValuePair",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/extra/key_value_pair.gd"
-}, {
-"base": "InkObject",
-"class": "InkList",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/lists/ink_list.gd"
-}, {
-"base": "InkObject",
-"class": "InkListDefinition",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/lists/list_definition.gd"
-}, {
-"base": "InkObject",
-"class": "InkListDefinitionsOrigin",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/lists/list_definitions_origin.gd"
-}, {
-"base": "InkObject",
-"class": "InkListItem",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/lists/structs/ink_list_item.gd"
-}, {
-"base": "InkValue",
-"class": "InkListValue",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/values/list_value.gd"
-}, {
-"base": "InkObject",
-"class": "InkNativeFunctionCall",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/content/native_function_call.gd"
-}, {
-"base": "InkBase",
-"class": "InkObject",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/common/ink_object.gd"
-}, {
-"base": "InkBase",
-"class": "InkPath",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/ink_path.gd"
-}, {
-"base": "Node",
-"class": "InkPlayer",
-"language": "GDScript",
-"path": "res://addons/inkgd/ink_player.gd"
-}, {
-"base": "Reference",
-"class": "InkPlayerFactory",
-"language": "GDScript",
-"path": "res://addons/inkgd/ink_player_factory.gd"
-}, {
-"base": "InkBase",
-"class": "InkPointer",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/structs/pointer.gd"
-}, {
-"base": "InkBase",
-"class": "InkProfiler",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/profiler.gd"
-}, {
-"base": "Resource",
-"class": "InkResource",
-"language": "GDScript",
-"path": "res://addons/inkgd/editor/import_plugins/ink_resource.gd"
-}, {
-"base": "InkBase",
-"class": "InkSearchResult",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/search_result.gd"
-}, {
-"base": "InkBase",
-"class": "InkSimpleJSON",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/simple_json.gd"
-}, {
-"base": "EditorImportPlugin",
-"class": "InkSourceImportPlugin",
-"language": "GDScript",
-"path": "res://addons/inkgd/editor/import_plugins/ink_source_import_plugin.gd"
-}, {
-"base": "Reference",
-"class": "InkStateElement",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/extra/state_element.gd"
-}, {
-"base": "InkBase",
-"class": "InkStatePatch",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/state_patch.gd"
-}, {
-"base": "InkBase",
-"class": "InkStaticJSON",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/static/json.gd"
-}, {
-"base": "Reference",
-"class": "InkStaticNativeFunctionCall",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/static/native_function_call.gd"
-}, {
-"base": "Reference",
-"class": "InkStopWatch",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/extra/stopwatch.gd"
-}, {
-"base": "InkObject",
-"class": "InkStory",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/story.gd"
-}, {
-"base": "InkBase",
-"class": "InkStoryState",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/story_state.gd"
-}, {
-"base": "Reference",
-"class": "InkStringSet",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/extra/string_set.gd"
-}, {
-"base": "InkValue",
-"class": "InkStringValue",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/values/string_value.gd"
-}, {
-"base": "Reference",
-"class": "InkStringWriter",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/extra/string_writer.gd"
-}, {
-"base": "InkObject",
-"class": "InkTag",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/content/tag.gd"
-}, {
-"base": "Reference",
-"class": "InkTryGetResult",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/extra/try_get_result.gd"
-}, {
-"base": "Reference",
-"class": "InkUtils",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/extra/utils.gd"
-}, {
-"base": "InkObject",
-"class": "InkValue",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/values/value.gd"
-}, {
-"base": "InkObject",
-"class": "InkVariableAssignment",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/content/variable_assignment.gd"
-}, {
-"base": "InkValue",
-"class": "InkVariablePointerValue",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/values/variable_pointer_value.gd"
-}, {
-"base": "InkObject",
-"class": "InkVariableReference",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/content/variable_reference.gd"
-}, {
-"base": "InkBase",
-"class": "InkVariablesState",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/variables_state.gd"
-}, {
-"base": "InkObject",
-"class": "InkVoid",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/content/void.gd"
-}, {
-"base": "Reference",
-"class": "StoryError",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/extra/story_error.gd"
-}, {
-"base": "Reference",
-"class": "StoryErrorMetadata",
-"language": "GDScript",
-"path": "res://addons/inkgd/runtime/extra/story_error_metadata.gd"
-} ]
-_global_script_class_icons={
-"ChoiceContainer": "",
-"InkBase": "",
-"InkBoolValue": "",
-"InkCSharpValidator": "",
-"InkCallStack": "",
-"InkChoice": "",
-"InkChoicePoint": "",
-"InkCompilationConfiguration": "",
-"InkCompiler": "",
-"InkConfiguration": "",
-"InkConfigurationTester": "",
-"InkContainer": "",
-"InkControlCommand": "",
-"InkDebugMetadata": "",
-"InkDivert": "",
-"InkDivertTargetValue": "",
-"InkEditorInterface": "",
-"InkExecutionConfiguration": "",
-"InkExecutionResult": "",
-"InkExternalCommandExecutor": "",
-"InkFloatValue": "",
-"InkFlow": "",
-"InkFunctionResult": "",
-"InkGDProfiler": "",
-"InkGlue": "",
-"InkIntValue": "",
-"InkJsonImportPlugin": "",
-"InkKeyValuePair": "",
-"InkList": "",
-"InkListDefinition": "",
-"InkListDefinitionsOrigin": "",
-"InkListItem": "",
-"InkListValue": "",
-"InkNativeFunctionCall": "",
-"InkObject": "",
-"InkPath": "",
-"InkPlayer": "",
-"InkPlayerFactory": "",
-"InkPointer": "",
-"InkProfiler": "",
-"InkResource": "",
-"InkSearchResult": "",
-"InkSimpleJSON": "",
-"InkSourceImportPlugin": "",
-"InkStateElement": "",
-"InkStatePatch": "",
-"InkStaticJSON": "",
-"InkStaticNativeFunctionCall": "",
-"InkStopWatch": "",
-"InkStory": "",
-"InkStoryState": "",
-"InkStringSet": "",
-"InkStringValue": "",
-"InkStringWriter": "",
-"InkTag": "",
-"InkTryGetResult": "",
-"InkUtils": "",
-"InkValue": "",
-"InkVariableAssignment": "",
-"InkVariablePointerValue": "",
-"InkVariableReference": "",
-"InkVariablesState": "",
-"InkVoid": "",
-"StoryError": "",
-"StoryErrorMetadata": ""
-}
+config_version=5
 
 [application]
 
 config/name="inkgd"
 run/main_scene="res://examples/scenes/main.tscn"
+config/features=PackedStringArray("4.1")
+boot_splash/bg_color=Color(0.929412, 0.898039, 0.854902, 1)
 boot_splash/image="res://examples/images/transparent.png"
 boot_splash/fullsize=false
-boot_splash/bg_color=Color( 0.929412, 0.898039, 0.854902, 1 )
 config/icon="res://icons/icon.png"
 
 [autoload]
@@ -418,21 +25,19 @@ __InkRuntime="*res://addons/inkgd/runtime/static/ink_runtime.gd"
 [debug]
 
 gdscript/warnings/exclude_addons=false
-gdscript/completion/autocomplete_setters_and_getters=true
 gdscript/warnings/unused_variable=false
+gdscript/warnings/native_method_override=1
+gdscript/completion/autocomplete_setters_and_getters=true
 gdscript/warnings/unused_argument=false
 
 [display]
 
-window/size/width=1920
-window/size/height=1080
-window/dpi/allow_hidpi=true
-window/stretch/mode="2d"
-window/stretch/aspect="expand"
+window/size/viewport_width=1920
+window/size/viewport_height=1080
 
 [editor_plugins]
 
-enabled=PoolStringArray( "res://addons/gut/plugin.cfg", "res://addons/inkgd/plugin.cfg" )
+enabled=PackedStringArray("res://addons/gut/plugin.cfg", "res://addons/inkgd/plugin.cfg")
 
 [inkgd]
 
@@ -440,8 +45,8 @@ do_not_use_mono_runtime=false
 
 [network]
 
-limits/debugger_stdout/max_chars_per_second=600000
+limits/debugger/max_chars_per_second=600000
 
 [rendering]
 
-environment/default_environment="res://default_env.tres"
+environment/defaults/default_environment="res://default_env.tres"

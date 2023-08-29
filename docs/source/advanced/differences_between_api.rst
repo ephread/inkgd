@@ -11,7 +11,7 @@ Style
 -----
 
 Functions are all snake_cased rather than CamelCased. For instance
-``ContinueMaximally`` becomes ``continue_maximally``.
+``ChooseCoiceIndex`` becomes ``choose_choice_index``.
 
 .. _ink-runtime:
 
@@ -64,21 +64,47 @@ InkRuntime contains a few configuration settings you may want to tweak, see the
     InkPlayer, use them instead if you did not instantiate the node by
     yourself.
 
-`Getting and setting variables`_
+`Continuing the story`_
 --------------------------------
 
-.. _`Getting and setting variables`: https://github.com/inkle/ink<https://github.com/inkle/ink/blob/master/Documentation/RunningYourInk.md#settinggetting-ink-variables>
-
-Since the ``[]`` operator can't be overloaded in GDScript, simple ``get`` and
-``set`` calls replace it.
+Since ``continue`` is a protected keywords in GDScript, ``Story.Continue()``
+becomes ``Story.continue_story()``. The maximal and async versions also
+used the updated terminology to keep things consistent.
 
 GDScript API
 ************
 
 .. code:: gdscript
 
-    story.variables_state.get("player_health")
-    story.variables_state.set("player_health", 10)
+    story.continue_story()
+    story.continue_story_maximally()
+    story.continue_story_async(10)
+
+Original C# API
+***************
+
+.. code:: csharp
+
+    story.Continue()
+    story.ContinueMaximally()
+    story.ContinueAsync(10)
+
+
+`Getting and setting variables`_
+--------------------------------
+
+.. _`Getting and setting variables`: https://github.com/inkle/ink<https://github.com/inkle/ink/blob/master/Documentation/RunningYourInk.md#settinggetting-ink-variables>
+
+Since the ``[]`` operator can't be overloaded in GDScript, simple ``get_variable`` and
+``set_variable`` calls replace it. ``get`` and ``set`` are protected keywords.
+
+GDScript API
+************
+
+.. code:: gdscript
+
+    story.variables_state.get_variable("player_health")
+    story.variables_state.set_variable("player_health", 10)
 
 Original C# API
 ***************
@@ -93,7 +119,7 @@ Original C# API
 
 .. _`Variable Observers`: https://github.com/inkle/ink/blob/master/Documentation/RunningYourInk.md#variable-observers
 
-The event / delegate mechanism found in C# is translated into a signal-based
+The event/delegate mechanism found in C# is translated into a signal-based
 logic in the GDScript runtime.
 
 GDScript API
@@ -120,7 +146,7 @@ Original C# API
 
 .. _`External Functions`: https://github.com/inkle/ink/blob/master/Documentation/RunningYourInk.md#external-functions
 
-The event / delegate mechanism found in C# is again translated into a
+The event/delegate mechanism found in C# is again translated into a
 signal-based logic.
 
 GDScript API
@@ -189,7 +215,7 @@ Error Management
 The original implementation relies on C#'s exceptions to report and recover from
 inconsistent states. Exceptions are not available in GDScript, so the runtime
 may behave slightly differently. In particular, if an error or an exception is
-encountered during ``story.continue()``, the story may be inconsistent state
+encountered during ``story.continue_story()``, the story may be inconsistent state
 even though it can still move forward after calling ``story.reset_errors()``.
 
 Runtime exceptions are emitted through

@@ -4,7 +4,7 @@
 # See LICENSE in the project root for license information.
 # ############################################################################ #
 
-extends Reference
+extends RefCounted
 
 ## A test result, containing information about whether the test
 ## suceeded and the generated output.
@@ -29,6 +29,7 @@ var output: String = ""
 # Overrides
 # ############################################################################ #
 
+@warning_ignore("shadowed_variable")
 func _init(
 	identifier: int,
 	use_threads: bool,

@@ -40,7 +40,7 @@ func cast(new_type, metadata = null):
 	if new_type == ValueType.STRING:
 		return StringValue().new_with("true" if value else "false")
 
-	Utils.throw_story_exception(bad_cast_exception_message(new_type), false, metadata)
+	InkUtils.throw_story_exception(bad_cast_exception_message(new_type), false, metadata)
 	return null
 
 func _to_string() -> String:
@@ -50,10 +50,10 @@ func _to_string() -> String:
 # GDScript extra methods
 # ######################################################################## #
 
-func is_class(type):
-	return type == "BoolValue" || .is_class(type)
+func is_ink_class(type):
+	return type == "BoolValue" || super.is_ink_class(type)
 
-func get_class():
+func get_ink_class():
 	return "BoolValue"
 
 static func new_with(val):

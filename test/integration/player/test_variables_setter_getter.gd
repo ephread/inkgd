@@ -25,7 +25,7 @@ var InkPath := load("res://addons/inkgd/runtime/ink_path.gd") as GDScript
 # ############################################################################ #
 
 func test_ink_list_simple_roundtrip() -> void:
-	yield(_load_story("ink_list_roundtrip"), "completed")
+	await _load_story("ink_list_roundtrip")
 
 	_test_simple_list_validity()
 
@@ -41,7 +41,7 @@ func test_ink_list_simple_roundtrip() -> void:
 
 
 func test_ink_path_simple_roundtrip() -> void:
-	yield(_load_story("ink_list_roundtrip"), "completed")
+	await _load_story("ink_list_roundtrip")
 
 	_test_ink_path_validity()
 

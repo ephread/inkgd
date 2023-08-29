@@ -66,10 +66,10 @@ func _to_string() -> String:
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type: String) -> bool:
-	return type == "DebugMetadata" || .is_class(type)
+func is_ink_class(type: String) -> bool:
+	return type == "DebugMetadata" || super.is_ink_class(type)
 
-func get_class() -> String:
+func get_ink_class() -> String:
 	return "DebugMetadata"
 
 static func DebugMetadata():

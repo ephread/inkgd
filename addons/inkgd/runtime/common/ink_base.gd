@@ -9,19 +9,13 @@
 # inkgd is licensed under the terms of the MIT license.
 # ############################################################################ #
 
-extends Reference
+extends RefCounted
 
 class_name InkBase
 
 # ############################################################################ #
-# Imports
-# ############################################################################ #
 
-var Utils := preload("res://addons/inkgd/runtime/extra/utils.gd") as GDScript
-
-# ############################################################################ #
-
-func equals(ink_base) -> bool:
+func equals(_ink_base: InkBase) -> bool:
 	return false
 
 
@@ -29,8 +23,9 @@ func equals(ink_base) -> bool:
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type: String) -> bool:
-	return type == "InkBase" || .is_class(type)
+func is_ink_class(type: String) -> bool:
+	return type == "InkBase"
 
-func get_class() -> String:
+
+func get_ink_class() -> String:
 	return "InkBase"
