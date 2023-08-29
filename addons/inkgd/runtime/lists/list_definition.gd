@@ -18,18 +18,17 @@ class_name InkListDefinition
 # ############################################################################ #
 
 var InkTryGetResult = preload("res://addons/inkgd/runtime/extra/try_get_result.gd")
-var InkListItem = preload("res://addons/inkgd/runtime/lists/structs/ink_list_item.gd")
 
 # ############################################################################ #
 
-var name: String setget , get_name
+var name: String: get = get_name
 func get_name() -> String:
 	return _name
 
 # Dictionary<InkListItem, int> => Dictionary<String, int>
 # Note: 'InkListItem' should actually be serialized into a String, because it
 # needs to be a value type.
-var items: Dictionary setget , get_items
+var items: Dictionary: get = get_items
 func get_items() -> Dictionary:
 	if _items == null:
 		_items = {}
@@ -67,7 +66,7 @@ func try_get_item_with_value(val: int) -> InkTryGetResult:
 					InkListItem.new_with_origin_name(self.name, named_item_key)
 			)
 
-	return InkTryGetResult.new(false, InkListItem.null())
+	return InkTryGetResult.new(false, InkListItem.null_item)
 
 # (InkListItem) -> { result: InkListItem, exists: bool }
 func try_get_value_for_item(item: InkListItem) -> InkTryGetResult:
@@ -93,10 +92,10 @@ var _item_name_to_values: Dictionary # Dictionary<String, int>
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type: String) -> bool:
-	return type == "InkListDefinition" || .is_class(type)
+func is_ink_class(type: String) -> bool:
+	return type == "InkListDefinition" || super.is_ink_class(type)
 
-func get_class() -> String:
+func get_ink_class() -> String:
 	return "InkListDefinition"
 
 func _to_string() -> String:

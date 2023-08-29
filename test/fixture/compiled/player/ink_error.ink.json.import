@@ -2,12 +2,13 @@
 
 importer="inkgd.ink.json"
 type="Resource"
-path="res://.import/ink_error.ink.json-a612157992180a072d2e743ae40382c1.res"
+uid="uid://dxtdgwe6rvf7v"
+path="res://.godot/imported/ink_error.ink.json-a612157992180a072d2e743ae40382c1.res"
 
 [deps]
 
 source_file="res://test/fixture/compiled/player/ink_error.ink.json"
-dest_files=[ "res://.import/ink_error.ink.json-a612157992180a072d2e743ae40382c1.res" ]
+dest_files=["res://.godot/imported/ink_error.ink.json-a612157992180a072d2e743ae40382c1.res"]
 
 [params]
 

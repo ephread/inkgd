@@ -43,8 +43,8 @@ func _init(type: int):
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type) -> bool:
-	return type == "StateElement" || .is_class(type)
+func is_ink_class(type) -> bool:
+	return type == "StateElement"
 
-func get_class() -> String:
+func get_ink_class() -> String:
 	return "StateElement"

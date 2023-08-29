@@ -2,12 +2,13 @@
 
 importer="inkgd.ink.json"
 type="Resource"
-path="res://.import/ink_list_roundtrip.ink.json-05ad298627a7834232efa33357f8a1be.res"
+uid="uid://dcr1fgcyvf87r"
+path="res://.godot/imported/ink_list_roundtrip.ink.json-05ad298627a7834232efa33357f8a1be.res"
 
 [deps]
 
 source_file="res://test/fixture/compiled/player/ink_list_roundtrip.ink.json"
-dest_files=[ "res://.import/ink_list_roundtrip.ink.json-05ad298627a7834232efa33357f8a1be.res" ]
+dest_files=["res://.godot/imported/ink_list_roundtrip.ink.json-05ad298627a7834232efa33357f8a1be.res"]
 
 [params]
 

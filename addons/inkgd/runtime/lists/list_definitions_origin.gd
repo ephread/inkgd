@@ -18,14 +18,13 @@ class_name InkListDefinitionsOrigin
 # ############################################################################ #
 
 var InkTryGetResult = preload("res://addons/inkgd/runtime/extra/try_get_result.gd")
-var InkListItem = preload("res://addons/inkgd/runtime/lists/structs/ink_list_item.gd")
 
 var InkListValue = load("res://addons/inkgd/runtime/values/list_value.gd")
 
 # ############################################################################ #
 
 # Array<InkListDefinition>
-var lists: Array setget , get_lists
+var lists: Array: get = get_lists
 func get_lists() -> Array:
 	var list_of_lists = []
 	for named_list_key in _lists:
@@ -80,8 +79,8 @@ var _all_unambiguous_list_value_cache: Dictionary # Dictionary<String, InkListVa
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type: String) -> bool:
-	return type == "InkListDefinitionsOrigin" || .is_class(type)
+func is_ink_class(type: String) -> bool:
+	return type == "InkListDefinitionsOrigin" || super.is_ink_class(type)
 
-func get_class() -> String:
+func get_ink_class() -> String:
 	return "InkListDefinitionsOrigin"

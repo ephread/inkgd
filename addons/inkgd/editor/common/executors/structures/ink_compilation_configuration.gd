@@ -23,13 +23,15 @@ var target_file_path: String = ""
 # Overrides
 # ############################################################################ #
 
+@warning_ignore("shadowed_variable")
 func _init(
 	configuration: InkConfiguration,
 	use_threads: bool,
 	user_triggered: bool,
 	source_file_path: String,
 	target_file_path: String
-).(configuration, use_threads, user_triggered):
+):
+	super(configuration, use_threads, user_triggered)
 	self.source_file_path = ProjectSettings.globalize_path(source_file_path)
 	self.target_file_path = ProjectSettings.globalize_path(target_file_path)
 

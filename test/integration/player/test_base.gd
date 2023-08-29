@@ -27,21 +27,21 @@ var _exception_messages_raised := []
 # ############################################################################ #
 
 func before_each():
-	.before_each()
+	super.before_each()
 
 	_ink_player = InkPlayerFactory.create()
 	get_tree().root.add_child(_ink_player)
-	_ink_player.connect("exception_raised", self, "_exception_raised")
+	_ink_player.connect("exception_raised", Callable(self, "_exception_raised"))
 
 
 func after_each():
 	_exception_messages_raised = []
 	get_tree().root.remove_child(_ink_player)
-	_ink_player.disconnect("exception_raised", self, "_exception_raised")
-	_ink_player.free()
+	_ink_player.disconnect("exception_raised", Callable(self, "_exception_raised"))
+	_ink_player.queue_free()
 	_ink_player = null
 
-	.after_each()
+	super.after_each()
 
 
 # ############################################################################ #
@@ -66,10 +66,10 @@ func _exception_raised(message, stack_trace):
 
 func _load_story(name):
 	_ink_player.ink_file = load_resource(name)
-	_ink_player.loads_in_background = true
+	_ink_player.loads_in_background = false
 	_ink_player.create_story()
 
-	var successfully = yield(_ink_player, "loaded")
+	var successfully = await _ink_player.loaded
 
 	assert_true(successfully, "The story did not load correctly.")
 

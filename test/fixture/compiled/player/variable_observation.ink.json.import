@@ -2,12 +2,13 @@
 
 importer="inkgd.ink.json"
 type="Resource"
-path="res://.import/variable_observation.ink.json-2307ea74e63cfe672bd5efad13f36e59.res"
+uid="uid://djfr8s0t1bff3"
+path="res://.godot/imported/variable_observation.ink.json-2307ea74e63cfe672bd5efad13f36e59.res"
 
 [deps]
 
 source_file="res://test/fixture/compiled/player/variable_observation.ink.json"
-dest_files=[ "res://.import/variable_observation.ink.json-2307ea74e63cfe672bd5efad13f36e59.res" ]
+dest_files=["res://.godot/imported/variable_observation.ink.json-2307ea74e63cfe672bd5efad13f36e59.res"]
 
 [params]
 

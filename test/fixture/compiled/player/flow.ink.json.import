@@ -2,12 +2,13 @@
 
 importer="inkgd.ink.json"
 type="Resource"
-path="res://.import/flow.ink.json-4574b3159976c3ba17ca07853f8fa778.res"
+uid="uid://b0e1n0rjiup4q"
+path="res://.godot/imported/flow.ink.json-4574b3159976c3ba17ca07853f8fa778.res"
 
 [deps]
 
 source_file="res://test/fixture/compiled/player/flow.ink.json"
-dest_files=[ "res://.import/flow.ink.json-4574b3159976c3ba17ca07853f8fa778.res" ]
+dest_files=["res://.godot/imported/flow.ink.json-4574b3159976c3ba17ca07853f8fa778.res"]
 
 [params]
 

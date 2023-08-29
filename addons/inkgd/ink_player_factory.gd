@@ -1,3 +1,4 @@
+@tool
 # ############################################################################ #
 # Copyright © 2018-2021 Paul Joannon
 # Copyright © 2019-2022 Frédéric Maquin <fred@ephread.com>
@@ -5,8 +6,7 @@
 # See LICENSE in the project root for license information.
 # ############################################################################ #
 
-tool
-extends Reference
+extends RefCounted
 
 class_name InkPlayerFactory
 
@@ -19,13 +19,13 @@ const DO_NOT_USE_MONO_RUNTIME_SETTING = "inkgd/do_not_use_mono_runtime"
 static func create():
 	if _should_use_mono():
 		var InkPlayer = load("res://addons/inkgd/mono/InkPlayer.cs")
-		if InkPlayer.can_instance():
+		if InkPlayer.can_instantiate():
 			return InkPlayer.new()
 		else:
 			printerr(
 					"[inkgd] [ERROR] InkPlayer can't be instantiated. Make sure that a suitable " +
 					"copy of 'ink-runtime-engine.dll' can be found in project and double check " +
-					"that the .csproj file contains a <Reference> item pointing to it. " +
+					"that the .csproj file contains a <RefCounted> item pointing to it. " +
 					"If everything is configured correctly, you may need to rebuild " +
 					"the C# solution. Please refer to [TO BE ADDED] for additional help."
 			)

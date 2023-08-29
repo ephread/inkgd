@@ -49,7 +49,7 @@ func cast(new_type, metadata = null):
 	if new_type == self.value_type:
 		return self
 
-	Utils.throw_story_exception(bad_cast_exception_message(new_type), false, metadata)
+	InkUtils.throw_story_exception(bad_cast_exception_message(new_type), false, metadata)
 	return null
 
 func _init():
@@ -63,10 +63,8 @@ func _init_with_single_item(single_item, single_value):
 
 # (InkObject, InkObject) -> void
 static func retain_list_origins_for_assignment(old_value, new_value):
-	var Utils = load("res://addons/inkgd/runtime/extra/utils.gd")
-
-	var old_list = Utils.as_or_null(old_value, "ListValue")
-	var new_list = Utils.as_or_null(new_value, "ListValue")
+	var old_list = InkUtils.as_or_null(old_value, "ListValue")
+	var new_list = InkUtils.as_or_null(new_value, "ListValue")
 
 	if old_list && new_list && new_list.value.size() == 0:
 		new_list.value.set_initial_origin_names(old_list.value.origin_names)
@@ -75,10 +73,10 @@ static func retain_list_origins_for_assignment(old_value, new_value):
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type):
-	return type == "ListValue" || .is_class(type)
+func is_ink_class(type):
+	return type == "ListValue" || super.is_ink_class(type)
 
-func get_class():
+func get_ink_class():
 	return "ListValue"
 
 static func new_with(list):

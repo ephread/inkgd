@@ -10,7 +10,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 
-public class InkBridger : Node
+public partial class InkBridger : Node
 {
 	#region Imports
 	private readonly GDScript InkPath =
@@ -32,7 +32,7 @@ public class InkBridger : Node
 	#region Methods | Helpers
 	public bool IsInkObjectOfType(Godot.Object inkObject, string name)
 	{
-		return inkObject.HasMethod("is_class") && (bool)inkObject.Call("is_class", new object[] { name });
+		return inkObject.HasMethod("is_ink_class") && (bool)inkObject.Call("is_ink_class", new object[] { name });
 	}
 
 	public Godot.Object MakeFunctionResult(string textOutput, object returnValue)
@@ -43,7 +43,7 @@ public class InkBridger : Node
 	#endregion
 
 	#region Methods | Conversion -> (GDScript -> C#)
-	public Godot.Object MakeGDInkPath(Ink.Runtime.Path path) {
+	public Godot.Object MakeGDInkPath(Ink.Runtime.Path3D path) {
 		var inkPath = (Godot.Object) InkPath.New();
 		inkPath.Call("_init_with_components_string", path.componentsString);
 		return inkPath;
@@ -69,13 +69,13 @@ public class InkBridger : Node
 		return inkList;
 	}
 
-	public Ink.Runtime.Path MakeSharpInkPath(Godot.Object path) {
+	public Ink.Runtime.Path3D MakeSharpInkPath(Godot.Object path) {
 		if (!IsInkObjectOfType(path, "InkPath"))
 		{
 			throw new ArgumentException("Expected a 'Godot.Object' of class 'InkPath'");
 		}
 
-		return new Ink.Runtime.Path((string)path.Get("components_string"));
+		return new Ink.Runtime.Path3D((string)path.Get("components_string"));
 	}
 	#endregion
 

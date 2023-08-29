@@ -2,12 +2,13 @@
 
 importer="inkgd.ink.json"
 type="Resource"
-path="res://.import/variables.ink.json-46144c677a43eb484bb208b794a579be.res"
+uid="uid://bvvqbdif3rpfm"
+path="res://.godot/imported/variables.ink.json-46144c677a43eb484bb208b794a579be.res"
 
 [deps]
 
 source_file="res://test/fixture/compiled/player/variables.ink.json"
-dest_files=[ "res://.import/variables.ink.json-46144c677a43eb484bb208b794a579be.res" ]
+dest_files=["res://.godot/imported/variables.ink.json-46144c677a43eb484bb208b794a579be.res"]
 
 [params]
 

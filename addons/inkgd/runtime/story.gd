@@ -21,21 +21,15 @@ const INK_VERSION_MINIMUM_COMPATIBLE := 18
 # Imports
 # ############################################################################ #
 
-var PushPopType = preload("res://addons/inkgd/runtime/enums/push_pop.gd").PushPopType
-var ErrorType = preload("res://addons/inkgd/runtime/enums/error.gd").ErrorType
-
 var InkStopWatch := preload("res://addons/inkgd/runtime/extra/stopwatch.gd") as GDScript
 var InkProfiler := preload("res://addons/inkgd/runtime/profiler.gd") as GDScript
 
 var InkSimpleJSON := preload("res://addons/inkgd/runtime/simple_json.gd") as GDScript
 var InkStringSet := preload("res://addons/inkgd/runtime/extra/string_set.gd") as GDScript
-var InkListItem := preload("res://addons/inkgd/runtime/lists/structs/ink_list_item.gd") as GDScript
 var InkListDefinitionsOrigin := preload("res://addons/inkgd/runtime/lists/list_definitions_origin.gd") as GDScript
 
 var InkPointer := preload("res://addons/inkgd/runtime/structs/pointer.gd") as GDScript
-var InkControlCommand := preload("res://addons/inkgd/runtime/content/control_command.gd") as GDScript
 
-var InkVoid := preload("res://addons/inkgd/runtime/content/void.gd") as GDScript
 var StoryErrorMetadata := preload("res://addons/inkgd/runtime/extra/story_error_metadata.gd") as GDScript
 
 # ############################################################################ #
@@ -47,65 +41,61 @@ var InkVariablePointerValue := load("res://addons/inkgd/runtime/values/variable_
 var InkListValue := load("res://addons/inkgd/runtime/values/list_value.gd") as GDScript
 
 var InkList := load("res://addons/inkgd/runtime/lists/ink_list.gd") as GDScript
-var InkChoice := load("res://addons/inkgd/runtime/content/choices/choice.gd") as GDScript
-var InkTag := load("res://addons/inkgd/runtime/content/tag.gd") as GDScript
 
 var InkStoryState := load("res://addons/inkgd/runtime/story_state.gd") as GDScript
 
 # ############################################################################ #
 
-var current_choices: Array setget , get_current_choices # Array<Choice>
-func get_current_choices() -> Array:
-	var choices: Array = [] # Array<Choice>
+var current_choices: Array: # Array<Choice>
+	get:
+		var choices: Array = [] # Array<Choice>
 
-	for c in self._state.current_choices:
-		if !c.is_invisible_default:
-			c.index = choices.size()
-			choices.append(c)
+		for c in self._state.current_choices:
+			if !c.is_invisible_default:
+				c.index = choices.size()
+				choices.append(c)
 
-	return choices
+		return choices
 
-# String?
-var current_text setget , get_current_text
-func get_current_text():
-	if async_we_cant("call currentText since it's a work in progress"):
-		return null
 
-	return self.state.current_text
+var current_text: # String?
+	get:
+		if async_we_cant("call currentText since it's a work in progress"):
+			return null
+
+		return self.state.current_text
 
 # Array?
-var current_tags setget , get_current_tags # Array<String>
-func get_current_tags():
-	if async_we_cant("call currentTags since it's a work in progress"):
-		return null
+var current_tags: # Array<String>
+	get:
+		if async_we_cant("call currentTags since it's a work in progress"):
+			return null
 
-	return self.state.current_tags
+		return self.state.current_tags
 
-var current_errors setget , get_current_errors # Array<String>
-func get_current_errors(): return self.state.current_errors
+var current_errors: # Array<String>?
+	get: return self.state.current_errors
 
-var current_warnings setget , get_current_warnings # Array<String>
-func get_current_warnings(): return self.state.current_warnings
+var current_warnings: # Array<String>?
+	get: return self.state.current_warnings
 
-var current_flow_name setget , get_current_flow_name # String
-func get_current_flow_name(): return self.state.current_flow_name
+var current_flow_name: String:
+	get: return self.state.current_flow_name
 
-var has_error setget , get_has_error # bool
-func get_has_error(): return self.state.has_error
+var has_error: bool:
+	get: return self.state.has_error
 
-var has_warning setget , get_has_warning # bool
-func get_has_warning(): return self.state.has_warning
+var has_warning: bool:
+	get: return self.state.has_warning
 
-var variables_state setget , get_variables_state # VariablesState
-func get_variables_state(): return self.state.variables_state
+var variables_state: InkVariablesState:
+	get: return self.state.variables_state
 
-var list_definitions setget , get_list_definitions # ListDefinitionsOrigin
-func get_list_definitions():
-	return self._list_definitions
+var list_definitions: # ListDefinitionsOrigin?
+	get: return self._list_definitions
 
-var state: InkStoryState setget , get_state # StoryState
-func get_state():
-	return self._state
+var state: InkStoryState:
+	get: return self._state
 
 signal on_error(message, type)
 
@@ -133,8 +123,8 @@ func end_profiling() -> void:
 
 
 # (InkContainer, Array<ListDefinition>) -> void
-func _init_with(content_container: InkContainer, lists = null):
-	_initialize_runtime()
+func _init_with(content_container: InkContainer, lists = null, runtime = null):
+	_initialize_runtime(runtime)
 	self._main_content_container = content_container
 
 	if lists != null:
@@ -143,14 +133,14 @@ func _init_with(content_container: InkContainer, lists = null):
 	self._externals = {} # Dictionary<String, ExternalFunctionDef>
 
 
-func _init(json_string: String):
-	_init_with(null)
+func _init(json_string: String, runtime = null):
+	_init_with(null, null, runtime)
 
 	var root_object = InkSimpleJSON.text_to_dictionary(json_string)
 
 	var version_obj = root_object["inkVersion"]
 	if version_obj == null:
-		Utils.throw_exception(
+		InkUtils.throw_exception(
 				"ink version number not found. " +
 				"Are you sure it's a valid .ink.json file?"
 		)
@@ -158,13 +148,13 @@ func _init(json_string: String):
 
 	var format_from_file = int(version_obj)
 	if format_from_file > INK_VERSION_CURRENT:
-		Utils.throw_exception(
+		InkUtils.throw_exception(
 				"Version of ink used to build story was newer " +
 				"than the current version of the engine"
 		)
 		return
 	elif format_from_file < INK_VERSION_MINIMUM_COMPATIBLE:
-		Utils.throw_exception(
+		InkUtils.throw_exception(
 				"Version of ink used to build story is too old " +
 				"to be loaded by this version of the engine"
 		)
@@ -177,16 +167,16 @@ func _init(json_string: String):
 
 	var root_token = root_object["root"]
 	if root_token == null:
-		Utils.throw_exception(
+		InkUtils.throw_exception(
 				"Root node for ink not found. Are you sure it's a valid .ink.json file?"
 		)
 		return
 
 	if root_object.has("listDefs"):
-		self._list_definitions = self.Json.jtoken_to_list_definitions(root_object["listDefs"])
+		self._list_definitions = self.StaticJSON.jtoken_to_list_definitions(root_object["listDefs"])
 
-	self._main_content_container = Utils.as_or_null(
-			self.Json.jtoken_to_runtime_object(root_token),
+	self._main_content_container = InkUtils.as_or_null(
+			self.StaticJSON.jtoken_to_runtime_object(root_token),
 			"InkContainer"
 	)
 
@@ -201,7 +191,7 @@ func to_json() -> String:
 
 
 func write_root_property(writer: InkSimpleJSON.Writer) -> void:
-	self.Json.write_runtime_container(writer, self._main_content_container)
+	self.StaticJSON.write_runtime_container(writer, self._main_content_container)
 
 
 func to_json_with_writer(writer: InkSimpleJSON.Writer) -> void:
@@ -209,7 +199,7 @@ func to_json_with_writer(writer: InkSimpleJSON.Writer) -> void:
 
 	writer.write_property("inkVersion", INK_VERSION_CURRENT)
 
-	writer.write_property("root", funcref(self, "write_root_property"))
+	writer.write_property("root", Callable(self, "write_root_property"))
 
 	if self._list_definitions != null:
 		writer.write_property_start("listDefs")
@@ -238,8 +228,8 @@ func reset_state() -> void:
 	if async_we_cant ("ResetState"):
 		return
 
-	self._state = InkStoryState.new(self)
-	self._state.variables_state.connect("variable_changed", self, "variable_state_did_change_event")
+	self._state = InkStoryState.new(self, self._ink_runtime)
+	self._state.variables_state.connect("variable_changed", Callable(self, "variable_state_did_change_event"))
 
 	self.reset_globals()
 
@@ -262,7 +252,7 @@ func reset_globals() -> void:
 	if (self._main_content_container.named_content.has("global decl")):
 		var original_pointer = self.state.current_pointer
 
-		self.choose_path(InkPath().new_with_components_string("global decl"), false)
+		self.choose_path(InkPath.new_with_components_string("global decl"), false)
 
 		self.continue_internal()
 
@@ -276,7 +266,7 @@ func switch_flow(flow_name: String) -> void:
 		return
 
 	if self._async_saving:
-		Utils.throw_exception("Story is already in background saving mode, can't switch flow to " + flow_name)
+		InkUtils.throw_exception("Story is already in background saving mode, can't switch flow to " + flow_name)
 
 	self.state.switch_flow_internal(flow_name)
 
@@ -289,17 +279,17 @@ func switch_to_default_flow() -> void:
 	self.state.switch_to_default_flow_internal()
 
 
-func continue() -> String:
+func continue_story() -> String:
 	self.continue_async(0)
 	return self.current_text
 
 
-var can_continue: bool setget , get_continue
+var can_continue: bool: get = get_continue
 func get_continue() -> bool:
 	return self.state.can_continue
 
 
-var async_continue_complete: bool setget , get_async_continue_complete
+var async_continue_complete: bool: get = get_async_continue_complete
 func get_async_continue_complete() -> bool:
 	return !self._async_continue_active
 
@@ -323,7 +313,7 @@ func continue_internal(millisecs_limit_async: float = 0) -> void:
 		self._async_continue_active = is_async_time_limited
 
 		if !self.can_continue:
-			Utils.throw_exception("Can't continue - should check canContinue before calling Continue")
+			InkUtils.throw_exception("Can't continue - should check canContinue before calling Continue")
 			return
 
 		self._state.did_safe_exit = false
@@ -373,9 +363,9 @@ func continue_internal(millisecs_limit_async: float = 0) -> void:
 				add_error("Thread available to pop, threads should always be flat by the end of evaluation?")
 
 			if self.state.generated_choices.size() == 0 && !self.state.did_safe_exit && self._temporary_evaluation_container == null:
-				if self.state.callstack.can_pop_type(PushPopType.TUNNEL):
+				if self.state.callstack.can_pop_type(Ink.PushPopType.TUNNEL):
 					add_error("unexpectedly reached end of content. Do you need a '->->' to return from a tunnel?")
-				elif self.state.callstack.can_pop_type(PushPopType.FUNCTION):
+				elif self.state.callstack.can_pop_type(Ink.PushPopType.FUNCTION):
 					add_error("unexpectedly reached end of content. Do you need a '~ return'?")
 				elif !self.state.callstack.can_pop:
 					add_error("ran out of content. Do you need a '-> DONE' or '-> END'?")
@@ -397,14 +387,14 @@ func continue_internal(millisecs_limit_async: float = 0) -> void:
 		_profiler.post_continue()
 
 	if self.state.has_error || self.state.has_warning:
-		if !self.get_signal_connection_list("on_error").empty():
+		if !self.get_signal_connection_list("on_error").is_empty():
 			if self.state.has_error:
 				for err in self.state.current_errors:
-					emit_signal("on_error", err, ErrorType.ERROR)
+					emit_signal("on_error", err, Ink.ErrorType.ERROR)
 
 			if self.state.has_warning:
 				for err in self.state.current_warnings:
-					emit_signal("on_error", err, ErrorType.WARNING)
+					emit_signal("on_error", err, Ink.ErrorType.WARNING)
 
 			self.reset_errors()
 		else:
@@ -508,14 +498,14 @@ func calculate_newline_output_state_change(
 	return OutputStateChange.NO_CHANGE
 
 
-func continue_maximally() -> String:
+func continue_story_maximally() -> String:
 	if async_we_cant("ContinueMaximally"):
 		return ""
 
 	var _str = ""
 
 	while (self.can_continue):
-		_str += self.continue()
+		_str += self.continue_story()
 
 	return _str
 
@@ -526,14 +516,14 @@ func content_at_path(path: InkPath) -> InkSearchResult:
 
 func knot_container_with_name(name: String) -> InkContainer:
 	if self.main_content_container.named_content.has(name):
-		return Utils.as_or_null(self.main_content_container.named_content[name], "InkContainer")
+		return InkUtils.as_or_null(self.main_content_container.named_content[name], "InkContainer")
 
 	return null
 
 
 func pointer_at_path(path: InkPath) -> InkPointer:
 	if (path.length == 0):
-		return InkPointer.null()
+		return InkPointer.null_pointer
 
 	var p = InkPointer.new()
 
@@ -589,7 +579,7 @@ func copy_state_for_background_thread_save() -> InkStoryState:
 		return null
 
 	if self._async_saving:
-		Utils.throw_exception(
+		InkUtils.throw_exception(
 				"Story is already in background saving mode, " +
 				"can't call CopyStateForBackgroundThreadSave again!"
 		)
@@ -616,7 +606,7 @@ func step() -> void:
 	if pointer.is_null:
 		return
 
-	var container_to_enter = Utils.as_or_null(pointer.resolve(), "InkContainer")
+	var container_to_enter = InkUtils.as_or_null(pointer.resolve(), "InkContainer")
 	while (container_to_enter):
 		self.visit_container(container_to_enter, true)
 
@@ -624,7 +614,7 @@ func step() -> void:
 			break
 
 		pointer = InkPointer.start_of(container_to_enter)
-		container_to_enter = Utils.as_or_null(pointer.resolve(), "InkContainer")
+		container_to_enter = InkUtils.as_or_null(pointer.resolve(), "InkContainer")
 
 	self.state.current_pointer = pointer
 
@@ -640,7 +630,7 @@ func step() -> void:
 	if is_logic_or_flow_control:
 		should_add_to_stream = false
 
-	var choice_point = Utils.as_or_null(current_content_obj, "ChoicePoint")
+	var choice_point = InkUtils.as_or_null(current_content_obj, "ChoicePoint")
 	if choice_point:
 		var choice = process_choice(choice_point)
 		if choice:
@@ -649,11 +639,11 @@ func step() -> void:
 		current_content_obj = null
 		should_add_to_stream = false
 
-	if Utils.is_ink_class(current_content_obj, "InkContainer"):
+	if InkUtils.is_ink_class(current_content_obj, "InkContainer"):
 		should_add_to_stream = false
 
 	if should_add_to_stream:
-		var var_pointer = Utils.as_or_null(current_content_obj, "VariablePointerValue")
+		var var_pointer = InkUtils.as_or_null(current_content_obj, "VariablePointerValue")
 		if var_pointer && var_pointer.context_index == -1:
 			var context_idx = self.state.callstack.context_for_variable_named(var_pointer.variable_name)
 			current_content_obj = InkVariablePointerValue.new_with_context(var_pointer.variable_name, context_idx)
@@ -665,7 +655,7 @@ func step() -> void:
 
 	self.next_content()
 
-	var control_cmd = Utils.as_or_null(current_content_obj, "ControlCommand")
+	var control_cmd = InkUtils.as_or_null(current_content_obj, "ControlCommand")
 	if control_cmd && control_cmd.command_type == InkControlCommand.CommandType.START_THREAD:
 		self.state.callstack.push_thread()
 
@@ -689,17 +679,17 @@ func visit_changed_containers_due_to_divert() -> void:
 
 	self._prev_containers.clear()
 	if !previous_pointer.is_null:
-		var prev_ancestor = Utils.as_or_null(previous_pointer.resolve(), "InkContainer")
-		prev_ancestor = prev_ancestor if prev_ancestor else Utils.as_or_null(previous_pointer.container, "InkContainer")
+		var prev_ancestor = InkUtils.as_or_null(previous_pointer.resolve(), "InkContainer")
+		prev_ancestor = prev_ancestor if prev_ancestor else InkUtils.as_or_null(previous_pointer.container, "InkContainer")
 		while prev_ancestor:
 			self._prev_containers.append(prev_ancestor)
-			prev_ancestor = Utils.as_or_null(prev_ancestor.parent, "InkContainer")
+			prev_ancestor = InkUtils.as_or_null(prev_ancestor.parent, "InkContainer")
 
 	var current_child_of_container = pointer.resolve()
 
 	if current_child_of_container == null: return
 
-	var current_container_ancestor = Utils.as_or_null(current_child_of_container.parent, "InkContainer")
+	var current_container_ancestor = InkUtils.as_or_null(current_child_of_container.parent, "InkContainer")
 
 	var all_children_entered_at_start = true
 	while current_container_ancestor && (self._prev_containers.find(current_container_ancestor) < 0 || current_container_ancestor.counting_at_start_only):
@@ -714,7 +704,7 @@ func visit_changed_containers_due_to_divert() -> void:
 		self.visit_container(current_container_ancestor, entering_at_start)
 
 		current_child_of_container = current_container_ancestor
-		current_container_ancestor = Utils.as_or_null(current_container_ancestor.parent, "InkContainer")
+		current_container_ancestor = InkUtils.as_or_null(current_container_ancestor.parent, "InkContainer")
 
 
 # The original implementation would return the choice string and update the
@@ -722,12 +712,12 @@ func visit_changed_containers_due_to_divert() -> void:
 # in GDScript, the method returns a tuple (array) instead.
 # (Array<String>) -> [String, Array<String>]
 func pop_choice_string_and_tags(tags) -> Array:
-	var choice_only_str_val = Utils.cast(self.state.pop_evaluation_stack(), "StringValue")
+	var choice_only_str_val = InkUtils.cast(self.state.pop_evaluation_stack(), "StringValue")
 
-	while self.state.evaluation_stack.size() > 0 and Utils.is_ink_class(state.peek_evaluation_stack(), "Tag"):
+	while self.state.evaluation_stack.size() > 0 and InkUtils.is_ink_class(state.peek_evaluation_stack(), "Tag"):
 		if tags == null:
 			tags = []
-		var tag = Utils.cast(self.state.pop_evaluation_stack(), "Tag")
+		var tag = InkUtils.cast(self.state.pop_evaluation_stack(), "Tag")
 		tags.insert(0, tag.text)
 
 	return [choice_only_str_val.value, tags]
@@ -770,17 +760,17 @@ func process_choice(choice_point: InkChoicePoint) -> InkChoice:
 	choice.tags = tags
 	choice.thread_at_generation = self.state.callstack.fork_thread()
 
-	choice.text = Utils.trim(start_text + choice_only_text, [" ", "\t"])
+	choice.text = InkUtils.trim(start_text + choice_only_text, [" ", "\t"])
 
 	return choice
 
 
 func is_truthy(obj: InkObject) -> bool:
 	var truthy = false
-	if Utils.is_ink_class(obj, "Value"):
+	if InkUtils.is_ink_class(obj, "Value"):
 		var val = obj
 
-		if Utils.is_ink_class(obj, "DivertTargetValue"):
+		if InkUtils.is_ink_class(obj, "DivertTargetValue"):
 			var div_target = val
 			error(str("Shouldn't use a divert target (to ", div_target.target_path._to_string(),
 					  ") as a conditional value. Did you intend a function call 'likeThis()'",
@@ -796,7 +786,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 	if (content_obj == null):
 		return false
 
-	if Utils.is_ink_class(content_obj, "Divert"):
+	if InkUtils.is_ink_class(content_obj, "Divert"):
 		var current_divert = content_obj
 
 		if current_divert.is_conditional:
@@ -813,8 +803,8 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 				error(str("Tried to divert using a target from a variable that could not be found (",
 						  var_name, ")"))
 				return false
-			elif !Utils.is_ink_class(var_contents, "DivertTargetValue"):
-				var int_content = Utils.as_or_null(var_contents, "IntValue")
+			elif !InkUtils.is_ink_class(var_contents, "DivertTargetValue"):
+				var int_content = InkUtils.as_or_null(var_contents, "IntValue")
 
 				var error_message = str("Tried to divert to a target from a variable,",
 										"but the variable (", var_name,
@@ -852,7 +842,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 				return false
 
 		return true
-	elif Utils.is_ink_class(content_obj, "ControlCommand"):
+	elif InkUtils.is_ink_class(content_obj, "ControlCommand"):
 		var eval_command = content_obj
 
 		match eval_command.command_type:
@@ -875,7 +865,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 				if self.state.evaluation_stack.size() > 0:
 					var output = self.state.pop_evaluation_stack()
 
-					if !Utils.as_or_null(output, "Void"):
+					if !InkUtils.as_or_null(output, "Void"):
 						var text = InkStringValue.new_with(output._to_string())
 						self.state.push_to_output_stream(text)
 
@@ -892,24 +882,24 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 				var is_pop_function = (
 						eval_command.command_type == InkControlCommand.CommandType.POP_FUNCTION
 				)
-				var pop_type = PushPopType.FUNCTION if is_pop_function else PushPopType.TUNNEL
+				var pop_type = Ink.PushPopType.FUNCTION if is_pop_function else Ink.PushPopType.TUNNEL
 
 				var override_tunnel_return_target = null # DivertTargetValue
-				if pop_type == PushPopType.TUNNEL:
+				if pop_type == Ink.PushPopType.TUNNEL:
 					var popped = self.state.pop_evaluation_stack()
-					override_tunnel_return_target = Utils.as_or_null(popped, "DivertTargetValue")
+					override_tunnel_return_target = InkUtils.as_or_null(popped, "DivertTargetValue")
 					if override_tunnel_return_target == null:
 						self.__assert__(
-								Utils.is_ink_class(popped, "Void"),
+								InkUtils.is_ink_class(popped, "Void"),
 								"Expected void if ->-> doesn't override target"
 						)
 
 				if self.state.try_exit_function_evaluation_from_game():
 					pass
 				elif self.state.callstack.current_element.type != pop_type || !self.state.callstack.can_pop:
-					var names = {} # Dictionary<PushPopType, String>
-					names[PushPopType.FUNCTION] = "function return statement (~ return)"
-					names[PushPopType.TUNNEL] = "tunnel onwards statement (->->)"
+					var names = {} # Dictionary<Ink.PushPopType, String>
+					names[Ink.PushPopType.FUNCTION] = "function return statement (~ return)"
+					names[Ink.PushPopType.TUNNEL] = "tunnel onwards statement (->->)"
 
 					var expected = names[self.state.callstack.current_element.type]
 					if !self.state.callstack.can_pop:
@@ -947,7 +937,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 
 						output_count_consumed += 1
 
-						var command = Utils.as_or_null(obj, "ControlCommand")
+						var command = InkUtils.as_or_null(obj, "ControlCommand")
 						if command != null:
 							if command.command_type == InkControlCommand.CommandType.BEGIN_TAG:
 								break
@@ -955,7 +945,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 								self.error("Unexpected ControlCommand while extracting tag from choice")
 								break
 
-						if Utils.is_ink_class(obj, "StringValue"):
+						if InkUtils.is_ink_class(obj, "StringValue"):
 							content_stack_for_tag.push_front(obj)
 
 						i -= 1
@@ -984,15 +974,15 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 
 					output_count_consumed += 1
 
-					var command = Utils.as_or_null(obj, "ControlCommand")
+					var command = InkUtils.as_or_null(obj, "ControlCommand")
 					if (command != null &&
 						command.command_type == InkControlCommand.CommandType.BEGIN_STRING):
 						break
 
-					if Utils.is_ink_class(obj, "Tag"):
+					if InkUtils.is_ink_class(obj, "Tag"):
 						content_to_retain.push_front(obj)
 
-					if Utils.is_ink_class(obj, "StringValue"):
+					if InkUtils.is_ink_class(obj, "StringValue"):
 						content_stack_for_string.push_front(obj)
 
 					i -= 1
@@ -1018,16 +1008,16 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 
 			InkControlCommand.CommandType.TURNS_SINCE, InkControlCommand.CommandType.READ_COUNT:
 				var target = self.state.pop_evaluation_stack()
-				if !Utils.is_ink_class(target, "DivertTargetValue"):
+				if !InkUtils.is_ink_class(target, "DivertTargetValue"):
 					var extra_note = ""
-					if Utils.is_ink_class(target, "IntValue"):
+					if InkUtils.is_ink_class(target, "IntValue"):
 						extra_note = ". Did you accidentally pass a read count ('knot_name') instead of a target ('-> knot_name')?"
 					error(str("TURNS_SINCE expected a divert target (knot, stitch, label name), but saw ",
 							  target, extra_note))
 					return false
 
-				var divert_target = Utils.as_or_null(target, "DivertTargetValue")
-				var container = Utils.as_or_null(self.content_at_path(divert_target.target_path).correct_obj, "InkContainer")
+				var divert_target = InkUtils.as_or_null(target, "DivertTargetValue")
+				var container = InkUtils.as_or_null(self.content_at_path(divert_target.target_path).correct_obj, "InkContainer")
 
 				var either_count = 0
 				if container != null:
@@ -1047,8 +1037,8 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 				self.state.push_evaluation_stack(InkIntValue.new_with(either_count))
 
 			InkControlCommand.CommandType.RANDOM:
-				var max_int = Utils.as_or_null(self.state.pop_evaluation_stack(), "IntValue")
-				var min_int = Utils.as_or_null(self.state.pop_evaluation_stack(), "IntValue")
+				var max_int = InkUtils.as_or_null(self.state.pop_evaluation_stack(), "IntValue")
+				var min_int = InkUtils.as_or_null(self.state.pop_evaluation_stack(), "IntValue")
 
 				if min_int == null:
 					error("Invalid value for minimum parameter of RANDOM(min, max)")
@@ -1080,7 +1070,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 				self.state.previous_random = next_random
 
 			InkControlCommand.CommandType.SEED_RANDOM:
-				var _seed = Utils.as_or_null(self.state.pop_evaluation_stack(), "IntValue")
+				var _seed = InkUtils.as_or_null(self.state.pop_evaluation_stack(), "IntValue")
 				if _seed == null:
 					error("Invalid value passed to SEED_RANDOM")
 					return false
@@ -1106,14 +1096,14 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 					self.state.callstack.pop_thread()
 				else:
 					self.state.did_safe_exit = true
-					self.state.current_pointer = InkPointer.null()
+					self.state.current_pointer = InkPointer.null_pointer
 
 			InkControlCommand.CommandType.END:
 				self.state.force_end()
 
 			InkControlCommand.CommandType.LIST_FROM_INT:
-				var int_val = Utils.as_or_null(self.state.pop_evaluation_stack(), "IntValue")
-				var list_name_val = Utils.as_or_null(self.state.pop_evaluation_stack(), "StringValue")
+				var int_val = InkUtils.as_or_null(self.state.pop_evaluation_stack(), "IntValue")
+				var list_name_val = InkUtils.as_or_null(self.state.pop_evaluation_stack(), "StringValue")
 
 				if int_val == null:
 					self._throw_story_exception(
@@ -1141,10 +1131,10 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 				self.state.push_evaluation_stack(generated_list_value)
 
 			InkControlCommand.CommandType.LIST_RANGE:
-				var max_value = Utils.as_or_null(self.state.pop_evaluation_stack(), "Value")
-				var min_value = Utils.as_or_null(self.state.pop_evaluation_stack(), "Value")
+				var max_value = InkUtils.as_or_null(self.state.pop_evaluation_stack(), "Value")
+				var min_value = InkUtils.as_or_null(self.state.pop_evaluation_stack(), "Value")
 
-				var target_list = Utils.as_or_null(self.state.pop_evaluation_stack(), "ListValue")
+				var target_list = InkUtils.as_or_null(self.state.pop_evaluation_stack(), "ListValue")
 
 				if target_list == null || min_value == null || max_value == null:
 					self._throw_story_exception("Expected list, minimum and maximum for LIST_RANGE")
@@ -1156,7 +1146,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 
 			InkControlCommand.CommandType.LIST_RANDOM:
 
-				var list_val = Utils.as_or_null(self.state.pop_evaluation_stack(), "ListValue")
+				var list_val = InkUtils.as_or_null(self.state.pop_evaluation_stack(), "ListValue")
 				if list_val == null:
 					self._throw_story_exception("Expected list for LIST_RANDOM")
 					return false
@@ -1195,15 +1185,23 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 
 		return true
 
-	elif Utils.as_or_null(content_obj, "VariableAssignment"):
+	elif InkUtils.as_or_null(content_obj, "VariableAssignment"):
 		var var_ass = content_obj
 		var assigned_val = self.state.pop_evaluation_stack()
+
+		# This does not exist in the original codebase.
+		# It ensures the type is correct, so we execution
+		# isn't stopped when the argument has an incorrect
+		# type. (In the original codebase, this is handled
+		# through exceptions.)
+		if !InkUtils.is_ink_class(assigned_val, "InkObject"):
+			return false
 
 		self.state.variables_state.assign(var_ass, assigned_val)
 
 		return true
 
-	elif Utils.as_or_null(content_obj, "VariableReference"):
+	elif InkUtils.as_or_null(content_obj, "VariableReference"):
 		var var_ref = content_obj
 		var found_value = null # InkValue
 
@@ -1225,7 +1223,7 @@ func perform_logic_and_flow_control(content_obj: InkObject) -> bool:
 		self.state.push_evaluation_stack(found_value)
 		return true
 
-	elif Utils.as_or_null(content_obj, "NativeFunctionCall"):
+	elif InkUtils.as_or_null(content_obj, "NativeFunctionCall"):
 		var function = content_obj
 		var func_params = self.state.pop_evaluation_stack(function.number_of_parameters)
 		var result = function.call_with_parameters(func_params, _make_story_error_metadata())
@@ -1244,15 +1242,15 @@ func choose_path_string(path, reset_callstack = true, arguments = null):
 	if reset_callstack:
 		self.reset_callstack()
 	else:
-		if self.state.callstack.current_element.type == PushPopType.FUNCTION:
+		if self.state.callstack.current_element.type == Ink.PushPopType.FUNCTION:
 			var func_detail = ""
 			var container = self.state.callstack.current_element.current_pointer.container
 			if container != null:
 				func_detail = "(" + container.path._to_string() + ") "
 
-			Utils.throw_exception(
-					"Story was running a function %s" % func_detail,
-					"when you called ChoosePathString(%s) " % path,
+			InkUtils.throw_exception(
+					("Story was running a function %s" % func_detail) +
+					("when you called ChoosePathString(%s) " % path) +
 					"- this is almost certainly not not what you want! Full stack trace: \n" +
 					self.state.callstack.callstack_trace
 			)
@@ -1260,12 +1258,12 @@ func choose_path_string(path, reset_callstack = true, arguments = null):
 			return
 
 	self.state.pass_arguments_to_evaluation_stack(arguments)
-	self.choose_path(InkPath().new_with_components_string(path))
+	self.choose_path(InkPath.new_with_components_string(path))
 
 
 func async_we_cant(activity_str):
 	if self._async_continue_active:
-		Utils.throw_exception(
+		InkUtils.throw_exception(
 				"Can't %s. Story is in the middle of a ContinueAsync(). " % activity_str +
 				"Make more ContinueAsync() calls or a single Continue() call beforehand."
 		)
@@ -1318,15 +1316,15 @@ func evaluate_function(
 		return
 
 	if function_name == null:
-		Utils.throw_exception("Function is null")
+		InkUtils.throw_exception("Function is null")
 		return null
-	elif function_name == "" || Utils.trim(function_name) == "":
-		Utils.throw_exception("Function is empty or white space.")
+	elif function_name == "" || InkUtils.trim(function_name) == "":
+		InkUtils.throw_exception("Function is empty or white space.")
 		return null
 
 	var func_container = knot_container_with_name(function_name)
 	if func_container == null:
-		Utils.throw_exception("Function doesn't exist: '%s'" % function_name)
+		InkUtils.throw_exception("Function doesn't exist: '%s'" % function_name)
 		return null
 
 	var output_stream_before = self.state.output_stream.duplicate() # Array<InkObject>
@@ -1334,9 +1332,13 @@ func evaluate_function(
 
 	self.state.start_function_evaluation_from_game(func_container, arguments)
 
+	# TODO: Add comment - This code did not exist in upstream.
+	if self._ink_runtime.clear_raised_exceptions():
+		return null
+
 	var string_output = ""
 	while self.can_continue:
-		string_output += self.continue()
+		string_output += self.continue_story()
 
 	var text_output = string_output
 
@@ -1355,7 +1357,7 @@ func evaluate_function(
 func evaluate_expression(expr_container: InkContainer) -> InkObject:
 	var start_callstack_height = self.state.callstack.elements.size()
 
-	self.state.callstack.push(PushPopType.TUNNEL)
+	self.state.callstack.push(Ink.PushPopType.TUNNEL)
 
 	_temporary_evaluation_container = expr_container
 
@@ -1363,7 +1365,7 @@ func evaluate_expression(expr_container: InkContainer) -> InkObject:
 
 	var eval_stack_height = self.state.evaluation_stack.size()
 
-	self.continue()
+	self.continue_story()
 
 	_temporary_evaluation_container = null
 
@@ -1401,7 +1403,7 @@ func call_external_function(func_name: String, number_of_arguments: int) -> void
 			)
 
 			self.state.callstack.push(
-				PushPopType.FUNCTION,
+				Ink.PushPopType.FUNCTION,
 				0,
 				self.state.output_stream.size()
 			)
@@ -1419,13 +1421,13 @@ func call_external_function(func_name: String, number_of_arguments: int) -> void
 	var arguments = [] # Array<Variant>
 	var i = 0
 	while i < number_of_arguments:
-		var popped_obj = Utils.as_or_null(self.state.pop_evaluation_stack(), "Value")
+		var popped_obj = InkUtils.as_or_null(self.state.pop_evaluation_stack(), "Value")
 		var value_obj = popped_obj.value_object
 		arguments.append(value_obj)
 
 		i += 1
 
-	arguments.invert()
+	arguments.reverse()
 
 	var func_result = _func_def.execute(arguments)
 
@@ -1435,7 +1437,7 @@ func call_external_function(func_name: String, number_of_arguments: int) -> void
 		self.__assert__(
 			return_obj != null,
 			"Could not create ink value from returned object of type %s" % \
-			Utils.typename_of(typeof(func_result))
+			InkUtils.typename_of(typeof(func_result))
 		)
 	else:
 		return_obj = InkVoid.new()
@@ -1501,29 +1503,29 @@ func validate_external_bindings() -> void:
 	else:
 		var message: String = "ERROR: Missing function binding for external %s: '%s' %s" % [
 			"s" if missing_externals.size() > 1 else "",
-			Utils.join("', '", missing_externals.to_array()),
+			"', '", InkUtils.join("', '", missing_externals.to_array()),
 			", and no fallback ink function found." if allow_external_function_fallbacks else " (ink fallbacks disabled)"
 		]
 
 		error(message)
 
 
-func validate_external_bindings_with(o: InkContainer, missing_externals: InkStringSet) -> void:
-	var container = Utils.as_or_null(o, "InkContainer")
+func validate_external_bindings_with(o: InkObject, missing_externals: InkStringSet) -> void:
+	var container = InkUtils.as_or_null(o, "InkContainer")
 	if container:
 		for inner_content in o.content:
-			var inner_container = Utils.as_or_null(inner_content, "InkContainer")
+			var inner_container = InkUtils.as_or_null(inner_content, "InkContainer")
 			if inner_container == null || !inner_container.has_valid_name:
 				validate_external_bindings_with(inner_content, missing_externals)
 
 		for inner_key in o.named_content:
 			validate_external_bindings_with(
-				Utils.as_or_null(o.named_content[inner_key], "InkObject"),
+				InkUtils.as_or_null(o.named_content[inner_key], "InkObject"),
 				missing_externals
 			)
 		return
 
-	var divert = Utils.as_or_null(o, "Divert")
+	var divert = InkUtils.as_or_null(o, "Divert")
 	if divert && divert.is_external:
 		var name = divert.target_path_string
 
@@ -1545,17 +1547,17 @@ func observe_variable(variable_name: String, object, method_name: String) -> voi
 		_variable_observers = {}
 
 	if !self.state.variables_state.global_variable_exists_with_name(variable_name):
-		Utils.throw_exception(
+		InkUtils.throw_exception(
 				"Cannot observe variable '%s'" % variable_name +
 				"because it wasn't declared in the ink story."
 		)
 		return
 
 	if _variable_observers.has(variable_name):
-		_variable_observers[variable_name].connect("variable_changed", object, method_name)
+		_variable_observers[variable_name].connect("variable_changed", Callable(object, method_name))
 	else:
 		var new_observer = VariableObserver.new(variable_name)
-		new_observer.connect("variable_changed", object, method_name)
+		new_observer.connect("variable_changed", Callable(object, method_name))
 
 		_variable_observers[variable_name] = new_observer
 
@@ -1591,14 +1593,14 @@ func remove_variable_observer(object = null, method_name = null, specific_variab
 		if _variable_observers.has(specific_variable_name):
 			var observer = _variable_observers[specific_variable_name]
 			if object != null && method_name != null:
-				observer.disconnect("variable_changed", object, method_name)
+				observer.disconnect("variable_changed", Callable(object, method_name))
 
-				if observer.get_signal_connection_list("variable_changed").empty():
+				if observer.get_signal_connection_list("variable_changed").is_empty():
 					_variable_observers.erase(specific_variable_name)
 			else:
 				var connections = observer.get_signal_connection_list("variable_changed");
 				for connection in connections:
-					observer.disconnect(connection.signal, connection.target, connection.method)
+					observer.disconnect(connection.signal.get_name(), connection.callable)
 
 				_variable_observers.erase(specific_variable_name)
 
@@ -1606,10 +1608,10 @@ func remove_variable_observer(object = null, method_name = null, specific_variab
 		var keys_to_remove = []
 		for observer_key in _variable_observers:
 			var observer = _variable_observers[observer_key]
-			if observer.is_connected("variable_changed", object, method_name):
-				observer.disconnect("variable_changed", object, method_name)
+			if observer.is_connected("variable_changed", Callable(object, method_name)):
+				observer.disconnect("variable_changed", Callable(object, method_name))
 
-			if observer.get_signal_connection_list("variable_changed").empty():
+			if observer.get_signal_connection_list("variable_changed").is_empty():
 				keys_to_remove.append(observer_key)
 
 		for key in keys_to_remove:
@@ -1623,8 +1625,8 @@ func variable_state_did_change_event(variable_name: String, new_value_obj: InkOb
 	if _variable_observers.has(variable_name):
 		var observer = _variable_observers[variable_name]
 
-		if !Utils.is_ink_class(new_value_obj, "Value"):
-			Utils.throw_exception("Tried to get the value of a variable that isn't a standard type")
+		if !InkUtils.is_ink_class(new_value_obj, "Value"):
+			InkUtils.throw_exception("Tried to get the value of a variable that isn't a standard type")
 			return
 
 		var val = new_value_obj
@@ -1632,9 +1634,9 @@ func variable_state_did_change_event(variable_name: String, new_value_obj: InkOb
 		observer.emit_signal("variable_changed", variable_name, val.value_object)
 
 
-var global_tags setget , get_global_tags # Array<String>
-func get_global_tags():
-	return self.tags_at_start_of_flow_container_with_path_string("")
+var global_tags: # Array<String>
+	get:
+		return self.tags_at_start_of_flow_container_with_path_string("")
 
 # (String) -> Array<String>?
 func tags_for_content_at_path(path: String):
@@ -1642,26 +1644,26 @@ func tags_for_content_at_path(path: String):
 
 # (String) -> Array<String>?
 func tags_at_start_of_flow_container_with_path_string(path_string: String):
-	var path = InkPath().new_with_components_string(path_string)
+	var path = InkPath.new_with_components_string(path_string)
 
 	var flow_container = content_at_path(path).container
 	while (true):
 		var first_content = flow_container.content[0]
-		if Utils.is_ink_class(first_content, "InkContainer"):
+		if InkUtils.is_ink_class(first_content, "InkContainer"):
 			flow_container = first_content
 		else: break
 
 	var in_tag := false
 	var tags = null # Array<String>
 	for c in flow_container.content:
-		var command = Utils.as_or_null(c, "ControlCommand")
+		var command = InkUtils.as_or_null(c, "ControlCommand")
 		if command != null:
 			if command.command_type == InkControlCommand.CommandType.BEGIN_TAG:
 				in_tag = true
 			elif command.command_type == InkControlCommand.CommandType.END_TAG:
 				in_tag = false
 		elif in_tag:
-			var _str = Utils.as_or_null(c, "StringValue")
+			var _str = InkUtils.as_or_null(c, "StringValue")
 			if _str != null:
 				if tags == null:
 					tags = [] # Array<String>
@@ -1696,7 +1698,7 @@ func next_content() -> void:
 	if !self.state.diverted_pointer.is_null:
 
 		self.state.current_pointer = self.state.diverted_pointer
-		self.state.diverted_pointer = InkPointer.null()
+		self.state.diverted_pointer = InkPointer.null_pointer
 
 		self.visit_changed_containers_due_to_divert()
 
@@ -1708,9 +1710,9 @@ func next_content() -> void:
 	if !successful_pointer_increment:
 		var did_pop = false
 
-		if self.state.callstack.can_pop_type(PushPopType.FUNCTION):
+		if self.state.callstack.can_pop_type(Ink.PushPopType.FUNCTION):
 
-			self.state.pop_callstack(PushPopType.FUNCTION)
+			self.state.pop_callstack(Ink.PushPopType.FUNCTION)
 
 			if self.state.in_expression_evaluation:
 				self.state.push_evaluation_stack(InkVoid.new())
@@ -1737,7 +1739,7 @@ func increment_content_pointer() -> bool:
 
 		successful_increment = false
 
-		var next_ancestor = Utils.as_or_null(pointer.container.parent, "InkContainer")
+		var next_ancestor = InkUtils.as_or_null(pointer.container.parent, "InkContainer")
 		if !next_ancestor:
 			break
 
@@ -1749,7 +1751,7 @@ func increment_content_pointer() -> bool:
 
 		successful_increment = true
 
-	if !successful_increment: pointer = InkPointer.null()
+	if !successful_increment: pointer = InkPointer.null_pointer
 
 	var current_element = self.state.callstack.current_element
 	current_element.current_pointer = pointer
@@ -1782,7 +1784,7 @@ func try_follow_default_invisible_choice() -> bool:
 
 
 func next_sequence_shuffle_index() -> int:
-	var num_elements_int_val = Utils.as_or_null(self.state.pop_evaluation_stack(), "IntValue")
+	var num_elements_int_val = InkUtils.as_or_null(self.state.pop_evaluation_stack(), "IntValue")
 	if num_elements_int_val == null:
 		error("expected number of elements in sequence for shuffle index")
 		return 0
@@ -1791,7 +1793,7 @@ func next_sequence_shuffle_index() -> int:
 
 	var num_elements = num_elements_int_val.value
 
-	var seq_count_val = Utils.as_or_null(self.state.pop_evaluation_stack(), "IntValue")
+	var seq_count_val = InkUtils.as_or_null(self.state.pop_evaluation_stack(), "IntValue")
 	var seq_count = seq_count_val.value
 	var loop_index = seq_count / num_elements
 	var iteration_index = seq_count % num_elements
@@ -1814,20 +1816,20 @@ func next_sequence_shuffle_index() -> int:
 	while (i <= iteration_index):
 		var chosen = randi() % unpicked_indices.size()
 		var chosen_index = unpicked_indices[chosen]
-		unpicked_indices.remove(chosen)
+		unpicked_indices.remove_at(chosen)
 
 		if i == iteration_index:
 			return chosen_index
 
 		i += 1
 
-	Utils.throw_exception("Should never reach here")
+	InkUtils.throw_exception("Should never reach here")
 	return -1
 
 
 # (String, bool) -> void
 func error(message: String, use_end_line_number: bool = false) -> void:
-	Utils.throw_story_exception(message, use_end_line_number, _make_story_error_metadata())
+	InkUtils.throw_story_exception(message, use_end_line_number, _make_story_error_metadata())
 
 
 # (String) -> void
@@ -1874,12 +1876,12 @@ func __assert__(condition: bool, message = null, format_params = null) -> void:
 			message = message % format_params
 
 		if self.current_debug_metadata != null:
-			Utils.throw_exception("%s %s" % [message, str(self.current_debug_metadata)])
+			InkUtils.throw_exception("%s %s" % [message, str(self.current_debug_metadata)])
 		else:
-			Utils.throw_exception(message)
+			InkUtils.throw_exception(message)
 
 
-var current_debug_metadata: InkDebugMetadata setget , get_current_debug_metadata
+var current_debug_metadata: InkDebugMetadata: get = get_current_debug_metadata
 func get_current_debug_metadata() -> InkDebugMetadata:
 	var dm # DebugMetadata
 
@@ -1911,7 +1913,7 @@ func get_current_debug_metadata() -> InkDebugMetadata:
 	return null
 
 
-var current_line_number: int setget , get_current_line_number
+var current_line_number: int: get = get_current_line_number
 func get_current_line_number() -> int:
 	var dm = self.current_debug_metadata
 	if dm != null:
@@ -1921,7 +1923,7 @@ func get_current_line_number() -> int:
 
 
 # InkContainer?
-var main_content_container setget , get_main_content_container
+var main_content_container : get = get_main_content_container
 func get_main_content_container():
 	if _temporary_evaluation_container:
 		return _temporary_evaluation_container
@@ -1963,33 +1965,33 @@ var _profiler = null
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type: String) -> bool:
-	return type == "Story" || .is_class(type)
+func is_ink_class(type: String) -> bool:
+	return type == "Story" || super.is_ink_class(type)
 
 
-func get_class() -> String:
+func get_ink_class() -> String:
 	return "Story"
 
 
 func connect_exception(target: Object, method: String, binds = [], flags = 0) -> int:
-	var runtime = _get_runtime()
+	var runtime = self._ink_runtime
 	if runtime == null:
 		return ERR_UNAVAILABLE
 
-	if runtime.is_connected("exception_raised", target, method):
+	if runtime.is_connected("exception_raised", Callable(target, method)):
 		return OK
 
-	return runtime.connect("exception_raised", target, method, binds, flags)
+	return runtime.connect("exception_raised", Callable(target, method).bind(binds), flags)
 
 
 func _enable_story_exception_recording(enable: bool) -> void:
-	var runtime = _get_runtime()
+	var runtime = self._ink_runtime
 	if runtime != null:
 		runtime.record_story_exceptions = enable
 
 
 func _get_and_clear_recorded_story_exceptions() -> Array:
-	var runtime = _get_runtime()
+	var runtime = self._ink_runtime
 	if runtime == null:
 		return []
 
@@ -2004,7 +2006,7 @@ func _add_error_with_metadata(
 	is_warning: bool = false,
 	use_end_line_number: bool = false,
 	dm = null,
-	current_pointer = InkPointer.null()
+	current_pointer = InkPointer.null_pointer
 ) -> void:
 	var error_type_str = "WARNING" if is_warning else "ERROR"
 
@@ -2023,7 +2025,7 @@ func _add_error_with_metadata(
 
 
 func _throw_story_exception(message: String):
-	Utils.throw_story_exception(message, false, _make_story_error_metadata())
+	InkUtils.throw_story_exception(message, false, _make_story_error_metadata())
 
 
 # This method is used to ensure that the debug metadata and pointer used
@@ -2036,30 +2038,31 @@ func _make_story_error_metadata():
 
 # ############################################################################ #
 
-var Json setget , get_Json
-func get_Json():
-	return _Json.get_ref()
-var _Json = WeakRef.new()
+var StaticJSON: InkStaticJSON:
+	get: return self._ink_runtime.json
+
+var _ink_runtime:
+	get: return _weak_ink_runtime.get_ref()
+var _weak_ink_runtime: WeakRef
 
 var _error_raised_during_step = []
 
-func _initialize_runtime():
-	var ink_runtime = _get_runtime()
+func _initialize_runtime(ink_runtime = null):
+	if ink_runtime != null:
+		_weak_ink_runtime = weakref(ink_runtime)
+	else:
+		var runtime = Engine.get_main_loop().root.get_node("__InkRuntime")
 
-	Utils.__assert__(
-		ink_runtime != null,
-		str("Could not retrieve 'InkRuntime' singleton from the scene tree.")
-	)
+		InkUtils.__assert__(
+			runtime != null,
+			str("[InkStory] Could not retrieve 'InkRuntime' singleton from the scene tree.")
+		)
 
-	_Json = weakref(ink_runtime.json)
-
-func _get_runtime():
-	return Engine.get_main_loop().root.get_node("__InkRuntime")
-
+		_weak_ink_runtime = weakref(runtime)
 
 # ############################################################################ #
 
-class VariableObserver extends Reference:
+class VariableObserver extends RefCounted:
 	var variable_name: String
 
 	signal variable_changed(variable_name, new_value)
@@ -2086,7 +2089,7 @@ class ExternalFunctionDef extends InkBase:
 		if object_ref != null:
 			return object_ref.callv(method, params)
 		else:
-			Utils.throw_exception(
+			InkUtils.throw_exception(
 					"Object binded to %s has been deallocated, cannot execute." % method
 			)
 			return null

@@ -42,23 +42,23 @@ func test_trim_custom():
 # ############################################################################ #
 
 func test_array_join_single_element():
-	var joined_array = Utils.join(" . ", ["Ink"])
+	var joined_array = " . ", ["Ink"].join(Utils)
 	assert_eq(joined_array, "Ink", "")
 
 func test_array_join_two_element():
-	var joined_array = Utils.join(" . ", ["Ink", "Divert"])
+	var joined_array = " . ", ["Ink", "Divert"].join(Utils)
 	assert_eq(joined_array, "Ink . Divert", "")
 
 func test_array_join_multiple_elements():
-	var joined_array = Utils.join(" . ", ["Ink", "Divert", "Gather"])
+	var joined_array = " . ", ["Ink", "Divert", "Gather"].join(Utils)
 	assert_eq(joined_array, "Ink . Divert . Gather", "")
 
 func test_array_join_primitive_type():
-	var joined_array = Utils.join("", [3, 67, 239])
+	var joined_array = "", [3, 67, 239].join(Utils)
 	assert_eq(joined_array, "367239", "")
 
 func test_array_join_ink_base_type():
-	var joined_array = Utils.join(" - ", [InkBaseObject.new("Ink"), InkBaseObject.new(42)])
+	var joined_array = " - ", [InkBaseObject.new("Ink".join(Utils), InkBaseObject.new(42)])
 	assert_eq(joined_array, "Ink - 42", "")
 
 func test_array_valid_range():
@@ -107,7 +107,7 @@ class InkBaseObject extends InkBase:
 		return str(value)
 
 	func is_class(type):
-		return type == "InkBaseObject" || .is_class(type)
+		return type == "InkBaseObject" || super.is_class(type)
 
 	func get_class():
 		return "InkBaseObject"

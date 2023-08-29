@@ -44,14 +44,14 @@ class Reader extends InkBase:
 		if c.length() > 1:
 			return false
 
-		return c.is_valid_integer() || c == "." || c == "-" || c == "+" || c == 'E' || c == 'e'
+		return c.is_valid_int() || c == "." || c == "-" || c == "+" || c == 'E' || c == 'e'
 
 	# (String) -> bool
 	func is_first_number_char(c: String) -> bool:
 		if c.length() > 1:
 			return false
 
-		return c.is_valid_integer() || c == "-" || c == "+"
+		return c.is_valid_int() || c == "-" || c == "+"
 
 	# () -> Variant
 	func read_object():
@@ -78,7 +78,7 @@ class Reader extends InkBase:
 		elif try_read("null"):
 			return null
 
-		Utils.throw_exception("Unhandled object type in JSON: %s" % _text.substr(_offset, 30))
+		InkUtils.throw_exception("Unhandled object type in JSON: %s" % _text.substr(_offset, 30))
 		return JsonError.new()
 
 	# () -> Dictionary<String, Variant>?
@@ -165,7 +165,7 @@ class Reader extends InkBase:
 			if c == "\\":
 				_offset += 1
 				if _offset >= _text.length():
-					Utils.throw_exception("Unexpected EOF while reading string")
+					InkUtils.throw_exception("Unexpected EOF while reading string")
 					return null
 				c = _text[_offset]
 				match c:
@@ -179,13 +179,15 @@ class Reader extends InkBase:
 						pass
 					"u":
 						if _offset + 4 >= _text.length():
-							Utils.throw_exception("Unexpected EOF while reading string")
+							InkUtils.throw_exception("Unexpected EOF while reading string")
 							return null
 						var digits = _text.substr(_offset + 1, 4)
 
-						var json_parse_result = JSON.parse("\"\\u" + digits + "\"")
+						var test_json_conv = JSON.new()
+						test_json_conv.parse("\"\\u" + digits + "\"")
+						var json_parse_result = test_json_conv.get_data()
 						if json_parse_result.error != OK:
-							Utils.throw_exception("Invalid Unicode escape character at offset %d" % (_offset - 1))
+							InkUtils.throw_exception("Invalid Unicode escape character at offset %d" % (_offset - 1))
 							return null
 
 						sb += json_parse_result.result
@@ -193,7 +195,7 @@ class Reader extends InkBase:
 
 						break
 					_:
-						Utils.throw_exception("Invalid Unicode escape character at offset %d " % (_offset - 1))
+						InkUtils.throw_exception("Invalid Unicode escape character at offset %d " % (_offset - 1))
 						return null
 			elif c == "\"":
 				break
@@ -229,10 +231,10 @@ class Reader extends InkBase:
 			if num_str.is_valid_float():
 				return float(num_str)
 		else:
-			if num_str.is_valid_integer():
+			if num_str.is_valid_int():
 				return int(num_str)
 
-		Utils.throw_exception("Failed to parse number value: " + num_str)
+		InkUtils.throw_exception("Failed to parse number value: " + num_str)
 		return JsonError.new()
 
 	# (String) -> bool
@@ -269,7 +271,7 @@ class Reader extends InkBase:
 
 			message += str(" at offset ", _offset)
 
-			Utils.throw_exception(message)
+			InkUtils.throw_exception(message)
 			return false
 
 		return true
@@ -291,10 +293,10 @@ class Reader extends InkBase:
 	# GDScript extra methods
 	# ######################################################################## #
 
-	func is_class(type: String) -> bool:
-		return type == "InkSimpleJSON.Reader" || .is_class(type)
+	func is_ink_class(type: String) -> bool:
+		return type == "InkSimpleJSON.Reader" || super.is_ink_class(type)
 
-	func get_class() -> String:
+	func get_ink_class() -> String:
 		return "InkSimpleJSON.Reader"
 
 class Writer extends InkBase:
@@ -309,10 +311,10 @@ class Writer extends InkBase:
 	func _init():
 		self._writer = InkStringWriter.new()
 
-	# (FuncRef) -> void
-	func write_object(inner: FuncRef) -> void:
+	# (Callable) -> void
+	func write_object(inner: Callable) -> void:
 		write_object_start()
-		inner.call_func(self)
+		inner.call(self)
 		write_object_end()
 
 	func write_object_start() -> void:
@@ -338,9 +340,9 @@ class Writer extends InkBase:
 			write_property_start(name)
 			write(content)
 			write_property_end()
-		elif content is FuncRef:
+		elif content is Callable:
 			write_property_start(name)
-			content.call_func(self)
+			content.call(self)
 			write_property_end()
 		else:
 			push_error("Wrong type for 'content': %s" % str(content))
@@ -533,19 +535,19 @@ class Writer extends InkBase:
 		):
 			increment_child_count()
 
-	var state: int setget , get_state # StateElement.State
-	func get_state() -> int:
-		if _state_stack.size() > 0:
-			return _state_stack.front().type
-		else:
-			return InkStateElement.State.NONE
+	var state: int: # StateElement.State
+		get:
+			if _state_stack.size() > 0:
+				return _state_stack.front().type
+			else:
+				return InkStateElement.State.NONE
 
-	var child_count: int setget , get_child_count # int
-	func get_child_count() -> int:
-		if _state_stack.size() > 0:
-			return _state_stack.front().child_count
-		else:
-			return 0
+	var child_count: int: # int
+		get:
+			if _state_stack.size() > 0:
+				return _state_stack.front().child_count
+			else:
+				return 0
 
 	# () -> void
 	func increment_child_count() -> void:
@@ -574,10 +576,10 @@ class Writer extends InkBase:
 	# GDScript extra methods
 	# ######################################################################## #
 
-	func is_class(type: String) -> bool:
-		return type == "InkSimpleJSON.Writer" || .is_class(type)
+	func is_ink_class(type: String) -> bool:
+		return type == "InkSimpleJSON.Writer" || super.is_ink_class(type)
 
-	func get_class() -> String:
+	func get_ink_class() -> String:
 		return "InkSimpleJSON.Writer"
 
 

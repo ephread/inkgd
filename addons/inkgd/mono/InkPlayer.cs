@@ -13,7 +13,7 @@ using System.Diagnostics;
 
 [Tool]
 
-public class InkPlayer : Node
+public partial class InkPlayer : Node
 {
 	#region Signals
 	[Signal] public delegate void exception_raised(string message, Godot.Collections.Array<string> stack_trace);
@@ -670,7 +670,7 @@ public class InkPlayer : Node
 		}
 
 		file.Seek(0);
-		if (file.GetLen() > 0) {
+		if (file.GetLength() > 0) {
 			story.state.LoadJson(file.GetAsText());
 		}
 	}
@@ -694,7 +694,7 @@ public class InkPlayer : Node
 				return inkBridger.MakeGDInkList(inkList);
 			}
 
-			if (variable is Ink.Runtime.Path path)
+			if (variable is Ink.Runtime.Path3D path)
 			{
 				return inkBridger.MakeGDInkPath(path);
 			}
@@ -1017,7 +1017,7 @@ public class InkPlayer : Node
 	#endregion
 
 	#region Event Handlers
-	private void onError(string message, Ink.ErrorType type)
+	private void onError(string message, Ink.Ink.ErrorType type)
 	{
 		if (stop_execution_on_error)
 		{
@@ -1119,17 +1119,17 @@ public class InkPlayer : Node
 		PushError(message);
 	}
 
-	private void PushStoryError(string message, Ink.ErrorType type)
+	private void PushStoryError(string message, Ink.Ink.ErrorType type)
 	{
 		if (Engine.EditorHint)
 		{
 			switch (type)
 			{
-				case Ink.ErrorType.Error:
+				case Ink.Ink.ErrorType.Error:
 					GD.PrintErr(message);
 					break;
-				case Ink.ErrorType.Warning:
-				case Ink.ErrorType.Author:
+				case Ink.Ink.ErrorType.Warning:
+				case Ink.Ink.ErrorType.Author:
 					GD.Print(message);
 					break;
 			}
@@ -1138,11 +1138,11 @@ public class InkPlayer : Node
 		{
 			switch (type)
 			{
-				case Ink.ErrorType.Error:
+				case Ink.Ink.ErrorType.Error:
 					GD.PushError(message);
 					break;
-				case Ink.ErrorType.Warning:
-				case Ink.ErrorType.Author:
+				case Ink.Ink.ErrorType.Warning:
+				case Ink.Ink.ErrorType.Author:
 					GD.PushWarning(message);
 					break;
 			}
@@ -1177,7 +1177,7 @@ public class InkPlayer : Node
 
 	private bool IsInkObject(Godot.Object inkObject, string name)
 	{
-		return inkObject.HasMethod("is_class") && (bool)inkObject.Call("is_class", new object[] { name });
+		return inkObject.HasMethod("is_ink_class") && (bool)inkObject.Call("is_ink_class", new object[] { name });
 	}
 
 	private void HandleException(Exception e)

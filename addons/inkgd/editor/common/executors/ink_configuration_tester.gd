@@ -49,7 +49,7 @@ func _init(configuration: InkExecutionConfiguration):
 ## an instance of `InkExecutionResult`, otherwise, it will return `null`.
 func test_availability():
 	if _configuration.use_threads:
-		var error = _thread.start(self, "_test_availablity", _configuration, Thread.PRIORITY_HIGH)
+		var error = _thread.start(Callable(self, "_test_availablity").bind(_configuration), Thread.PRIORITY_HIGH)
 		if error != OK:
 			var result = InkExecutionResult.new(
 				self.identifier,
@@ -76,20 +76,20 @@ func _test_availability(config: InkExecutionConfiguration):
 	var return_code = 0
 	var output = []
 
-	var start_time = OS.get_ticks_msec()
+	var start_time = Time.get_ticks_msec()
 
 	if config.use_mono:
 		var args = [config.inklecate_path]
-		return_code = OS.execute(config.mono_path, args, true, output, true)
+		return_code = OS.execute(config.mono_path, args, output, true, false)
 
 	else:
-		return_code = OS.execute(config.inklecate_path, [], true, output, true)
+		return_code = OS.execute(config.inklecate_path, [], output, true, false)
 
-	var end_time = OS.get_ticks_msec()
+	var end_time = Time.get_ticks_msec()
 
 	print("[inkgd] [INFO] Command executed in %dms." % (end_time - start_time))
 
-	var string_output = PoolStringArray(output)
+	var string_output = PackedStringArray(output)
 	if _configuration.use_threads:
 		call_deferred("_handle_test_result", config, return_code, string_output)
 		return null
@@ -113,13 +113,13 @@ func _handle_test_result(config: InkExecutionConfiguration, return_code: int, ou
 func _process_test_result(
 	config: InkExecutionConfiguration,
 	return_code: int,
-	output: PoolStringArray
+	output: PackedStringArray
 ) -> InkExecutionResult:
 	var success: bool = (return_code == 0 || _contains_inklecate_output_prefix(output))
-	var output_text: String = output.join("\n").replace(BOM, "").strip_edges()
+	var output_text: String = "\n".join(output).replace(BOM, "").strip_edges()
 
 	if success:
-		if !output_text.empty():
+		if !output_text.is_empty():
 			print("[inkgd] [INFO] inklecate was found and executed:")
 			print(output_text)
 		else:
@@ -139,7 +139,7 @@ func _process_test_result(
 
 ## Guess whether the provided `output_array` looks like the usage inklecate
 ## outputs when run with no parameters.
-func _contains_inklecate_output_prefix(output_array: PoolStringArray):
+func _contains_inklecate_output_prefix(output_array: PackedStringArray):
 	# No valid output -> it's not inklecate.
 	if output_array.size() == 0: return false
 
