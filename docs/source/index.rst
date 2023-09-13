@@ -51,6 +51,12 @@ differences.
    advanced/differences_between_api
    advanced/error_management
    advanced/performance
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Migrations
+
+   migrating_from_godot_3_to_godot_4
    advanced/migrating_to_godot_mono
 
 .. toctree::

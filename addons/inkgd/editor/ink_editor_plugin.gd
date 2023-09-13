@@ -32,7 +32,8 @@ var InkCompiler = load("res://addons/inkgd/editor/common/executors/ink_compiler.
 # Constant
 # ############################################################################ #
 
-const DO_NOT_USE_MONO_RUNTIME_SETTING = "inkgd/do_not_use_mono_runtime"
+const USE_MONO_RUNTIME_SETTING = "inkgd/use_mono_runtime"
+const REGISTER_TEMPLATES_SETTING = "inkgd/register_templates"
 
 
 # ############################################################################ #
@@ -77,6 +78,7 @@ func _enter_tree():
 		)
 	else:
 		print("[inkgd] [INFO] Using the GDScript runtime.")
+		_register_custom_settings()
 		add_custom_type(
 				"InkPlayer",
 				"Node",
@@ -184,6 +186,10 @@ func _remove_autoloads():
 
 ## Registers the script templates provided by the plugin.
 func _add_templates():
+	if ProjectSettings.has_setting(REGISTER_TEMPLATES_SETTING):
+		var register_template = ProjectSettings.get_setting(REGISTER_TEMPLATES_SETTING)
+		if !register_template: return
+	
 	var names = _get_plugin_templates_names()
 
 	# Setup the templates folder for the project
@@ -226,17 +232,30 @@ func _get_plugin_templates_names() -> Array:
 
 
 func _register_custom_settings():
-	if !ProjectSettings.has_setting(DO_NOT_USE_MONO_RUNTIME_SETTING):
-		ProjectSettings.set_setting(DO_NOT_USE_MONO_RUNTIME_SETTING, false)
+	if _can_run_mono():
+		if !ProjectSettings.has_setting(USE_MONO_RUNTIME_SETTING):
+			ProjectSettings.set_setting(USE_MONO_RUNTIME_SETTING, true)
+			
+		var mono_property_info = {
+			"name": USE_MONO_RUNTIME_SETTING,
+			"type": TYPE_BOOL,
+			"hint_string": "If `true` _inkgd_ will alwaus use the Mono runtime when available.",
+			"default": false
+		}
+		
+		ProjectSettings.add_property_info(mono_property_info)
+		
+	if !ProjectSettings.has_setting(REGISTER_TEMPLATES_SETTING):
+		ProjectSettings.set_setting(REGISTER_TEMPLATES_SETTING, true)
 
-	var property_info = {
-		"name": DO_NOT_USE_MONO_RUNTIME_SETTING,
+	var template_property_info = {
+		"name": REGISTER_TEMPLATES_SETTING,
 		"type": TYPE_BOOL,
-		"hint_string": "Enable this setting to always use the GDScript runtime.",
+		"hint_string": "If `true` _inkgd_ will register its script templates with the current project.",
 		"default": false
 	}
 
-	ProjectSettings.add_property_info(property_info)
+	ProjectSettings.add_property_info(template_property_info)
 
 
 func _validate_csproj() -> bool:
@@ -250,12 +269,12 @@ func _validate_csproj() -> bool:
 
 
 func _should_use_mono():
-	if ProjectSettings.has_setting(DO_NOT_USE_MONO_RUNTIME_SETTING):
-		var do_not_use_mono = ProjectSettings.get_setting(DO_NOT_USE_MONO_RUNTIME_SETTING)
-		if do_not_use_mono == null:
-			do_not_use_mono = false
+	if ProjectSettings.has_setting(USE_MONO_RUNTIME_SETTING):
+		var use_mono = ProjectSettings.get_setting(USE_MONO_RUNTIME_SETTING)
+		if use_mono == null:
+			use_mono = true
 
-		return _can_run_mono() && !do_not_use_mono
+		return _can_run_mono() && use_mono
 	else:
 		return _can_run_mono()
 

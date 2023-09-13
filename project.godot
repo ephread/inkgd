@@ -18,10 +18,6 @@ boot_splash/image="res://examples/images/transparent.png"
 boot_splash/fullsize=false
 config/icon="res://icons/icon.png"
 
-[autoload]
-
-__InkRuntime="*res://addons/inkgd/runtime/static/ink_runtime.gd"
-
 [debug]
 
 gdscript/warnings/exclude_addons=false
@@ -37,11 +33,11 @@ window/size/viewport_height=1080
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/gut/plugin.cfg", "res://addons/inkgd/plugin.cfg")
+enabled=PackedStringArray("res://addons/gut/plugin.cfg")
 
 [inkgd]
 
-do_not_use_mono_runtime=false
+register_templates=false
 
 [network]
 
