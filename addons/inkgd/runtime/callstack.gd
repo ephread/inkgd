@@ -33,7 +33,7 @@ class Element extends InkBase:
 		self.type = type
 
 	# () -> InkElement
-	func copy():
+	func copy() -> Element:
 		var copy = Element.new(self.type, self.current_pointer, self.in_expression_evaluation)
 		copy.temporary_variables = self.temporary_variables.duplicate()
 		copy.evaluation_stack_height_when_pushed = evaluation_stack_height_when_pushed
@@ -114,7 +114,7 @@ class InkThread extends InkBase:
 			self.previous_pointer = story_context.pointer_at_path(prev_path)
 
 	# () -> InkThread
-	func copy():
+	func copy() -> InkThread:
 		var copy = InkThread.new(self.StaticJSON)
 		copy.thread_index = self.thread_index
 		for e in callstack:

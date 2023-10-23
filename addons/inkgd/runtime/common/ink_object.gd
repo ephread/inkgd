@@ -184,7 +184,7 @@ var root_content_container: InkContainer:
 
 
 # () -> InkObject
-func copy():
+func copy() -> InkObject:
 	InkUtils.throw_exception("Not Implemented: Doesn't support copying")
 	return null
 

@@ -50,7 +50,7 @@ func cast(new_type, metadata = null):
 func _to_string() -> String:
 	return "VariablePointerValue(" + self.variable_name + ")"
 
-func copy():
+func copy() -> InkVariablePointerValue:
 	return VariablePointerValue().new_with_context(self.variable_name, context_index)
 
 # ######################################################################## #
