@@ -8,12 +8,18 @@
 
 Implementation of [inkle’s Ink] in pure GDScript, with editor support.
 
-⚠️ **Note:** While the implementation of the runtime is feature-complete and
-passes the test suite, it’s unlikely to ever be considered “production-ready”.
-_inkgd_ shines for rapid-prototyping in GDScript and small games, but for bigger
-projects it’s likely to be too slow. If you need a more bulletproof solution
-and don’t mind C#, you should consider using [godot-ink].
+> [!NOTE]
+> _inkgd_ shines for rapid prototyping in GDScript and small games.
+> While the runtime implementation is feature-complete and passes the
+> test suite, it’s slower than the original C# implementation. It is used
+> in commercial games, but if you need a faster solution and don’t mind C#,
+> you should consider using [godot-ink].
 
+> [!IMPORTANT]
+> _inkgd_ is compatible with Godot 4.1+, but has not official release yet.
+> To use _inkgd_ with Godot 4.1+, fetch the [`godot4`] branch.
+
+[`godot4`]: https://github.com/ephread/inkgd/tree/godot4
 [inkle’s Ink]: https://github.com/inkle/ink
 [godot-ink]: https://github.com/paulloz/godot-ink
 
@@ -24,14 +30,12 @@ and don’t mind C#, you should consider using [godot-ink].
   * [Contributing](#asking-questions--contributing)
       * [Asking Questions](#asking-questions)
       * [Contributing](#contributing)
-  * [Installation](#installation)
-  * [Usage](#usage)
-      * [Example Project](#runtime)
-      * [Editor Plugin](#editor)
+  * [Installation & Getting Started](#installation--getting-started)
+  * [Editor Plugin](#editor-plugin)
   * [Compatibility Table](#compatibility-table)
-  * [Acknowledgment](#acknowledgment)
+  * [Acknowledgement](#acknowledgement)
       * [Code](#code)
-      * [Stories](#stories)
+      * [Ink Stories](#ink-stories)
   * [License](#license)
 
 ## Features
