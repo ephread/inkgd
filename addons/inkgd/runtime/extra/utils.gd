@@ -7,7 +7,7 @@
 # inkgd is licensed under the terms of the MIT license.
 # ############################################################################ #
 
-extends Reference
+extends RefCounted
 
 class_name InkUtils
 
@@ -51,8 +51,8 @@ static func __assert__(condition: bool, message = "") -> void:
 static func as_or_null(variant, name_of_class: String):
 	if (
 			is_ink_class(variant, name_of_class) ||
-			name_of_class == "Dictionary" && variant is Dictionary ||
-			name_of_class == "Array" && variant is Array
+			(name_of_class == "Dictionary" && variant is Dictionary) ||
+			(name_of_class == "Array" && variant is Array)
 	):
 		return variant
 	else:
@@ -90,12 +90,12 @@ static func as_INamedContent_or_null(variant):
 
 	return null
 
-static func is_ink_class(object: Object, name_of_class: String) -> bool:
-	return (object is Object) && object.is_class(name_of_class)
+static func is_ink_class(object: Variant, name_of_class: String) -> bool:
+	return (object is Object) && object.is_ink_class(name_of_class)
 
-static func are_of_same_type(object1: Object, object2: Object) -> bool:
+static func are_of_same_type(object1: Variant, object2: Variant) -> bool:
 	if (object1 is Object) && (object2 is Object):
-		return object1.get_class() == object2.get_class()
+		return object1.get_ink_class() == object2.get_ink_class()
 
 	return typeof(object1) == typeof(object2)
 
@@ -118,30 +118,30 @@ static func typename_of(variant) -> String:
 		TYPE_NIL: return "null"
 		TYPE_BOOL: return "bool"
 		TYPE_INT: return "int"
-		TYPE_REAL: return "float"
+		TYPE_FLOAT: return "float"
 		TYPE_STRING: return "String"
 		TYPE_VECTOR2: return "Vector2"
 		TYPE_RECT2: return "Rect2"
 		TYPE_VECTOR3: return "Vector3"
 		TYPE_TRANSFORM2D: return "Transform2D"
 		TYPE_PLANE: return "Plane"
-		TYPE_QUAT: return "Quat"
+		TYPE_QUATERNION: return "Quaternion"
 		TYPE_AABB: return "AABB"
 		TYPE_BASIS: return "Basis"
-		TYPE_TRANSFORM: return "Transform"
+		TYPE_TRANSFORM3D: return "Transform3D"
 		TYPE_COLOR: return "Color"
 		TYPE_NODE_PATH: return "NodePath"
 		TYPE_RID: return "RID"
-		TYPE_OBJECT: return variant.get_class()
+		TYPE_OBJECT: return variant.get_ink_class()
 		TYPE_DICTIONARY: return "Dictionary"
 		TYPE_ARRAY: return "Array"
-		TYPE_RAW_ARRAY: return "PoolByteArray"
-		TYPE_INT_ARRAY: return "PoolIntArray"
-		TYPE_REAL_ARRAY: return "PoolRealArray"
-		TYPE_STRING_ARRAY: return "PoolStringArray"
-		TYPE_VECTOR2_ARRAY: return "PoolVector2Array"
-		TYPE_VECTOR3_ARRAY: return "PoolVector3Array"
-		TYPE_COLOR_ARRAY: return "PoolColorArray"
+		TYPE_PACKED_BYTE_ARRAY: return "PackedByteArray"
+		TYPE_PACKED_INT32_ARRAY: return "PackedInt32Array"
+		TYPE_PACKED_FLOAT32_ARRAY: return "PackedFloat32Array"
+		TYPE_PACKED_STRING_ARRAY: return "PackedStringArray"
+		TYPE_PACKED_VECTOR2_ARRAY: return "PackedVector2Array"
+		TYPE_PACKED_VECTOR3_ARRAY: return "PackedVector3Array"
+		TYPE_PACKED_COLOR_ARRAY: return "PackedColorArray"
 		_: return "unknown"
 
 # ############################################################################ #
@@ -149,7 +149,7 @@ static func typename_of(variant) -> String:
 # ############################################################################ #
 
 static func trim(string_to_trim: String, characters = []) -> String:
-	if characters.empty():
+	if characters.is_empty():
 		return string_to_trim.strip_edges()
 
 	var length = string_to_trim.length()
@@ -237,7 +237,7 @@ static func remove_range(array: Array, index: int, count: int) -> void:
 	var c = 0
 
 	while (c < count):
-		array.remove(i)
+		array.remove_at(i)
 		c += 1
 
 static func array_equal(a1: Array, a2: Array, use_equals = false) -> bool:

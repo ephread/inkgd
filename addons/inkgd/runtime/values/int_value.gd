@@ -40,17 +40,17 @@ func cast(new_type, metadata = null):
 	if new_type == ValueType.STRING:
 		return StringValue().new_with(str(value))
 
-	Utils.throw_story_exception(bad_cast_exception_message(new_type), false, metadata)
+	InkUtils.throw_story_exception(bad_cast_exception_message(new_type), false, metadata)
 	return null
 
 # ######################################################################## #
 # GDScript extra methods
 # ######################################################################## #
 
-func is_class(type):
-	return type == "IntValue" || .is_class(type)
+func is_ink_class(type):
+	return type == "IntValue" || super.is_ink_class(type)
 
-func get_class():
+func get_ink_class():
 	return "IntValue"
 
 static func new_with(val):

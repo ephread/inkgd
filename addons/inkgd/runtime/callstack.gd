@@ -14,34 +14,18 @@ extends InkBase
 class_name InkCallStack
 
 # ############################################################################ #
-# Imports
-# ############################################################################ #
-
-var PushPopType = preload("res://addons/inkgd/runtime/enums/push_pop.gd").PushPopType
-var InkPointer := preload("res://addons/inkgd/runtime/structs/pointer.gd") as GDScript
-
-var InkListValue := load("res://addons/inkgd/runtime/values/list_value.gd") as GDScript
-
-# ############################################################################ #
 
 class Element extends InkBase:
-	# ######################################################################## #
-	# Imports
-	# ######################################################################## #
 
-	var Pointer = load("res://addons/inkgd/runtime/structs/pointer.gd")
+	var current_pointer: InkPointer = InkPointer.null_pointer
 
-	# ######################################################################## #
-
-	var current_pointer = Pointer.null() # Pointer
-
-	var in_expression_evaluation = false # bool
+	var in_expression_evaluation: bool = false
 	var temporary_variables = null # Dictionary<String, InkObject>
-	var type = 0 # PushPopType
-	var evaluation_stack_height_when_pushed = 0 # int
-	var function_start_in_ouput_stream = 0 # int
+	var type: int = 0 # Ink.PushPopType
+	var evaluation_stack_height_when_pushed: int = 0
+	var function_start_in_ouput_stream: int = 0
 
-	# (PushPopType, Pointer, bool) -> InkElement
+	# (Ink.PushPopType, Pointer, bool) -> InkElement
 	func _init(type, pointer, in_expression_evaluation = false):
 		self.current_pointer = pointer
 		self.in_expression_evaluation = in_expression_evaluation
@@ -49,7 +33,7 @@ class Element extends InkBase:
 		self.type = type
 
 	# () -> InkElement
-	func copy():
+	func copy() -> Element:
 		var copy = Element.new(self.type, self.current_pointer, self.in_expression_evaluation)
 		copy.temporary_variables = self.temporary_variables.duplicate()
 		copy.evaluation_stack_height_when_pushed = evaluation_stack_height_when_pushed
@@ -60,28 +44,20 @@ class Element extends InkBase:
 	# GDScript extra methods
 	# ######################################################################## #
 
-	func is_class(type):
-		return type == "CallStack.Element" || .is_class(type)
+	func is_ink_class(type):
+		return type == "CallStack.Element" || super.is_ink_class(type)
 
-	func get_class():
+	func get_ink_class():
 		return "CallStack.Element"
 
 class InkThread extends InkBase:
-	# ######################################################################## #
-	# Imports
-	# ######################################################################## #
-
-	var Pointer = load("res://addons/inkgd/runtime/structs/pointer.gd")
-	var InkPath = load("res://addons/inkgd/runtime/ink_path.gd")
-
-	# ######################################################################## #
 
 	var callstack = null # Array<Element>
-	var thread_index = 0 # int
-	var previous_pointer = Pointer.null() # Pointer
+	var thread_index: int = 0 # int
+	var previous_pointer: InkPointer = InkPointer.null_pointer
 
-	func _init():
-		get_static_json()
+	func _init(static_json = null):
+		get_static_json(static_json)
 		callstack = []
 
 	# Dictionary<string, object>, Story
@@ -93,7 +69,7 @@ class InkThread extends InkBase:
 			var jelement_obj = jel_tok
 			var push_pop_type = int(jelement_obj["type"])
 
-			var pointer = Pointer.null()
+			var pointer = InkPointer.null_pointer
 			var current_container_path_str = null
 			var current_container_path_str_token = null
 
@@ -102,10 +78,10 @@ class InkThread extends InkBase:
 				current_container_path_str = str(current_container_path_str_token)
 
 				var thread_pointer_result = story_context.content_at_path(InkPath.new_with_components_string(current_container_path_str))
-				pointer = Pointer.new(thread_pointer_result.container, int(jelement_obj["idx"]))
+				pointer = InkPointer.new(thread_pointer_result.container, int(jelement_obj["idx"]))
 
 				if thread_pointer_result.obj == null:
-					Utils.throw_exception(
+					InkUtils.throw_exception(
 							"When loading state, internal story location " +
 							"couldn't be found: '%s'. " % current_container_path_str +
 							"Has the story changed since this save data was created?"
@@ -125,7 +101,7 @@ class InkThread extends InkBase:
 			var temps
 			if jelement_obj.has("temp"):
 				temps = jelement_obj["temp"] # Dictionary<string, object>
-				el.temporary_variables = self.Json.jobject_to_dictionary_runtime_objs(temps)
+				el.temporary_variables = self.StaticJSON.jobject_to_dictionary_runtime_objs(temps)
 			else:
 				el.temporary_variables.clear()
 
@@ -138,8 +114,8 @@ class InkThread extends InkBase:
 			self.previous_pointer = story_context.pointer_at_path(prev_path)
 
 	# () -> InkThread
-	func copy():
-		var copy = InkThread.new()
+	func copy() -> InkThread:
+		var copy = InkThread.new(self.StaticJSON)
 		copy.thread_index = self.thread_index
 		for e in callstack:
 			copy.callstack.append(e.copy())
@@ -164,7 +140,7 @@ class InkThread extends InkBase:
 
 			if el.temporary_variables.size() > 0:
 				writer.write_property_start("temp")
-				self.Json.write_dictionary_runtime_objs(writer, el.temporary_variables)
+				self.StaticJSON.write_dictionary_runtime_objs(writer, el.temporary_variables)
 				writer.write_property_end()
 
 			writer.write_object_end()
@@ -183,80 +159,86 @@ class InkThread extends InkBase:
 	# GDScript extra methods
 	# ######################################################################## #
 
-	func is_class(type):
-		return type == "CallStack.InkThread" || .is_class(type)
+	func is_ink_class(type):
+		return type == "CallStack.InkThread" || super.is_ink_class(type)
 
-	func get_class():
+	func get_ink_class():
 		return "CallStack.InkThread"
 
 	# ######################################################################## #
 
-	static func new_with(jthread_obj, story_context):
-		var thread = InkThread.new()
+	static func new_with(jthread_obj, story_context, static_json = null):
+		var thread = InkThread.new(static_json)
 		thread._init_with(jthread_obj, story_context)
 		return thread
 
 	# ######################################################################## #
-	var Json setget , get_Json
-	func get_Json():
-		return _Json.get_ref()
 
-	var _Json = WeakRef.new()
+	var StaticJSON: InkStaticJSON:
+		get: return _static_json.get_ref()
 
-	func get_static_json():
+	var _static_json = WeakRef.new()
+
+	func get_static_json(static_json = null):
+		if static_json != null:
+			_static_json = weakref(static_json)
+			return
+
 		var InkRuntime = Engine.get_main_loop().root.get_node("__InkRuntime")
 
-		Utils.__assert__(InkRuntime != null,
-					 str("Could not retrieve 'InkRuntime' singleton from the scene tree."))
+		InkUtils.__assert__(InkRuntime != null,
+					 str("[InkCallStack.InkThread] Could not retrieve 'InkRuntime' singleton from the scene tree."))
 
-		_Json = weakref(InkRuntime.json)
+		_static_json = weakref(InkRuntime.json)
 
 # () -> Array<InkElement>
-var elements setget , get_elements
+var elements : get = get_elements
 func get_elements():
 	return self.callstack
 
 # () -> int
-var depth setget , get_depth
+var depth : get = get_depth
 func get_depth():
 	return self.elements.size()
 
 # () -> InkElement
-var current_element setget , get_current_element
+var current_element : get = get_current_element
 func get_current_element():
 	var thread = self._threads.back()
 	var cs = thread.callstack
 	return cs.back()
 
 # () -> int
-var current_element_index setget , get_current_element_index
+var current_element_index : get = get_current_element_index
 func get_current_element_index():
 	return self.callstack.size() - 1
 
 # () -> InkThread
 # (InkThread) -> void
-var current_thread setget set_current_thread, get_current_thread
+var current_thread : get = get_current_thread, set = set_current_thread
 func get_current_thread():
 	return self._threads.back()
 
 func set_current_thread(value):
-	Utils.__assert__(_threads.size() == 1,
+	InkUtils.__assert__(_threads.size() == 1,
 				 "Shouldn't be directly setting the current thread when we have a stack of them")
 	self._threads.clear()
 	self._threads.append(value)
 
 # () -> bool
-var can_pop setget , get_can_pop
+var can_pop : get = get_can_pop
 func get_can_pop():
 	return self.callstack.size() > 1
 
 # (InkStory | CallStack) -> CallStack
-func _init(story_context_or_to_copy):
-	if story_context_or_to_copy.is_class("Story"):
+func _init(story_context_or_to_copy, static_json = null):
+	get_static_json(static_json)
+
+	if story_context_or_to_copy.is_ink_class("Story"):
 		var story_context = story_context_or_to_copy
 		_start_of_root = InkPointer.start_of(story_context.root_content_container)
 		reset()
-	elif story_context_or_to_copy.is_class("CallStack"):
+	elif story_context_or_to_copy.is_ink_class("CallStack"):
 		var to_copy = story_context_or_to_copy
 		self._threads = []
 		for other_thread in to_copy._threads:
@@ -267,8 +249,8 @@ func _init(story_context_or_to_copy):
 # () -> void
 func reset():
 	self._threads = []
-	self._threads.append(InkThread.new())
-	self._threads[0].callstack.append(Element.new(PushPopType.TUNNEL, self._start_of_root))
+	self._threads.append(InkThread.new(self.StaticJSON))
+	self._threads[0].callstack.append(Element.new(Ink.PushPopType.TUNNEL, self._start_of_root))
 
 # (Dictionary<string, object>, InkStory) -> void
 func set_json_token(jobject, story_context):
@@ -286,7 +268,7 @@ func set_json_token(jobject, story_context):
 
 # (SimpleJson.Writer) -> void
 func write_json(writer):
-	writer.write_object(funcref(self, "_anonymous_write_json"))
+	writer.write_object(Callable(self, "_anonymous_write_json"))
 
 # () -> void
 func push_thread():
@@ -307,19 +289,19 @@ func pop_thread():
 	if self.can_pop_thread:
 		self._threads.erase(self.current_thread)
 	else:
-		Utils.throw_exception("Can't pop thread")
+		InkUtils.throw_exception("Can't pop thread")
 
 # () -> bool
-var can_pop_thread setget , get_can_pop_thread
+var can_pop_thread : get = get_can_pop_thread
 func get_can_pop_thread():
 	return _threads.size() > 1 && !self.element_is_evaluate_from_game
 
 # () -> bool
-var element_is_evaluate_from_game setget , get_element_is_evaluate_from_game
+var element_is_evaluate_from_game : get = get_element_is_evaluate_from_game
 func get_element_is_evaluate_from_game():
-	return self.current_element.type == PushPopType.FUNCTION_EVALUATION_FROM_GAME
+	return self.current_element.type == Ink.PushPopType.FUNCTION_EVALUATION_FROM_GAME
 
-# (PushPopType, int, int) -> void
+# (Ink.PushPopType, int, int) -> void
 func push(type, external_evaluation_stack_height = 0, output_stream_length_with_pushed = 0):
 	var element = Element.new(type, self.current_element.current_pointer, false)
 
@@ -328,7 +310,7 @@ func push(type, external_evaluation_stack_height = 0, output_stream_length_with_
 
 	self.callstack.append(element)
 
-# (PushPopType | null) -> void
+# (Ink.PushPopType | null) -> void
 func can_pop_type(type = null):
 	if !self.can_pop:
 		return false
@@ -338,13 +320,13 @@ func can_pop_type(type = null):
 
 	return self.current_element.type == type
 
-# (PushPopType | null) -> void
+# (Ink.PushPopType | null) -> void
 func pop(type = null):
 	if can_pop_type(type):
 		self.callstack.pop_back()
 		return
 	else:
-		Utils.throw_exception("Mismatched push/pop in Callstack")
+		InkUtils.throw_exception("Mismatched push/pop in Callstack")
 
 # (String, int) -> InkObject
 func get_temporary_variable_with_name(name, context_index = -1) -> InkObject:
@@ -369,7 +351,7 @@ func set_temporary_variable(name, value, declare_new, context_index = -1):
 	var context_element = self.callstack[context_index - 1]
 
 	if !declare_new && !context_element.temporary_variables.has(name):
-		Utils.throw_exception("Could not find temporary variable to set: %s" % name)
+		InkUtils.throw_exception("Could not find temporary variable to set: %s" % name)
 		return
 
 	if context_element.temporary_variables.has(name):
@@ -394,11 +376,11 @@ func thread_with_index(index):
 
 	return null
 
-var callstack setget , get_callstack
+var callstack : get = get_callstack
 func get_callstack():
 	return self.current_thread.callstack
 
-var callstack_trace setget , get_callstack_trace
+var callstack_trace : get = get_callstack_trace
 func get_callstack_trace():
 	var sb = ""
 	var t = 0
@@ -410,7 +392,7 @@ func get_callstack_trace():
 
 		var i = 0
 		while i < thread.callstack.size():
-			if thread.callstack[i].type == PushPopType.FUNCTION:
+			if thread.callstack[i].type == Ink.PushPopType.FUNCTION:
 				sb += "  [FUNCTION] "
 			else:
 				sb += "  [TUNNEL] "
@@ -428,16 +410,16 @@ func get_callstack_trace():
 
 var _threads = null # Array<InkThread>
 var _thread_counter = 0 # int
-var _start_of_root = InkPointer.null() # Pointer
+var _start_of_root = InkPointer.null_pointer # Pointer
 
 # ############################################################################ #
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type):
-	return type == "CallStack" || .is_class(type)
+func is_ink_class(type):
+	return type == "CallStack" || super.is_ink_class(type)
 
-func get_class():
+func get_ink_class():
 	return "CallStack"
 
 # C# Actions & Delegates ##################################################### #
@@ -454,3 +436,22 @@ func _anonymous_write_json(writer: InkSimpleJSON.Writer) -> void:
 	writer.write_property_start("threadCounter")
 	writer.write(self._thread_counter)
 	writer.write_property_end()
+
+# ######################################################################## #
+
+var StaticJSON: InkStaticJSON:
+	get: return _static_json.get_ref()
+
+var _static_json = WeakRef.new()
+
+func get_static_json(static_json = null):
+	if static_json != null:
+		_static_json = weakref(static_json)
+		return
+
+	var InkRuntime = Engine.get_main_loop().root.get_node("__InkRuntime")
+
+	InkUtils.__assert__(InkRuntime != null,
+					str("[InkCallStack] Could not retrieve 'InkRuntime' singleton from the scene tree."))
+
+	_static_json = weakref(InkRuntime.json)

@@ -1,8 +1,24 @@
 # Change Log
 Important changes to _inkgd_ will be documented in this file.
 
+## [0.6.0](https://github.com/ephread/inkgd/releases/tag/0.6.0)
+Released on 2023-XX-XX.
+
+### Added
+- Added support for Godot 4.1.1+
+
+### Changed
+
+#### ⚠️ **BREAKING CHANGE**
+- Reorganized files internally and updated type names.
+- [`InkStory`] Renamed `continue`, `continue_async` and `continue_maximally` to
+  `continue_story`, `continue_story_async` and `continue_story_maximally` due to keyword conflicts.
+- [`InkVariableStates`] Renamed `get` and `set` to `get_variable` and `set_variable` due to keyword conflicts.
+- [`InkPlayer`] Renamed `continue`, `continue_async`, `continue_maximally`, `get` and `set` to
+  `continue_story`, `continue_story_async`, `continue_story_maximally`, `get_variable` and `set_variable` due to keyword conflicts.
+
 ## [0.5.0](https://github.com/ephread/inkgd/releases/tag/0.5.0)
-Released on 2024-08-28.
+Released on 2023-08-28.
 
 ### Changed
 - Added support for inklecate 1.1.1.
@@ -17,7 +33,7 @@ Released on 2024-08-28.
 Released on 2022-08-07.
 
 ### Fixed
-- Add missing `add_child` call in templates.
+- Added missing `add_child` call in templates.
 
 ## [0.4.6](https://github.com/ephread/inkgd/releases/tag/0.4.6)
 Released on 2022-07-31.

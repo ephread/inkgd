@@ -13,7 +13,6 @@ extends "res://addons/gut/test.gd"
 # ############################################################################ #
 
 var InkRuntime = load("res://addons/inkgd/runtime.gd")
-var Story = load("res://addons/inkgd/runtime/story.gd")
 
 # ############################################################################ #
 
@@ -33,11 +32,11 @@ func load_resource(file_name: String) -> Resource:
 	return load("res://test/fixture/compiled/%s/%s.ink.json" % [_prefix(), file_name])
 
 func load_file(file_name: String) -> String:
-	var data_file = File.new()
 	var path = "res://test/fixture/compiled/%s/%s.ink.json" % [_prefix(), file_name]
 
+	var data_file = FileAccess.open(path, FileAccess.READ)
 	assert(
-			data_file.open(path, File.READ) == OK,
+			 FileAccess.get_open_error() == OK,
 			"Could not load '%s'" % path
 	)
 

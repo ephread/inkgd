@@ -25,11 +25,12 @@ var InkList = load("res://addons/inkgd/runtime/lists/ink_list.gd")
 # STATIC REFERENCE
 # ############################################################################ #
 
-static func Utils():
-	return load("res://addons/inkgd/runtime/extra/utils.gd")
-
-static func Value():
-	return load("res://addons/inkgd/runtime/values/value.gd")
+# TODO: Remove
+#static func Utils():
+#	return load("res://addons/inkgd/runtime/extra/InkUtils.gd")
+#
+#static func Value():
+#	return load("res://addons/inkgd/runtime/values/value.gd")
 
 static func BoolValue():
 	return load("res://addons/inkgd/runtime/values/bool_value.gd")
@@ -57,11 +58,11 @@ static func ListValue():
 var value # Variant
 
 # ValueType
-var value_type: int setget , get_value_type
+var value_type: int: get = get_value_type
 func get_value_type() -> int:
 	return -1
 
-var is_truthy: bool setget , get_is_truthy
+var is_truthy: bool: get = get_is_truthy
 func get_is_truthy() -> bool:
 	return false
 
@@ -71,9 +72,8 @@ func get_is_truthy() -> bool:
 func cast(new_type: int) -> InkValue:
 	return null
 
-var value_object setget , get_value_object # Variant
-func get_value_object():
-	return value
+var value_object: # Variant
+	get: return value
 
 # ############################################################################ #
 
@@ -94,9 +94,9 @@ static func create(val) -> InkValue:
 		return FloatValue().new_with(val)
 	elif val is String:
 		return StringValue().new_with(val)
-	elif Utils().is_ink_class(val, "InkPath"):
+	elif InkUtils.is_ink_class(val, "InkPath"):
 		return DivertTargetValue().new_with(val)
-	elif Utils().is_ink_class(val, "InkList"):
+	elif InkUtils.is_ink_class(val, "InkList"):
 		return ListValue().new_with(val)
 
 	return null
@@ -105,8 +105,8 @@ func copy() -> InkValue:
 	return create(self.value_object)
 
 # (Ink.ValueType) -> StoryException
-func bad_cast_exception_message(target_class) -> String:
-	return "Can't cast " + self.value_object + " from " + self.value_type + " to " + target_class
+func bad_cast_exception_message(target_ink_class) -> String:
+	return "Can't cast " + self.value_object + " from " + self.value_type + " to " + target_ink_class
 
 # () -> String
 func _to_string() -> String:
@@ -119,13 +119,13 @@ func _to_string() -> String:
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type) -> bool:
-	return type == "Value" || .is_class(type)
+func is_ink_class(type) -> bool:
+	return type == "Value" || super.is_ink_class(type)
 
-func get_class() -> String:
+func get_ink_class() -> String:
 	return "Value"
 
 static func new_with(val) -> InkValue:
-	var value = Value().new()
+	var value = InkValue.new()
 	value._init_with(val)
 	return value

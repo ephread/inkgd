@@ -4,7 +4,7 @@
 # See LICENSE in the project root for license information.
 # ############################################################################ #
 
-extends Reference
+extends RefCounted
 
 class_name InkExternalCommandExecutor
 
@@ -13,7 +13,7 @@ class_name InkExternalCommandExecutor
 # ############################################################################ #
 
 ## The identifier of this compiler.
-var identifier: int setget , get_identifier
+var identifier: int: get = get_identifier
 func get_identifier() -> int:
 	return get_instance_id()
 
@@ -28,4 +28,5 @@ const BOM = "\ufeff"
 # ############################################################################ #
 
 ## Thread used to compile the story.
+@warning_ignore("unused_private_class_variable") # Used by subclasses.
 var _thread: Thread

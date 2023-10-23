@@ -18,17 +18,17 @@ class_name InkStopWatch
 
 var _start_time: int = -1
 
-var elapsed_milliseconds setget , get_elapsed_milliseconds
+var elapsed_milliseconds : get = get_elapsed_milliseconds
 func get_elapsed_milliseconds() -> int:
 	if _start_time == -1:
 		return 0
 
-	return OS.get_ticks_msec() - _start_time
+	return Time.get_ticks_msec() - _start_time
 
 # ############################################################################ #
 
 func start() -> void:
-	_start_time = OS.get_ticks_msec()
+	_start_time = Time.get_ticks_msec()
 
 func stop() -> void:
 	_start_time = -1

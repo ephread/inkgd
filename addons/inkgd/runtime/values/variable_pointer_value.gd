@@ -15,7 +15,7 @@ class_name InkVariablePointerValue
 
 # ############################################################################ #
 
-var variable_name setget set_variable_name, get_variable_name # InkPath
+var variable_name : get = get_variable_name, set = set_variable_name # InkPath
 func get_variable_name():
 	return value
 func set_variable_name(value):
@@ -25,13 +25,13 @@ func get_value_type():
 	return ValueType.VARIABLE_POINTER
 
 func get_is_truthy():
-	Utils.throw_exception("Shouldn't be checking the truthiness of a variable pointer")
+	InkUtils.throw_exception("Shouldn't be checking the truthiness of a variable pointer")
 	return false
 
 var context_index = 0 # int
 
 func _init_with_context(variable_name, context_index = -1):
-	._init_with(variable_name)
+	super._init_with(variable_name)
 	self.context_index = context_index
 
 func _init():
@@ -44,23 +44,23 @@ func cast(new_type, metadata = null):
 	if new_type == self.value_type:
 		return self
 
-	Utils.throw_story_exception(bad_cast_exception_message(new_type), false, metadata)
+	InkUtils.throw_story_exception(bad_cast_exception_message(new_type), false, metadata)
 	return null
 
 func _to_string() -> String:
 	return "VariablePointerValue(" + self.variable_name + ")"
 
-func copy():
+func copy() -> InkVariablePointerValue:
 	return VariablePointerValue().new_with_context(self.variable_name, context_index)
 
 # ######################################################################## #
 # GDScript extra methods
 # ######################################################################## #
 
-func is_class(type):
-	return type == "VariablePointerValue" || .is_class(type)
+func is_ink_class(type):
+	return type == "VariablePointerValue" || super.is_ink_class(type)
 
-func get_class():
+func get_ink_class():
 	return "VariablePointerValue"
 
 static func new_with_context(variable_name, context_index = -1):

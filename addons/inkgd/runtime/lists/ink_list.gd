@@ -13,19 +13,6 @@ extends InkObject
 class_name InkList
 
 # ############################################################################ #
-# Imports
-# ############################################################################ #
-
-var InkListItem := preload("res://addons/inkgd/runtime/lists/structs/ink_list_item.gd") as GDScript
-var InkKeyValuePair := preload("res://addons/inkgd/runtime/extra/key_value_pair.gd") as GDScript
-
-static func InkList() -> GDScript:
-	return load("res://addons/inkgd/runtime/lists/ink_list.gd") as GDScript
-
-static func Utils() -> GDScript:
-	return load("res://addons/inkgd/runtime/extra/utils.gd") as GDScript
-
-# ############################################################################ #
 
 # (Dictionary<InkItem, int>, Array<String>, Array<InkListDefinition>)
 func _init_from_csharp(items: Dictionary, origin_names: Array, origins: Array):
@@ -46,14 +33,14 @@ func _init_with_ink_list(other_list: InkList):
 
 
 # (string, Story) -> InkList
-func _init_with_origin(single_origin_list_name: String, origin_story):
+func _init_with_origin(single_origin_list_name: String, origin_story: InkStory):
 	set_initial_origin_name(single_origin_list_name)
 
 	var def: InkTryGetResult = origin_story.list_definitions.try_list_get_definition(single_origin_list_name)
 	if def.exists:
 		origins = [def.result]
 	else:
-		Utils.throw_exception(
+		InkUtils.throw_exception(
 				"InkList origin could not be found in story when constructing new list: %s" \
 				% single_origin_list_name
 		)
@@ -65,12 +52,12 @@ func _init_with_single_item(single_item: InkListItem, single_value: int):
 
 
 # (string, Story) -> InkList
-static func from_string(my_list_item: String, origin_story) -> InkList:
+static func from_string(my_list_item: String, origin_story: InkStory) -> InkList:
 	var list_value: InkListValue = origin_story.list_definitions.find_single_item_list_with_name(my_list_item)
 	if list_value:
-		return InkList().new_with_ink_list(list_value.value)
+		return InkList.new_with_ink_list(list_value.value)
 	else:
-		Utils().throw_exception(
+		InkUtils.throw_exception(
 				"Could not find the InkListItem from the string '%s' to create an InkList because " +
 				"it doesn't exist in the original list definition in ink." % my_list_item
 		)
@@ -82,20 +69,20 @@ func add_item(item: InkListItem) -> void:
 		add_item(item.item_name)
 		return
 
-	for origin in origins:
+	for origin in self.origins:
 		if origin.name == item.origin_name:
 			var int_val: InkTryGetResult = origin.try_get_value_for_item(item)
 			if int_val.exists:
 				set_item(item, int_val.result)
 				return
 			else:
-				Utils.throw_exception(
+				InkUtils.throw_exception(
 						"Could not add the item '%s' to this list because it doesn't exist in the " +
 						"original list definition in ink." % item._to_string()
 				)
 				return
 
-	Utils.throw_exception(
+	InkUtils.throw_exception(
 			"Failed to add item to list because the item was from a new list definition that " +
 			"wasn't previously known to this list. Only items from previously known lists can " +
 			"be used, so that the int value can be found."
@@ -105,10 +92,10 @@ func add_item(item: InkListItem) -> void:
 func add_item_by_string(item_name: String) -> void:
 	var found_list_def: InkListDefinition = null
 
-	for origin in origins:
+	for origin in self.origins:
 		if origin.contains_item_with_name(item_name):
 			if found_list_def != null:
-				Utils.throw_exception(
+				InkUtils.throw_exception(
 						"Could not add the item " + item_name + " to this list because it could " +
 						"come from either " + origin.name + " or " + found_list_def.name
 				)
@@ -117,7 +104,7 @@ func add_item_by_string(item_name: String) -> void:
 				found_list_def = origin
 
 	if found_list_def == null:
-		Utils.throw_exception(
+		InkUtils.throw_exception(
 				"Could not add the item " + item_name + " to this list because it isn't known " +
 				"to any list definitions previously associated with this list."
 		)
@@ -138,13 +125,13 @@ func contains_item_named(item_name: String) -> bool:
 
 # Array<ListDefinition>
 var origins = null
-var origin_of_max_item: InkListDefinition setget , get_origin_of_max_item
+var origin_of_max_item: InkListDefinition: get = get_origin_of_max_item
 func get_origin_of_max_item() -> InkListDefinition:
-	if origins == null:
+	if self.origins == null:
 		return null
 
 	var max_origin_name = self.max_item.key.origin_name
-	for origin in origins:
+	for origin in self.origins:
 		if origin.name == max_origin_name:
 			return origin
 
@@ -152,7 +139,7 @@ func get_origin_of_max_item() -> InkListDefinition:
 
 
 # Array<String>
-var origin_names setget , get_origin_names
+var origin_names : get = get_origin_names
 func get_origin_names():
 	if self.size() > 0:
 		if _origin_names == null && self.size() > 0:
@@ -180,33 +167,33 @@ func set_initial_origin_names(initial_origin_names) -> void:
 
 
 # TODO: Make inspectable
-var max_item: InkKeyValuePair setget , get_max_item # InkKeyValuePair<InkListItem, int>
-func get_max_item() -> InkKeyValuePair:
-	var _max_item: InkKeyValuePair = InkKeyValuePair.new_with_key_value(InkListItem.null(), 0)
-	for k in keys():
-		if (_max_item.key.is_null || get_item(k) > _max_item.value):
-			_max_item = InkKeyValuePair.new_with_key_value(k, get_item(k))
+var max_item: InkKeyValuePair: # InkKeyValuePair<InkListItem, int>
+	get:
+		var _max_item: InkKeyValuePair = InkKeyValuePair.new_with_key_value(InkListItem.null_item, 0)
+		for k in keys():
+			if (_max_item.key.is_null || get_item(k) > _max_item.value):
+				_max_item = InkKeyValuePair.new_with_key_value(k, get_item(k))
 
-	return _max_item
-
-
-# TODO: Make inspectable
-var min_item: InkKeyValuePair setget , get_min_item # InkKeyValuePair<InkListItem, int>
-func get_min_item() -> InkKeyValuePair:
-	var _min_item: InkKeyValuePair = InkKeyValuePair.new_with_key_value(InkListItem.null(), 0)
-	for k in keys():
-		if (_min_item.key.is_null || get_item(k) < _min_item.value):
-			_min_item = InkKeyValuePair.new_with_key_value(k, get_item(k))
-
-	return _min_item
+		return _max_item
 
 
 # TODO: Make inspectable
-var inverse: InkList setget , get_inverse
+var min_item: InkKeyValuePair: # InkKeyValuePair<InkListItem, int>
+	get:
+		var _min_item: InkKeyValuePair = InkKeyValuePair.new_with_key_value(InkListItem.null_item, 0)
+		for k in keys():
+			if (_min_item.key.is_null || get_item(k) < _min_item.value):
+				_min_item = InkKeyValuePair.new_with_key_value(k, get_item(k))
+
+		return _min_item
+
+
+# TODO: Make inspectable
+var inverse: InkList: get = get_inverse
 func get_inverse() -> InkList:
-	var list: InkList = InkList().new()
-	if origins != null:
-		for origin in origins:
+	var list: InkList = InkList.new()
+	if self.origins != null:
+		for origin in self.origins:
 			for serialized_item_key in origin.items:
 				if !_dictionary.has(serialized_item_key):
 					list._dictionary[serialized_item_key] = origin.items[serialized_item_key]
@@ -215,11 +202,11 @@ func get_inverse() -> InkList:
 
 
 # TODO: Make inspectable
-var all: InkList setget , get_all
+var all: InkList: get = get_all
 func get_all() -> InkList:
-	var list: InkList = InkList().new()
-	if origins != null:
-		for origin in origins:
+	var list: InkList = InkList.new()
+	if self.origins != null:
+		for origin in self.origins:
 			for serialized_item_key in origin.items:
 				list._dictionary[serialized_item_key] = origin.items[serialized_item_key]
 
@@ -228,7 +215,7 @@ func get_all() -> InkList:
 
 # TODO: Make inspectable
 func union(other_list: InkList) -> InkList:
-	var union: InkList = InkList().new_with_ink_list(self)
+	var union: InkList = InkList.new_with_ink_list(self)
 	for key in other_list._dictionary:
 		union._dictionary[key] = other_list._dictionary[key]
 	return union
@@ -236,7 +223,7 @@ func union(other_list: InkList) -> InkList:
 
 # TODO: Make inspectable
 func intersection(other_list: InkList) -> InkList:
-	var intersection: InkList = InkList().new()
+	var intersection: InkList = InkList.new()
 	for key in other_list._dictionary:
 		if self._dictionary.has(key):
 			intersection._dictionary[key] = other_list._dictionary[key]
@@ -252,14 +239,14 @@ func has_intersection(other_list: InkList) -> bool:
 
 # TODO: Make inspectable
 func without(list_to_remove: InkList) -> InkList:
-	var result = InkList().new_with_ink_list(self)
+	var result = InkList.new_with_ink_list(self)
 	for key in list_to_remove._dictionary:
 		result._dictionary.erase(key)
 	return result
 
 
 func contains(other_list: InkList) -> bool:
-	if other_list._dictionary.empty() || self._dictionary.empty():
+	if other_list._dictionary.is_empty() || self._dictionary.is_empty():
 		return false
 
 	for key in other_list._dictionary:
@@ -325,23 +312,23 @@ func less_than_or_equals(other_list: InkList) -> bool:
 func max_as_list() -> InkList:
 	if size() > 0:
 		var _max_item: InkKeyValuePair = self.max_item
-		return InkList().new_with_single_item(_max_item.key, _max_item.value)
+		return InkList.new_with_single_item(_max_item.key, _max_item.value)
 	else:
-		return InkList().new()
+		return InkList.new()
 
 
 func min_as_list() -> InkList:
 	if size() > 0:
 		var _min_item: InkKeyValuePair = self.min_item
-		return InkList().new_with_single_item(_min_item.key, _min_item.value)
+		return InkList.new_with_single_item(_min_item.key, _min_item.value)
 	else:
-		return InkList().new()
+		return InkList.new()
 
 
 # (Variant, Variant) -> InkList
 func list_with_sub_range(min_bound, max_bound) -> InkList:
 	if size() == 0:
-		return InkList().new()
+		return InkList.new()
 
 	var ordered: Array = self.ordered_items
 
@@ -351,16 +338,16 @@ func list_with_sub_range(min_bound, max_bound) -> InkList:
 	if min_bound is int:
 		min_value = min_bound
 	else:
-		if min_bound.is_class("InkList") && min_bound.size() > 0:
+		if min_bound.is_ink_class("InkList") && min_bound.size() > 0:
 			min_value = min_bound.min_item.value
 
 	if max_bound is int:
 		max_value = max_bound
 	else:
-		if min_bound.is_class("InkList") && min_bound.size() > 0:
+		if min_bound.is_ink_class("InkList") && min_bound.size() > 0:
 			max_value = max_bound.max_item.value
 
-	var sub_list = InkList().new()
+	var sub_list = InkList.new()
 	sub_list.set_initial_origin_names(self.origin_names)
 
 	for item in ordered:
@@ -370,12 +357,12 @@ func list_with_sub_range(min_bound, max_bound) -> InkList:
 	return sub_list
 
 
-func equals(other: InkList) -> bool:
+func equals(other: InkBase) -> bool:
 	var other_raw_list: InkList = other
 	# Simple test to make sure the object is of the right type.
 	if !(other_raw_list is Object):
 		return false
-	if !(other_raw_list.is_class("InkList")):
+	if !(other_raw_list.is_ink_class("InkList")):
 		return false
 
 	if other_raw_list.size() != self.size():
@@ -388,14 +375,14 @@ func equals(other: InkList) -> bool:
 	return true
 
 
-var ordered_items: Array setget , get_ordered_items # Array<InkKeyValuePair<InkListItem, int>>
-func get_ordered_items():
-	var ordered: Array = []
-	for key in keys():
-		ordered.append(InkKeyValuePair.new_with_key_value(key, get_item(key)))
+var ordered_items: Array: # Array<InkKeyValuePair<InkListItem, int>>
+	get:
+		var ordered: Array = []
+		for key in keys():
+			ordered.append(InkKeyValuePair.new_with_key_value(key, get_item(key)))
 
-	ordered.sort_custom(KeyValueInkListItemSorter, "sort")
-	return ordered
+		ordered.sort_custom(Callable(KeyValueInkListItemSorter, "sort"))
+		return ordered
 
 
 func _to_string() -> String:
@@ -415,25 +402,25 @@ func _to_string() -> String:
 
 
 static func new_with_dictionary(other_dictionary: Dictionary) -> InkList:
-	var ink_list: InkList = InkList().new()
+	var ink_list: InkList = InkList.new()
 	ink_list._init_with_dictionary(other_dictionary)
 	return ink_list
 
 
 static func new_with_ink_list(other_list: InkList) -> InkList:
-	var ink_list: InkList = InkList().new()
+	var ink_list: InkList = InkList.new()
 	ink_list._init_with_ink_list(other_list)
 	return ink_list
 
 
 static func new_with_origin(single_origin_list_name: String, origin_story) -> InkList:
-	var ink_list: InkList = InkList().new()
+	var ink_list: InkList = InkList.new()
 	ink_list._init_with_origin(single_origin_list_name, origin_story)
 	return ink_list
 
 
 static func new_with_single_item(single_item: InkListItem, single_value: int) -> InkList:
-	var ink_list: InkList = InkList().new()
+	var ink_list: InkList = InkList.new()
 	ink_list._init_with_single_item(single_item, single_value)
 	return ink_list
 
@@ -526,10 +513,10 @@ func raw_keys() -> Array:
 # GDScript extra methods
 # ############################################################################ #
 
-func is_class(type: String) -> bool:
-	return type == "InkList" || .is_class(type)
+func is_ink_class(type: String) -> bool:
+	return type == "InkList" || super.is_ink_class(type)
 
 
-func get_class() -> String:
+func get_ink_class() -> String:
 	return "InkList"
 

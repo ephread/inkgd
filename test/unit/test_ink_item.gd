@@ -12,8 +12,6 @@ extends "res://addons/gut/test.gd"
 # Imports
 # ############################################################################ #
 
-var InkListItem = load("res://addons/inkgd/runtime/lists/structs/ink_list_item.gd")
-
 func test_serialisation():
 	var list_item = InkListItem.new_with_origin_name("foo", "bar")
 	var serialized_list_item = list_item.serialized()

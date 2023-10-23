@@ -1,112 +1,95 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=3 uid="uid://77a4feiavl38"]
 
-[ext_resource path="res://test/performance/performance_test.gd" type="Script" id=1]
-[ext_resource path="res://examples/scenes/common/back_button_margin_container.tscn" type="PackedScene" id=3]
-[ext_resource path="res://examples/fonts/Vollkorn-Regular.tres" type="DynamicFont" id=4]
-[ext_resource path="res://examples/images/spinner.png" type="Texture" id=5]
+[ext_resource type="Script" path="res://test/performance/performance_test.gd" id="1"]
+[ext_resource type="PackedScene" path="res://examples/scenes/common/back_button_margin_container.tscn" id="3"]
+[ext_resource type="FontFile" uid="uid://ctctosd5gna8o" path="res://examples/fonts/Vollkorn-Regular.tres" id="4"]
+[ext_resource type="Texture2D" uid="uid://y67ay27gvf0f" path="res://examples/images/spinner.png" id="5"]
 
-[sub_resource type="Animation" id=1]
-loop = true
+[sub_resource type="Animation" id="1"]
+loop_mode = 1
 tracks/0/type = "value"
-tracks/0/path = NodePath("LoadingAnimationPlayer/CenterContainer/VBoxContainer/CenterContainer/SpinnerTextureRect:rect_rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
+tracks/0/path = NodePath("LoadingAnimationPlayer/CenterContainer/VBoxContainer/CenterContainer/SpinnerTextureRect:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 1 ),
-"transitions": PoolRealArray( 1, 1 ),
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [ 0.0, 360.0 ]
+"values": [0.0, 360.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_flvh3"]
+_data = {
+"LoadingAnimation": SubResource("1")
 }
 
 [node name="PerformanceTest" type="Control"]
+layout_mode = 3
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 1.0
-margin_right = 1.0
-rect_pivot_offset = Vector2( -1720, 322 )
-script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+offset_left = 1.0
+offset_right = 1.0
+pivot_offset = Vector2(-1720, 322)
+script = ExtResource("1")
 
 [node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color( 0.929412, 0.898039, 0.854902, 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+color = Color(0.929412, 0.898039, 0.854902, 1)
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-custom_constants/margin_right = 250
-custom_constants/margin_top = 40
-custom_constants/margin_left = 250
-custom_constants/margin_bottom = 40
+theme_override_constants/margin_left = 250
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 250
+theme_override_constants/margin_bottom = 40
 
 [node name="CenterContainer" type="CenterContainer" parent="MarginContainer"]
-margin_left = 250.0
-margin_top = 40.0
-margin_right = 1670.0
-margin_bottom = 1040.0
+layout_mode = 2
 
 [node name="Label" type="Label" parent="MarginContainer/CenterContainer"]
 visible = false
-margin_left = 579.0
-margin_top = 484.0
-margin_right = 840.0
-margin_bottom = 516.0
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-custom_fonts/font = ExtResource( 4 )
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("4")
 text = "Loaded in ????ms."
 
 [node name="LoadingAnimationPlayer" type="AnimationPlayer" parent="."]
 autoplay = "LoadingAnimation"
-anims/LoadingAnimation = SubResource( 1 )
+libraries = {
+"": SubResource("AnimationLibrary_flvh3")
+}
 
 [node name="CenterContainer" type="CenterContainer" parent="LoadingAnimationPlayer"]
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="VBoxContainer" type="VBoxContainer" parent="LoadingAnimationPlayer/CenterContainer"]
-margin_left = 885.0
-margin_top = 472.0
-margin_right = 1034.0
-margin_bottom = 608.0
-custom_constants/separation = 40
-__meta__ = {
-"_edit_use_anchors_": false
-}
+layout_mode = 2
+theme_override_constants/separation = 40
 
 [node name="Label" type="Label" parent="LoadingAnimationPlayer/CenterContainer/VBoxContainer"]
-margin_right = 149.0
-margin_bottom = 32.0
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-custom_fonts/font = ExtResource( 4 )
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("4")
 text = "Creating…"
 
 [node name="CenterContainer" type="CenterContainer" parent="LoadingAnimationPlayer/CenterContainer/VBoxContainer"]
-margin_top = 72.0
-margin_right = 149.0
-margin_bottom = 136.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
+layout_mode = 2
 
 [node name="SpinnerTextureRect" type="TextureRect" parent="LoadingAnimationPlayer/CenterContainer/VBoxContainer/CenterContainer"]
-margin_left = 42.0
-margin_right = 106.0
-margin_bottom = 64.0
-rect_pivot_offset = Vector2( 32, 32 )
-texture = ExtResource( 5 )
+layout_mode = 2
+texture = ExtResource("5")
 stretch_mode = 4
 
-[node name="BackButtonMarginContainer" parent="." instance=ExtResource( 3 )]
-margin_right = 214.0
-margin_bottom = 214.0
+[node name="BackButtonMarginContainer" parent="." instance=ExtResource("3")]
+layout_mode = 0
+offset_right = 214.0
+offset_bottom = 214.0

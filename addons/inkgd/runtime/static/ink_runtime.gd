@@ -51,7 +51,7 @@ var stop_execution_on_error: bool = true
 
 # ############################################################################ #
 
-var should_pause_execution_on_runtime_error: bool setget set_speore, get_speore
+var should_pause_execution_on_runtime_error: bool: get = get_speore, set = set_speore
 func get_speore() -> bool:
 	printerr(
 			"'should_pause_execution_on_runtime_error' is deprecated, " +
@@ -65,7 +65,7 @@ func set_speore(value: bool):
 	)
 	stop_execution_on_exception = value
 
-var should_pause_execution_on_story_error: bool setget set_speose, get_speose
+var should_pause_execution_on_story_error: bool: get = get_speose, set = set_speose
 func get_speose() -> bool:
 	printerr(
 		"'should_pause_execution_on_story_error' is deprecated, " +
@@ -95,6 +95,9 @@ var json: InkStaticJSON = InkStaticJSON.new(native_function_call)
 var record_story_exceptions: bool = false
 var current_story_exceptions: Array = []
 
+var _argument_exception_raised: bool
+var _exception_raised: bool
+
 # ############################################################################ #
 # Overrides
 # ############################################################################ #
@@ -106,6 +109,18 @@ func _init():
 # Internal Methods
 # ############################################################################ #
 
+func clear_raised_exceptions() -> bool:
+	if _argument_exception_raised:
+		_argument_exception_raised = false
+		return true
+
+	if _argument_exception_raised:
+		_argument_exception_raised = false
+		return true
+
+	return false
+
+
 func handle_exception(message: String) -> void:
 	var exception_message = "EXCEPTION: %s" % message
 	var stack_trace = _get_stack_trace()
@@ -116,6 +131,7 @@ func handle_exception(message: String) -> void:
 			stack_trace
 	)
 
+	_exception_raised
 	emit_signal("exception_raised", exception_message, stack_trace)
 
 func handle_argument_exception(message: String) -> void:
@@ -128,6 +144,7 @@ func handle_argument_exception(message: String) -> void:
 			stack_trace
 	)
 
+	_argument_exception_raised = true
 	emit_signal("exception_raised", exception_message, stack_trace)
 
 func handle_story_exception(message: String, use_end_line_number: bool, metadata) -> void:
@@ -150,12 +167,12 @@ func handle_story_exception(message: String, use_end_line_number: bool, metadata
 func _handle_generic_exception(
 		message: String,
 		should_pause_execution: bool,
-		stack_trace: PoolStringArray
+		stack_trace: PackedStringArray
 ) -> void:
 	if OS.is_debug_build():
 		if should_pause_execution:
 			assert(false, message)
-		elif Engine.editor_hint:
+		elif Engine.is_editor_hint():
 			printerr(message)
 			if stack_trace.size() > 0:
 				printerr("Stack trace:")
@@ -164,8 +181,8 @@ func _handle_generic_exception(
 		else:
 			push_error(message)
 
-func _get_stack_trace() -> PoolStringArray:
-	var trace := PoolStringArray()
+func _get_stack_trace() -> PackedStringArray:
+	var trace := PackedStringArray()
 
 	var i = 1
 	for stack_element in get_stack():

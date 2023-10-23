@@ -6,6 +6,7 @@ on:
     - main
     - github-actions
     - mono
+    - godot4
   pull_request:
     branches:
     - main
@@ -18,9 +19,7 @@ jobs:
     strategy:
       matrix:
         destination:
-          - "3.3.4"
-          - "3.4.5"
-          - "3.5.2"
+          - "4.1.1"
 
     steps:
       - name: "(Shared) Check out the repository"
@@ -42,9 +41,9 @@ jobs:
         env:
           VERSION: ${{ matrix.destination }}
         run: |
-          wget -q https://downloads.tuxfamily.org/godotengine/${VERSION}/Godot_v${VERSION}-stable_linux_headless.64.zip
-          unzip Godot_v${VERSION}-stable_linux_headless.64.zip
-          mv Godot_v${VERSION}-stable_linux_headless.64 godot
+          wget -q https://downloads.tuxfamily.org/godotengine/${VERSION}/Godot_v${VERSION}-stable_linux.x86_64.zip
+          unzip Godot_v${VERSION}-stable_linux.x86_64.zip
+          mv Godot_v${VERSION}-stable_linux.x86_64 godot
           chmod +x godot
 
       # This step exports a dummy PCK to force reimportation.
@@ -54,12 +53,12 @@ jobs:
       # … missing assets.
       - name: "(Shared) Reimport Assets"
         run: |
-          ./godot --path "inkgd" --export-pack "HTML5" dummy.pck
-          ./godot --path "inkgd" --export-pack "HTML5" dummy.pck
+          ./godot --headless --path "inkgd" --export-pack "HTML5" dummy.pck
+          ./godot --headless --path "inkgd" --export-pack "HTML5" dummy.pck
 
       - name: "(Vanilla) Run tests"
         run: |
-          ./godot -d -s --path "inkgd" "addons/gut/gut_cmdln.gd"
+          ./godot --headless -d -s --path "inkgd" "addons/gut/gut_cmdln.gd"
 
       # - name: "(Mono) Install Godot"
       #   env:

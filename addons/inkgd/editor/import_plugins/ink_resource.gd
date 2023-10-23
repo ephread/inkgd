@@ -13,4 +13,4 @@ class_name InkResource
 # Properties
 # ############################################################################ #
 
-export(String) var json: String = ""
+@export var json: String = ""

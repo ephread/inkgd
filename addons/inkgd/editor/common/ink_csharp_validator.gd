@@ -4,7 +4,7 @@
 # See LICENSE in the project root for license information.
 # ############################################################################ #
 
-extends Reference
+extends RefCounted
 
 # A crude validator catching the most common mistakes.
 
@@ -19,7 +19,7 @@ const INK_ENGINE_RUNTIME = "ink-engine-runtime.dll"
 func validate_csharp_project_files(project_name) -> bool:
 	var ink_engine_runtime := get_runtime_path()
 
-	if ink_engine_runtime.empty():
+	if ink_engine_runtime.is_empty():
 		print(
 				"[inkgd] [INFO] 'ink-engine-runtime.dll' seems to be missing " +
 				"from the project. If you encounter errors while building the " +
@@ -34,9 +34,8 @@ func get_runtime_path() -> String:
 
 func _validate_csproj(project_name: String, runtime_path: String) -> bool:
 	var csproj_path = "res://%s.csproj" % project_name
-
-	var file = File.new()
-	if !file.file_exists(csproj_path):
+ 
+	if !FileAccess.file_exists(csproj_path):
 		printerr(
 				("[inkgd] [ERROR] The C# project (%s.csproj) doesn't exist. " % project_name) +
 				"You can create a new C# project through " +
@@ -46,7 +45,8 @@ func _validate_csproj(project_name: String, runtime_path: String) -> bool:
 		)
 		return false
 
-	var error = file.open(csproj_path, File.READ)
+	var file := FileAccess.open(csproj_path, FileAccess.READ)
+	var error := FileAccess.get_open_error()
 	if error != OK:
 		printerr(
 				"[inkgd] [ERROR] The C# project (%s.csproj) exists but it could not be opened." +
@@ -54,13 +54,13 @@ func _validate_csproj(project_name: String, runtime_path: String) -> bool:
 		)
 		return false
 
-	var content = file.get_as_text()
+	var content := file.get_as_text()
 	file.close()
 
 	if content.find(runtime_path.replace("res://", "")) == -1:
 		print(
 				"[inkgd] [INFO] '%s.csproj' seems to be missing a " % project_name +
-				"<Reference> item matching '%s'. If you encounter " % runtime_path +
+				"<RefCounted> item matching '%s'. If you encounter " % runtime_path +
 				"further errors please refer to [TO BE ADDED] for help."
 		)
 		return false
@@ -69,15 +69,16 @@ func _validate_csproj(project_name: String, runtime_path: String) -> bool:
 	return true
 
 func _scan_directory(path) -> String:
-	var directory := Directory.new()
-	if directory.open(path) != OK:
+	var directory := DirAccess.open(path)
+	var error := DirAccess.get_open_error()
+	if error != OK:
 		printerr(
 				"[inkgd] [ERROR] Could not open '%s', " % path +
 				"can't look for ink-engine-runtime.dll."
 		)
 		return ""
 
-	if directory.list_dir_begin(true, true) != OK:
+	if directory.list_dir_begin()  != OK:# TODOConverter3To4 fill missing arguments https://github.com/godotengine/godot/pull/40547
 		printerr(
 				"[inkgd] [ERROR] Could not list contents of '%s', " % path +
 				"can't look for ink-engine-runtime.dll."
@@ -91,7 +92,7 @@ func _scan_directory(path) -> String:
 					"%s/%s" % [directory.get_current_dir(), file_name]
 			)
 
-			if !ink_runtime.empty():
+			if !ink_runtime.is_empty():
 				return ink_runtime
 		else:
 			if file_name == INK_ENGINE_RUNTIME:

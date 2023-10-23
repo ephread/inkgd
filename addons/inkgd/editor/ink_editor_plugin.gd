@@ -1,10 +1,10 @@
+@tool
 # ############################################################################ #
 # Copyright © 2019-2022 Frédéric Maquin <fred@ephread.com>
 # Licensed under the MIT License.
 # See LICENSE in the project root for license information.
 # ############################################################################ #
 
-tool
 extends EditorPlugin
 
 # Hiding this type to prevent registration of "private" nodes.
@@ -32,7 +32,8 @@ var InkCompiler = load("res://addons/inkgd/editor/common/executors/ink_compiler.
 # Constant
 # ############################################################################ #
 
-const DO_NOT_USE_MONO_RUNTIME_SETTING = "inkgd/do_not_use_mono_runtime"
+const USE_MONO_RUNTIME_SETTING = "inkgd/use_mono_runtime"
+const REGISTER_TEMPLATES_SETTING = "inkgd/register_templates"
 
 
 # ############################################################################ #
@@ -46,7 +47,7 @@ var _panel = null
 var _ink_source_import_plugin: InkSourceImportPlugin = null
 var _ink_json_import_plugin: InkJsonImportPlugin = null
 
-var _tool_button: ToolButton = null
+var _tool_button: Button = null
 
 
 # ############################################################################ #
@@ -77,6 +78,7 @@ func _enter_tree():
 		)
 	else:
 		print("[inkgd] [INFO] Using the GDScript runtime.")
+		_register_custom_settings()
 		add_custom_type(
 				"InkPlayer",
 				"Node",
@@ -160,7 +162,7 @@ func _remove_import_plugin():
 
 
 func _add_bottom_panel():
-	_panel = InkBottomPanel.instance()
+	_panel = InkBottomPanel.instantiate()
 	_panel.editor_interface = _editor_interface
 	_panel.configuration = _configuration
 
@@ -184,64 +186,81 @@ func _remove_autoloads():
 
 ## Registers the script templates provided by the plugin.
 func _add_templates():
-	var dir = Directory.new()
+	if ProjectSettings.has_setting(REGISTER_TEMPLATES_SETTING):
+		var register_template = ProjectSettings.get_setting(REGISTER_TEMPLATES_SETTING)
+		if !register_template: return
+	
 	var names = _get_plugin_templates_names()
 
 	# Setup the templates folder for the project
-	var template_dir_path = ProjectSettings.get_setting("editor/script_templates_search_path")
-	if !dir.dir_exists(template_dir_path):
-		dir.make_dir(template_dir_path)
+	var template_dir_path = ProjectSettings.get_setting("editor/script/templates_search_path")
+	if !DirAccess.dir_exists_absolute(template_dir_path):
+		DirAccess.make_dir_absolute(template_dir_path)
 
-	for name in names:
-		var template_file_path = template_dir_path + "/" + name
-		dir.copy("res://addons/inkgd/editor/templates/" + name, template_file_path)
+	for template_name in names:
+		var template_file_path = template_dir_path + "/" + template_name
+		DirAccess.copy_absolute("res://addons/inkgd/editor/templates/" + template_name, template_file_path)
 
 
 ## Unregisters the script templates provided by the plugin.
 func _remove_templates():
-	var dir = Directory.new()
 	var names = _get_plugin_templates_names()
-	var template_dir_path = ProjectSettings.get_setting("editor/script_templates_search_path")
+	var template_dir_path = ProjectSettings.get_setting("editor/script/templates_search_path")
 
-	for name in names:
-		var template_file_path = template_dir_path + "/" + name
-		if dir.file_exists(template_file_path):
-			dir.remove(template_file_path)
+	for template_name in names:
+		var template_file_path = template_dir_path + "/" + template_name
+		if FileAccess.file_exists(template_file_path):
+			DirAccess.remove_absolute(template_file_path)
 
 
 ## Get all the script templates provided by the plugin.
 func _get_plugin_templates_names() -> Array:
-	var dir = Directory.new()
 	var plugin_template_names = []
-
-	dir.change_dir("res://addons/inkgd/editor/templates/")
-	dir.list_dir_begin(true)
-
-	var temp = dir.get_next()
-	while temp != "":
-		plugin_template_names.append(temp)
-		temp = dir.get_next()
-
-	return plugin_template_names
+	
+	var dir = DirAccess.open("res://addons/inkgd/editor/templates/")
+	if dir:
+		dir.list_dir_begin()
+		var temp = dir.get_next()
+		while temp != "":
+			plugin_template_names.append(temp)
+			temp = dir.get_next()
+		
+		return plugin_template_names
+	else:
+		print("An error occurred when trying to access the path.")
+		return []
 
 
 func _register_custom_settings():
-	if !ProjectSettings.has_setting(DO_NOT_USE_MONO_RUNTIME_SETTING):
-		ProjectSettings.set_setting(DO_NOT_USE_MONO_RUNTIME_SETTING, false)
+	if _can_run_mono():
+		if !ProjectSettings.has_setting(USE_MONO_RUNTIME_SETTING):
+			ProjectSettings.set_setting(USE_MONO_RUNTIME_SETTING, true)
+			
+		var mono_property_info = {
+			"name": USE_MONO_RUNTIME_SETTING,
+			"type": TYPE_BOOL,
+			"hint_string": "If `true` _inkgd_ will alwaus use the Mono runtime when available.",
+			"default": false
+		}
+		
+		ProjectSettings.add_property_info(mono_property_info)
+		
+	if !ProjectSettings.has_setting(REGISTER_TEMPLATES_SETTING):
+		ProjectSettings.set_setting(REGISTER_TEMPLATES_SETTING, true)
 
-	var property_info = {
-		"name": DO_NOT_USE_MONO_RUNTIME_SETTING,
+	var template_property_info = {
+		"name": REGISTER_TEMPLATES_SETTING,
 		"type": TYPE_BOOL,
-		"hint_string": "Enable this setting to always use the GDScript runtime.",
+		"hint_string": "If `true` _inkgd_ will register its script templates with the current project.",
 		"default": false
 	}
 
-	ProjectSettings.add_property_info(property_info)
+	ProjectSettings.add_property_info(template_property_info)
 
 
 func _validate_csproj() -> bool:
 	var project_name = ProjectSettings.get_setting("application/config/name")
-	if project_name.empty():
+	if project_name.is_empty():
 		printerr("[inkgd] [ERROR] The project is missing a name.")
 		return false
 
@@ -250,12 +269,12 @@ func _validate_csproj() -> bool:
 
 
 func _should_use_mono():
-	if ProjectSettings.has_setting(DO_NOT_USE_MONO_RUNTIME_SETTING):
-		var do_not_use_mono = ProjectSettings.get_setting(DO_NOT_USE_MONO_RUNTIME_SETTING)
-		if do_not_use_mono == null:
-			do_not_use_mono = false
+	if ProjectSettings.has_setting(USE_MONO_RUNTIME_SETTING):
+		var use_mono = ProjectSettings.get_setting(USE_MONO_RUNTIME_SETTING)
+		if use_mono == null:
+			use_mono = true
 
-		return _can_run_mono() && !do_not_use_mono
+		return _can_run_mono() && use_mono
 	else:
 		return _can_run_mono()
 

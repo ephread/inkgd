@@ -15,7 +15,7 @@ var InkPlayer = load("res://addons/inkgd/ink_player.gd")
 
 # Alternatively, it could also be retrieved from the tree.
 # onready var _ink_player = $InkPlayer
-onready var _ink_player = InkPlayer.new()
+@onready var _ink_player = InkPlayer.new()
 
 # ############################################################################ #
 # Lifecycle
@@ -33,10 +33,10 @@ func _ready():
 %TS%# don't support threads, the value of this variable is ignored.
 %TS%_ink_player.loads_in_background = true
 
-%TS%_ink_player.connect("loaded", self, "_story_loaded")
-%TS%_ink_player.connect("continued", self, "_continued")
-%TS%_ink_player.connect("prompt_choices", self, "_prompt_choices")
-%TS%_ink_player.connect("ended", self, "_ended")
+%TS%_ink_player.connect("loaded", Callable(self, "_story_loaded"))
+%TS%_ink_player.connect("continued", Callable(self, "_continued"))
+%TS%_ink_player.connect("prompt_choices", Callable(self, "_prompt_choices"))
+%TS%_ink_player.connect("ended", Callable(self, "_ended"))
 
 %TS%# Creates the story. 'loaded' will be emitted once Ink is ready
 %TS%# continue the story.
@@ -61,7 +61,7 @@ func _story_loaded(successfully: bool):
 func _continued(text, tags):
 %TS%print(text)
 %TS%# Here you could yield for an hypothetical signal, before continuing.
-%TS%# yield(self, "event")
+%TS%# await self.event
 %TS%_ink_player.continue_story()
 
 
@@ -70,7 +70,7 @@ func _continued(text, tags):
 # ############################################################################ #
 
 func _prompt_choices(choices):
-%TS%if !choices.empty():
+%TS%if !choices.is_empty():
 %TS%%TS%print(choices)
 
 %TS%%TS%# In a real world scenario, _select_choice' could be
