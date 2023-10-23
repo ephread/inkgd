@@ -14,6 +14,11 @@ test suite, it’s slower than the original C# implementation. It is used
 in commercial games, but if you need a faster solution and don’t mind C#,
 you should consider using [godot-ink].
 
+> [!IMPORTANT]
+> _inkgd_ is compatible with Godot 4.1+, but has not official release yet.
+> To use _inkgd_ with Godot 4.1+, fetch the [`godot4`] branch.
+
+[`godot4`]: https://github.com/ephread/inkgd/tree/godot4
 [inkle’s Ink]: https://github.com/inkle/ink
 [godot-ink]: https://github.com/paulloz/godot-ink
 
@@ -24,14 +29,12 @@ you should consider using [godot-ink].
   * [Contributing](#asking-questions--contributing)
       * [Asking Questions](#asking-questions)
       * [Contributing](#contributing)
-  * [Installation](#installation)
-  * [Usage](#usage)
-      * [Example Project](#runtime)
-      * [Editor Plugin](#editor)
+  * [Installation & Getting Started](#installation--getting-started)
+  * [Editor Plugin](#editor-plugin)
   * [Compatibility Table](#compatibility-table)
-  * [Acknowledgment](#acknowledgment)
+  * [Acknowledgement](#acknowledgement)
       * [Code](#code)
-      * [Stories](#stories)
+      * [Ink Stories](#ink-stories)
   * [License](#license)
 
 ## Features
