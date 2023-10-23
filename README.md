@@ -36,6 +36,7 @@ Implementation of [inkle’s Ink] in pure GDScript, with editor support.
   * [Acknowledgement](#acknowledgement)
       * [Code](#code)
       * [Ink Stories](#ink-stories)
+  * [Sponsors](#sponsors)
   * [License](#license)
 
 ## Features
@@ -120,6 +121,10 @@ hosted on [Read The Docs].
 - Nicholas O'Brien did a whole [video series] about inkgd & Godot.
 
 [video series]: https://www.youtube.com/playlist?list=PLtepyzbiiwBrHoTloHJ2B-DWQxgrseuMB
+
+## Sponsors
+
+[![WILD WITS Games](docs/source/img/wild_wits_logo.webp)](https://wildwits.games)
 
 ## License
 
