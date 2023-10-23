@@ -16,7 +16,7 @@ Implementation of [inkle’s Ink] in pure GDScript, with editor support.
 > you should consider using [godot-ink].
 
 > [!IMPORTANT]
-> _inkgd_ is compatible with Godot 4.1+, but has not official release yet.
+> _inkgd_ is compatible with Godot 4.1+, but has no official releases yet.
 > To use _inkgd_ with Godot 4.1+, fetch the [`godot4`] branch.
 
 [`godot4`]: https://github.com/ephread/inkgd/tree/godot4
