@@ -14,7 +14,6 @@ extends Node
 # Imports
 # ############################################################################ #
 
-var ErrorType := preload("res://addons/inkgd/runtime/enums/error.gd").ErrorType
 var InkPlayerFactory := preload("res://addons/inkgd/ink_player_factory.gd") as GDScript
 var InkGDProfiler := preload("res://examples/scenes/common/profiler.gd") as GDScript
 

@@ -73,7 +73,7 @@ var path: InkPath:
 			if self.parent == null:
 				_path = InkPath.new()
 			else:
-				var comps: Array = [] # Stack<Path3D.Component>
+				var comps: Array = [] # Stack<Path.Component>
 
 				var child = self
 				var container = InkUtils.as_or_null(child.parent, "InkContainer")

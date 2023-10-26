@@ -46,4 +46,4 @@ static func _should_use_mono() -> bool:
 		return _can_run_mono()
 
 static func _can_run_mono() -> bool:
-	return type_exists("_GodotSharp")
+	return type_exists("GodotSharp")

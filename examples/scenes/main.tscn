@@ -1,11 +1,11 @@
 [gd_scene load_steps=16 format=3 uid="uid://d1pg6wbhb6kpu"]
 
-[ext_resource type="Texture2D" uid="uid://cqtak0u6vo507" path="res://examples/images/buttons/button_normal.png" id="1"]
-[ext_resource type="FontFile" uid="uid://c3yvej8f6cmbt" path="res://examples/fonts/Vollkorn-Regular.ttf" id="2"]
-[ext_resource type="Texture2D" uid="uid://3pbdwuiyc2oq" path="res://examples/images/buttons/button_focus_hover.png" id="3"]
-[ext_resource type="Texture2D" uid="uid://wfu1k8lh4w6s" path="res://examples/images/buttons/button_pressed.png" id="4"]
-[ext_resource type="Texture2D" uid="uid://bc85om0du1dms" path="res://examples/images/buttons/button_disabled.png" id="5"]
-[ext_resource type="Texture2D" uid="uid://gvxnxvqvjqfg" path="res://examples/images/inkgd.png" id="6"]
+[ext_resource type="Texture2D" uid="uid://dkptw8v3mdq0a" path="res://examples/images/buttons/button_normal.png" id="1"]
+[ext_resource type="FontFile" uid="uid://dufnga6bbboge" path="res://examples/fonts/Vollkorn-Regular.ttf" id="2"]
+[ext_resource type="Texture2D" uid="uid://bn0ybt8mhl7oa" path="res://examples/images/buttons/button_focus_hover.png" id="3"]
+[ext_resource type="Texture2D" uid="uid://igrwx4dfiigr" path="res://examples/images/buttons/button_pressed.png" id="4"]
+[ext_resource type="Texture2D" uid="uid://vbw47oref5kt" path="res://examples/images/buttons/button_disabled.png" id="5"]
+[ext_resource type="Texture2D" uid="uid://bd0fo8x8wpwlo" path="res://examples/images/inkgd.png" id="6"]
 [ext_resource type="Script" path="res://examples/scenes/main.gd" id="7"]
 [ext_resource type="FontFile" path="res://examples/fonts/Poppins-Medium.tres" id="8"]
 

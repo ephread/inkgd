@@ -12,11 +12,15 @@ config_version=5
 
 config/name="inkgd"
 run/main_scene="res://examples/scenes/main.tscn"
-config/features=PackedStringArray("4.1")
+config/features=PackedStringArray("4.1", "C#")
 boot_splash/bg_color=Color(0.929412, 0.898039, 0.854902, 1)
 boot_splash/image="res://examples/images/transparent.png"
 boot_splash/fullsize=false
 config/icon="res://icons/icon.png"
+
+[autoload]
+
+__InkRuntime="*res://addons/inkgd/runtime/static/ink_runtime.gd"
 
 [debug]
 
@@ -31,9 +35,13 @@ gdscript/warnings/unused_argument=false
 window/size/viewport_width=1920
 window/size/viewport_height=1080
 
+[dotnet]
+
+project/assembly_name="inkgd"
+
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/gut/plugin.cfg")
+enabled=PackedStringArray("res://addons/gut/plugin.cfg", "res://addons/inkgd/plugin.cfg")
 
 [inkgd]
 

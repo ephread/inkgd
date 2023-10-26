@@ -62,7 +62,7 @@ func _init(command_type: int = CommandType.NOT_SET):
 
 # ############################################################################ #
 
-func copy() -> InkControlCommand:
+func copy() -> InkObject:
 	return InkControlCommand.new(self.command_type)
 
 static func eval_start() -> InkControlCommand:

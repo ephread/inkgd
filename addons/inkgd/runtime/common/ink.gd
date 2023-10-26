@@ -12,13 +12,13 @@ class_name Ink
 # ############################################################################ #
 
 enum ErrorType {
-	AUTHOR,
-	WARNING,
-	ERROR
+	AUTHOR = 0,
+	WARNING = 1,
+	ERROR = 2
 }
 
 enum PushPopType {
-	TUNNEL,
-	FUNCTION,
-	FUNCTION_EVALUATION_FROM_GAME
+	TUNNEL = 0,
+	FUNCTION = 1,
+	FUNCTION_EVALUATION_FROM_GAME = 2
 }

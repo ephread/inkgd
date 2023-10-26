@@ -101,7 +101,7 @@ static func create(val) -> InkValue:
 
 	return null
 
-func copy() -> InkValue:
+func copy() -> InkObject:
 	return create(self.value_object)
 
 # (Ink.ValueType) -> StoryException
