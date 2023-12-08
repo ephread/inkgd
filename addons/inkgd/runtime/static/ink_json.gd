@@ -16,19 +16,6 @@ class_name InkStaticJSON
 
 # ############################################################################ #
 
-var InkValue = load("res://addons/inkgd/runtime/values/value.gd")
-var InkStringValue = load("res://addons/inkgd/runtime/values/string_value.gd")
-var InkDivertTargetValue = load("res://addons/inkgd/runtime/values/divert_target_value.gd")
-var InkVariablePointerValue = load("res://addons/inkgd/runtime/values/variable_pointer_value.gd")
-var InkListValue = load("res://addons/inkgd/runtime/values/list_value.gd")
-
-var InkList = load("res://addons/inkgd/runtime/lists/ink_list.gd")
-var InkListDefinition = load("res://addons/inkgd/runtime/lists/list_definition.gd")
-var InkListDefinitionsOrigin = load("res://addons/inkgd/runtime/lists/list_definitions_origin.gd")
-
-
-# ############################################################################ #
-
 # (Array<Variant>, bool) -> Array
 func jarray_to_runtime_obj_list(jarray: Array, skip_last = false) -> Array:
 	var count = jarray.size()

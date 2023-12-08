@@ -11,33 +11,27 @@
 
 extends InkValue
 
-class_name InkVariablePointerValue
+class_name InkDivertTargetValue
 
 # ############################################################################ #
 
-var variable_name : get = get_variable_name, set = set_variable_name # InkPath
-func get_variable_name():
+var target_path : get = get_target_path, set = set_target_path # InkPath
+func get_target_path():
 	return value
-func set_variable_name(value):
+func set_target_path(value):
 	self.value = value
 
 func get_value_type():
-	return ValueType.VARIABLE_POINTER
+	return Ink.ValueType.DIVERT_TARGET
 
 func get_is_truthy():
-	InkUtils.throw_exception("Shouldn't be checking the truthiness of a variable pointer")
+	InkUtils.throw_exception("Shouldn't be checking the truthiness of a divert target")
 	return false
-
-var context_index = 0 # int
-
-func _init_with_context(variable_name, context_index = -1):
-	super._init_with(variable_name)
-	self.context_index = context_index
 
 func _init():
 	value = null
 
-# The method takes a `StoryErrorMetadata` object as a parameter that
+# The method takes a `InkStoryErrorMetadata` object as a parameter that
 # doesn't exist in upstream. The metadat are used in case an 'exception'
 # is raised. For more information, see story.gd.
 func cast(new_type, metadata = null):
@@ -48,22 +42,19 @@ func cast(new_type, metadata = null):
 	return null
 
 func _to_string() -> String:
-	return "VariablePointerValue(" + self.variable_name + ")"
-
-func copy() -> InkObject:
-	return VariablePointerValue().new_with_context(self.variable_name, context_index)
+	return "DivertTargetValue(" + self.target_path._to_string() + ")"
 
 # ######################################################################## #
 # GDScript extra methods
 # ######################################################################## #
 
 func is_ink_class(type):
-	return type == "VariablePointerValue" || super.is_ink_class(type)
+	return type == "DivertTargetValue" || super.is_ink_class(type)
 
 func get_ink_class():
-	return "VariablePointerValue"
+	return "DivertTargetValue"
 
-static func new_with_context(variable_name, context_index = -1):
-	var value = VariablePointerValue().new()
-	value._init_with_context(variable_name, context_index)
+static func new_with(val):
+	var value = InkDivertTargetValue.new()
+	value._init_with(val)
 	return value

@@ -12,12 +12,6 @@ extends RefCounted
 class_name InkUtils
 
 # ############################################################################ #
-# Imports
-# ############################################################################ #
-
-const ValueType = preload("res://addons/inkgd/runtime/values/value_type.gd").ValueType
-
-# ############################################################################ #
 # Exceptions
 # ############################################################################ #
 
@@ -101,15 +95,15 @@ static func are_of_same_type(object1: Variant, object2: Variant) -> bool:
 
 static func value_type_name(value_type: int) -> String:
 	match value_type:
-		ValueType.BOOL: return "Boolean"
+		Ink.ValueType.BOOL: return "Boolean"
 
-		ValueType.INT: return "Int"
-		ValueType.FLOAT: return "Float"
-		ValueType.LIST: return "List"
-		ValueType.STRING: return "String"
+		Ink.ValueType.INT: return "Int"
+		Ink.ValueType.FLOAT: return "Float"
+		Ink.ValueType.LIST: return "List"
+		Ink.ValueType.STRING: return "String"
 
-		ValueType.DIVERT_TARGET: return "Divert Target"
-		ValueType.VARIABLE_POINTER: return "Variable Pointer"
+		Ink.ValueType.DIVERT_TARGET: return "Divert Target"
+		Ink.ValueType.VARIABLE_POINTER: return "Variable Pointer"
 
 		_: return "unknown"
 

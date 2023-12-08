@@ -13,30 +13,6 @@ extends InkBase
 
 class_name InkStoryState
 
-var ValueType = preload("res://addons/inkgd/runtime/values/value_type.gd").ValueType
-
-var InkPointer = preload("res://addons/inkgd/runtime/structs/pointer.gd")
-var InkPath = preload("res://addons/inkgd/runtime/ink_path.gd")
-
-# ############################################################################ #
-
-var InkValue = load("res://addons/inkgd/runtime/values/value.gd")
-var InkStringValue = load("res://addons/inkgd/runtime/values/string_value.gd")
-
-var InkSimpleJSON = preload("res://addons/inkgd/runtime/simple_json.gd")
-var InkStatePatch = preload("res://addons/inkgd/runtime/state_patch.gd")
-
-var InkCallStack = load("res://addons/inkgd/runtime/callstack.gd")
-var InkVariablesState = load("res://addons/inkgd/runtime/variables_state.gd")
-var InkFlow = load("res://addons/inkgd/runtime/flow.gd")
-
-# ############################################################################ #
-# Self-reference
-# ############################################################################ #
-
-static func InkStoryState() -> GDScript:
-	return load("res://addons/inkgd/runtime/story_state.gd") as GDScript
-
 # ############################################################################ #
 
 const INK_SAVE_STATE_VERSION: int = 10
@@ -441,7 +417,7 @@ func remove_flow_internal(flow_name: String) -> void:
 
 # () -> InkStoryState
 func copy_and_start_patching():
-	var copy = InkStoryState().new(self.story)
+	var copy = InkStoryState.new(self.story)
 
 	copy._patch = InkStatePatch.new(self._patch)
 
@@ -714,13 +690,13 @@ func try_splitting_head_tail_whitespace(single: InkStringValue): # Array<StringV
 
 	if inner_str_end > inner_str_start:
 		var inner_str_text = _str.substr(inner_str_start, inner_str_end - inner_str_start)
-		list_texts.append(InkStringValue.new(inner_str_text))
+		list_texts.append(InkStringValue.new_with(inner_str_text))
 
 	if tail_last_newline_idx != -1 && tail_first_newline_idx > head_last_newline_idx:
-		list_texts.append(InkStringValue.new("\n"))
+		list_texts.append(InkStringValue.new_with("\n"))
 		if tail_last_newline_idx < _str.length() - 1:
 			var num_spaces = (_str.length() - tail_last_newline_idx) - 1
-			var trailing_spaces = InkStringValue.new(_str.substr(tail_last_newline_idx + 1, num_spaces))
+			var trailing_spaces = InkStringValue.new_with(_str.substr(tail_last_newline_idx + 1, num_spaces))
 			list_texts.append(trailing_spaces)
 
 	return list_texts
@@ -1054,7 +1030,7 @@ func complete_function_evaluation_from_game():
 
 		var return_val = InkUtils.as_or_null(returned_obj, "Value")
 
-		if return_val.value_type == ValueType.DIVERT_TARGET:
+		if return_val.value_type == Ink.ValueType.DIVERT_TARGET:
 			return return_val.value_object._to_string()
 
 		return return_val.value_object

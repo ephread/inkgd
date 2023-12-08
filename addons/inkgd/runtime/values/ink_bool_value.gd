@@ -11,50 +11,52 @@
 
 extends InkValue
 
-class_name InkDivertTargetValue
+class_name InkBoolValue
 
 # ############################################################################ #
 
-var target_path : get = get_target_path, set = set_target_path # InkPath
-func get_target_path():
+func get_value_type() -> int:
+	return Ink.ValueType.BOOL
+
+func get_is_truthy() -> bool:
 	return value
-func set_target_path(value):
-	self.value = value
-
-func get_value_type():
-	return ValueType.DIVERT_TARGET
-
-func get_is_truthy():
-	InkUtils.throw_exception("Shouldn't be checking the truthiness of a divert target")
-	return false
 
 func _init():
-	value = null
+	value = false
 
-# The method takes a `StoryErrorMetadata` object as a parameter that
+# The method takes a `InkStoryErrorMetadata` object as a parameter that
 # doesn't exist in upstream. The metadat are used in case an 'exception'
 # is raised. For more information, see story.gd.
 func cast(new_type, metadata = null):
 	if new_type == self.value_type:
 		return self
 
+	if new_type == Ink.ValueType.INT:
+		return InkIntValue.new_with(1 if value else 0)
+
+	if new_type == Ink.ValueType.FLOAT:
+		return InkFloatValue.new_with(1.0 if value else 0.0)
+
+	if new_type == Ink.ValueType.STRING:
+		return InkStringValue.new_with("true" if value else "false")
+
 	InkUtils.throw_story_exception(bad_cast_exception_message(new_type), false, metadata)
 	return null
 
 func _to_string() -> String:
-	return "DivertTargetValue(" + self.target_path._to_string() + ")"
+	return "true" if value else "false"
 
 # ######################################################################## #
 # GDScript extra methods
 # ######################################################################## #
 
 func is_ink_class(type):
-	return type == "DivertTargetValue" || super.is_ink_class(type)
+	return type == "BoolValue" || super.is_ink_class(type)
 
 func get_ink_class():
-	return "DivertTargetValue"
+	return "BoolValue"
 
 static func new_with(val):
-	var value = DivertTargetValue().new()
+	var value = InkBoolValue.new()
 	value._init_with(val)
 	return value

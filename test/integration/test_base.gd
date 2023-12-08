@@ -12,18 +12,18 @@ extends "res://addons/gut/test.gd"
 # Imports
 # ############################################################################ #
 
-var InkRuntime = load("res://addons/inkgd/runtime.gd")
+var InkRuntimeManager = load("res://addons/inkgd/ink_runtime_manager.gd")
 
 # ############################################################################ #
 
 var ink_runtime
 
 func before_all():
-	InkRuntime.init(get_tree().root, false)
+	InkRuntimeManager.init(get_tree().root, false)
 	ink_runtime = get_tree().root.get_node("__InkRuntime")
 
 func after_all():
-	InkRuntime.deinit(get_tree().root)
+	InkRuntimeManager.deinit(get_tree().root)
 	ink_runtime = null
 
 # ############################################################################ #

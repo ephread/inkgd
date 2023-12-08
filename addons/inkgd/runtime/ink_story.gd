@@ -18,33 +18,6 @@ const INK_VERSION_CURRENT := 21
 const INK_VERSION_MINIMUM_COMPATIBLE := 18
 
 # ############################################################################ #
-# Imports
-# ############################################################################ #
-
-var InkStopWatch := preload("res://addons/inkgd/runtime/extra/stopwatch.gd") as GDScript
-var InkProfiler := preload("res://addons/inkgd/runtime/profiler.gd") as GDScript
-
-var InkSimpleJSON := preload("res://addons/inkgd/runtime/simple_json.gd") as GDScript
-var InkStringSet := preload("res://addons/inkgd/runtime/extra/string_set.gd") as GDScript
-var InkListDefinitionsOrigin := preload("res://addons/inkgd/runtime/lists/list_definitions_origin.gd") as GDScript
-
-var InkPointer := preload("res://addons/inkgd/runtime/structs/pointer.gd") as GDScript
-
-var StoryErrorMetadata := preload("res://addons/inkgd/runtime/extra/story_error_metadata.gd") as GDScript
-
-# ############################################################################ #
-
-var InkValue := load("res://addons/inkgd/runtime/values/value.gd") as GDScript
-var InkIntValue := load("res://addons/inkgd/runtime/values/int_value.gd") as GDScript
-var InkStringValue := load("res://addons/inkgd/runtime/values/string_value.gd") as GDScript
-var InkVariablePointerValue := load("res://addons/inkgd/runtime/values/variable_pointer_value.gd") as GDScript
-var InkListValue := load("res://addons/inkgd/runtime/values/list_value.gd") as GDScript
-
-var InkList := load("res://addons/inkgd/runtime/lists/ink_list.gd") as GDScript
-
-var InkStoryState := load("res://addons/inkgd/runtime/story_state.gd") as GDScript
-
-# ############################################################################ #
 
 var current_choices: Array: # Array<Choice>
 	get:
@@ -2033,7 +2006,7 @@ func _throw_story_exception(message: String):
 # the current one). Since GDScript doesn't have exceptions, errors may be
 # stored until they can be processed at the end of `continue_internal`.
 func _make_story_error_metadata():
-	return StoryErrorMetadata.new(self.current_debug_metadata, self.state.current_pointer)
+	return InkStoryErrorMetadata.new(self.current_debug_metadata, self.state.current_pointer)
 
 
 # ############################################################################ #

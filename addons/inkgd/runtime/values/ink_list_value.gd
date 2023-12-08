@@ -16,35 +16,35 @@ class_name InkListValue
 # ############################################################################ #
 
 func get_value_type():
-	return ValueType.LIST
+	return Ink.ValueType.LIST
 
 func get_is_truthy():
 	return value.size() > 0
 
-# The method takes a `StoryErrorMetadata` object as a parameter that
+# The method takes a `InkStoryErrorMetadata` object as a parameter that
 # doesn't exist in upstream. The metadat are used in case an 'exception'
 # is raised. For more information, see story.gd.
 func cast(new_type, metadata = null):
-	if new_type == ValueType.INT:
+	if new_type == Ink.ValueType.INT:
 		var max_item = value.max_item
 		if max_item.key.is_null:
-			return IntValue().new_with(0)
+			return InkIntValue.new_with(0)
 		else:
-			return IntValue().new_with(max_item.value)
+			return InkIntValue.new_with(max_item.value)
 
-	elif new_type == ValueType.FLOAT:
+	elif new_type == Ink.ValueType.FLOAT:
 		var max_item = value.max_item
 		if max_item.key.is_null:
-			return FloatValue().new_with(0.0)
+			return InkFloatValue.new_with(0.0)
 		else:
-			return FloatValue().new_with(float(max_item.value))
+			return InkFloatValue.new_with(float(max_item.value))
 
-	elif new_type == ValueType.STRING:
+	elif new_type == Ink.ValueType.STRING:
 		var max_item = value.max_item
 		if max_item.key.is_null:
-			return StringValue().new_with("")
+			return InkStringValue.new_with("")
 		else:
-			return StringValue().new_with(max_item.key._to_string())
+			return InkStringValue.new_with(max_item.key._to_string())
 
 	if new_type == self.value_type:
 		return self
@@ -80,11 +80,11 @@ func get_ink_class():
 	return "ListValue"
 
 static func new_with(list):
-	var value = ListValue().new()
+	var value = InkListValue.new()
 	value._init_with_list(list)
 	return value
 
 static func new_with_single_item(single_item, single_value):
-	var value = ListValue().new()
+	var value = InkListValue.new()
 	value._init_with_single_item(single_item, single_value)
 	return value

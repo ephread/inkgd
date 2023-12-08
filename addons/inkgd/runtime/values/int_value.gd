@@ -16,7 +16,7 @@ class_name InkIntValue
 # ############################################################################ #
 
 func get_value_type():
-	return ValueType.INT
+	return Ink.ValueType.INT
 
 func get_is_truthy():
 	return value != 0
@@ -24,21 +24,21 @@ func get_is_truthy():
 func _init():
 	value = 0
 
-# The method takes a `StoryErrorMetadata` object as a parameter that
+# The method takes a `InkStoryErrorMetadata` object as a parameter that
 # doesn't exist in upstream. The metadat are used in case an 'exception'
 # is raised. For more information, see story.gd.
 func cast(new_type, metadata = null):
 	if new_type == self.value_type:
 		return self
 
-	if new_type == ValueType.BOOL:
-		return BoolValue().new_with(false if value == 0 else true)
+	if new_type == Ink.ValueType.BOOL:
+		return InkBoolValue.new_with(false if value == 0 else true)
 
-	if new_type == ValueType.FLOAT:
-		return FloatValue().new_with(float(value))
+	if new_type == Ink.ValueType.FLOAT:
+		return InkFloatValue.new_with(float(value))
 
-	if new_type == ValueType.STRING:
-		return StringValue().new_with(str(value))
+	if new_type == Ink.ValueType.STRING:
+		return InkStringValue.new_with(str(value))
 
 	InkUtils.throw_story_exception(bad_cast_exception_message(new_type), false, metadata)
 	return null
@@ -54,6 +54,6 @@ func get_ink_class():
 	return "IntValue"
 
 static func new_with(val):
-	var value = IntValue().new()
+	var value = InkIntValue.new()
 	value._init_with(val)
 	return value

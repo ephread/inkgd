@@ -22,3 +22,15 @@ enum PushPopType {
 	FUNCTION = 1,
 	FUNCTION_EVALUATION_FROM_GAME = 2
 }
+
+enum ValueType {
+	BOOL = -1,
+
+	INT,
+	FLOAT,
+	LIST,
+	STRING,
+
+	DIVERT_TARGET,
+	VARIABLE_POINTER
+}

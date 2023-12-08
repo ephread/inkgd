@@ -13,10 +13,8 @@ class_name InkPlayer
 # Imports
 # ############################################################################ #
 
-var InkRuntime = load("res://addons/inkgd/runtime.gd")
+var InkRuntimeManager = load("res://addons/inkgd/runtime.gd")
 var InkResource = load("res://addons/inkgd/editor/import_plugins/ink_resource.gd")
-var InkStory = load("res://addons/inkgd/runtime/story.gd")
-var InkFunctionResult = load("res://addons/inkgd/runtime/extra/function_result.gd")
 
 
 # ############################################################################ #
@@ -829,7 +827,7 @@ func _add_runtime() -> void:
 		runtime = get_tree().root.get_node("__InkRuntime")
 	else:
 		_manages_runtime = true
-		runtime = InkRuntime.init(get_tree().root)
+		runtime = InkRuntimeManager.init(get_tree().root)
 
 	if !runtime.is_connected("exception_raised", _exception_raised):
 		runtime.connect("exception_raised", _exception_raised)
@@ -839,7 +837,7 @@ func _add_runtime() -> void:
 
 func _remove_runtime() -> void:
 	if _manages_runtime:
-		InkRuntime.deinit(get_tree().root)
+		InkRuntimeManager.deinit(get_tree().root)
 
 
 func _current_platform_supports_threads() -> bool:

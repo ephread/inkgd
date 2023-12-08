@@ -14,14 +14,6 @@ extends InkObject
 class_name InkListDefinitionsOrigin
 
 # ############################################################################ #
-# Imports
-# ############################################################################ #
-
-var InkTryGetResult = preload("res://addons/inkgd/runtime/extra/try_get_result.gd")
-
-var InkListValue = load("res://addons/inkgd/runtime/values/list_value.gd")
-
-# ############################################################################ #
 
 # Array<InkListDefinition>
 var lists: Array: get = get_lists

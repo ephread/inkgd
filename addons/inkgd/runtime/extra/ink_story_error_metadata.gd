@@ -12,7 +12,7 @@
 # later. It's required because GDScript doesn't support exceptions and
 # errors don't bubble up the stack.
 
-class_name StoryErrorMetadata
+class_name InkStoryErrorMetadata
 
 # ############################################################################ #
 # Properties

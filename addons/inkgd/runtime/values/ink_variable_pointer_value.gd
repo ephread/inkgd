@@ -11,52 +11,59 @@
 
 extends InkValue
 
-class_name InkBoolValue
+class_name InkVariablePointerValue
 
 # ############################################################################ #
 
-func get_value_type() -> int:
-	return ValueType.BOOL
-
-func get_is_truthy() -> bool:
+var variable_name : get = get_variable_name, set = set_variable_name # InkPath
+func get_variable_name():
 	return value
+func set_variable_name(value):
+	self.value = value
+
+func get_value_type():
+	return Ink.ValueType.VARIABLE_POINTER
+
+func get_is_truthy():
+	InkUtils.throw_exception("Shouldn't be checking the truthiness of a variable pointer")
+	return false
+
+var context_index = 0 # int
+
+func _init_with_context(variable_name, context_index = -1):
+	super._init_with(variable_name)
+	self.context_index = context_index
 
 func _init():
-	value = false
+	value = null
 
-# The method takes a `StoryErrorMetadata` object as a parameter that
+# The method takes a `InkStoryErrorMetadata` object as a parameter that
 # doesn't exist in upstream. The metadat are used in case an 'exception'
 # is raised. For more information, see story.gd.
 func cast(new_type, metadata = null):
 	if new_type == self.value_type:
 		return self
 
-	if new_type == ValueType.INT:
-		return IntValue().new_with(1 if value else 0)
-
-	if new_type == ValueType.FLOAT:
-		return FloatValue().new_with(1.0 if value else 0.0)
-
-	if new_type == ValueType.STRING:
-		return StringValue().new_with("true" if value else "false")
-
 	InkUtils.throw_story_exception(bad_cast_exception_message(new_type), false, metadata)
 	return null
 
 func _to_string() -> String:
-	return "true" if value else "false"
+	return "VariablePointerValue(" + self.variable_name + ")"
+
+func copy() -> InkObject:
+	return InkVariablePointerValue.new_with_context(self.variable_name, context_index)
 
 # ######################################################################## #
 # GDScript extra methods
 # ######################################################################## #
 
 func is_ink_class(type):
-	return type == "BoolValue" || super.is_ink_class(type)
+	return type == "VariablePointerValue" || super.is_ink_class(type)
 
 func get_ink_class():
-	return "BoolValue"
+	return "VariablePointerValue"
 
-static func new_with(val):
-	var value = BoolValue().new()
-	value._init_with(val)
+static func new_with_context(variable_name, context_index = -1):
+	var value = InkVariablePointerValue.new()
+	value._init_with_context(variable_name, context_index)
 	return value

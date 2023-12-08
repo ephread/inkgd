@@ -13,19 +13,6 @@ extends InkBase
 class_name InkFlow
 
 # ############################################################################ #
-# Imports
-# ############################################################################ #
-
-var CallStack = load("res://addons/inkgd/runtime/callstack.gd")
-
-# ############################################################################ #
-# Self-reference
-# ############################################################################ #
-
-static func Flow():
-	return load("res://addons/inkgd/runtime/flow.gd")
-
-# ############################################################################ #
 
 var name # string
 var callstack # CallStack
@@ -38,14 +25,14 @@ func _init(static_json = null):
 # (String, Story) -> Flow
 func _init_with_name(name, story):
 	self.name = name
-	self.callstack = CallStack.new(story, self.StaticJSON)
+	self.callstack = InkCallStack.new(story, self.StaticJSON)
 	self.output_stream = []
 	self.current_choices = []
 
 # (String, Story, Dictionary<String, Variant>) -> Flow
 func _init_with_name_and_jobject(name, story, jobject):
 	self.name = name
-	self.callstack = CallStack.new(story, self.StaticJSON)
+	self.callstack = InkCallStack.new(story, self.StaticJSON)
 	self.callstack.set_json_token(jobject["callstack"], story)
 	self.output_stream = self.StaticJSON.jarray_to_runtime_obj_list(jobject["outputStream"])
 	self.current_choices = self.StaticJSON.jarray_to_runtime_obj_list(jobject["currentChoices"])
@@ -96,7 +83,7 @@ func load_flow_choice_threads(jchoice_threads, story):
 			choice.thread_at_generation = found_active_thread.copy()
 		else:
 			var jsaved_choice_thread = jchoice_threads[str(choice.original_thread_index)]
-			choice.thread_at_generation = CallStack.InkThread.new_with(jsaved_choice_thread, story)
+			choice.thread_at_generation = InkCallStack.InkThread.new_with(jsaved_choice_thread, story)
 
 # (SimpleJson.Writer) -> void
 func _anonymous_write_property_output_stream(w):
@@ -126,12 +113,12 @@ func get_ink_class():
 	return "Flow"
 
 static func new_with_name(name, story, static_json = null):
-	var flow = Flow().new(static_json)
+	var flow = InkFlow.new(static_json)
 	flow._init_with_name(name, story)
 	return flow
 
 static func new_with_name_and_jobject(name, story, jobject, static_json = null):
-	var flow = Flow().new(static_json)
+	var flow = InkFlow.new(static_json)
 	flow._init_with_name_and_jobject(name, story, jobject)
 	return flow
 

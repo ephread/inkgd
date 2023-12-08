@@ -18,9 +18,9 @@ const DO_NOT_USE_MONO_RUNTIME_SETTING = "inkgd/do_not_use_mono_runtime"
 
 static func create():
 	if _should_use_mono():
-		var InkPlayer = load("res://addons/inkgd/mono/InkPlayer.cs")
-		if InkPlayer.can_instantiate():
-			return InkPlayer.new()
+		var InkPlayer_Sharp = load("res://addons/inkgd/mono/InkPlayer.cs")
+		if InkPlayer_Sharp.can_instantiate():
+			return InkPlayer_Sharp.new()
 		else:
 			printerr(
 					"[inkgd] [ERROR] InkPlayer can't be instantiated. Make sure that a suitable " +

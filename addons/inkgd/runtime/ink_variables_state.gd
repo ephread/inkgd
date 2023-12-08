@@ -15,17 +15,6 @@ extends InkBase
 class_name InkVariablesState
 
 # ############################################################################ #
-# Imports
-# ############################################################################ #
-
-var InkTryGetResult := preload("res://addons/inkgd/runtime/extra/try_get_result.gd") as GDScript
-var InkStringSet := preload("res://addons/inkgd/runtime/extra/string_set.gd") as GDScript
-
-var InkValue := load("res://addons/inkgd/runtime/values/value.gd") as GDScript
-var InkListValue := load("res://addons/inkgd/runtime/values/list_value.gd") as GDScript
-var InkVariablePointerValue := load("res://addons/inkgd/runtime/values/variable_pointer_value.gd") as GDScript
-
-# ############################################################################ #
 
 # (String, InkObject)
 signal variable_changed(variable_name, new_value)

@@ -18,13 +18,6 @@ extends RefCounted
 class_name InkStringSet
 
 # ############################################################################ #
-# Self-reference
-# ############################################################################ #
-
-static func InkStringSet() -> GDScript:
-	return load("res://addons/inkgd/runtime/extra/string_set.gd") as GDScript
-
-# ############################################################################ #
 
 var _dictionary: Dictionary = {}
 
@@ -34,7 +27,7 @@ func clear() -> void:
 	_dictionary.clear()
 
 func duplicate() -> InkStringSet:
-	var set = InkStringSet().new()
+	var set = InkStringSet.new()
 	set._dictionary = _dictionary.duplicate()
 	return set
 

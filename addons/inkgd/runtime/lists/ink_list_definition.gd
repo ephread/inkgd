@@ -14,12 +14,6 @@ extends InkObject
 class_name InkListDefinition
 
 # ############################################################################ #
-# Imports
-# ############################################################################ #
-
-var InkTryGetResult = preload("res://addons/inkgd/runtime/extra/try_get_result.gd")
-
-# ############################################################################ #
 
 var name: String: get = get_name
 func get_name() -> String:

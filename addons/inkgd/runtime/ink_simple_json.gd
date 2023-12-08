@@ -300,13 +300,6 @@ class Reader extends InkBase:
 		return "InkSimpleJSON.Reader"
 
 class Writer extends InkBase:
-	# ######################################################################## #
-	# Imports
-	# ######################################################################## #
-
-	var InkStringWriter := load("res://addons/inkgd/runtime/extra/string_writer.gd") as GDScript
-	var InkStateElement := load("res://addons/inkgd/runtime/extra/state_element.gd") as GDScript
-
 	# (String) -> Writer
 	func _init():
 		self._writer = InkStringWriter.new()

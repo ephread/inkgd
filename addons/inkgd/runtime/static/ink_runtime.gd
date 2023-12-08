@@ -18,13 +18,6 @@ extends Node
 # Expected to be added to the SceneTree as a singleton object.
 
 # ############################################################################ #
-# Imports
-# ############################################################################ #
-
-var InkStaticJSON := load("res://addons/inkgd/runtime/static/json.gd") as GDScript
-var InkStaticNativeFunctionCall := load("res://addons/inkgd/runtime/static/native_function_call.gd") as GDScript
-
-# ############################################################################ #
 # Signals
 # ############################################################################ #
 

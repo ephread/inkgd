@@ -14,13 +14,6 @@ extends InkObject
 class_name InkNativeFunctionCall
 
 # ############################################################################ #
-# Imports
-# ############################################################################ #
-
-# TODO: Migrate to Ink.ValueType
-const ValueType = preload("res://addons/inkgd/runtime/values/value_type.gd").ValueType
-
-# ############################################################################ #
 
 # (String) -> NativeFunctionCall
 @warning_ignore("shadowed_variable")
@@ -60,10 +53,10 @@ var _number_of_parameters: int = 0
 #
 # The name is different to avoid shadowing 'Object.call'
 #
-# The method takes a `StoryErrorMetadata` object as a parameter that
+# The method takes a `InkStoryErrorMetadata` object as a parameter that
 # doesn't exist in upstream. The metadat are used in case an 'exception'
 # is raised. For more information, see story.gd.
-func call_with_parameters(parameters: Array, metadata: StoryErrorMetadata) -> InkObject:
+func call_with_parameters(parameters: Array, metadata: InkStoryErrorMetadata) -> InkObject:
 	if _prototype:
 		return _prototype.call_with_parameters(parameters, metadata)
 
@@ -93,11 +86,11 @@ func call_with_parameters(parameters: Array, metadata: StoryErrorMetadata) -> In
 	var coerced_type: int = coerced_params[0].value_type
 
 	if (
-			coerced_type == ValueType.INT ||
-			coerced_type == ValueType.FLOAT ||
-			coerced_type == ValueType.STRING ||
-			coerced_type == ValueType.DIVERT_TARGET ||
-			coerced_type == ValueType.LIST
+			coerced_type == Ink.ValueType.INT ||
+			coerced_type == Ink.ValueType.FLOAT ||
+			coerced_type == Ink.ValueType.STRING ||
+			coerced_type == Ink.ValueType.DIVERT_TARGET ||
+			coerced_type == Ink.ValueType.LIST
 	):
 		return call_coerced(coerced_params, metadata)
 
@@ -106,10 +99,10 @@ func call_with_parameters(parameters: Array, metadata: StoryErrorMetadata) -> In
 
 # (Array<Value>) -> Value # Call<T> in the original code
 #
-# The method takes a `StoryErrorMetadata` object as a parameter that
+# The method takes a `InkStoryErrorMetadata` object as a parameter that
 # doesn't exist in upstream. The metadat are used in case an 'exception'
 # is raised. For more information, see story.gd.
-func call_coerced(parameters_of_single_type: Array, metadata: StoryErrorMetadata) -> InkValue:
+func call_coerced(parameters_of_single_type: Array, metadata: InkStoryErrorMetadata) -> InkValue:
 	var param1: InkValue = parameters_of_single_type[0]
 	var val_type: int = param1.value_type
 
@@ -149,10 +142,10 @@ func call_coerced(parameters_of_single_type: Array, metadata: StoryErrorMetadata
 
 # (Array<InkObject>) -> Value
 #
-# The method takes a `StoryErrorMetadata` object as a parameter that
+# The method takes a `InkStoryErrorMetadata` object as a parameter that
 # doesn't exist in upstream. The metadat are used in case an 'exception'
 # is raised. For more information, see story.gd.
-func call_binary_list_operation(parameters: Array, metadata: StoryErrorMetadata) -> InkValue:
+func call_binary_list_operation(parameters: Array, metadata: InkStoryErrorMetadata) -> InkValue:
 	if ((self.name == "+" || self.name == "-") &&
 		InkUtils.is_ink_class(parameters[0], "ListValue") &&
 		InkUtils.is_ink_class(parameters [1], "IntValue")
@@ -163,9 +156,9 @@ func call_binary_list_operation(parameters: Array, metadata: StoryErrorMetadata)
 	var v2 = InkUtils.as_or_null(parameters[1], "Value")
 
 	if ((self.name == "&&" || self.name == "||") &&
-		(v1.value_type != ValueType.LIST || v2.value_type != ValueType.LIST)
+		(v1.value_type != Ink.ValueType.LIST || v2.value_type != Ink.ValueType.LIST)
 	):
-		var op: String = _operation_funcs[ValueType.INT]
+		var op: String = _operation_funcs[Ink.ValueType.INT]
 		var result = bool(self._static_native_function_call.call(
 			"op_for_type",
 			1 if v1.is_truthy else 0,
@@ -174,7 +167,7 @@ func call_binary_list_operation(parameters: Array, metadata: StoryErrorMetadata)
 
 		return InkBoolValue.new_with(result)
 
-	if v1.value_type == ValueType.LIST && v2.value_type == ValueType.LIST:
+	if v1.value_type == Ink.ValueType.LIST && v2.value_type == Ink.ValueType.LIST:
 		return call_coerced([v1, v2], metadata)
 
 	var v1_type_name = InkUtils.value_type_name(v1.value_type)
@@ -199,7 +192,7 @@ func call_list_increment_operation(list_int_params: Array) -> InkValue:
 	for list_item in list_val.value.keys(): # TODO: Optimize?
 		var list_item_value = list_val.value.get_item(list_item)
 
-		var int_op: String = _operation_funcs[ValueType.INT]
+		var int_op: String = _operation_funcs[Ink.ValueType.INT]
 
 		var target_int = int(
 				self._static_native_function_call.call(
@@ -225,11 +218,11 @@ func call_list_increment_operation(list_int_params: Array) -> InkValue:
 
 # (Array<InkObject>) -> Array<Value>?
 #
-# The method takes a `StoryErrorMetadata` object as a parameter that
+# The method takes a `InkStoryErrorMetadata` object as a parameter that
 # doesn't exist in upstream. The metadata are used in case an 'exception'
 # is raised. For more information, see story.gd.
-func coerce_values_to_single_type(parameters_in: Array, metadata: StoryErrorMetadata):
-	var val_type: int = ValueType.INT
+func coerce_values_to_single_type(parameters_in: Array, metadata: InkStoryErrorMetadata):
+	var val_type: int = Ink.ValueType.INT
 
 	var special_case_list: InkListValue = null
 
@@ -238,16 +231,16 @@ func coerce_values_to_single_type(parameters_in: Array, metadata: StoryErrorMeta
 		if val.value_type > val_type:
 			val_type = val.value_type
 
-		if val.value_type == ValueType.LIST:
+		if val.value_type == Ink.ValueType.LIST:
 			special_case_list = InkUtils.as_or_null(val, "ListValue")
 
 	var parameters_out: Array = [] # Array<Value>
 
-	if val_type == ValueType.LIST:
+	if val_type == Ink.ValueType.LIST:
 		for val in parameters_in:
-			if val.value_type == ValueType.LIST:
+			if val.value_type == Ink.ValueType.LIST:
 				parameters_out.append(val)
-			elif val.value_type == ValueType.INT:
+			elif val.value_type == Ink.ValueType.INT:
 				var int_val = int(val.value_object)
 				var list = special_case_list.value.origin_of_max_item
 

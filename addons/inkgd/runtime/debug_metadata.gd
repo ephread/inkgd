@@ -26,7 +26,7 @@ var source_name = null
 # ############################################################################ #
 
 func merge(dm: InkDebugMetadata) -> InkDebugMetadata:
-	var new_debug_metadata = DebugMetadata().new()
+	var new_debug_metadata = InkDebugMetadata.new()
 
 	new_debug_metadata.file_name = self.file_name
 	new_debug_metadata.source_name = self.source_name
@@ -71,6 +71,3 @@ func is_ink_class(type: String) -> bool:
 
 func get_ink_class() -> String:
 	return "DebugMetadata"
-
-static func DebugMetadata():
-	return load("res://addons/inkgd/runtime/debug_metadata.gd")

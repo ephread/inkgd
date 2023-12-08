@@ -16,7 +16,7 @@ class_name InkStringValue
 # ############################################################################ #
 
 func get_value_type():
-	return ValueType.STRING
+	return Ink.ValueType.STRING
 
 func get_is_truthy():
 	return value.length() > 0
@@ -35,22 +35,22 @@ func _init_with(val):
 	super._init_with(val)
 	self._sanitize_value()
 
-# The method takes a `StoryErrorMetadata` object as a parameter that
+# The method takes a `InkStoryErrorMetadata` object as a parameter that
 # doesn't exist in upstream. The metadat are used in case an 'exception'
 # is raised. For more information, see story.gd.
 func cast(new_type, metadata = null):
 	if new_type == self.value_type:
 		return self
 
-	if new_type == ValueType.INT:
+	if new_type == Ink.ValueType.INT:
 		if self.value.is_valid_int():
-			return IntValue().new_with(int(self.value))
+			return InkIntValue.new_with(int(self.value))
 		else:
 			return null
 
-	if new_type == ValueType.FLOAT:
+	if new_type == Ink.ValueType.FLOAT:
 		if self.value.is_valid_float():
-			return FloatValue().new_with(float(self.value))
+			return InkFloatValue.new_with(float(self.value))
 		else:
 			return null
 
@@ -77,6 +77,6 @@ func _sanitize_value():
 			break
 
 static func new_with(val):
-	var value = StringValue().new()
+	var value = InkStringValue.new()
 	value._init_with(val)
 	return value

@@ -8,6 +8,10 @@
 
 extends Node
 
+class_name InkRuntimeManager
+
+# ############################################################################ #
+
 # Hiding this type to prevent registration of "private" nodes.
 # See https://github.com/godotengine/godot-proposals/issues/1047
 # class_name InkRuntime
