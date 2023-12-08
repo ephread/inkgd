@@ -100,10 +100,10 @@ class InkBaseObject extends InkBase:
 	func _to_string() -> String:
 		return str(value)
 
-	func is_class(type):
+	func is_ink_class(type):
 		return type == "InkBaseObject" || super.is_class(type)
 
-	func get_class():
+	func get_ink_class():
 		return "InkBaseObject"
 
 class INamedContentLike extends InkBase:
