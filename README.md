@@ -2,21 +2,22 @@
 
 [![build](https://github.com/ephread/inkgd/workflows/build/badge.svg)](https://github.com/ephread/inkgd/actions)
 [![Documentation Status](https://readthedocs.org/projects/inkgd/badge/?version=latest)](https://inkgd.readthedocs.io/en/latest/?badge=latest)
-![Version](https://img.shields.io/badge/version-0.6.0-orange.svg)
+![Version](https://img.shields.io/badge/version-1.0.0-orange.svg)
 ![Godot Version](https://img.shields.io/badge/godot-3.3+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
 Implementation of [inkle’s Ink] in pure GDScript, with editor support.
 
-📖 **Note:** _inkgd_ shines for rapid prototyping in GDScript and small games.
-While the runtime implementation is feature-complete and passes the
-test suite, it’s slower than the original C# implementation. It is used
-in commercial games, but if you need a faster solution and don’t mind C#,
-you should consider using [godot-ink].
+> [!NOTE]
+> _inkgd_ shines for rapid prototyping in GDScript and small games.
+> While the runtime implementation is feature-complete and passes the
+> test suite, it’s slower than the original C# implementation. It is used
+> in commercial games, but if you need a faster solution and don’t mind C#,
+> you should consider using [godot-ink].
 
 > [!IMPORTANT]
-> _inkgd_ is compatible with Godot 4.1+, but has not official release yet.
-> To use _inkgd_ with Godot 4.1+, fetch the [`godot4`] branch.
+> _inkgd_ is compatible with Godot 4.2+, but has not official release yet.
+> To use _inkgd_ with Godot 4.2+, fetch the [`godot4`] branch.
 
 [`godot4`]: https://github.com/ephread/inkgd/tree/godot4
 [inkle’s Ink]: https://github.com/inkle/ink
@@ -86,7 +87,7 @@ hosted on [Read The Docs].
 |      0.3.0      |       1.0.0       |    3.2 – 3.4    |
 |  0.4.0 – 0.4.7  |       1.0.0       |    3.3 – 3.5    |
 |      0.5.0      |       1.1.1       |    3.3 – 3.5    |
-|      0.6.0      |       1.1.1       |      4.1.1      |
+|      1.0.0      |       1.1.1       |       4.2       |
 
 ## Acknowledgement
 

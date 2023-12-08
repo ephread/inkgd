@@ -1,5 +1,5 @@
 # ############################################################################ #
-# Copyright © 2019-2022 Frédéric Maquin <fred@ephread.com>
+# Copyright © 2019-2023 Frédéric Maquin <fred@ephread.com>
 # Licensed under the MIT License.
 # See LICENSE in the project root for license information.
 # ############################################################################ #
@@ -34,7 +34,7 @@ func get_runtime_path() -> String:
 
 func _validate_csproj(project_name: String, runtime_path: String) -> bool:
 	var csproj_path = "res://%s.csproj" % project_name
- 
+
 	if !FileAccess.file_exists(csproj_path):
 		printerr(
 				("[inkgd] [ERROR] The C# project (%s.csproj) doesn't exist. " % project_name) +

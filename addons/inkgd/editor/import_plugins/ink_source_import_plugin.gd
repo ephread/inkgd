@@ -1,6 +1,6 @@
 # ############################################################################ #
 # Copyright © 2018-2022 Paul Joannon
-# Copyright © 2019-2022 Frédéric Maquin <fred@ephread.com>
+# Copyright © 2019-2023 Frédéric Maquin <fred@ephread.com>
 # Licensed under the MIT License.
 # See LICENSE in the project root for license information.
 # ############################################################################ #
@@ -33,7 +33,7 @@ func _get_priority():
 
 func _get_import_options(_path, _preset):
 	return []
-	
+
 func _get_import_order():
 	return 0
 

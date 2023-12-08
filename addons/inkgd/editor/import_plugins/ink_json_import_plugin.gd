@@ -1,6 +1,6 @@
 # ############################################################################ #
 # Copyright © 2018-2022 Paul Joannon
-# Copyright © 2019-2022 Frédéric Maquin <fred@ephread.com>
+# Copyright © 2019-2023 Frédéric Maquin <fred@ephread.com>
 # Licensed under the MIT License.
 # See LICENSE in the project root for license information.
 # ############################################################################ #
@@ -40,7 +40,7 @@ func _get_save_extension():
 
 func _get_resource_type():
 	return "Resource";
-	
+
 func _get_priority():
 	return 1.0
 
@@ -51,7 +51,7 @@ func _get_import_options(_path, _preset):
 			"default_value": true
 		}
 	]
-	
+
 func _get_import_order():
 	return 0
 

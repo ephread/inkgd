@@ -1,6 +1,6 @@
 # ############################################################################ #
 # Copyright © 2015-2021 inkle Ltd.
-# Copyright © 2019-2022 Frédéric Maquin <fred@ephread.com>
+# Copyright © 2019-2023 Frédéric Maquin <fred@ephread.com>
 # All Rights Reserved
 #
 # This file is part of inkgd.
