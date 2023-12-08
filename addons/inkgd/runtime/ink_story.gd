@@ -1856,7 +1856,7 @@ func __assert__(condition: bool, message = null, format_params = null) -> void:
 
 var current_debug_metadata: InkDebugMetadata: get = get_current_debug_metadata
 func get_current_debug_metadata() -> InkDebugMetadata:
-	var dm # DebugMetadata
+	var dm # InkDebugMetadata
 
 	var pointer = self.state.current_pointer
 	if !pointer.is_null:

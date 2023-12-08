@@ -67,7 +67,7 @@ func _to_string() -> String:
 # ############################################################################ #
 
 func is_ink_class(type: String) -> bool:
-	return type == "DebugMetadata" || super.is_ink_class(type)
+	return type == "InkDebugMetadata" || super.is_ink_class(type)
 
 func get_ink_class() -> String:
-	return "DebugMetadata"
+	return "InkDebugMetadata"

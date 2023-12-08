@@ -15,23 +15,60 @@ class_name InkNativeFunctionCall
 
 # ############################################################################ #
 
+const ADD                    = "+"
+const SUBTRACT               = "-"
+const DIVIDE                 = "/"
+const MULTIPLY               = "*"
+const MOD                    = "%"
+const NEGATE                 = "_"
+const EQUALS                 = "=="
+const GREATER                = ">"
+const LESS                   = "<"
+const GREATER_THAN_OR_EQUALS = ">="
+const LESS_THAN_OR_EQUALS    = "<="
+const NOT_EQUALS             = "!="
+const NOT                    = "!"
+const AND                    = "&&"
+const OR                     = "||"
+const MIN                    = "MIN"
+const MAX                    = "MAX"
+const POW                    = "POW"
+const FLOOR                  = "FLOOR"
+const CEILING                = "CEILING"
+const INT                    = "INT"
+const FLOAT                  = "FLOAT"
+const HAS                    = "?"
+const HASNT                  = "!?"
+const INTERSECT              = "^"
+const LIST_MIN               = "LIST_MIN"
+const LIST_MAX               = "LIST_MAX"
+const ALL                    = "LIST_ALL"
+const COUNT                  = "LIST_COUNT"
+const VALUE_OF_LIST          = "LIST_VALUE"
+const INVERT                 = "LIST_INVERT"
+
+# ############################################################################ #
+
 # (String) -> NativeFunctionCall
 @warning_ignore("shadowed_variable")
-static func call_with_name(
-	function_name: String,
-	_static_native_function_call: InkStaticNativeFunctionCall = null
-) -> InkNativeFunctionCall:
-	return InkNativeFunctionCall.new_with_name(function_name, _static_native_function_call)
+static func call_with_name(function_name: String) -> InkNativeFunctionCall:
+	return InkNativeFunctionCall.new_with_name(function_name)
 
 
-var name: String: 
+# (String) -> Bool
+static func call_exists_with_name(function_name: String):
+	generate_native_functions_if_necessary()
+	return InkNativeFunctionCall._native_functions.has(function_name)
+
+
+var name: String:
 	get:
 		return _name
 
 	set(value):
 		_name = value
 		if !_is_prototype:
-			_prototype = self._static_native_function_call.native_functions[_name]
+			_prototype = InkNativeFunctionCall._native_functions[_name]
 
 var _name: String
 
@@ -100,7 +137,7 @@ func call_with_parameters(parameters: Array, metadata: InkStoryErrorMetadata) ->
 # (Array<Value>) -> Value # Call<T> in the original code
 #
 # The method takes a `InkStoryErrorMetadata` object as a parameter that
-# doesn't exist in upstream. The metadat are used in case an 'exception'
+# doesn't exist in upstream. The metadata are used in case an 'exception'
 # is raised. For more information, see story.gd.
 func call_coerced(parameters_of_single_type: Array, metadata: InkStoryErrorMetadata) -> InkValue:
 	var param1: InkValue = parameters_of_single_type[0]
@@ -125,11 +162,11 @@ func call_coerced(parameters_of_single_type: Array, metadata: InkStoryErrorMetad
 		if param_count == 2:
 			var param2 = parameters_of_single_type[1]
 
-			var result_val = self._static_native_function_call.call(op_for_type, param1.value, param2.value)
+			var result_val = op_for_type.call(param1.value, param2.value)
 
 			return InkValue.create(result_val)
 		else:
-			var result_val = self._static_native_function_call.call(op_for_type, param1.value)
+			var result_val = op_for_type.call(param1.value)
 
 			return InkValue.create(result_val)
 	else:
@@ -158,11 +195,10 @@ func call_binary_list_operation(parameters: Array, metadata: InkStoryErrorMetada
 	if ((self.name == "&&" || self.name == "||") &&
 		(v1.value_type != Ink.ValueType.LIST || v2.value_type != Ink.ValueType.LIST)
 	):
-		var op: String = _operation_funcs[Ink.ValueType.INT]
-		var result = bool(self._static_native_function_call.call(
-			"op_for_type",
-			1 if v1.is_truthy else 0,
-			1 if v2.is_truthy else 0
+		var op: Callable = _operation_funcs[Ink.ValueType.INT]
+		var result = bool(op.call(
+				1 if v1.is_truthy else 0,
+				1 if v2.is_truthy else 0
 		))
 
 		return InkBoolValue.new_with(result)
@@ -192,15 +228,9 @@ func call_list_increment_operation(list_int_params: Array) -> InkValue:
 	for list_item in list_val.value.keys(): # TODO: Optimize?
 		var list_item_value = list_val.value.get_item(list_item)
 
-		var int_op: String = _operation_funcs[Ink.ValueType.INT]
+		var int_op: Callable = _operation_funcs[Ink.ValueType.INT]
 
-		var target_int = int(
-				self._static_native_function_call.call(
-						int_op,
-						list_item_value,
-						int_val.value
-				)
-		)
+		var target_int = int(int_op.call(list_item_value, int_val.value))
 
 		var item_origin: InkListDefinition = null
 		for origin in list_val.value.origins:
@@ -275,8 +305,8 @@ func coerce_values_to_single_type(parameters_in: Array, metadata: InkStoryErrorM
 	return parameters_out
 
 
-func _init(static_native_function_call: InkStaticNativeFunctionCall = null):
-	generate_native_functions_if_necessary(static_native_function_call)
+func _init():
+	generate_native_functions_if_necessary()
 
 
 @warning_ignore("shadowed_variable")
@@ -291,16 +321,148 @@ func _init_with_name_and_number_of_parameters(name: String, number_of_parameters
 	self.number_of_parameters = number_of_parameters
 
 
-func generate_native_functions_if_necessary(static_native_function_call: InkStaticNativeFunctionCall) -> void:
-	find_static_objects(static_native_function_call)
-	self._static_native_function_call.generate_native_functions_if_necessary()
+# () -> void
+static func generate_native_functions_if_necessary():
+	if InkNativeFunctionCall._native_functions == null:
+		InkNativeFunctionCall._native_functions = {}
+
+		add_int_binary_op(ADD,                      func(x: int, y: int): return x + y)
+		add_int_binary_op(SUBTRACT,                 func(x: int, y: int): return x - y)
+		add_int_binary_op(MULTIPLY,                 func(x: int, y: int): return x * y)
+		add_int_binary_op(DIVIDE,                   func(x: int, y: int): return x / y)
+		add_int_binary_op(MOD,                      func(x: int, y: int): return x % y)
+		add_int_unary_op (NEGATE,                   func(x: int): return -x)
+
+		add_int_binary_op(EQUALS,                   func(x: int, y: int): return x == y)
+		add_int_binary_op(GREATER,                  func(x: int, y: int): return x > y)
+		add_int_binary_op(LESS,                     func(x: int, y: int): return x < y)
+		add_int_binary_op(GREATER_THAN_OR_EQUALS,   func(x: int, y: int): return x >= y)
+		add_int_binary_op(LESS_THAN_OR_EQUALS,      func(x: int, y: int): return x <= y)
+		add_int_binary_op(NOT_EQUALS,               func(x: int, y: int): return x != y)
+		add_int_unary_op (NOT,                      func(x: int): return x == 0)
+
+		add_int_binary_op(AND,                      func(x: int, y: int): return x != 0 && y != 0)
+		add_int_binary_op(OR,                       func(x: int, y: int): return x != 0 || y != 0)
+
+		add_int_binary_op(MAX,                      func(x: int, y: int): return max(x, y))
+		add_int_binary_op(MIN,                      func(x: int, y: int): return min(x, y))
+
+		add_int_binary_op(POW,                      func(x: int, y: int): return pow(float(x), float(y)))
+		add_int_unary_op (FLOOR,                    func(x: int): return x)
+		add_int_unary_op (CEILING,                  func(x: int): return x)
+		add_int_unary_op (INT,                      func(x: int): return x)
+		add_int_unary_op (FLOAT,                    func(x: int): return float(x))
+
+		add_float_binary_op(ADD,                    func(x: float, y: float): return x + y)
+		add_float_binary_op(SUBTRACT,               func(x: float, y: float): return x - y)
+		add_float_binary_op(MULTIPLY,               func(x: float, y: float): return x * y)
+		add_float_binary_op(DIVIDE,                 func(x: float, y: float): return x / y)
+		add_float_binary_op(MOD,                    func(x: float, y: float): return fmod(x, y))
+		add_float_unary_op (NEGATE,                 func(x: float): return -x)
+
+		add_float_binary_op(EQUALS,                 func(x: float, y: float): return x == y)
+		add_float_binary_op(GREATER,                func(x: float, y: float): return x > y)
+		add_float_binary_op(LESS,                   func(x: float, y: float): return x < y)
+		add_float_binary_op(GREATER_THAN_OR_EQUALS, func(x: float, y: float): return x >= y)
+		add_float_binary_op(LESS_THAN_OR_EQUALS,    func(x: float, y: float): return x <= y)
+		add_float_binary_op(NOT_EQUALS,             func(x: float, y: float): return x != y)
+		add_float_unary_op (NOT,                    func(x: float): return x == 0.0)
+
+		add_float_binary_op(AND,                    func(x: float, y: float): return x != 0.0 && y != 0.0)
+		add_float_binary_op(OR,                     func(x: float, y: float): return x != 0.0 || y != 0.0)
+
+		add_float_binary_op(MAX,                    func(x: float, y: float): return max(x, y))
+		add_float_binary_op(MIN,                    func(x: float, y: float): return min(x, y))
+
+		add_float_binary_op(POW,                    func(x: float, y: float): return pow(x, y))
+		add_float_unary_op (FLOOR,                  func(x: float): return floor(x))
+		add_float_unary_op (CEILING,                func(x: float): return ceil(x))
+		add_float_unary_op (INT,                    func(x: float): return int(x))
+		add_float_unary_op (FLOAT,                  func(x: float): return x)
+
+		add_string_binary_op(ADD,                   func(x: String, y: String): return str(x, y))
+		add_string_binary_op(EQUALS,                func(x: String, y: String): return x == y)
+		add_string_binary_op(NOT_EQUALS,            func(x: String, y: String): return x != y)
+
+		# Note: The Content Test (in) operator does not returns true when testing
+		# against the empty string, unlike the behaviour of the original C# runtime.
+		add_string_binary_op(HAS,                   func(x: String, y: String): return y == "" || (y in x))
+		add_string_binary_op(HASNT,                 func(x: String, y: String): return !(y in x) && y != "")
+
+		add_list_binary_op (ADD,                    func(x: InkList, y: InkList): return x.union(y))
+		add_list_binary_op (SUBTRACT,               func(x: InkList, y: InkList): return x.without(y))
+		add_list_binary_op (HAS,                    func(x: InkList, y: InkList): return x.contains(y))
+		add_list_binary_op (HASNT,                  func(x: InkList, y: InkList): return !x.contains(y))
+		add_list_binary_op (INTERSECT,              func(x: InkList, y: InkList): return x.intersection(y))
+
+		add_list_binary_op (EQUALS,                 func(x: InkList, y: InkList): return x.equals(y))
+		add_list_binary_op (GREATER,                func(x: InkList, y: InkList): return x.greater_than(y))
+		add_list_binary_op (LESS,                   func(x: InkList, y: InkList): return x.less_than(y))
+		add_list_binary_op (GREATER_THAN_OR_EQUALS, func(x: InkList, y: InkList): return x.greater_than_or_equals(y))
+		add_list_binary_op (LESS_THAN_OR_EQUALS,    func(x: InkList, y: InkList): return x.less_than_or_equals(y))
+		add_list_binary_op (NOT_EQUALS,             func(x: InkList, y: InkList): return !x.equals(y))
+
+		add_list_binary_op (AND,                    func(x: InkList, y: InkList): return x.size() > 0 && y.size() > 0)
+		add_list_binary_op (OR,                     func(x: InkList, y: InkList): return x.size() > 0 || y.size() > 0)
+
+		add_list_unary_op (NOT,                     func(x: InkList): return 1 if x.size() == 0 else 0)
+
+		add_list_unary_op (INVERT,                  func(x: InkList): return x.inverse)
+		add_list_unary_op (ALL,                     func(x: InkList): return x.all)
+		add_list_unary_op (LIST_MIN,                func(x: InkList): return x.min_as_list())
+		add_list_unary_op (LIST_MAX,                func(x: InkList): return x.max_as_list())
+		add_list_unary_op (COUNT,                   func(x: InkList): return x.size())
+		add_list_unary_op (VALUE_OF_LIST,           func(x: InkList): return x.max_item.value)
+
+		add_op_to_native_func(EQUALS, 2, Ink.ValueType.DIVERT_TARGET, func(d1: InkPath, d2: InkPath): return d1.equals(d2))
+		add_op_to_native_func(NOT_EQUALS, 2, Ink.ValueType.DIVERT_TARGET, func(d1: InkPath, d2: InkPath): return !d1.equals(d2))
 
 
-func add_op_func_for_type(val_type: int, op: String) -> void:
+func add_op_func_for_type(val_type: int, op: Callable) -> void:
 	if _operation_funcs == null:
 		_operation_funcs = {}
 
 	_operation_funcs[val_type] = op
+
+
+# (String, int, ValueType, Variant)
+static func add_op_to_native_func(name: String, args: int, val_type: int, op: Callable):
+	var native_func = null # NativeFunctionCall
+	if InkNativeFunctionCall._native_functions.has(name):
+		native_func = InkNativeFunctionCall._native_functions[name]
+	else:
+		native_func = InkNativeFunctionCall.new_with_name_and_number_of_parameters(name, args)
+		InkNativeFunctionCall._native_functions[name] = native_func
+
+	native_func.add_op_func_for_type(val_type, op)
+
+
+static func add_int_binary_op(name: String, op: Callable):
+	add_op_to_native_func(name, 2, Ink.ValueType.INT, op)
+
+
+static func add_int_unary_op(name: String, op: Callable):
+	add_op_to_native_func(name, 1, Ink.ValueType.INT, op)
+
+
+static func add_float_binary_op(name: String, op: Callable):
+	add_op_to_native_func(name, 2, Ink.ValueType.FLOAT, op)
+
+
+static func add_float_unary_op(name: String, op: Callable):
+	add_op_to_native_func(name, 1, Ink.ValueType.FLOAT, op)
+
+
+static func add_string_binary_op(name: String, op: Callable):
+	add_op_to_native_func(name, 2, Ink.ValueType.STRING, op)
+
+
+static func add_list_binary_op(name: String, op: Callable):
+	add_op_to_native_func(name, 2, Ink.ValueType.LIST, op)
+
+
+static func add_list_unary_op(name: String, op: Callable):
+	add_op_to_native_func(name, 1, Ink.ValueType.LIST, op)
 
 
 func _to_string() -> String:
@@ -311,8 +473,9 @@ var _prototype: InkNativeFunctionCall = null
 
 var _is_prototype: bool = false
 
-# Dictionary<ValueType, String>
-var _operation_funcs: Dictionary = {}
+var _operation_funcs: Dictionary = {} # Dictionary<ValueType, Callable>
+
+static var _native_functions = null # Dictionary<String, String>
 
 
 # ############################################################################ #
@@ -326,40 +489,17 @@ func is_ink_class(type):
 func get_ink_class():
 	return "NativeFunctionCall"
 
-
-var _static_native_function_call: InkStaticNativeFunctionCall:
-	get: return _weak_static_native_function_call.get_ref()
-
-var _weak_static_native_function_call = WeakRef.new()
-
-
-func find_static_objects(static_native_function_call: InkStaticNativeFunctionCall = null):
-	if _static_native_function_call == null:
-		if static_native_function_call:
-			_weak_static_native_function_call = weakref(static_native_function_call)
-		else:
-			var ink_runtime = Engine.get_main_loop().root.get_node("__InkRuntime")
-			_weak_static_native_function_call = weakref(ink_runtime.native_function_call)
-
-
 # ############################################################################ #
 
 @warning_ignore("shadowed_variable")
-static func new_with_name(
-		name: String,
-		static_native_function_call: InkStaticNativeFunctionCall = null
-):
-	var native_function_call = InkNativeFunctionCall.new(static_native_function_call)
+static func new_with_name(name: String):
+	var native_function_call = InkNativeFunctionCall.new()
 	native_function_call._init_with_name(name)
 	return native_function_call
 
 
 @warning_ignore("shadowed_variable")
-static func new_with_name_and_number_of_parameters(
-		name: String,
-		number_of_parameters: int, 
-		static_native_function_call: InkStaticNativeFunctionCall = null
-):
-	var native_function_call = InkNativeFunctionCall.new(static_native_function_call)
+static func new_with_name_and_number_of_parameters(name: String, number_of_parameters: int):
+	var native_function_call = InkNativeFunctionCall.new()
 	native_function_call._init_with_name_and_number_of_parameters(name, number_of_parameters)
 	return native_function_call

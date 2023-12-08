@@ -259,8 +259,8 @@ func jtoken_to_runtime_object(token) -> InkObject:
 			i += 1
 
 		if _str == "L^": _str = "^"
-		if _static_native_function_call.call_exists_with_name(_str):
-			return InkNativeFunctionCall.call_with_name(_str, _static_native_function_call)
+		if InkNativeFunctionCall.call_exists_with_name(_str):
+			return InkNativeFunctionCall.call_with_name(_str)
 
 		if _str == "->->":
 			return InkControlCommand.pop_tunnel()
@@ -563,9 +563,7 @@ func jtoken_to_list_definitions(obj):
 
 	return InkListDefinitionsOrigin.new(all_defs)
 
-func _init(native_function_call):
-	_static_native_function_call = native_function_call
-
+func _init():
 	_control_command_names = []
 
 	_control_command_names.append("ev")        # EVAL_START
@@ -605,6 +603,3 @@ func _init(native_function_call):
 var _control_command_names = null
 
 # ############################################################################ #
-
-# Eventually a pointer to InkRuntime.StaticJson
-var _static_native_function_call = null

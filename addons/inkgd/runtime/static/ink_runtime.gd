@@ -76,8 +76,7 @@ func set_speose(value: bool):
 # "Static" Properties
 # ############################################################################ #
 
-var native_function_call: InkStaticNativeFunctionCall = InkStaticNativeFunctionCall.new()
-var json: InkStaticJSON = InkStaticJSON.new(native_function_call)
+var json: InkStaticJSON = InkStaticJSON.new()
 
 # ############################################################################ #
 # Internal Properties
