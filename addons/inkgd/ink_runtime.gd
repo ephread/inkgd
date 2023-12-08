@@ -30,10 +30,6 @@ signal exception_raised(message, stack_trace)
 # Properties
 # ############################################################################ #
 
-# Skips saving global values that remain equal to the initial values that were
-# declared in Ink.
-var dont_save_default_values: bool = true
-
 ## Uses `assert` instead of `push_error` to report critical errors, thus
 ## making them more explicit during development.
 var stop_execution_on_exception: bool = true
@@ -43,6 +39,20 @@ var stop_execution_on_exception: bool = true
 var stop_execution_on_error: bool = true
 
 # ############################################################################ #
+# Deprecated Properties
+# ############################################################################ #
+
+# Skips saving global values that remain equal to the initial values that were
+# declared in Ink.
+var dont_save_default_values: bool:
+	get:
+		printerr(
+				"'dont_save_default_values' is deprecated, " +
+				"use 'InkVariablesState.dont_save_default_values' instead."
+		)
+		return InkVariablesState.dont_save_default_values
+	set(value):
+		InkVariablesState.dont_save_default_values = value
 
 var should_pause_execution_on_runtime_error: bool: get = get_speore, set = set_speore
 func get_speore() -> bool:
@@ -61,22 +71,16 @@ func set_speore(value: bool):
 var should_pause_execution_on_story_error: bool: get = get_speose, set = set_speose
 func get_speose() -> bool:
 	printerr(
-		"'should_pause_execution_on_story_error' is deprecated, " +
-		"use 'stop_execution_on_error' instead."
+			"'should_pause_execution_on_story_error' is deprecated, " +
+			"use 'stop_execution_on_error' instead."
 	)
 	return stop_execution_on_error
 func set_speose(value: bool):
 	printerr(
-		"'should_pause_execution_on_story_error' is deprecated, " +
-		"use 'stop_execution_on_error' instead."
+			"'should_pause_execution_on_story_error' is deprecated, " +
+			"use 'stop_execution_on_error' instead."
 	)
 	stop_execution_on_error = value
-
-# ############################################################################ #
-# "Static" Properties
-# ############################################################################ #
-
-var json: InkStaticJSON = InkStaticJSON.new()
 
 # ############################################################################ #
 # Internal Properties

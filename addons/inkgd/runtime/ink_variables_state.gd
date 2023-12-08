@@ -84,9 +84,7 @@ func set_variable(variable_name: String, value) -> void:
 func enumerate() -> Array:
 	return _global_variables.keys()
 
-func _init(callstack: InkCallStack, list_defs_origin: InkListDefinitionsOrigin, ink_runtime = null):
-	find_static_objects(ink_runtime)
-
+func _init(callstack: InkCallStack, list_defs_origin: InkListDefinitionsOrigin):
 	_global_variables = {}
 	_callstack = callstack
 	_list_defs_origin = list_defs_origin
@@ -109,9 +107,11 @@ func set_json_token(jtoken: Dictionary) -> void:
 	for var_val_key in _default_global_variables:
 		if jtoken.has(var_val_key):
 			var loaded_token = jtoken[var_val_key]
-			_global_variables[var_val_key] = self.StaticJSON.jtoken_to_runtime_object(loaded_token)
+			_global_variables[var_val_key] = InkJSON.jtoken_to_runtime_object(loaded_token)
 		else:
 			_global_variables[var_val_key] = _default_global_variables[var_val_key]
+
+static var dont_save_default_values: bool = true
 
 func write_json(writer: InkSimpleJSON.Writer) -> void:
 	writer.write_object_start()
@@ -119,13 +119,13 @@ func write_json(writer: InkSimpleJSON.Writer) -> void:
 		var name: String = key
 		var val: InkObject = _global_variables[key]
 
-		if self._ink_runtime.dont_save_default_values:
+		if InkVariablesState.dont_save_default_values:
 			if self._default_global_variables.has(name):
 				if runtime_objects_equal(val, self._default_global_variables[name]):
 					continue
 
 		writer.write_property_start(name)
-		self.StaticJSON.write_runtime_object(writer, val)
+		InkJSON.write_runtime_object(writer, val)
 		writer.write_property_end()
 	writer.write_object_end()
 
@@ -335,28 +335,3 @@ func is_ink_class(type: String) -> bool:
 
 func get_ink_class() -> String:
 	return "VariableState"
-
-# ############################################################################ #
-# Static Properties
-# ############################################################################ #
-
-var StaticJSON: InkStaticJSON:
-	get: return self._ink_runtime.json
-
-var _ink_runtime:
-	get: return _weak_ink_runtime.get_ref()
-var _weak_ink_runtime: WeakRef
-
-func find_static_objects(ink_runtime = null):
-	if ink_runtime != null:
-		_weak_ink_runtime = weakref(ink_runtime)
-		return
-
-	var runtime = Engine.get_main_loop().root.get_node("__InkRuntime")
-
-	InkUtils.__assert__(
-			runtime != null,
-			"[InkVariableStates] Could not retrieve 'InkRuntime' singleton from the scene tree."
-	)
-
-	_weak_ink_runtime = weakref(runtime)

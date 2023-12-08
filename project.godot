@@ -20,7 +20,7 @@ config/icon="res://icons/icon.png"
 
 [autoload]
 
-__InkRuntime="*res://addons/inkgd/runtime/static/ink_runtime.gd"
+__InkRuntime="*res://addons/inkgd/ink_runtime.gd"
 
 [debug]
 
@@ -46,6 +46,7 @@ enabled=PackedStringArray("res://addons/gut/plugin.cfg", "res://addons/inkgd/plu
 [inkgd]
 
 register_templates=false
+use_mono_runtime=true
 
 [network]
 

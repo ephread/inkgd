@@ -30,7 +30,7 @@ for more information.
 Alternatively, you can also manage the singleton in code. Import
 ``res://addons/inkgd/runtime.gd`` in your script, then call
 the appropriate methods in ``_ready()`` and ``_exit_tree()`` to add/remove
-``res://addons/inkgd/runtime/static/ink_runtime.gd`` to/from the tree.
+``res://addons/inkgd/ink_runtime.gd`` to/from the tree.
 
 .. code-block:: gdscript
 

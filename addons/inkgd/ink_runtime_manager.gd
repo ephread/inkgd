@@ -24,7 +24,7 @@ static func init(root_node, stop_on_error = true):
 
 		return _ink_runtime
 
-	var _ink_runtime = load("res://addons/inkgd/runtime/static/ink_runtime.gd").new()
+	var _ink_runtime = load("res://addons/inkgd/ink_runtime.gd").new()
 
 	_ink_runtime.stop_execution_on_exception = stop_on_error
 	_ink_runtime.stop_execution_on_error = stop_on_error

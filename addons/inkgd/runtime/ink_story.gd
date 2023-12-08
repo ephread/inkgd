@@ -146,10 +146,10 @@ func _init(json_string: String, runtime = null):
 		return
 
 	if root_object.has("listDefs"):
-		self._list_definitions = self.StaticJSON.jtoken_to_list_definitions(root_object["listDefs"])
+		self._list_definitions = InkJSON.jtoken_to_list_definitions(root_object["listDefs"])
 
 	self._main_content_container = InkUtils.as_or_null(
-			self.StaticJSON.jtoken_to_runtime_object(root_token),
+			InkJSON.jtoken_to_runtime_object(root_token),
 			"InkContainer"
 	)
 
@@ -164,7 +164,7 @@ func to_json() -> String:
 
 
 func write_root_property(writer: InkSimpleJSON.Writer) -> void:
-	self.StaticJSON.write_runtime_container(writer, self._main_content_container)
+	InkJSON.write_runtime_container(writer, self._main_content_container)
 
 
 func to_json_with_writer(writer: InkSimpleJSON.Writer) -> void:
@@ -201,7 +201,7 @@ func reset_state() -> void:
 	if async_we_cant ("ResetState"):
 		return
 
-	self._state = InkStoryState.new(self, self._ink_runtime)
+	self._state = InkStoryState.new(self)
 	self._state.variables_state.connect("variable_changed", Callable(self, "variable_state_did_change_event"))
 
 	self.reset_globals()
@@ -2010,9 +2010,6 @@ func _make_story_error_metadata():
 
 
 # ############################################################################ #
-
-var StaticJSON: InkStaticJSON:
-	get: return self._ink_runtime.json
 
 var _ink_runtime:
 	get: return _weak_ink_runtime.get_ref()

@@ -339,18 +339,16 @@ var in_expression_evaluation: bool:
 		current_element.in_expression_evaluation = value
 
 # (InkStory) -> InkStoryState
-func _init(story, ink_runtime = null):
-	find_static_objects(ink_runtime)
-
+func _init(story):
 	self._story = weakref(story)
 
-	self._current_flow = InkFlow.new_with_name(DEFAULT_FLOW_NAME, story, self.StaticJSON)
+	self._current_flow = InkFlow.new_with_name(DEFAULT_FLOW_NAME, story)
 	self.output_stream_dirty()
 	self._alive_flow_names_dirty = true
 
 	self.evaluation_stack = []
 
-	self.variables_state = InkVariablesState.new(self.callstack, self.story.list_definitions, self._ink_runtime)
+	self.variables_state = InkVariablesState.new(self.callstack, self.story.list_definitions)
 
 	self._visit_counts = {}
 	self._turn_indices = {}
@@ -383,7 +381,7 @@ func switch_flow_internal(flow_name: String) -> void:
 	if self._named_flows.has(flow_name):
 		flow = self._named_flows[flow_name]
 	else:
-		flow = InkFlow.new_with_name(flow_name, self.story, self.StaticJSON)
+		flow = InkFlow.new_with_name(flow_name, self.story)
 		self._named_flows[flow_name] = flow
 		self._alive_flow_names_dirty = true
 
@@ -422,7 +420,7 @@ func copy_and_start_patching():
 	copy._patch = InkStatePatch.new(self._patch)
 
 	copy._current_flow.name = self._current_flow.name
-	copy._current_flow.callstack = InkCallStack.new(self._current_flow.callstack, self.StaticJSON)
+	copy._current_flow.callstack = InkCallStack.new(self._current_flow.callstack)
 	copy._current_flow.current_choices += self._current_flow.current_choices
 	copy._current_flow.output_stream += self._current_flow.output_stream
 	copy.output_stream_dirty()
@@ -554,10 +552,10 @@ func load_json_obj(jobject: Dictionary) -> void:
 			var name = named_flow_obj_key
 			var flow_obj = flows_obj_dict[named_flow_obj_key]
 
-			var flow = InkFlow.new_with_name_and_jobject(name, self.story, flow_obj, self.StaticJSON)
+			var flow = InkFlow.new_with_name_and_jobject(name, self.story, flow_obj)
 
 			if flows_obj_dict.size() == 1:
-				self._current_flow = InkFlow.new_with_name_and_jobject(name, self.story, flow_obj, self.StaticJSON)
+				self._current_flow = InkFlow.new_with_name_and_jobject(name, self.story, flow_obj)
 			else:
 				self._named_flows[name] = flow
 
@@ -568,8 +566,8 @@ func load_json_obj(jobject: Dictionary) -> void:
 		self._named_flows = null
 		self._current_flow.name = DEFAULT_FLOW_NAME
 		self._current_flow.callstack.set_json_token(jobject["callstackThreads"], self.story)
-		self._current_flow.output_stream = self.StaticJSON.jarray_to_runtime_obj_list(jobject["outputStream"])
-		self._current_flow.current_choices = self.StaticJSON.jarray_to_runtime_obj_list(jobject["currentChoices"])
+		self._current_flow.output_stream = InkJSON.jarray_to_runtime_obj_list(jobject["outputStream"])
+		self._current_flow.current_choices = InkJSON.jarray_to_runtime_obj_list(jobject["currentChoices"])
 
 		var jchoice_threads_obj = jobject["choiceThreads"] if jobject.has("choiceThreads") else null
 		self._current_flow.load_flow_choice_threads(jchoice_threads_obj, self.story)
@@ -580,15 +578,15 @@ func load_json_obj(jobject: Dictionary) -> void:
 	self.variables_state.set_json_token(jobject["variablesState"])
 	self.variables_state.callstack = self._current_flow.callstack
 
-	self.evaluation_stack = self.StaticJSON.jarray_to_runtime_obj_list(jobject["evalStack"])
+	self.evaluation_stack = InkJSON.jarray_to_runtime_obj_list(jobject["evalStack"])
 
 	if jobject.has("currentDivertTarget"):
 		var current_divert_target_path = jobject["currentDivertTarget"]
 		var divert_path = InkPath.new_with_components_string(current_divert_target_path._to_string())
 		self.diverted_pointer = self.story.pointer_at_path(divert_path)
 
-	self._visit_counts = self.StaticJSON.jobject_to_int_dictionary(jobject["visitCounts"])
-	self._turn_indices = self.StaticJSON.jobject_to_int_dictionary(jobject["turnIndices"])
+	self._visit_counts = InkJSON.jobject_to_int_dictionary(jobject["visitCounts"])
+	self._turn_indices = InkJSON.jobject_to_int_dictionary(jobject["turnIndices"])
 	self.current_turn_index = int(jobject["turnIdx"])
 	self.story_seed = int(jobject["storySeed"])
 
@@ -1075,13 +1073,15 @@ var _alive_flow_names_dirty := true
 # C# Actions & Delegates ##################################################### #
 
 func _anonymous_write_property_eval_stack(writer) -> void:
-	self.StaticJSON.write_list_runtime_objs(writer, self.evaluation_stack)
+	InkJSON.write_list_runtime_objs(writer, self.evaluation_stack)
+
 
 func _anonymous_write_property_visit_counts(writer) -> void:
-	self.StaticJSON.write_int_dictionary(writer, self._visit_counts)
+	InkJSON.write_int_dictionary(writer, self._visit_counts)
+
 
 func _anonymous_write_property_turn_indices(writer) -> void:
-	self.StaticJSON.write_int_dictionary(writer, self._turn_indices)
+	InkJSON.write_int_dictionary(writer, self._turn_indices)
 
 
 # ############################################################################ #
@@ -1091,30 +1091,6 @@ func _anonymous_write_property_turn_indices(writer) -> void:
 func is_ink_class(type: String) -> bool:
 	return type == "StoryState" || super.is_ink_class(type)
 
+
 func get_ink_class() -> String:
 	return "StoryState"
-
-
-# ############################################################################ #
-
-var StaticJSON: InkStaticJSON:
-	get: return self._ink_runtime.json
-
-var _ink_runtime:
-	get: return _weak_ink_runtime.get_ref()
-var _weak_ink_runtime: WeakRef
-
-func find_static_objects(ink_runtime = null):
-	if ink_runtime != null:
-		_weak_ink_runtime = weakref(ink_runtime)
-		return
-
-	var runtime = Engine.get_main_loop().root.get_node("__InkRuntime")
-
-	InkUtils.__assert__(
-			runtime != null,
-			"[StoryState] Could not retrieve 'InkRuntime' singleton from the scene tree."
-	)
-
-	_weak_ink_runtime = weakref(runtime)
-

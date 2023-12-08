@@ -176,7 +176,7 @@ func _remove_bottom_panel():
 
 ## Registers the Ink runtime node as an autoloaded singleton.
 func _add_autoloads():
-	add_autoload_singleton("__InkRuntime", "res://addons/inkgd/runtime/static/ink_runtime.gd")
+	add_autoload_singleton("__InkRuntime", "res://addons/inkgd/ink_runtime.gd")
 
 
 ## Unregisters the Ink runtime node from autoloaded singletons.
@@ -189,7 +189,7 @@ func _add_templates():
 	if ProjectSettings.has_setting(REGISTER_TEMPLATES_SETTING):
 		var register_template = ProjectSettings.get_setting(REGISTER_TEMPLATES_SETTING)
 		if !register_template: return
-	
+
 	var names = _get_plugin_templates_names()
 
 	# Setup the templates folder for the project
@@ -216,7 +216,7 @@ func _remove_templates():
 ## Get all the script templates provided by the plugin.
 func _get_plugin_templates_names() -> Array:
 	var plugin_template_names = []
-	
+
 	var dir = DirAccess.open("res://addons/inkgd/editor/templates/")
 	if dir:
 		dir.list_dir_begin()
@@ -224,7 +224,7 @@ func _get_plugin_templates_names() -> Array:
 		while temp != "":
 			plugin_template_names.append(temp)
 			temp = dir.get_next()
-		
+
 		return plugin_template_names
 	else:
 		print("An error occurred when trying to access the path.")
@@ -235,16 +235,16 @@ func _register_custom_settings():
 	if _can_run_mono():
 		if !ProjectSettings.has_setting(USE_MONO_RUNTIME_SETTING):
 			ProjectSettings.set_setting(USE_MONO_RUNTIME_SETTING, true)
-			
+
 		var mono_property_info = {
 			"name": USE_MONO_RUNTIME_SETTING,
 			"type": TYPE_BOOL,
 			"hint_string": "If `true` _inkgd_ will alwaus use the Mono runtime when available.",
 			"default": false
 		}
-		
+
 		ProjectSettings.add_property_info(mono_property_info)
-		
+
 	if !ProjectSettings.has_setting(REGISTER_TEMPLATES_SETTING):
 		ProjectSettings.set_setting(REGISTER_TEMPLATES_SETTING, true)
 
@@ -280,4 +280,4 @@ func _should_use_mono():
 
 
 func _can_run_mono():
-	return type_exists("_GodotSharp")
+	return type_exists("_GodotSharp") || type_exists("GodotSharp")

@@ -12,7 +12,7 @@ the scene tree before executing any of the methods of the GDScript API.
 The singleton node is autoconfigured an AutoLoad singleton as long as the editor
 plugin is enabled.
 
-It's also possible to add ``res://addons/inkgd/runtime/static/ink_runtime.gd``
+It's also possible to add ``res://addons/inkgd/ink_runtime.gd``
 to the AutoLoad list manually if it doesn't appear in the list or was previously
 removed.
 

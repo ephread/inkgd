@@ -9,7 +9,7 @@
 
 extends InkBase
 
-class_name InkStaticJSON
+class_name InkJSON
 
 # In the C# code this class has only static methods. In the GDScript, it will rather
 # be a unique object, added to the InkRuntime singleton.
@@ -17,7 +17,9 @@ class_name InkStaticJSON
 # ############################################################################ #
 
 # (Array<Variant>, bool) -> Array
-func jarray_to_runtime_obj_list(jarray: Array, skip_last = false) -> Array:
+static func jarray_to_runtime_obj_list(jarray: Array, skip_last = false) -> Array:
+	init_control_command_names_if_necessary()
+
 	var count = jarray.size()
 	if skip_last:
 		count -= 1
@@ -34,7 +36,9 @@ func jarray_to_runtime_obj_list(jarray: Array, skip_last = false) -> Array:
 	return list
 
 # (self.Json.Writer, Dictionary<String, InkObject>) -> void
-func write_dictionary_runtime_objs(writer, dictionary: Dictionary) -> void:
+static func write_dictionary_runtime_objs(writer, dictionary: Dictionary) -> void:
+	init_control_command_names_if_necessary()
+
 	writer.write_object_start()
 	for key in dictionary:
 		writer.write_property_start(key)
@@ -43,21 +47,27 @@ func write_dictionary_runtime_objs(writer, dictionary: Dictionary) -> void:
 	writer.write_object_end()
 
 # (self.Json.Writer, Array<InkObject>) -> void
-func write_list_runtime_objs(writer, list: Array) -> void:
+static func write_list_runtime_objs(writer, list: Array) -> void:
+	init_control_command_names_if_necessary()
+
 	writer.write_array_start()
 	for val in list:
 		write_runtime_object(writer, val)
 	writer.write_array_end()
 
 # (self.Json.Writer, Array<Int>) -> void
-func write_int_dictionary(writer, dict: Dictionary) -> void:
+static func write_int_dictionary(writer, dict: Dictionary) -> void:
+	init_control_command_names_if_necessary()
+
 	writer.write_object_start()
 	for key in dict:
 		writer.write_property(key, dict[key])
 	writer.write_object_end()
 
 # (self.Json.Writer, InkObject) -> void
-func write_runtime_object(writer, obj: InkObject) -> void:
+static func write_runtime_object(writer, obj: InkObject) -> void:
+	init_control_command_names_if_necessary()
+
 	var container = InkUtils.as_or_null(obj, "InkContainer")
 	if container:
 		write_runtime_container(writer, container)
@@ -157,7 +167,7 @@ func write_runtime_object(writer, obj: InkObject) -> void:
 
 	var control_cmd = InkUtils.as_or_null(obj, "ControlCommand")
 	if control_cmd:
-		writer.write(self._control_command_names[control_cmd.command_type])
+		writer.write(_control_command_names[control_cmd.command_type])
 		return
 
 	var native_func = InkUtils.as_or_null(obj, "NativeFunctionCall")
@@ -218,7 +228,9 @@ func write_runtime_object(writer, obj: InkObject) -> void:
 	return
 
 # (Dictionary<String, Variant>) -> Dictionary<String, InkObject>
-func jobject_to_dictionary_runtime_objs(jobject: Dictionary) -> Dictionary:
+static func jobject_to_dictionary_runtime_objs(jobject: Dictionary) -> Dictionary:
+	init_control_command_names_if_necessary()
+
 	var dict = {}
 
 	for key in jobject:
@@ -227,7 +239,9 @@ func jobject_to_dictionary_runtime_objs(jobject: Dictionary) -> Dictionary:
 	return dict
 
 # (Dictionary<String, Variant>) -> Dictionary<String, int>
-func jobject_to_int_dictionary(jobject: Dictionary) -> Dictionary:
+static func jobject_to_int_dictionary(jobject: Dictionary) -> Dictionary:
+	init_control_command_names_if_necessary()
+
 	var dict = {}
 	for key in jobject:
 		dict[key] = int(jobject[key])
@@ -235,7 +249,8 @@ func jobject_to_int_dictionary(jobject: Dictionary) -> Dictionary:
 	return dict
 
 # (Variant) -> InkObject
-func jtoken_to_runtime_object(token) -> InkObject:
+static func jtoken_to_runtime_object(token) -> InkObject:
+	init_control_command_names_if_necessary()
 
 	if token is int || token is float || token is bool:
 		return InkValue.create(token)
@@ -410,7 +425,9 @@ func jtoken_to_runtime_object(token) -> InkObject:
 	return null
 
 # (self.Json.Writer, InkContainer, Bool) -> void
-func write_runtime_container(writer, container: InkContainer, without_name = false) -> void:
+static func write_runtime_container(writer, container: InkContainer, without_name = false) -> void:
+	init_control_command_names_if_necessary()
+
 	writer.write_array_start()
 
 	for c in container.content:
@@ -447,7 +464,9 @@ func write_runtime_container(writer, container: InkContainer, without_name = fal
 	writer.write_array_end()
 
 # (Array<Variant>) -> InkContainer
-func jarray_to_container(jarray: Array) -> InkContainer:
+static func jarray_to_container(jarray: Array) -> InkContainer:
+	init_control_command_names_if_necessary()
+
 	var container = InkContainer.new()
 	container.content = jarray_to_runtime_obj_list(jarray, true)
 
@@ -472,7 +491,9 @@ func jarray_to_container(jarray: Array) -> InkContainer:
 	return container
 
 # (Dictionary<String, Variant>) -> Choice
-func jobject_to_choice(jobj: Dictionary) -> InkChoice:
+static func jobject_to_choice(jobj: Dictionary) -> InkChoice:
+	init_control_command_names_if_necessary()
+
 	var choice = InkChoice.new()
 	choice.text = str(jobj["text"])
 	choice.index = int(jobj["index"])
@@ -482,7 +503,9 @@ func jobject_to_choice(jobj: Dictionary) -> InkChoice:
 	return choice
 
 # (self.Json.Writer, Choice) -> Void
-func write_choice(writer, choice: InkChoice) -> void:
+static func write_choice(writer, choice: InkChoice) -> void:
+	init_control_command_names_if_necessary()
+
 	writer.write_object_start()
 	writer.write_property("text", choice.text)
 	writer.write_property("index", choice.index)
@@ -492,7 +515,9 @@ func write_choice(writer, choice: InkChoice) -> void:
 	writer.write_object_end()
 
 # (self.Json.Writer, ListValue) -> Void
-func write_ink_list(writer, list_val):
+static func write_ink_list(writer, list_val):
+	init_control_command_names_if_necessary()
+
 	var raw_list = list_val.value
 
 	writer.write_object_start()
@@ -530,7 +555,9 @@ func write_ink_list(writer, list_val):
 	writer.write_object_end()
 
 # (ListDefinitionsOrigin) -> Dictionary<String, Variant>
-func list_definitions_to_jtoken (origin):
+static func list_definitions_to_jtoken (origin):
+	init_control_command_names_if_necessary()
+
 	var result = {} # Dictionary<String, Variant>
 	for def in origin.lists:
 		var list_def_json = {} # Dictionary<String, Variant>
@@ -544,7 +571,9 @@ func list_definitions_to_jtoken (origin):
 	return result
 
 # (Variant) -> ListDefinitionsOrigin
-func jtoken_to_list_definitions(obj):
+static func jtoken_to_list_definitions(obj):
+	init_control_command_names_if_necessary()
+
 	var defs_obj = obj
 
 	var all_defs = [] # Array<ListDefinition>
@@ -563,7 +592,10 @@ func jtoken_to_list_definitions(obj):
 
 	return InkListDefinitionsOrigin.new(all_defs)
 
-func _init():
+static func init_control_command_names_if_necessary():
+	if _control_command_names != null:
+		return
+
 	_control_command_names = []
 
 	_control_command_names.append("ev")        # EVAL_START
@@ -599,7 +631,6 @@ func _init():
 			InkUtils.throw_exception("Control command not accounted for in serialisation")
 		i += 1
 
-# Array<String>
-var _control_command_names = null
+static var _control_command_names = null
 
 # ############################################################################ #

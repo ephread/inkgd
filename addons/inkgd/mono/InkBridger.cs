@@ -23,13 +23,13 @@ public partial class InkBridger : Node
 		(GDScript) ResourceLoader.Load("res://addons/inkgd/runtime/lists/ink_list.gd");
 
 	private readonly GDScript InkListDefinition =
-		(GDScript) ResourceLoader.Load("res://addons/inkgd/runtime/lists/list_definition.gd");
+		(GDScript) ResourceLoader.Load("res://addons/inkgd/runtime/lists/ink_list_definition.gd");
 
 	private readonly GDScript InkListItem =
 		(GDScript) ResourceLoader.Load("res://addons/inkgd/runtime/lists/structs/ink_list_item.gd");
 
 	private readonly GDScript InkFunctionResult =
-		(GDScript) ResourceLoader.Load("res://addons/inkgd/runtime/extra/function_result.gd");
+		(GDScript) ResourceLoader.Load("res://addons/inkgd/runtime/extra/ink_function_result.gd");
 	#endregion
 
 	#region Methods | Helpers

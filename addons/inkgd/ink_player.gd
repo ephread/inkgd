@@ -13,7 +13,7 @@ class_name InkPlayer
 # Imports
 # ############################################################################ #
 
-var InkRuntimeManager = load("res://addons/inkgd/runtime.gd")
+var InkRuntimeManager = load("res://addons/inkgd/ink_runtime_manager.gd")
 var InkResource = load("res://addons/inkgd/editor/import_plugins/ink_resource.gd")
 
 
@@ -111,14 +111,14 @@ func set_dnsdv(value: bool):
 		_push_null_runtime_error()
 		return false
 
-	ink_runtime.dont_save_default_values = value
+	InkVariablesState.dont_save_default_values = value
 func get_dnsdv() -> bool:
 	var ink_runtime = _ink_runtime.get_ref()
 	if ink_runtime == null:
 		_push_null_runtime_error()
 		return false
 
-	return ink_runtime.dont_save_default_values
+	return InkVariablesState.dont_save_default_values
 
 ## Uses `assert` instead of `push_error` to report critical errors, thus
 ## making them more explicit during development.

@@ -56,8 +56,7 @@ class InkThread extends InkBase:
 	var thread_index: int = 0 # int
 	var previous_pointer: InkPointer = InkPointer.null_pointer
 
-	func _init(static_json = null):
-		get_static_json(static_json)
+	func _init():
 		callstack = []
 
 	# Dictionary<string, object>, Story
@@ -101,7 +100,7 @@ class InkThread extends InkBase:
 			var temps
 			if jelement_obj.has("temp"):
 				temps = jelement_obj["temp"] # Dictionary<string, object>
-				el.temporary_variables = self.StaticJSON.jobject_to_dictionary_runtime_objs(temps)
+				el.temporary_variables = InkJSON.jobject_to_dictionary_runtime_objs(temps)
 			else:
 				el.temporary_variables.clear()
 
@@ -115,7 +114,7 @@ class InkThread extends InkBase:
 
 	# () -> InkThread
 	func copy() -> InkThread:
-		var copy = InkThread.new(self.StaticJSON)
+		var copy = InkThread.new()
 		copy.thread_index = self.thread_index
 		for e in callstack:
 			copy.callstack.append(e.copy())
@@ -140,7 +139,7 @@ class InkThread extends InkBase:
 
 			if el.temporary_variables.size() > 0:
 				writer.write_property_start("temp")
-				self.StaticJSON.write_dictionary_runtime_objs(writer, el.temporary_variables)
+				InkJSON.write_dictionary_runtime_objs(writer, el.temporary_variables)
 				writer.write_property_end()
 
 			writer.write_object_end()
@@ -167,29 +166,10 @@ class InkThread extends InkBase:
 
 	# ######################################################################## #
 
-	static func new_with(jthread_obj, story_context, static_json = null):
-		var thread = InkThread.new(static_json)
+	static func new_with(jthread_obj, story_context):
+		var thread = InkThread.new()
 		thread._init_with(jthread_obj, story_context)
 		return thread
-
-	# ######################################################################## #
-
-	var StaticJSON: InkStaticJSON:
-		get: return _static_json.get_ref()
-
-	var _static_json = WeakRef.new()
-
-	func get_static_json(static_json = null):
-		if static_json != null:
-			_static_json = weakref(static_json)
-			return
-
-		var InkRuntime = Engine.get_main_loop().root.get_node("__InkRuntime")
-
-		InkUtils.__assert__(InkRuntime != null,
-					 str("[InkCallStack.InkThread] Could not retrieve 'InkRuntime' singleton from the scene tree."))
-
-		_static_json = weakref(InkRuntime.json)
 
 # () -> Array<InkElement>
 var elements : get = get_elements
@@ -231,9 +211,7 @@ func get_can_pop():
 	return self.callstack.size() > 1
 
 # (InkStory | CallStack) -> CallStack
-func _init(story_context_or_to_copy, static_json = null):
-	get_static_json(static_json)
-
+func _init(story_context_or_to_copy):
 	if story_context_or_to_copy.is_ink_class("Story"):
 		var story_context = story_context_or_to_copy
 		_start_of_root = InkPointer.start_of(story_context.root_content_container)
@@ -249,7 +227,7 @@ func _init(story_context_or_to_copy, static_json = null):
 # () -> void
 func reset():
 	self._threads = []
-	self._threads.append(InkThread.new(self.StaticJSON))
+	self._threads.append(InkThread.new())
 	self._threads[0].callstack.append(Element.new(Ink.PushPopType.TUNNEL, self._start_of_root))
 
 # (Dictionary<string, object>, InkStory) -> void
@@ -436,22 +414,3 @@ func _anonymous_write_json(writer: InkSimpleJSON.Writer) -> void:
 	writer.write_property_start("threadCounter")
 	writer.write(self._thread_counter)
 	writer.write_property_end()
-
-# ######################################################################## #
-
-var StaticJSON: InkStaticJSON:
-	get: return _static_json.get_ref()
-
-var _static_json = WeakRef.new()
-
-func get_static_json(static_json = null):
-	if static_json != null:
-		_static_json = weakref(static_json)
-		return
-
-	var InkRuntime = Engine.get_main_loop().root.get_node("__InkRuntime")
-
-	InkUtils.__assert__(InkRuntime != null,
-					str("[InkCallStack] Could not retrieve 'InkRuntime' singleton from the scene tree."))
-
-	_static_json = weakref(InkRuntime.json)
