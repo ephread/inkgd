@@ -8,16 +8,16 @@
 
 Implementation of [inkle’s Ink] in pure GDScript, with editor support.
 
+> [!IMPORTANT]
+> _inkgd_ is compatible with Godot 4.2+, but has no official releases yet.
+> To use _inkgd_ with Godot 4.2+, fetch the [`godot4`] branch.
+
 > [!NOTE]
 > _inkgd_ shines for rapid prototyping in GDScript and small games.
 > While the runtime implementation is feature-complete and passes the
 > test suite, it’s slower than the original C# implementation. It is used
 > in commercial games, but if you need a faster solution and don’t mind C#,
 > you should consider using [godot-ink].
-
-> [!IMPORTANT]
-> _inkgd_ is compatible with Godot 4.1+, but has no official releases yet.
-> To use _inkgd_ with Godot 4.1+, fetch the [`godot4`] branch.
 
 [`godot4`]: https://github.com/ephread/inkgd/tree/godot4
 [inkle’s Ink]: https://github.com/inkle/ink
