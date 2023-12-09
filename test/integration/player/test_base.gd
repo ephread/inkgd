@@ -74,4 +74,4 @@ func _load_story(name):
 	assert_true(successfully, "The story did not load correctly.")
 
 func _can_run_mono():
-	return type_exists("_GodotSharp")
+	return type_exists("_GodotSharp") || type_exists("GodotSharp")

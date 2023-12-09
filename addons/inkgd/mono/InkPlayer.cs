@@ -272,8 +272,8 @@ public partial class InkPlayer : Node
 		}
 		else
 		{
-			CreateStory((string)ink_file.Get("json"));
-			FinaliseStoryCreation();
+			CallDeferred("CreateAndFinalizeStory", (string)ink_file.Get("json"));
+
 		}
 	}
 
@@ -772,7 +772,7 @@ public partial class InkPlayer : Node
 				instanceId,
 				method_name,
 				(string variableName, object value) => {
-					funcRef.Call(new Godot.Collections.Array() { variableName, inkBridger.MakeGDVariant(value) });
+					funcRef.Call(new Variant[] { variableName, inkBridger.MakeGDVariant(value) });
 				}
 			);
 
@@ -953,7 +953,20 @@ public partial class InkPlayer : Node
 			sanitizedArguments = new object[arguments.Count];
 			for (int i = 0; i < arguments.Count; i++)
 			{
-				sanitizedArguments[i] = inkBridger.MakeSharpObject(arguments[i], story);
+				try {
+					sanitizedArguments[i] = inkBridger.MakeSharpObject(arguments[i], story);
+				}
+				catch (Exception e)
+				{
+					var argumentType = arguments[i].GetType().Name;
+					var exception = new System.ArgumentException(
+						$"ink arguments when calling EvaluateFunction / ChoosePathStringWithParameters must be int, float, string, bool or InkList. Argument was {argumentType}",
+						e
+					);
+
+					HandleException(exception);
+					return null;
+				}
 			}
 		} else {
 			sanitizedArguments = new object[] { };
@@ -1087,6 +1100,12 @@ public partial class InkPlayer : Node
 		FinaliseStoryCreation();
 	}
 
+	private void CreateAndFinalizeStory(string jsonStory)
+	{
+			CreateStory(jsonStory);
+			FinaliseStoryCreation();
+	}
+
 	private void FinaliseStoryCreation()
 	{
 		story.onError += onError;
@@ -1178,24 +1197,27 @@ public partial class InkPlayer : Node
 		return inkObject.HasMethod("is_ink_class") && (bool)inkObject.Call("is_ink_class", new Variant[] { name });
 	}
 
-	private void HandleException(Exception e)
+	private void HandleException(Exception e, string stackTrace = null)
 	{
 		var message = $"{GetExceptionType(e)}: {e.Message}";
+		var localStackTrace = stackTrace ?? e.StackTrace;
 
 		if (ShouldStopExecution(e))
 		{
 			GD.PrintErr(message);
 
-			foreach(string line in e.StackTrace.Split("\n"))
-			{
-				GD.PrintErr(line);
+			if (localStackTrace != null) {
+				foreach(string line in localStackTrace.Split("\n"))
+				{
+					GD.PrintErr(line);
+				}
 			}
 
 			Debug.Assert(false, "Exception encountered, check the output tab for more information.");
 		}
 		else
 		{
-			EmitSignal("exception_raised", new Variant[] { message, e.StackTrace.Split("\n") });
+			EmitSignal("exception_raised", new Variant[] { message, localStackTrace?.Split("\n") ?? new string[0] });
 		}
 	}
 

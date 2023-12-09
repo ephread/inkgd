@@ -175,11 +175,16 @@ func _remove_bottom_panel():
 
 
 ## Registers the Ink runtime node as an autoloaded singleton.
+##
+## In inkgd 1.0.0+ the runtime is no longer added automatically.
 func _add_autoloads():
-	add_autoload_singleton("__InkRuntime", "res://addons/inkgd/ink_runtime.gd")
+	pass
 
 
 ## Unregisters the Ink runtime node from autoloaded singletons.
+##
+## In inkgd 1.0.0+ the runtime is no longer added automatically, but
+## this method was kept for cleanup purposes.
 func _remove_autoloads():
 	remove_autoload_singleton("__InkRuntime")
 

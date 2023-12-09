@@ -313,8 +313,8 @@ func _exit_tree():
 # ############################################################################ #
 
 ## Creates the _story, based on the value of `ink_file`. The result of this
-## method is reported through the 'story_loaded' signal.
-func create_story() -> int:
+## method is reported through the 'loaded' signal.
+func create_story():
 	if ink_file == null:
 		_push_error("'ink_file' is null, did Godot import the resource correctly?")
 		call_deferred("emit_signal", "loaded", false)
@@ -822,10 +822,8 @@ func _finalise_story_creation() -> void:
 func _add_runtime() -> void:
 	# The InkRuntime is normaly an auto-loaded singleton,
 	# but if it's not present, it's added here.
-	var runtime: Node
-	if get_tree().root.has_node("__InkRuntime"):
-		runtime = get_tree().root.get_node("__InkRuntime")
-	else:
+	var runtime: Node = InkUtils.InkRuntime
+	if runtime == null:
 		_manages_runtime = true
 		runtime = InkRuntimeManager.init(get_tree().root)
 

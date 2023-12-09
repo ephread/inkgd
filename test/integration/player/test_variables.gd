@@ -116,13 +116,13 @@ func test_observe_variables() -> void:
 	_ink_player.choose_path("otherKnot")
 	_ink_player.continue_story_maximally()
 
-	assert_eq(_variable_changed.size(), 4 if _can_run_mono() else 3)
+	assert_eq(_variable_changed.size(), 4 if self._can_run_mono() else 3)
 	assert_true("aBoolean" in _variable_changed)
 	assert_true("aString" in _variable_changed)
 	assert_true("anInteger" in _variable_changed)
 
 	assert_eq(_string_variable_observer_call_count, 1)
-	assert_eq(_default_variable_observers_call_count, 4 if _can_run_mono() else 3)
+	assert_eq(_default_variable_observers_call_count, 4 if self._can_run_mono() else 3)
 
 
 func test_remove_observer() -> void:

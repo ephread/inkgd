@@ -17,14 +17,14 @@ class_name InkRuntimeManager
 # class_name InkRuntime
 
 static func init(root_node, stop_on_error = true):
-	if root_node.has_node("__InkRuntime"):
-		var _ink_runtime = root_node.get_node("__InkRuntime")
+	var _ink_runtime: Node = InkUtils.InkRuntime
+	if _ink_runtime != null:
 		_ink_runtime.stop_execution_on_exception = stop_on_error
 		_ink_runtime.stop_execution_on_error = stop_on_error
 
 		return _ink_runtime
 
-	var _ink_runtime = load("res://addons/inkgd/ink_runtime.gd").new()
+	_ink_runtime = load("res://addons/inkgd/ink_runtime.gd").new()
 
 	_ink_runtime.stop_execution_on_exception = stop_on_error
 	_ink_runtime.stop_execution_on_error = stop_on_error
@@ -34,6 +34,6 @@ static func init(root_node, stop_on_error = true):
 	return _ink_runtime
 
 static func deinit(root_node):
-	var _ink_runtime = root_node.get_node("__InkRuntime")
+	var _ink_runtime = InkUtils.InkRuntime
 	root_node.remove_child(_ink_runtime)
 	_ink_runtime.queue_free()

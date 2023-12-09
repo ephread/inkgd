@@ -75,7 +75,7 @@ func test_function_no_fallback() -> void:
 	await _load_story("functions")
 	_ink_player.continue_story_maximally()
 
-	assert_eq(_exception_messages_raised.size(), 2)
+	assert_eq(_exception_messages_raised.size(), 1)
 
 
 func test_function_binding() -> void:

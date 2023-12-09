@@ -269,7 +269,15 @@ func get_async_continue_complete() -> bool:
 
 func continue_async(millisecs_limit_async: float):
 	if !self._has_validated_externals:
+		self._ink_runtime.catch_exceptions = false
 		self.validate_external_bindings()
+
+		# TODO: Add comment - This code did not exist in upstream.
+		if self._ink_runtime.has_raised_uncaught_exceptions:
+			return
+		
+		self._ink_runtime.catch_exceptions = true
+
 
 	continue_internal(millisecs_limit_async)
 
@@ -479,6 +487,10 @@ func continue_story_maximally() -> String:
 
 	while (self.can_continue):
 		_str += self.continue_story()
+		if self._ink_runtime.has_raised_uncaught_exceptions:
+			self._ink_runtime.clear_raised_exceptions()
+			self._ink_runtime.catch_exceptions = true
+			break
 
 	return _str
 
@@ -1306,7 +1318,8 @@ func evaluate_function(
 	self.state.start_function_evaluation_from_game(func_container, arguments)
 
 	# TODO: Add comment - This code did not exist in upstream.
-	if self._ink_runtime.clear_raised_exceptions():
+	if self._ink_runtime.has_raised_exceptions:
+		self._ink_runtime.clear_raised_exceptions()
 		return null
 
 	var string_output = ""
@@ -1468,7 +1481,7 @@ func unbind_external_function(func_name: String) -> void:
 func validate_external_bindings() -> void:
 	var missing_externals: InkStringSet = InkStringSet.new()
 
-	validate_external_bindings_with(_main_content_container, missing_externals)
+	validate_external_bindings_of_container(_main_content_container, missing_externals)
 	_has_validated_externals = true
 
 	if missing_externals.size() == 0:
@@ -1476,27 +1489,31 @@ func validate_external_bindings() -> void:
 	else:
 		var message: String = "ERROR: Missing function binding for external %s: '%s' %s" % [
 			"s" if missing_externals.size() > 1 else "",
-			"', '", InkUtils.join("', '", missing_externals.to_array()),
+			InkUtils.join("', '", missing_externals.to_array()),
 			", and no fallback ink function found." if allow_external_function_fallbacks else " (ink fallbacks disabled)"
 		]
 
 		error(message)
 
 
-func validate_external_bindings_with(o: InkObject, missing_externals: InkStringSet) -> void:
+func validate_external_bindings_of_container(c: InkContainer, missing_externals: InkStringSet) -> void:
+	for inner_content in c.content:
+		var container = InkUtils.as_or_null(inner_content, "InkContainer")
+		if container == null || !container.has_valid_name:
+			validate_external_bindings_of_object(inner_content, missing_externals)
+
+	for inner_key in c.named_content:
+		validate_external_bindings_of_object(
+			InkUtils.as_or_null(c.named_content[inner_key], "InkObject"),
+			missing_externals
+		)
+	return
+
+
+func validate_external_bindings_of_object(o: InkObject, missing_externals: InkStringSet) -> void:
 	var container = InkUtils.as_or_null(o, "InkContainer")
 	if container:
-		for inner_content in o.content:
-			var inner_container = InkUtils.as_or_null(inner_content, "InkContainer")
-			if inner_container == null || !inner_container.has_valid_name:
-				validate_external_bindings_with(inner_content, missing_externals)
-
-		for inner_key in o.named_content:
-			validate_external_bindings_with(
-				InkUtils.as_or_null(o.named_content[inner_key], "InkObject"),
-				missing_externals
-			)
-		return
+		validate_external_bindings_of_container(container, missing_externals)
 
 	var divert = InkUtils.as_or_null(o, "Divert")
 	if divert && divert.is_external:
@@ -2021,7 +2038,7 @@ func _initialize_runtime(ink_runtime = null):
 	if ink_runtime != null:
 		_weak_ink_runtime = weakref(ink_runtime)
 	else:
-		var runtime = Engine.get_main_loop().root.get_node("__InkRuntime")
+		var runtime = InkUtils.InkRuntime
 
 		InkUtils.__assert__(
 			runtime != null,

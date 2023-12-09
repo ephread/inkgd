@@ -16,17 +16,17 @@ class_name InkUtils
 # ############################################################################ #
 
 static func throw_exception(message: String) -> void:
-	InkRuntime().handle_exception(message)
+	InkRuntime.handle_exception(message)
 
 static func throw_story_exception(
 		message: String,
 		use_end_line_number = false,
 		metadata = null
 ) -> void:
-	InkRuntime().handle_story_exception(message, use_end_line_number, metadata)
+	InkRuntime.handle_story_exception(message, use_end_line_number, metadata)
 
 static func throw_argument_exception(message: String) -> void:
-	InkRuntime().handle_argument_exception(message)
+	InkRuntime.handle_argument_exception(message)
 
 # ############################################################################ #
 # Assertions
@@ -262,5 +262,6 @@ static func array_equal(a1: Array, a2: Array, use_equals = false) -> bool:
 
 # ############################################################################ #
 
-static func InkRuntime():
-	return Engine.get_main_loop().root.get_node("__InkRuntime")
+static var InkRuntime: Node:
+	get:
+		return Engine.get_main_loop().root.get_node("__InkRuntime")

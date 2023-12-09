@@ -26,6 +26,7 @@ extends Node
 ## a programmer error or a bug in the runtime.
 signal exception_raised(message, stack_trace)
 
+
 # ############################################################################ #
 # Properties
 # ############################################################################ #
@@ -37,6 +38,7 @@ var stop_execution_on_exception: bool = true
 ## Uses `assert` instead of `push_error` to report story errors, thus
 ## making them more explicit during development.
 var stop_execution_on_error: bool = true
+
 
 # ############################################################################ #
 # Deprecated Properties
@@ -54,6 +56,7 @@ var dont_save_default_values: bool:
 	set(value):
 		InkVariablesState.dont_save_default_values = value
 
+
 var should_pause_execution_on_runtime_error: bool: get = get_speore, set = set_speore
 func get_speore() -> bool:
 	printerr(
@@ -67,6 +70,7 @@ func set_speore(value: bool):
 			"use 'stop_execution_on_exception' instead."
 	)
 	stop_execution_on_exception = value
+
 
 var should_pause_execution_on_story_error: bool: get = get_speose, set = set_speose
 func get_speose() -> bool:
@@ -82,6 +86,7 @@ func set_speose(value: bool):
 	)
 	stop_execution_on_error = value
 
+
 # ############################################################################ #
 # Internal Properties
 # ############################################################################ #
@@ -91,8 +96,24 @@ func set_speose(value: bool):
 var record_story_exceptions: bool = false
 var current_story_exceptions: Array = []
 
-var _argument_exception_raised: bool
-var _exception_raised: bool
+var catch_exceptions = true
+
+var has_raised_exceptions: bool:
+	get:
+		return (_story_exception_raised || _argument_exception_raised || _exception_raised)
+
+var has_raised_uncaught_exceptions: bool:
+	get:
+		return !catch_exceptions && has_raised_exceptions
+
+# ############################################################################ #
+# Private Properties
+# ############################################################################ #
+
+var _story_exception_raised: bool = false
+var _argument_exception_raised: bool = false
+var _exception_raised: bool = false
+
 
 # ############################################################################ #
 # Overrides
@@ -101,20 +122,17 @@ var _exception_raised: bool
 func _init():
 	name = "__InkRuntime"
 
+
 # ############################################################################ #
 # Internal Methods
 # ############################################################################ #
 
-func clear_raised_exceptions() -> bool:
-	if _argument_exception_raised:
-		_argument_exception_raised = false
-		return true
+func clear_raised_exceptions():
+	current_story_exceptions = []
 
-	if _argument_exception_raised:
-		_argument_exception_raised = false
-		return true
-
-	return false
+	_story_exception_raised = false
+	_argument_exception_raised = false
+	_exception_raised = false
 
 
 func handle_exception(message: String) -> void:
@@ -127,8 +145,9 @@ func handle_exception(message: String) -> void:
 			stack_trace
 	)
 
-	_exception_raised
+	_exception_raised = true
 	emit_signal("exception_raised", exception_message, stack_trace)
+
 
 func handle_argument_exception(message: String) -> void:
 	var exception_message = "ARGUMENT EXCEPTION: %s" % message
@@ -143,6 +162,7 @@ func handle_argument_exception(message: String) -> void:
 	_argument_exception_raised = true
 	emit_signal("exception_raised", exception_message, stack_trace)
 
+
 func handle_story_exception(message: String, use_end_line_number: bool, metadata) -> void:
 	# When exceptions are "recorded", they are not reported immediately.
 	# 'Story' will take care of that at the end of the step.
@@ -154,7 +174,9 @@ func handle_story_exception(message: String, use_end_line_number: bool, metadata
 
 		_handle_generic_exception(exception_message, stop_execution_on_error, stack_trace)
 
+		_story_exception_raised = true
 		emit_signal("exception_raised", exception_message, stack_trace)
+
 
 # ############################################################################ #
 # Private Methods
@@ -176,6 +198,7 @@ func _handle_generic_exception(
 					printerr(line)
 		else:
 			push_error(message)
+
 
 func _get_stack_trace() -> PackedStringArray:
 	var trace := PackedStringArray()

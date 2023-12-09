@@ -18,11 +18,10 @@ var InkRuntimeManager = load("res://addons/inkgd/ink_runtime_manager.gd")
 
 var ink_runtime
 
-func before_all():
-	InkRuntimeManager.init(get_tree().root, false)
-	ink_runtime = get_tree().root.get_node("__InkRuntime")
+func before_each():
+	ink_runtime = InkRuntimeManager.init(get_tree().root, false)
 
-func after_all():
+func after_each():
 	InkRuntimeManager.deinit(get_tree().root)
 	ink_runtime = null
 
