@@ -52,7 +52,7 @@ jobs:
       # The export is done twice, because it won't import all the required
       # assets at first, since inkgd won't run properly at first due to…
       # … missing assets.
-      - name: "(Shared) Reimport Assets"
+      - name: "(Vanilla) Reimport Assets"
         run: |
           ./godot --headless --path "inkgd" --export-pack "HTML5" dummy.pck
           ./godot --headless --path "inkgd" --export-pack "HTML5" dummy.pck
@@ -108,6 +108,16 @@ jobs:
           cd inkgd
           dotnet msbuild inkgd.sln /restore /t:Build /p:Configuration=Debug
           cd ..
+
+      # This step exports a dummy PCK to force reimportation.
+      #
+      # The export is done twice, because it won't import all the required
+      # assets at first, since inkgd won't run properly at first due to…
+      # … missing assets.
+      - name: "(Mono) Reimport Assets"
+        run: |
+          ./godot_mono/godot_mono --headless --path "inkgd" --export-pack "HTML5" dummy.pck
+          ./godot_mono/godot_mono --headless --path "inkgd" --export-pack "HTML5" dummy.pck
 
       - name: "(Mono) Run tests (Mono)"
         run: |
