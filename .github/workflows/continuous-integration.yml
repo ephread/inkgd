@@ -90,11 +90,15 @@ jobs:
             SEMANTIC_VERSION="$VERSION.0"
           fi
 
+          cd inkgd
+
           xmllint --shell inkgd.csproj <<EOF
           cd /Project/@Sdk
           set Godot.NET.Sdk/${SEMANTIC_VERSION}
           save
           EOF
+
+          cd ..
 
       - name: "(Mono) Compile C# solution"
         run: |
