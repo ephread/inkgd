@@ -19,6 +19,7 @@ jobs:
     strategy:
       matrix:
         destination:
+          - "4.2"
           - "4.2.1"
 
     steps:
@@ -75,6 +76,25 @@ jobs:
           wget -q https://github.com/inkle/ink/releases/download/v1.1.1/inklecate_windows.zip
           unzip inklecate_windows.zip
           mv ink-engine-runtime.dll inkgd/addons/inkgd/mono/assemblies/ink-engine-runtime.dll
+
+      - name: "(Mono) Patch project file to match version"
+        run: |
+          VERSION_COMPONENTS=(${VERSION//./ })
+          NUMBER_OF_COMPONENTS=${#VERSION_COMPONENTS[@]}
+
+          # Assuming that if the number of version components is not 3,
+          # then it's 2, therefor we add a zero at the end.
+          if [[ "$NUMBER_OF_COMPONENTS" = "3" ]]; then
+            SEMANTIC_VERSION="$VERSION"
+          else
+            SEMANTIC_VERSION="$VERSION.0"
+          fi
+
+          xmllint --shell inkgd.csproj <<EOF
+cd /Project/@Sdk
+set Godot.NET.Sdk/${SEMANTIC_VERSION}
+save
+EOF
 
       - name: "(Mono) Compile C# solution"
         run: |
