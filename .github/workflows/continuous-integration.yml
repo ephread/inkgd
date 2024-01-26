@@ -32,7 +32,7 @@ jobs:
       - name: "(Shared) Install test dependencies"
         run: |
           sudo apt-get update
-          sudo apt-get -y install wget zip unzip
+          sudo apt-get -y install wget zip unzip libxml2-utils
 
       - name: "(Shared) Inject export preset"
         run: |
@@ -83,7 +83,7 @@ jobs:
           NUMBER_OF_COMPONENTS=${#VERSION_COMPONENTS[@]}
 
           # Assuming that if the number of version components is not 3,
-          # then it's 2, therefor we add a zero at the end.
+          # then it's 2, therefore we add a zero at the end.
           if [[ "$NUMBER_OF_COMPONENTS" = "3" ]]; then
             SEMANTIC_VERSION="$VERSION"
           else
