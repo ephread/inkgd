@@ -169,7 +169,7 @@ func set_initial_origin_names(initial_origin_names) -> void:
 # TODO: Make inspectable
 var max_item: InkKeyValuePair: # InkKeyValuePair<InkListItem, int>
 	get:
-		var _max_item: InkKeyValuePair = InkKeyValuePair.new_with_key_value(InkListItem.null_item, 0)
+		var _max_item: InkKeyValuePair = InkKeyValuePair.new_with_key_value(InkListItem.null_item(), 0)
 		for k in keys():
 			if (_max_item.key.is_null || get_item(k) > _max_item.value):
 				_max_item = InkKeyValuePair.new_with_key_value(k, get_item(k))
@@ -180,7 +180,7 @@ var max_item: InkKeyValuePair: # InkKeyValuePair<InkListItem, int>
 # TODO: Make inspectable
 var min_item: InkKeyValuePair: # InkKeyValuePair<InkListItem, int>
 	get:
-		var _min_item: InkKeyValuePair = InkKeyValuePair.new_with_key_value(InkListItem.null_item, 0)
+		var _min_item: InkKeyValuePair = InkKeyValuePair.new_with_key_value(InkListItem.null_item(), 0)
 		for k in keys():
 			if (_min_item.key.is_null || get_item(k) < _min_item.value):
 				_min_item = InkKeyValuePair.new_with_key_value(k, get_item(k))

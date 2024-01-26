@@ -19,7 +19,7 @@ jobs:
     strategy:
       matrix:
         destination:
-          - "4.2"
+          - "4.2.1"
 
     steps:
       - name: "(Shared) Check out the repository"
@@ -60,29 +60,29 @@ jobs:
         run: |
           ./godot --headless -d -s --path "inkgd" "addons/gut/gut_cmdln.gd"
 
-      # - name: "(Mono) Install Godot"
-      #   env:
-      #     VERSION: ${{ matrix.destination }}
-      #   run: |
-      #     wget -q https://downloads.tuxfamily.org/godotengine/${VERSION}/mono/Godot_v${VERSION}-stable_mono_linux_headless_64.zip
-      #     unzip Godot_v${VERSION}-stable_mono_linux_headless_64.zip
-      #     mv Godot_v${VERSION}-stable_mono_linux_headless_64 godot_mono
-      #     mv godot_mono/Godot_v${VERSION}-stable_mono_linux_headless.64 godot_mono/godot_mono
-      #     chmod +x godot_mono/godot_mono
+      - name: "(Mono) Install Godot"
+        env:
+          VERSION: ${{ matrix.destination }}
+        run: |
+          wget -q https://downloads.tuxfamily.org/godotengine/${VERSION}/mono/Godot_v${VERSION}-stable_mono_linux_headless_64.zip
+          unzip Godot_v${VERSION}-stable_mono_linux_headless_64.zip
+          mv Godot_v${VERSION}-stable_mono_linux_headless_64 godot_mono
+          mv godot_mono/Godot_v${VERSION}-stable_mono_linux_headless.64 godot_mono/godot_mono
+          chmod +x godot_mono/godot_mono
 
-      # - name: "(Mono) Install Ink Runtime"
-      #   run: |
-      #     wget -q https://github.com/inkle/ink/releases/download/v1.1.0/inklecate_windows.zip
-      #     unzip inklecate_windows.zip
-      #     mv ink-engine-runtime.dll inkgd/addons/inkgd/mono/assemblies/ink-engine-runtime.dll
+      - name: "(Mono) Install Ink Runtime"
+        run: |
+          wget -q https://github.com/inkle/ink/releases/download/v1.1.0/inklecate_windows.zip
+          unzip inklecate_windows.zip
+          mv ink-engine-runtime.dll inkgd/addons/inkgd/mono/assemblies/ink-engine-runtime.dll
 
-      # - name: "(Mono) Compile C# solution"
-      #   run: |
-      #     ./godot_mono/godot_mono --headless --quit --path "inkgd"
-      #     cd inkgd
-      #     msbuild inkgd.sln /restore /t:Build /p:Configuration=Debug
-      #     cd ..
+      - name: "(Mono) Compile C# solution"
+        run: |
+          ./godot_mono/godot_mono --headless --quit --path "inkgd"
+          cd inkgd
+          msbuild inkgd.sln /restore /t:Build /p:Configuration=Debug
+          cd ..
 
-      # - name: "(Mono) Run tests (Mono)"
-      #   run: |
-      #     ./godot_mono/godot_mono --headless -d -s --path "inkgd" "addons/gut/gut_cmdln.gd"
+      - name: "(Mono) Run tests (Mono)"
+        run: |
+          ./godot_mono/godot_mono --headless -d -s --path "inkgd" "addons/gut/gut_cmdln.gd"
