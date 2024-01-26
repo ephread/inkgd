@@ -72,7 +72,7 @@ jobs:
 
       - name: "(Mono) Install Ink Runtime"
         run: |
-          wget -q https://github.com/inkle/ink/releases/download/v1.1.0/inklecate_windows.zip
+          wget -q https://github.com/inkle/ink/releases/download/v1.1.1/inklecate_windows.zip
           unzip inklecate_windows.zip
           mv ink-engine-runtime.dll inkgd/addons/inkgd/mono/assemblies/ink-engine-runtime.dll
 
