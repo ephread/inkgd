@@ -67,7 +67,7 @@ jobs:
           wget -q https://downloads.tuxfamily.org/godotengine/${VERSION}/mono/Godot_v${VERSION}-stable_mono_linux_x86_64.zip
           unzip Godot_v${VERSION}-stable_mono_linux_x86_64.zip
           mv Godot_v${VERSION}-stable_mono_linux_x86_64 godot_mono
-          mv Godot_v${VERSION}-stable_mono_linux_x86_64 godot_mono/godot_mono
+          mv godot_mono/Godot_v${VERSION}-stable_mono_linux.x86_64 godot_mono/godot_mono
           chmod +x godot_mono/godot_mono
 
       - name: "(Mono) Install Ink Runtime"
