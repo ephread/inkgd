@@ -111,14 +111,6 @@ jobs:
 
           cd ..
 
-      - name: "(Mono) Compile C# solution"
-        if: ${{ matrix.flavor == 'mono' }}
-        run: |
-          ./godot_mono/godot_mono --headless --quit --path "inkgd"
-          cd inkgd
-          dotnet msbuild inkgd.sln /restore /t:Build /p:Configuration=Debug
-          cd ..
-
       # This step exports a dummy PCK to force reimportation.
       #
       # The export is done twice, because it won't import all the required
@@ -129,6 +121,14 @@ jobs:
         run: |
           ./godot_mono/godot_mono --headless --path "inkgd" --export-pack "HTML5" dummy.pck
           ./godot_mono/godot_mono --headless --path "inkgd" --export-pack "HTML5" dummy.pck
+
+      - name: "(Mono) Compile C# solution"
+        if: ${{ matrix.flavor == 'mono' }}
+        run: |
+          ./godot_mono/godot_mono --headless --quit --path "inkgd"
+          cd inkgd
+          dotnet msbuild inkgd.sln /restore /t:Build /p:Configuration=Debug
+          cd ..
 
       - name: "(Mono) Run tests (Mono)"
         if: ${{ matrix.flavor == 'mono' }}
