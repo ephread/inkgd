@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://bbc42g3ttmsk"]
 
-[ext_resource type="Resource" uid="uid://b5qbve6p02n05" path="res://examples/ink/the_intercept/the_intercept.ink.json" id="1"]
+[ext_resource type="Resource" uid="uid://3dlw5fldlhgj" path="res://examples/ink/the_intercept/the_intercept.ink.json" id="1"]
 [ext_resource type="PackedScene" uid="uid://badcm6unmfp41" path="res://examples/scenes/common/story_player.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://examples/scenes/common/back_button_margin_container.tscn" id="3"]
 

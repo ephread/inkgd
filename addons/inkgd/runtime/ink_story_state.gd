@@ -153,7 +153,7 @@ func get_callstack() -> InkCallStack:
 var evaluation_stack: Array
 
 # Pointer
-var diverted_pointer: InkPointer = InkPointer.null_pointer
+var diverted_pointer: InkPointer = InkPointer.null_pointer()
 
 var current_turn_index: int = 0
 var story_seed: int = 0
@@ -909,8 +909,8 @@ func force_end() -> void:
 
 	self._current_flow.current_choices.clear()
 
-	self.current_pointer = InkPointer.null_pointer
-	self.previous_pointer = InkPointer.null_pointer
+	self.current_pointer = InkPointer.null_pointer()
+	self.previous_pointer = InkPointer.null_pointer()
 
 	self.did_safe_exit = true
 
@@ -996,7 +996,7 @@ func pass_arguments_to_evaluation_stack(arguments) -> void:
 # () -> bool
 func try_exit_function_evaluation_from_game() -> bool:
 	if self.callstack.current_element.type == Ink.PushPopType.FUNCTION_EVALUATION_FROM_GAME:
-		self.current_pointer = InkPointer.null_pointer
+		self.current_pointer = InkPointer.null_pointer()
 		self.did_safe_exit = true
 		return true
 

@@ -26,7 +26,7 @@ var target_path: InkPath:
 
 	set(value):
 		self._target_path = value
-		self._target_pointer = InkPointer.null_pointer
+		self._target_pointer = InkPointer.null_pointer()
 
 var _target_path: InkPath = null
 
@@ -46,7 +46,7 @@ var target_pointer: InkPointer:
 
 		return self._target_pointer
 
-var _target_pointer: InkPointer = InkPointer.null_pointer
+var _target_pointer: InkPointer = InkPointer.null_pointer()
 
 
 var target_path_string: # String?

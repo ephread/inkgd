@@ -17,7 +17,7 @@ class_name InkCallStack
 
 class Element extends InkBase:
 
-	var current_pointer: InkPointer = InkPointer.null_pointer
+	var current_pointer: InkPointer = InkPointer.null_pointer()
 
 	var in_expression_evaluation: bool = false
 	var temporary_variables = null # Dictionary<String, InkObject>
@@ -54,7 +54,7 @@ class InkThread extends InkBase:
 
 	var callstack = null # Array<Element>
 	var thread_index: int = 0 # int
-	var previous_pointer: InkPointer = InkPointer.null_pointer
+	var previous_pointer: InkPointer = InkPointer.null_pointer()
 
 	func _init():
 		callstack = []
@@ -68,7 +68,7 @@ class InkThread extends InkBase:
 			var jelement_obj = jel_tok
 			var push_pop_type = int(jelement_obj["type"])
 
-			var pointer = InkPointer.null_pointer
+			var pointer = InkPointer.null_pointer()
 			var current_container_path_str = null
 			var current_container_path_str_token = null
 
@@ -388,7 +388,7 @@ func get_callstack_trace():
 
 var _threads = null # Array<InkThread>
 var _thread_counter = 0 # int
-var _start_of_root = InkPointer.null_pointer # Pointer
+var _start_of_root = InkPointer.null_pointer() # Pointer
 
 # ############################################################################ #
 # GDScript extra methods

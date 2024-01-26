@@ -105,8 +105,8 @@ static func start_of(container: InkContainer) -> InkPointer:
 # ############################################################################ #
 
 # () -> InkPointer
-static var null_pointer: InkPointer:
-	get: return InkPointer.new(null, -1)
+static func null_pointer() -> InkPointer:
+	return InkPointer.new(null, -1)
 
 
 # ############################################################################ #

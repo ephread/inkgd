@@ -60,7 +60,7 @@ func try_get_item_with_value(val: int) -> InkTryGetResult:
 					InkListItem.new_with_origin_name(self.name, named_item_key)
 			)
 
-	return InkTryGetResult.new(false, InkListItem.null_item)
+	return InkTryGetResult.new(false, InkListItem.null_item())
 
 # (InkListItem) -> { result: InkListItem, exists: bool }
 func try_get_value_for_item(item: InkListItem) -> InkTryGetResult:
