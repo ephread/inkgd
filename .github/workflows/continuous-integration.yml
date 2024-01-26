@@ -78,6 +78,8 @@ jobs:
           mv ink-engine-runtime.dll inkgd/addons/inkgd/mono/assemblies/ink-engine-runtime.dll
 
       - name: "(Mono) Patch project file to match version"
+        env:
+            VERSION: ${{ matrix.destination }}
         run: |
           VERSION_COMPONENTS=(${VERSION//./ })
           NUMBER_OF_COMPONENTS=${#VERSION_COMPONENTS[@]}
