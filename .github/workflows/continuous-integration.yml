@@ -18,9 +18,12 @@ jobs:
 
     strategy:
       matrix:
-        destination:
+        version:
           - "4.2"
           - "4.2.1"
+        flavor:
+          - "vanilla"
+          - "mono"
 
     steps:
       - name: "(Shared) Check out the repository"
@@ -39,8 +42,9 @@ jobs:
           mv inkgd/ci_export_presets.cfg inkgd/export_presets.cfg
 
       - name: "(Vanilla) Install Godot"
+        if: ${{ matrix.version == 'vanilla' }}
         env:
-          VERSION: ${{ matrix.destination }}
+          VERSION: ${{ matrix.version }}
         run: |
           wget -q https://downloads.tuxfamily.org/godotengine/${VERSION}/Godot_v${VERSION}-stable_linux.x86_64.zip
           unzip Godot_v${VERSION}-stable_linux.x86_64.zip
@@ -53,17 +57,20 @@ jobs:
       # assets at first, since inkgd won't run properly at first due to…
       # … missing assets.
       - name: "(Vanilla) Reimport Assets"
+        if: ${{ matrix.version == 'vanilla' }}
         run: |
           ./godot --headless --path "inkgd" --export-pack "HTML5" dummy.pck
           ./godot --headless --path "inkgd" --export-pack "HTML5" dummy.pck
 
       - name: "(Vanilla) Run tests"
+        if: ${{ matrix.version == 'vanilla' }}
         run: |
           ./godot --headless -d -s --path "inkgd" "addons/gut/gut_cmdln.gd"
 
       - name: "(Mono) Install Godot"
+        if: ${{ matrix.version == 'mono' }}
         env:
-          VERSION: ${{ matrix.destination }}
+          VERSION: ${{ matrix.version }}
         run: |
           wget -q https://downloads.tuxfamily.org/godotengine/${VERSION}/mono/Godot_v${VERSION}-stable_mono_linux_x86_64.zip
           unzip Godot_v${VERSION}-stable_mono_linux_x86_64.zip
@@ -72,14 +79,16 @@ jobs:
           chmod +x godot_mono/godot_mono
 
       - name: "(Mono) Install Ink Runtime"
+        if: ${{ matrix.version == 'mono' }}
         run: |
           wget -q https://github.com/inkle/ink/releases/download/v1.1.1/inklecate_windows.zip
           unzip inklecate_windows.zip
           mv ink-engine-runtime.dll inkgd/addons/inkgd/mono/assemblies/ink-engine-runtime.dll
 
       - name: "(Mono) Patch project file to match version"
+        if: ${{ matrix.version == 'mono' }}
         env:
-            VERSION: ${{ matrix.destination }}
+            VERSION: ${{ matrix.version }}
         run: |
           VERSION_COMPONENTS=(${VERSION//./ })
           NUMBER_OF_COMPONENTS=${#VERSION_COMPONENTS[@]}
@@ -103,6 +112,7 @@ jobs:
           cd ..
 
       - name: "(Mono) Compile C# solution"
+        if: ${{ matrix.version == 'mono' }}
         run: |
           ./godot_mono/godot_mono --headless --quit --path "inkgd"
           cd inkgd
@@ -115,10 +125,12 @@ jobs:
       # assets at first, since inkgd won't run properly at first due to…
       # … missing assets.
       - name: "(Mono) Reimport Assets"
+        if: ${{ matrix.version == 'mono' }}
         run: |
           ./godot_mono/godot_mono --headless --path "inkgd" --export-pack "HTML5" dummy.pck
           ./godot_mono/godot_mono --headless --path "inkgd" --export-pack "HTML5" dummy.pck
 
       - name: "(Mono) Run tests (Mono)"
+        if: ${{ matrix.version == 'mono' }}
         run: |
           ./godot_mono/godot_mono --headless -d -s --path "inkgd" "addons/gut/gut_cmdln.gd"
