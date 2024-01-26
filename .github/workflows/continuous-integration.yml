@@ -91,10 +91,10 @@ jobs:
           fi
 
           xmllint --shell inkgd.csproj <<EOF
-cd /Project/@Sdk
-set Godot.NET.Sdk/${SEMANTIC_VERSION}
-save
-EOF
+          cd /Project/@Sdk
+          set Godot.NET.Sdk/${SEMANTIC_VERSION}
+          save
+          EOF
 
       - name: "(Mono) Compile C# solution"
         run: |
