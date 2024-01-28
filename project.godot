@@ -37,7 +37,7 @@ project/assembly_name="inkgd"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/gut/plugin.cfg")
+enabled=PackedStringArray("res://addons/gut/plugin.cfg", "res://addons/inkgd/plugin.cfg")
 
 [inkgd]
 
