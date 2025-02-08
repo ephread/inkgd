@@ -14,7 +14,7 @@ class_name InkEditorInterface
 
 ## Emitted when 'Ink' resources (i. e. files with the '.ink' extension) were
 ## reimported by Godot.
-signal ink_ressources_reimported(resources)
+signal ink_resources_reimported(resources)
 
 # ############################################################################ #
 # Properties
@@ -81,4 +81,4 @@ func _resources_reimported(resources):
 		if resource.get_extension() == "ink":
 			ink_resources.append(resource)
 
-	emit_signal("ink_ressources_reimported", ink_resources)
+	emit_signal("ink_resources_reimported", ink_resources)
