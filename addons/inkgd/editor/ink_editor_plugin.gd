@@ -200,11 +200,11 @@ func _add_templates():
 	# Setup the templates folder for the project
 	var template_dir_path = ProjectSettings.get_setting("editor/script/templates_search_path")
 	if !DirAccess.dir_exists_absolute(template_dir_path):
-		DirAccess.make_dir_absolute(template_dir_path)
+		DirAccess.make_dir_recursive_absolute(template_dir_path + "/Node")
 
 	for template_name in names:
-		var template_file_path = template_dir_path + "/" + template_name
-		DirAccess.copy_absolute("res://addons/inkgd/editor/templates/" + template_name, template_file_path)
+		var template_file_path = template_dir_path + "/Node/" + template_name
+		DirAccess.copy_absolute("res://addons/inkgd/editor/templates/Node/" + template_name, template_file_path)
 
 
 ## Unregisters the script templates provided by the plugin.
@@ -222,7 +222,7 @@ func _remove_templates():
 func _get_plugin_templates_names() -> Array:
 	var plugin_template_names = []
 
-	var dir = DirAccess.open("res://addons/inkgd/editor/templates/")
+	var dir = DirAccess.open("res://addons/inkgd/editor/templates/Node")
 	if dir:
 		dir.list_dir_begin()
 		var temp = dir.get_next()
