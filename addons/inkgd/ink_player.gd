@@ -845,7 +845,7 @@ func _remove_runtime() -> void:
 
 
 func _current_platform_supports_threads() -> bool:
-	return OS.get_name() != "HTML5"
+	return OS.has_feature("threads")
 
 
 func _push_null_runtime_error() -> void:
